@@ -8,6 +8,9 @@ struct Entry { int type=0,detail=0,grade=0,lv=1; long long count=1; };
 enum { PanelFrames=12, CardStart=20, CardStep=6, SlideFrames=12, FlipInterval=3, BackFrames=7 };
 static bool opened=false;
 static int age=0;
+struct CardCache {cocos2d::RenderTexture* target=nullptr; cocos2d::Sprite* image=nullptr;};
+static std::vector<CardCache> cards;
+inline void clearCards(){for(auto& c:cards){if(c.image)c.image->release();if(c.target)c.target->release();}cards.clear();}
 static std::string title,buttonText;
 static std::vector<Entry> entries;
 static std::vector<bool> revealed;
@@ -22,16 +25,16 @@ inline int ticks(){return age;}
 inline float easeOut(float t){t=std::max(0.f,std::min(1.f,t));return 1-(1-t)*(1-t)*(1-t);}
 inline int tier(const Entry& e){return e.type==ITEM_GOLD||e.type==ITEM_HEART?0:GetItemStar(e.type,e.detail,e.grade);}
 inline int cardFlipEnd(int i){return starts[i]+SlideFrames+FlipInterval*BackFrames;}
-inline int endFrame(){return entries.empty()?CardStart:cardFlipEnd((int)entries.size()-1)+24;}
+inline int endFrame(){return entries.empty()?CardStart:cardFlipEnd((int)entries.size()-1)+12;}
 inline bool ready(){return opened&&age>=endFrame();}
 inline void show(const char*,const std::vector<Entry>& list,const char* button){
- opened=true;age=0;title=u8"보상";buttonText=button?button:u8"확인";
+ clearCards();cards.resize(list.size());opened=true;age=0;title=u8"보상";buttonText=button?button:u8"확인";
  entries=list;revealed.assign(entries.size(),false);starts.clear();
  int start=CardStart;
  for(const auto& e:entries){starts.push_back(start);start+=CardStep+(tier(e)>=5?10:0);}
  scroll=0;pointer=-1;manualScroll=dragged=buttonDown=false;
 }
-inline void closeNow(){if(!opened)return;opened=false;entries.clear();starts.clear();pointer=-1;if(onClose)onClose();}
+inline void closeNow(){if(!opened)return;opened=false;clearCards();entries.clear();starts.clear();pointer=-1;if(onClose)onClose();}
 inline void finishReveal(){age=endFrame();for(size_t i=0;i<revealed.size();++i)revealed[i]=true;}
 inline bool touch(float x,float y,int phase=0,int id=0){
  if(!opened)return false;
@@ -58,6 +61,31 @@ inline void shine(int x,int y,int w,int h,int star,float intensity){
  }
  SetAlpha(32);
 }
+// Capture each revealed front once. Settled cards are one quad, not repeated
+// CMF, outlined text, progress shaders and inventory scans every frame.
+inline void front(int i,int x,int y,const RewardReveal::Layout& l){
+ auto& c=cards[i];const auto& e=entries[i];
+ const int w=(int)std::ceil(l.w+8*l.scale),h=(int)std::ceil(l.h+8*l.scale);
+ if(!c.target){
+  c.target=cocos2d::RenderTexture::create(w,h);
+  if(c.target){
+   c.target->retain();const int cx=clipX,cy=clipY,cx2=clipX2,cy2=clipY2,a=m_lgrpAlpha;
+   PushRenderTarget(c.target,nullptr,true);SetSectionClip(0,h,w,h,true);SetAlpha(32);
+   DrawItemCard(e.type,e.detail,e.grade,e.lv,(long)e.count,false,4*l.scale,h-4*l.scale,false,l.zoom,false,0,0,0,0);
+   PopRenderTarget();clipX=cx;clipY=cy;clipX2=cx2;clipY2=cy2;SetAlpha(a);
+   c.image=cocos2d::Sprite::createWithTexture(c.target->getSprite()->getTexture());c.image->retain();
+   c.image->setFlippedY(true);c.image->setAnchorPoint({0,1});
+  }
+ }
+ if(!c.image){DrawItemCard(e.type,e.detail,e.grade,e.lv,(long)e.count,false,x,y,false,l.zoom,false,0,0,0,0);return;}
+ const int px=x-(int)(4*l.scale),py=y+(int)(4*l.scale);
+ const int left=std::max(px,clipX),right=std::min(px+w,clipX2);
+ const int top=std::min(py,clipY),bottom=std::max(py-h,clipY2);
+ if(right<=left||top<=bottom)return;
+ c.image->setTextureRect(cocos2d::Rect(left-px,bottom-(py-h),right-left,top-bottom));
+ c.image->setFlippedY(true);c.image->setPosition({(float)left,(float)top});c.image->setOpacity(m_lgrpAlpha*255/32);
+ AuditDrawnTexture(c.image->getTexture());c.image->visit();
+}
 inline void draw(){
  if(!opened)return;
  ++age;const RewardReveal::Layout l(DX,DY,(int)entries.size());const float s=l.scale;
@@ -72,7 +100,7 @@ inline void draw(){
   scroll+=(target-scroll)*.22f;
  }
  scroll=std::max(0.f,std::min(l.maximum,scroll));
- // Card travel begins at the orange/white guide; clipping keeps it below the ribbon.
+ // The shared reward layout remains for expedition and combat drops.
  SetSectionClip(0,(int)l.top,DX,(int)l.view,false);
  for(int i=0;i<(int)entries.size();++i){
   const int elapsed=age-starts[i];if(elapsed<0)continue;
@@ -83,7 +111,8 @@ inline void draw(){
   int back=1;if(elapsed>=SlideFrames){int f=1+(elapsed-SlideFrames)/FlipInterval;back=f<=BackFrames?f:0;}
   if(y<l.bottom||y-l.h>l.top)continue;
   // No count-dependent zoom and no pop scaling: only native flip frames move.
-  DrawItemCard(e.type,e.detail,e.grade,e.lv,(long)e.count,false,(int)x,(int)y,false,l.zoom,false,0,0,0,back);
+  if(back)DrawItemCardBack(std::max(1,tier(e)),(int)x,(int)y,l.zoom,back);
+  else front(i,(int)x,(int)y,l);
   if(!back&&tier(e)>=5){
    const int since=age-cardFlipEnd(i);
    const float pulse=since<24?std::sin(std::max(0,since)/24.f*3.14159265f):.12f;

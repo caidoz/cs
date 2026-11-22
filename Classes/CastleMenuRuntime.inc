@@ -9,7 +9,7 @@ bool castleUpgradeIsRoom=false;
 int castleUpgradeCastle=0,castleUpgradePart=0,castleUpgradeLevel=0,castleUpgradePrice=0;
 int castleMessageUntil=0; float castlePanY=0;
 const char* castleMessage="";
-int CastleInventoryUsed() { int n=0; for(int i=0;i<TOTALINVENTORY;++i) if(robin.inven[i].type!=EMPTY&&robin.inven[i].count>0) ++n; return n; }
+int CastleInventoryUsed() { int n=0; for(int i=0;i<GetMaxInven();++i) if(robin.inven[i].type!=EMPTY&&robin.inven[i].count>0) ++n; return n; }
 long long CastleProjectedStat(const CastleMenuModel::Progress& p,int c,int stat) {
     const int kind=stat==PS_DMG?0:stat==PS_HP?1:2;
     const int bonus=(kind==0?CastleMenuModel::Attack(p,c):kind==1?CastleMenuModel::Health(p,c):CastleMenuModel::Defense(p,c))+CastleMenuModel::All(p,c);
@@ -46,7 +46,7 @@ void CastleProgressEnsure() {
     }
     if(!CastleMenuModel::Owned(p,robin.castle)) robin.castle=0;
 }
-int CastleInventoryCapacity(int c) { CastleProgressEnsure(); return CastleMenuModel::Inventory(robin.castleProgress,c,INVEN_BASE_SLOT,INVEN_PER_CASTLE,TOTALINVENTORY); }
+int CastleInventoryCapacity(int c) { return InventorySlots(); }
 int CastleEquipmentCapacity(int c) { CastleProgressEnsure(); return CastleMenuModel::Equipment(robin.castleProgress,c,GridTestCellCnt(c)); }
 int CastleCannonDamagePercent(int c) {
     CastleProgressEnsure(); c=CastleMenuModel::Clamp(c);

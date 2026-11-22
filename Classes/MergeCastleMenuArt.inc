@@ -1,11 +1,11 @@
-// The management screen uses the same new assets as the live castle.
+﻿// The management screen uses the same new assets as the live castle.
 static void RebuildCut(int img,const MergeCastleArt::Rect& f,int x,int y,float z){
  if(!sprite[img])LoadImg(img);if(!sprite[img])return;
  DrawImageScale(f.w,f.h,f.x,f.y,x,y,false,0,0,0,0,z,z,sprite[img],img);
 }
-static void RebuildPreview(int c,int x,int top,int width,int height){
+static void RebuildPreview(int c,int x,int top,int width,int height,bool moving=false){
  if(x+width<=clipX||x>=clipX2||top<=clipY2||top-height>=clipY)return;
- if(MergeRouletteOriginalPreview(c,x,top,width,height))return;
+ if(MergeRouletteOriginalPreview(c,x,top,width,height,moving))return;
  const auto& frame=MergeCastleArt::Chassis[c];
  const float z=Min(width/(float)frame.w,height/(float)frame.h);
  const int left=x+(width-frame.w*z)/2,y=top-(height-frame.h*z)/2;

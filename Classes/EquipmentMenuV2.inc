@@ -130,9 +130,9 @@ static void EquipmentMenuV2Draw()
  CenterTextStrSolid(line,center,top-preview-52,0.58f);
  MenuButton(24,72,(DX-60)/2,56,"일괄 합성",BUTTON_COLOR_BLUE,true,TOUCH_FUNC_EQUIPTAB_MERGE,0.95f);
  MenuButton(DX/2+6,72,(DX-60)/2,56,"판매",BUTTON_COLOR_BROWN,true,TOUCH_FUNC_EQUIPTAB_SELL,0.95f);
- int items[TOTALINVENTORY], count=0;
- for(int i=0;i<TOTALINVENTORY;++i)
-  if(robin.inven[i].type>=ITEM_SWORD && robin.inven[i].type<ITEM_NECK && robin.inven[i].count>0) items[count++]=i;
+ std::vector<int> items(GetMaxInven());int count=0;
+ for(int i=0;i<GetMaxInven();++i)
+  if(robin.inven[i].type>=ITEM_SWORD && robin.inven[i].type<ITEM_NECK) items[count++]=i;
  for(int i=1;i<count;++i){
   int key=items[i],j=i-1;
   while(j>=0 && (robin.inven[items[j]].grade<robin.inven[key].grade ||
@@ -183,7 +183,7 @@ bool EquipmentMenuV2ReviewCards()
 {
  int row=0;
  for(int i=0;i<touchIndex;++i)if(touchRect[i][4]>=TOUCH_FUNC_ITEMDETAIL&&
-  touchRect[i][4]<TOUCH_FUNC_ITEMDETAIL+TOTALINVENTORY&&
+  touchRect[i][4]<TOUCH_FUNC_ITEMDETAIL+INVENTORY_COMMAND_RANGE&&
   touchRect[i][1]==EquipmentV2::ListTop()&&touchRect[i][2]<DX/6)++row;
  return row==6&&sprite[CARDBG_IMG]!=nullptr;
 }
@@ -192,6 +192,7 @@ bool EquipmentMenuV2ReviewEquipping()
 {
  // Exercise the real detail-button command, then restore the isolated review profile.
  ROBINDATA* saved=new ROBINDATA(robin);
+ const auto savedOverflow=InventoryOverflowSnapshot();
  std::vector<OBJECT> objects(ao,ao+PLAYERALL);
  const int oldHero=curHero,oldDepth=menuDepth,oldKey=systemKey;
  bool ok=true;
@@ -199,13 +200,13 @@ bool EquipmentMenuV2ReviewEquipping()
   SetPlayerHero(h);
   ITEM item={};item.type=ITEM_GUNTLET+h;item.detail=0;item.grade=0;item.lv=1;
   item.count=1;item.id=190000+h;item.value=100;
-  robin.inven[TOTALINVENTORY-1]=item;
+  const int index=GetMaxInven()+5;robin.inven[index]=item;
   const long long before=GetCombatPower(&ao[PLAYER]);
-  systemKey=AVK_EQUIP_INVENTORY+TOTALINVENTORY-1;PlayKey(PLAYER);
+  systemKey=AVK_EQUIP_INVENTORY+index;PlayKey(PLAYER);
   ok=ok && ao[PLAYER].equip[EQUIP_GLOVE].id==item.id && GetCombatPower(&ao[PLAYER])>before;
   for(int other=0;other<TOTALCHAR;++other)
    if(other!=h) ok=ok && robin.charData[other].equip[EQUIP_GLOVE].id==saved->charData[other].equip[EQUIP_GLOVE].id;
-  robin=*saved;for(int i=0;i<PLAYERALL;++i) ao[i]=objects[i];
+  robin=*saved;InventoryRestoreOverflow(savedOverflow);for(int i=0;i<PLAYERALL;++i) ao[i]=objects[i];
  }
  delete saved;curHero=oldHero;menuDepth=oldDepth;systemKey=oldKey;
  return ok;

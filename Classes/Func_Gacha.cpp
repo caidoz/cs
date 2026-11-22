@@ -3,6 +3,9 @@
 #include "Func.h"
 #include "Text.h"
 #include "Data.h"
+#include "Config/ShopConfig.h"
+#include <algorithm>
+#include <vector>
 
 // 보상 창은 menu.png에서 win.png로 옮겨졌다. 배치 크기는 유지하고
 // 본체와 분리된 제목 리본을 함께 그려 열기/닫기 연출이 같은 그림을 쓴다.
@@ -381,6 +384,94 @@ int GetBoxCandidateDetailByStar(int itemType, int star, int candidateIndex)
 			return detail;
 	}
 	return -1;
+}
+
+// Paid loot uses one published distribution: no hidden pity, lucky promotion,
+// duplicate rejection or debug/tutorial overrides can change these odds.
+std::vector<SHOP_BOX_CANDIDATE> ShopBoxCandidates(int tier){
+ if(tier<0||tier>=6)return {};
+ static int levels[6]={-1,-1,-1,-1,-1,-1};
+ static std::vector<SHOP_BOX_CANDIDATE> cached[6];
+ if(levels[tier]==robin.lv&&!cached[tier].empty())return cached[tier];
+ std::vector<SHOP_BOX_CANDIDATE> out;
+ const auto& rule=ShopTreasure::LootFor(tier);
+ static const int types[]={ITEM_CREW,ITEM_SWORD,ITEM_HELM,ITEM_ARMOR,ITEM_GUNTLET,ITEM_KILT,ITEM_GREAVES};
+ for(int group=0;group<2;++group){
+  std::vector<SHOP_BOX_CANDIDATE> stars[6];int gradeTotal=0;
+  for(int star=1;star<=6;++star){
+   if(rule.stars[star-1]<=0)continue;
+   for(int t=group?1:0;t<(group?7:1);++t){
+    const int count=GetBoxCandidateCountByStar(types[t],star);
+    for(int i=0;i<count;++i){
+     const int d=GetBoxCandidateDetailByStar(types[t],star,i);
+     if(types[t]==ITEM_CREW&&!MergeCrewAvailable(d))continue;
+     stars[star-1].push_back({types[t],d,star-1,0,0});
+    }
+   }
+   if(!stars[star-1].empty())gradeTotal+=rule.stars[star-1];
+  }
+  if(!gradeTotal)continue;
+  for(int star=1;star<=6;++star){
+   auto& pool=stars[star-1];if(pool.empty())continue;
+   std::stable_sort(pool.begin(),pool.end(),[&](const SHOP_BOX_CANDIDATE& a,const SHOP_BOX_CANDIDATE& b){
+    const long long av=group?a.detail:GetCrewPower(a.detail,1),bv=group?b.detail:GetCrewPower(b.detail,1);
+    return av!=bv?av<bv:a.detail!=b.detail?a.detail<b.detail:a.type<b.type;
+   });
+   // Later / stronger variants have lower weights within the same star tier.
+   int sum=0;for(int i=0;i<(int)pool.size();++i){pool[i].weight=std::max(1,10000/(i+2));sum+=pool[i].weight;}
+   for(auto c:pool){c.chance=(group?40.:60.)*rule.stars[star-1]/gradeTotal*c.weight/sum;out.push_back(c);}
+  }
+ }
+ // Integer tickets are also the displayed probabilities, so rounding cannot
+ // make the draw disagree with the table. Every eligible variant retains a ticket.
+ int total=0;for(auto& c:out){c.weight=std::max(1,(int)(c.chance*10000+.5));total+=c.weight;}
+ for(auto& c:out)c.chance=total?100.*c.weight/total:0;
+ levels[tier]=robin.lv;cached[tier]=out;return out;
+}
+double ShopBoxStarChance(int tier,int star){double total=0;for(const auto& c:ShopBoxCandidates(tier))if(c.grade+1==star)total+=c.chance;return total;}
+bool GenerateShopBoxReward(int tier){
+ if(tier<0||tier>=6)return false;
+ const auto& rule=ShopTreasure::LootFor(tier);const auto pool=ShopBoxCandidates(tier);
+ int total=0;for(const auto& c:pool)total+=c.weight;if(!total)return false;
+ memset(boxCardItem[0],0,sizeof(boxCardItem[0]));boxCardItemCnt[0]=0;gachaLuckyBox=false;
+ const int cards=BoxRandomRange(rule.cardsMin,rule.cardsMax);
+ for(int i=0;i<cards;++i){
+  int roll=Random(total);const SHOP_BOX_CANDIDATE* pick=&pool.back();
+  for(const auto& c:pool){if(roll<c.weight){pick=&c;break;}roll-=c.weight;}
+  ITEM& item=boxCardItem[0][boxCardItemCnt[0]++];
+  item.type=pick->type;item.detail=pick->detail;item.grade=pick->grade;item.count=1;item.lv=1;
+  item.seen=GetInvenIdx(item.type,item.detail,item.grade)>=0;
+ }
+ if(Random(100)<rule.goldRate&&boxCardItemCnt[0]<GACHA_MAX_REWARD_CARD){
+  ITEM& gold=boxCardItem[0][boxCardItemCnt[0]++];gold.type=ITEM_GOLD;gold.count=BoxRandomRange(rule.goldMin,rule.goldMax);gold.seen=true;
+ }
+ return true;
+}
+bool ShopBoxLootReview(){
+ const long long energy=robin.heart;const int crewPity=robin.crewHighGradeMissCount,equipPity=robin.equipHighGradeMissCount;
+ ITEM saved[GACHA_MAX_REWARD_CARD];memcpy(saved,boxCardItem[0],sizeof(saved));
+ const int savedCount=boxCardItemCnt[0];const bool lucky=gachaLuckyBox;bool ok=true;
+ int previousGold=0;
+ for(int tier=0;tier<6;++tier){
+  const auto& row=ShopTreasure::LootFor(tier);const auto pool=ShopBoxCandidates(tier);
+  double sum=0,one=0;int highest=0,lowWeight=100000,highWeight=0;
+  for(const auto& c:pool){sum+=c.chance;if(c.grade==0)one+=c.chance;highest=std::max(highest,c.grade+1);lowWeight=std::min(lowWeight,c.weight);highWeight=std::max(highWeight,c.weight);
+   ok=ok&&c.chance>0&&GetItemStar(c.type,c.detail,c.grade)==c.grade+1;
+  }
+  ok=ok&&sum>99.999&&sum<100.001&&highest>=2&&highWeight>lowWeight&&row.goldMin>=previousGold&&row.goldMax>row.goldMin;
+  if(tier==0)ok=ok&&highest==2&&one>69.99&&one<70.01;
+  previousGold=row.goldMax;
+  for(int n=0;n<300;++n){
+   ok=GenerateShopBoxReward(tier)&&ok;int cards=0,gold=0;
+   for(int i=0;i<boxCardItemCnt[0];++i){const ITEM& item=boxCardItem[0][i];
+    if(item.type==ITEM_GOLD){++gold;ok=ok&&item.count>=row.goldMin&&item.count<=row.goldMax;}
+    else{++cards;bool found=false;for(const auto& c:pool)if(item.type==c.type&&item.detail==c.detail&&item.grade==c.grade)found=true;ok=ok&&found&&item.count==1&&item.type!=ITEM_HEART;}
+   }
+   ok=ok&&cards>=row.cardsMin&&cards<=row.cardsMax&&gold<=1&&boxCardItemCnt[0]<=GACHA_MAX_REWARD_CARD;
+  }
+ }
+ ok=ok&&robin.heart==energy&&robin.crewHighGradeMissCount==crewPity&&robin.equipHighGradeMissCount==equipPity;
+ memcpy(boxCardItem[0],saved,sizeof(saved));boxCardItemCnt[0]=savedCount;gachaLuckyBox=lucky;return ok;
 }
 
 //상자에서 절대 안 나오는 장비인가.
@@ -1338,6 +1429,7 @@ static bool MakeTestForceBoxReward(
 bool GenerateCastleBoxReward(
 	int boxDetail)
 {
+	if(boxDetail>=BOX_PAID0&&boxDetail<=BOX_PAID5)return GenerateShopBoxReward(boxDetail-BOX_PAID0);
 	int boxIndex =
 		GetRewardBoxIndex(
 			boxDetail);
@@ -1651,6 +1743,8 @@ int GetWeightedNormalizedReward(
 
 	return minValue;
 }
+
+bool gachaGrantedPresentation=false;
 
 static bool IsPaidGachaBox(void)
 {
@@ -4502,7 +4596,7 @@ void GachaDraw(void)
 	// barHoldFrame은 도착 직후 0이며,
 	// 아래에서 매 프레임 증가하므로 정확히 한 번만 실행된다.
 	//------------------------------------------------
-				if (anim->barHoldFrame == 0)
+				if (anim->barHoldFrame == 0 && !gachaGrantedPresentation)
 				{
 					GetItem(
 						item->type,
@@ -4910,6 +5004,11 @@ void GachaDraw(void)
 			memset(controlMark, 0, sizeof(controlMark));
 
 			OutOfGacha();
+            if(gachaGrantedPresentation){
+                gachaGrantedPresentation=false;battleRewardTransitionLock=false;touchDisable=false;
+                return;
+            }
+
 
 			//종료 화면에서 이전 ACTION/turnList를 되살리지 않는다. 다음 웨이브는
 			//새 READY 상태에서 시작하며, 몬스터 소환/웨이브 타이틀의 입력 잠금은

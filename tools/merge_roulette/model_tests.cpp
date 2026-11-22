@@ -15,6 +15,18 @@ Roster fullRoster() {
 }
 int main(int argc,char**) {
     {
+        Run r;assert(r.battleEnergy==5);
+        for(int n=4;n>=0;--n){assert(r.spendBattleEnergy()&&r.battleEnergy==n);Run copy;assert(copy.decode(r.encode())&&copy.battleEnergy==n);}
+        assert(!r.spendBattleEnergy()&&r.battleEnergy==0);
+        r.refillBattleEnergy();assert(r.battleEnergy==5);
+        std::string old=r.encode();old.erase(old.find_last_of(' '));old.replace(4,2,"14");
+        Run migrated;assert(migrated.decode(old)&&migrated.battleEnergy==5);
+        std::string invalid=r.encode();invalid.replace(invalid.find_last_of(' ')+1,std::string::npos,"6");
+        assert(!migrated.decode(invalid));
+        std::cout<<"PASS five local battle energy spend empty guard refill save and v14 migration\n";
+    }
+
+    {
         int counts[7]={};for(unsigned roll=0;roll<10000;++roll)++counts[MergeOwnedGear::starForRoll(roll)];
         assert(counts[0]==8900);for(int star=1;star<=6;++star)assert(counts[star]==MergeOwnedGear::Rate[star-1]);
         Run r;r.choosing=false;Block b=block(Sword,3,0,0);b.ownedId=123456;b.ownedPower=500;b.ownedDetail=12;b.ownedW=1;b.ownedH=2;

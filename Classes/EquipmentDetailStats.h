@@ -3,7 +3,7 @@ struct Row {int icon;std::string text,value;};
 static int selected=-1,finger=-1,left=0,top=0,width=0,height=0;
 static float scroll=0,limit=0,lastY=0;
 static bool visible=false;
-int index(const ITEM* it){for(int i=0;i<TOTALINVENTORY;++i)if(it==&robin.inven[i])return i;return -1;}
+int index(const ITEM* it){for(int i=0;i<GetMaxInven();++i)if(it==&robin.inven[i])return i;return -1;}
 bool equipped(const ITEM* it){
  const ITEM& worn=ao[PLAYER].equip[itemEquipSlot[it->type]];
  return worn.type==it->type&&worn.id!=0&&worn.id==it->id;
@@ -40,7 +40,7 @@ std::vector<Row> rows(ITEM* it){
 
 bool EquipDetailStatsTouch(int phase,int id,float x,float y){
  using namespace EquipDetailStats;
- if(drawHandle!=MD_LOBBY||menuDepth!=1||popUpCnt<=0||popUp[popUpCnt-1].type!=POPUPTYPE_COLLECTIONS||IsTutorialPlaying()||menuItem<0||menuItem>=TOTALINVENTORY||!IsEquipItemType(robin.inven[menuItem].type)||!visible){finger=-1;return false;}
+ if(drawHandle!=MD_LOBBY||menuDepth!=1||popUpCnt<=0||popUp[popUpCnt-1].type!=POPUPTYPE_COLLECTIONS||IsTutorialPlaying()||menuItem<0||menuItem>=GetMaxInven()||!IsEquipItemType(robin.inven[menuItem].type)||!visible){finger=-1;return false;}
  if(phase==0){
   if(x<left||x>left+width||y>top||y<top-height)return false;
   if(finger<0){finger=id;lastY=y;}return true;
@@ -108,7 +108,7 @@ bool EquipmentDetailStatsReview(int step){
   it=&robin.inven[menuItem];return it->id==880002&&equipped(it)&&menuItem!=20;
  }
  if(step==3){
-  for(int n=0;n<TOTALINVENTORY;++n)if(robin.inven[n].type!=EMPTY&&robin.inven[n].id==880001)menuItem=n;
+  for(int n=0;n<GetMaxInven();++n)if(robin.inven[n].type!=EMPTY&&robin.inven[n].id==880001)menuItem=n;
   return !equipped(&robin.inven[menuItem])&&ao[PLAYER].equip[EQUIP_WEAPON].id==880002;
  }
  return false;

@@ -4,7 +4,7 @@
 #include <chrono>
 namespace ShopSpec {
 int tab=ShopCatalog::Gear,hero=0,detail=-1,page=0;
-bool resultOpen=false,purchasing=false;
+bool resultOpen=false,purchasing=false,transactionReview=false;
 int resultUntil=0;
 int currencyCardsDrawn=0;
 std::chrono::steady_clock::time_point lastPurchaseTime;
@@ -71,20 +71,14 @@ void SupplyCard(int kind,int x,int y,int w,int h) {
 }
 void Overlay(int top) {
  if(detail<0&&!resultOpen)return;
+ if(resultOpen){
+  if(SharedRewardOpen()){SharedRewardDraw();return;}
+  resultOpen=false;granted.clear();message.clear();return;
+ }
  ResetRectPoint();SetAlpha(24);MemRect(0,top,DX,top,0);SetAlpha(ALPHA_MAX);
  const int x=16,w=DX-32,y=top-18,h=Min(top-36,560);
  DrawPixelPanel(x,y,w,h);
  Button("닫기",x+w-70,y-8,60,34,resultOpen?TOUCH_FUNC_SHOP_RESULT_CLOSE:TOUCH_FUNC_SHOP_CATALOG_CLOSE);
- if(resultOpen) {
-  Label(message.c_str(),DX/2,y-54,w-32,.8f,0x8FE0BA);
-  Label("지급 완료 · 영구 보관함에서 확인하세요",DX/2,y-84,w-32,.7f);
-  for(int i=0;i<(int)granted.size()&&i<12;++i) {
-   const ITEM& it=granted[i];const int cx=x+18+(i%4)*(w-36)/4,cy=y-128-(i/4)*104;
-   DrawIcon(GetItemIcon(it.type,it.detail,it.grade),cx+16,cy,1,false,false,false,true);
-   char amount[32];sprintf(amount,"x%lld",(long long)it.count);Label(amount,cx+40,cy-48,80,.65f);
-  }
-  return;
- }
  const auto pool=Pool(detail,hero);const int rows=Max(1,Min(3,(h-190)/92)),per=rows*4;
  const int pages=Max(1,((int)pool.size()+per-1)/per);page=Min(page,pages-1);
  Label(KindName(detail),DX/2,y-44,w-130,.95f);
@@ -221,13 +215,13 @@ bool ShopCatalogTouch(int command) {
  if(command==TOUCH_FUNC_SHOP_CATALOG_CLOSE){detail=-1;return true;}
  if(command==TOUCH_FUNC_SHOP_POOL_PREV){page=Max(0,page-1);return true;}
  if(command==TOUCH_FUNC_SHOP_POOL_NEXT){++page;return true;}
- if(command==TOUCH_FUNC_SHOP_RESULT_CLOSE){resultOpen=false;granted.clear();message.clear();return true;}
+ if(command==TOUCH_FUNC_SHOP_RESULT_CLOSE){SharedRewardClose();resultOpen=false;granted.clear();message.clear();return true;}
  if(command==TOUCH_FUNC_SHOP_DAILY_CLAIM) {
   long long stamp=robin.freeRewardTimeStamp,gold=robin.gold;
   if(!IsStageRealtime()&&!StageRunPersistentEquipment(0)&&!purchasing&&ShopCatalog::ClaimDaily(MC_knlCurrentTimeStamp(),SHOP_DAILY_RESET_SECONDS,
      SHOP_DAILY_GOLD,ShopCatalog::DailyConfigured(),stamp,gold,GOLD_MAX)) {
    robin.gold=gold;robin.freeRewardTimeStamp=(long)stamp;SaveGame();
-   ITEM reward={};reward.type=ITEM_GOLD;reward.count=SHOP_DAILY_GOLD;granted={reward};resultOpen=true;message="무료 보급 수령 완료";
+   ITEM reward={};reward.type=ITEM_GOLD;reward.count=SHOP_DAILY_GOLD;granted={reward};resultOpen=true;message="무료 보급 수령 완료";SharedRewardShow(granted.data(),1);
   } else {message="아직 수령할 수 없거나 골드 보유 한도에 도달했습니다";resultUntil=frame+FPS*4;}
   return true;
  }
@@ -243,20 +237,18 @@ bool ShopPurchaseExistingBox(int boxDetail) {
  if(purchasing||std::chrono::duration_cast<std::chrono::milliseconds>(now-lastPurchaseTime).count()<500||IapIsBusy()||IsStageRealtime()||StageRunPersistentEquipment(0))return fail("다른 구매 또는 탐험이 진행 중입니다");
  if(boxDetail<BOX_PAID0||boxDetail>BOX_PAID5||cost<0)return fail("판매하지 않는 상품입니다");
  if((gems?robin.coin:robin.gold)<cost)return fail(gems?"보석이 부족합니다":"골드가 부족합니다");
- int empty=0;for(int i=0;i<GetMaxInven();++i)if(robin.inven[i].type==EMPTY)++empty;
- if(empty<GACHA_MAX_REWARD_CARD)return fail("보관함에 빈칸 12개를 확보해주세요. 재화는 차감되지 않았습니다");
  purchasing=true;
  // SaveGame only queues a whole-profile update; no network callback/frame occurs
  // within this synchronous transaction. On any failure restore the complete profile.
  std::unique_ptr<ROBINDATA> before(new ROBINDATA(robin));
- if(!GenerateCastleBoxReward(boxDetail)) {robin=*before;purchasing=false;return fail("보물상자 구성을 불러오지 못했습니다");}
+ const auto overflowBefore=InventoryOverflowSnapshot();
+ if(!GenerateShopBoxReward(boxDetail-BOX_PAID0)) {robin=*before;purchasing=false;return fail("보물상자 구성을 불러오지 못했습니다");}
  if(gems)robin.coin-=cost;else robin.gold-=cost;
  const int count=boxCardItemCnt[0];granted.clear();
  bool ok=count>0&&count<=GACHA_MAX_REWARD_CARD;
  for(int i=0;i<count&&ok;++i) {
   ITEM item=boxCardItem[0][i];
   if(item.type==ITEM_GOLD)item.count=ShopTreasure::GoldReward(boxDetail-BOX_PAID0,(int)item.count);
-  if(item.type==ITEM_HEART)item.count=ShopTreasure::HeartReward(boxDetail-BOX_PAID0,(int)item.count);
   ok=GetItem(item.type,item.lv,item.detail,item.grade,item.count,false)!=0;
   if(ok) {
    ITEM actual=item;
@@ -269,18 +261,22 @@ bool ShopPurchaseExistingBox(int boxDetail) {
   }
  }
  if(!ok) {
-  robin=*before;granted.clear();SaveGame();purchasing=false;
+  robin=*before;InventoryRestoreOverflow(overflowBefore);granted.clear();SaveGame();purchasing=false;
   for(int i=ROBIN;i<TOTALPLAYER;++i)RefreshStat(&ao[i]);
   return fail("지급하지 못해 구매를 취소했습니다. 재화는 보존됩니다");
  }
  SaveGame();lastPurchaseTime=now;purchasing=false;resultOpen=true;
+ if(!transactionReview&&!GotoGachaGranted(granted.data(),(int)granted.size(),boxDetail))SharedRewardShow(granted.data(),(int)granted.size());
  CCLOG("shop grant box=%d profile_count=%d rewards=%d",boxDetail,(int)robin.count,count);
  message="보물상자 구매 완료";PlayMusic(M_ITEM);return true;
 }
 
 bool ShopSpecReviewChecks() {
  using namespace ShopSpec;
+ const bool previousReview=transactionReview;transactionReview=true;
  std::unique_ptr<ROBINDATA> saved(new ROBINDATA(robin));
+ const auto savedOverflow=InventoryOverflowSnapshot();
+ InventoryClearOverflow();
  std::unique_ptr<OBJECT[]> savedActors(new OBJECT[PLAYERALL]);for(int i=0;i<PLAYERALL;++i)savedActors[i]=ao[i];
  const int savedCrewCount=crewCnt,savedVisual=gMobileCastleVisual;
  const auto savedTime=lastPurchaseTime;const auto savedMessage=message;
@@ -315,8 +311,10 @@ bool ShopSpecReviewChecks() {
  robin.gold=cost*4;
  for(int i=0;i<TOTALINVENTORY;++i){memset(&robin.inven[i],0,sizeof(ITEM));robin.inven[i].type=ITEM_SWORD;robin.inven[i].count=1;}
  const long long fullGold=robin.gold;
- ok=ok&&!ShopPurchaseExistingBox(BOX_PAID0)&&robin.gold==fullGold;
- trace("full");
+ lastPurchaseTime={};
+ ok=ok&&ShopPurchaseExistingBox(BOX_PAID0)&&GetMaxInven()>TOTALINVENTORY&&InventoryUsed()>TOTALINVENTORY;
+ trace("full legacy array grows for purchase");
+ InventoryClearOverflow();robin.gold=fullGold;
  for(int i=0;i<TOTALINVENTORY;++i){memset(&robin.inven[i],0,sizeof(ITEM));robin.inven[i].type=EMPTY;}
  lastPurchaseTime={};ok=ok&&ShopPurchaseExistingBox(BOX_PAID0)&&!granted.empty();
  trace("grant");
@@ -372,12 +370,12 @@ bool ShopSpecReviewChecks() {
  ok=ok&&robin.castle==1&&robin.gold==CastleMenuModel::GoldPrice(1)&&robin.coin==777&&GetMaxInven()>=previousCapacity;
  trace("free owned castle selection");
  const long long beforeUpgrade=robin.gold;
- const int level=robin.castleProgress.parts[1][0];
+ const int level=robin.castleProgress.parts[1][3];
  const int upgradeCost=CastleMenuModel::UpgradeCost(1,level,false);
- CastleMenuCommand(TOUCH_FUNC_CASTLE_NEW_ROW);
+ CastleMenuCommand(TOUCH_FUNC_CASTLE_NEW_ROW+3);
  robin.castleIncomeTs=MC_knlCurrentTimeStamp();
  CastleMenuCommand(TOUCH_FUNC_CASTLE_NEW_UPGRADE);CastleMenuCommand(TOUCH_FUNC_CASTLE_NEW_CONFIRM);
- ok=ok&&level<5&&robin.castleProgress.parts[1][0]==level+1&&robin.gold==beforeUpgrade-upgradeCost;
+ ok=ok&&level<5&&robin.castleProgress.parts[1][3]==level+1&&robin.gold==beforeUpgrade-upgradeCost;
  const long long afterUpgrade=robin.gold;
  trace("single gold upgrade");
  CastleMenuCommand(TOUCH_FUNC_CASTLE_NEW_CONFIRM);
@@ -385,9 +383,9 @@ bool ShopSpecReviewChecks() {
  CastleMenuCommand(TOUCH_FUNC_CASTLE_NEW_PAID_UPGRADE);
  ok=ok&&robin.coin==777&&robin.gold==afterUpgrade;
  trace("gold-only castle runtime and automatic capacity");
- robin=*saved;for(int i=0;i<PLAYERALL;++i)ao[i]=savedActors[i];crewCnt=savedCrewCount;
+ robin=*saved;InventoryRestoreOverflow(savedOverflow);for(int i=0;i<PLAYERALL;++i)ao[i]=savedActors[i];crewCnt=savedCrewCount;
  gMobileCastleVisual=savedVisual;CastleMenuOpen();
  lastPurchaseTime=savedTime;message=savedMessage;
- purchasing=resultOpen=false;detail=-1;granted.clear();NetMarkDirty();
+ SharedRewardClose();purchasing=resultOpen=false;detail=-1;granted.clear();NetMarkDirty();transactionReview=previousReview;
  return ok;
 }

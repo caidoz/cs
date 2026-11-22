@@ -4,6 +4,22 @@
 #include "Text.h"
 #include "Data/CastleFacilities.h"
 #include "NativeGearIcons.h"
+#include <deque>
+namespace { std::deque<ITEM> inventoryOverflow; }
+ITEM& InventoryOverflowAt(int index){
+ while(index>=(int)inventoryOverflow.size()){
+  ITEM item={};item.type=EMPTY;
+  for(int n=0;n<12;++n)item.option[n][0]=EMPTYINT;
+  for(int n=0;n<MAXSOCKET;++n)item.socket[n]=EMPTYINT;
+  inventoryOverflow.push_back(item);
+ }
+ return inventoryOverflow[index];
+}
+int InventorySlots(){return TOTALINVENTORY+(int)inventoryOverflow.size();}
+void InventoryClearOverflow(){inventoryOverflow.clear();}
+std::vector<ITEM> InventoryOverflowSnapshot(){return {inventoryOverflow.begin(),inventoryOverflow.end()};}
+void InventoryRestoreOverflow(const std::vector<ITEM>& items){inventoryOverflow.assign(items.begin(),items.end());}
+int InventoryUsed(){int count=0;for(int i=0;i<InventorySlots();++i)if(robin.inven[i].type!=EMPTY)++count;return count;}
 
 long long GetStageAdmissionFee(void)
 {
@@ -1404,10 +1420,17 @@ int MakeItemId(void)
 		return 1111111111;
 #endif
 
-	tms = MC_knlCurrentTime();
-
-	//return (int)(((tms & 0x0000FFFF) << 16) + (Random(16) << 12) + phoneId);
-	return (int)(tms);
+    static int last=0;
+    int candidate=(int)(MC_knlCurrentTime()&0x7FFFFFFF);
+    if(candidate<=last)candidate=last==0x7FFFFFFF?1:last+1;
+    if(candidate<=0)candidate=1;
+    for(;;){
+        bool used=false;
+        for(int i=0;i<GetMaxInven()&&!used;++i)used=robin.inven[i].type!=EMPTY&&robin.inven[i].id==candidate;
+        for(int h=0;h<TOTALCHAR&&!used;++h)for(int e=0;e<TOTALEQUIP&&!used;++e)used=robin.charData[h].equip[e].type!=EMPTY&&robin.charData[h].equip[e].id==candidate;
+        if(!used){last=candidate;return candidate;}
+        candidate=candidate==0x7FFFFFFF?1:candidate+1;
+    }
 }
 
 //---- 합성 ----
@@ -1465,14 +1488,14 @@ int MergeItemsBest(void)
 {
 	int best = 0;
 
-	for (int i = 0; i < TOTALINVENTORY; i++) {
+	for (int i = 0; i < GetMaxInven(); i++) {
 		const ITEM* head = &robin.inven[i];
 		int cnt = 0;
 
 		if (!ItemMergeUsable(head))
 			continue;
 
-		for (int k = 0; k < TOTALINVENTORY; k++) {
+		for (int k = 0; k < GetMaxInven(); k++) {
 			const ITEM* it = &robin.inven[k];
 
 			if (it->type == head->type && it->detail == head->detail
@@ -1497,7 +1520,7 @@ int MergeItems(bool doMerge)
 	while (again) {
 		again = false;
 
-		for (int i = 0; i < TOTALINVENTORY; i++) {
+		for (int i = 0; i < GetMaxInven(); i++) {
 			ITEM* head = &robin.inven[i];
 			int found[ITEM_MERGE_COUNT];
 			int cnt = 0;
@@ -1507,7 +1530,7 @@ int MergeItems(bool doMerge)
 
 			found[cnt++] = i;
 
-			for (int k = i + 1; k < TOTALINVENTORY && cnt < ITEM_MERGE_COUNT; k++) {
+			for (int k = i + 1; k < GetMaxInven() && cnt < ITEM_MERGE_COUNT; k++) {
 				const ITEM* it = &robin.inven[k];
 
 				if (it->type != head->type || it->detail != head->detail
@@ -1624,7 +1647,7 @@ long long SellNormalItems(void)
 {
 	long long got = 0;
 
-	for (int i = 0; i < TOTALINVENTORY; i++) {
+	for (int i = 0; i < GetMaxInven(); i++) {
 		ITEM* it = &robin.inven[i];
 		bool worn = false;
 
@@ -1668,7 +1691,7 @@ long long SellNormalItems(void)
 //장착 중인 것은 어차피 빠지므로 따로 걸 필요가 없다.
 void ItemToggleLock(int invenIdx)
 {
-	if (invenIdx < 0 || invenIdx >= TOTALINVENTORY)
+	if (invenIdx < 0 || invenIdx >= GetMaxInven())
 		return;
 
 	ITEM* it = &robin.inven[invenIdx];
@@ -1830,11 +1853,10 @@ long long CastleIncomeTake(void)
 
 //---- 지금 쓸 수 있는 가방 칸 ----
 //
-//성이 커지면 같이 늘어난다. 세이브에 든 값(robin.maxInven)은 이 식으로
-//다시 채운다 - 성을 올렸는데 칸이 그대로면 올린 보람이 없다.
+//Allocated scan range, not a gameplay limit. GetItem grows it when needed.
 int GetMaxInven(void)
 {
-	return CastleInventoryCapacity(robin.castle);
+	return InventorySlots();
 }
 
 //가방이 가득 차서 못 받은 것이 있는가. 전투 중에는 알림을 띄우지 않고
@@ -1886,7 +1908,7 @@ int GetItem(int type, int lv, int detail, int grade, long long count, int set)
 			goto chk2;
 
 		//같은종류가 있으면 수량을 더해준다.
-		for (i = 0; i < robin.maxInven; i++) {
+		for (i = 0; i < GetMaxInven(); i++) {
 			if (robin.inven[i].type == type && robin.inven[i].detail == detail/* && robin.inven[i].grade == grade*/) {
 				//수량을 더해준다.
 				if (robin.inven[i].count + count < MAXNUM) {
@@ -1907,15 +1929,14 @@ int GetItem(int type, int lv, int detail, int grade, long long count, int set)
 			}
 		}
 
-		if (i < robin.maxInven)
+		if (i < GetMaxInven())
 			break;
 	case -1:
 	chk2:
 
 		//---- 빈 칸 찾기 ----
 		//
-		//가방 크기는 성이 정한다(GetMaxInven). 전에는 배열 끝까지 훑어서
-		//칸 수가 사실상 무제한이었다 - 그러면 창고를 키울 까닭이 없다.
+		//Reuse an empty slot, then allocate another slot without a gameplay cap.
 		{
 			const int cap = GetMaxInven();
 
@@ -1928,14 +1949,10 @@ int GetItem(int type, int lv, int detail, int grade, long long count, int set)
 				}
 			}
 
-			if (temp >= cap) {
-				//가방 풀. 조용히 버리지 않고 알린다.
-				gInvenFullNotice = true;
-				return 0;
-			}
+			if (temp >= cap) { InventoryOverflowAt(cap-TOTALINVENTORY);temp=cap; }
 		}
 
-		if (temp < TOTALINVENTORY) {
+		if (temp < GetMaxInven()) {
 			//������ �κ��丮�� �������� �ִ´�.
 			itemObj = temp;
 			MakeItem(&robin.inven[itemObj], type, lv, grade, detail, set);
@@ -1948,7 +1965,7 @@ int GetItem(int type, int lv, int detail, int grade, long long count, int set)
 			it = GetItemPtr(ITEMPTR_INVEN + itemObj);
 			robin.equipGet[itemStartCnt[it->type] + it->detail] = true;
 
-			robin.count++;
+			if(robin.count<65535)++robin.count;
 
 		}
 		else {
@@ -2963,7 +2980,7 @@ int GetItemCount(int type, int detail, int grade)
 {
 	int i, j;
 
-	for (i = 0, j = 0; i < robin.maxInven; i++) {
+	for (i = 0, j = 0; i < GetMaxInven(); i++) {
 		if (robin.inven[i].type == type && robin.inven[i].detail == detail && robin.inven[i].grade == grade) {
 			j += Max(1, robin.inven[i].count);
 		}
@@ -2977,7 +2994,7 @@ int GetItemLv(int type, int detail, int grade)
 {
 	int i, j;
 
-	for (i = 0, j = 0; i < robin.maxInven; i++) {
+	for (i = 0, j = 0; i < GetMaxInven(); i++) {
 		if (robin.inven[i].type == type && robin.inven[i].detail == detail && robin.inven[i].grade == grade) {
 			j = Max(0, robin.inven[i].cooldown);
 			return j;
@@ -3100,9 +3117,9 @@ int GetInvenIdx(int type, int detail, int grade)
 {
 	int i;
 
-	for (i = 0; i < robin.maxInven; i++) {
+	for (i = 0; i < GetMaxInven(); i++) {
 		if (robin.inven[i].type == EMPTY)
-			break;
+			continue;
 
 		if (robin.inven[i].type == type && robin.inven[i].detail == detail && robin.inven[i].grade == grade)
 			return i;
@@ -3277,10 +3294,10 @@ void ArrangeInven(void)
 	int i, j;
 	int writeIdx = 0;
 
-	ITEM tempInven[TOTALINVENTORY];
+	std::vector<ITEM> tempInven(GetMaxInven());
 
 	// 전체 초기화
-	for (i = 0; i < TOTALINVENTORY; i++) {
+	for (i = 0; i < GetMaxInven(); i++) {
 		memset(&tempInven[i], 0, sizeof(ITEM));
 
 		tempInven[i].type = EMPTY;
@@ -3293,18 +3310,18 @@ void ArrangeInven(void)
 	}
 
 	// EMPTY가 아닌 아이템만 앞으로 복사
-	for (i = 0; i < TOTALINVENTORY; i++) {
+	for (i = 0; i < GetMaxInven(); i++) {
 		if (robin.inven[i].type != EMPTY) {
 			memcpy(&tempInven[writeIdx], &robin.inven[i], sizeof(ITEM));
 			writeIdx++;
 		}
 	}
 
-	robin.count = writeIdx;
+	robin.count = (unsigned short)Min(65535,writeIdx);
 
 	// 정렬: type -> detail -> grade
-	for (i = 0; i < robin.count - 1; i++) {
-		for (j = i + 1; j < robin.count; j++) {
+	for (i = 0; i < writeIdx - 1; i++) {
+		for (j = i + 1; j < writeIdx; j++) {
 
 			bool swapFlag = false;
 
@@ -3329,7 +3346,7 @@ void ArrangeInven(void)
 	}
 
 	// �ٽ� robin.inven�� �ݿ�
-	for (i = 0; i < TOTALINVENTORY; i++) {
+	for (i = 0; i < GetMaxInven(); i++) {
 		memcpy(&robin.inven[i], &tempInven[i], sizeof(ITEM));
 	}
 }
@@ -3524,7 +3541,7 @@ void UnEquipItem(OBJECT* pObj, ITEM* it)
 {
 	int i;
 
-	if (robin.count < robin.maxInven) {
+	if (robin.count < GetMaxInven()) {
 		//memcpy(&robin.inven[robin.count], it, sizeof(ITEM));
 		//robin.equipGet[it->type][it->detail][it->grade] = true;
 		//robin.count++;

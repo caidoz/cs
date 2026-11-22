@@ -1,4 +1,4 @@
-#include "Core.h"
+﻿#include "Core.h"
 #include "Data.h"
 #include "Data/CmfData.h"
 #include "Data/CmfBlob.h"
@@ -1496,10 +1496,18 @@ static void DrawCastleSurvivorTitleArt(void)
 			const auto sz = sprite[TITLE_IMG]->getContentSize();
 			if (sz.width > 0.0f && sz.height > 0.0f) {
 				const float byW = (float)DX / sz.width;
-				const float byH = (float)DY / sz.height;
-				const float zoom = (byW > byH) ? byW : byH;
+				// Keep the whole castle visible on tall phones. Extend only the
+				// atmospheric sky above it; never stretch or crop the hull sideways.
+				const float zoom = byW;
 				const int drawX = (int)std::floor((DX - sz.width * zoom) * 0.5f);
-				const int drawY = (int)std::ceil((DY + sz.height * zoom) * 0.5f);
+				const int artH=(int)std::ceil(sz.height*zoom);
+				const int drawY=artH>DY?(int)std::ceil((DY+artH)*.5f):artH;
+				if(artH<DY){
+					const int gap=DY-artH;
+					const float skyH=sz.height*.18f,skyZoom=Max(DX/sz.width,gap/skyH);
+					const int sw=(int)(DX/skyZoom),sh=(int)(gap/skyZoom);
+					DrawMenuBackdropCrop(sprite[TITLE_IMG]->getTexture(),(int)(sz.width-sw)/2,0,sw,sh,0,DY,DX,gap);
+				}
 				DrawImage((int)sz.width, (int)sz.height, 0, 0,
 				          drawX, drawY,
 				          false, false, false, false, false, zoom, sprite[TITLE_IMG], TITLE_IMG);
@@ -5799,7 +5807,7 @@ int LoadoutList(int* out, int max)
 {
 	int n = 0;
 
-	for (int i = 0; i < TOTALINVENTORY && n < max; i++) {
+	for (int i = 0; i < GetMaxInven() && n < max; i++) {
 		const ITEM* it = &robin.inven[i];
 
 		if (it->type == EMPTY || LoadoutCanCarry(it->type) == false)
@@ -6141,7 +6149,7 @@ void LoadoutClear(void)
 //자동은 시작점이다. 여기서 한두 점을 바꿔 끼우는 것이 이 화면의 일이다.
 void LoadoutAuto(void)
 {
-	static int list[TOTALINVENTORY];
+	std::vector<int> list(GetMaxInven());
 	int cnt;
 	int best = -1;
 
@@ -6153,7 +6161,7 @@ void LoadoutAuto(void)
 		const int keep = LoadoutTab();
 
 		LoadoutSetTab(LOADOUT_TAB_ALL);
-		cnt = LoadoutList(list, TOTALINVENTORY);
+		cnt = LoadoutList(list.data(), GetMaxInven());
 		LoadoutSetTab(keep);
 	}
 
@@ -6263,7 +6271,7 @@ static void LoadoutDefaultFill(void)
    const ITEM& worn=robin.charData[Max(0,Min(TOTALPLAYER-1,PlayerHeroType()))].equip[EQUIP_WEAPON];
    int picked=-1;
 
-   for(int i=0;i<TOTALINVENTORY;++i) {
+   for(int i=0;i<GetMaxInven();++i) {
     const ITEM& it=robin.inven[i];
     if(it.type!=required || it.count==0) continue;
     if(picked<0) picked=i;
@@ -6305,7 +6313,7 @@ static void LoadoutDefaultFill(void)
    if(type==ITEM_SWORD || type==ITEM_GUN || type==ITEM_BOOMERANG) continue;
 
    int best=-1;
-   for(int i=0;i<TOTALINVENTORY;++i) {
+   for(int i=0;i<GetMaxInven();++i) {
     const ITEM& it=robin.inven[i];
     if(it.type!=type || it.count==0) continue;
     if(best<0 || robin.inven[best].grade<it.grade) best=i;
@@ -6336,7 +6344,7 @@ static void LoadoutDefaultFill(void)
  //(CLAUDE.md 5장 - 포 없이도 전 웨이브가 클리어 가능해야 한다).
  CannonGrantEnsure();
  int cannonSeen=0,cannonMine=0;
- for(int i=0;i<TOTALINVENTORY;++i)
+ for(int i=0;i<GetMaxInven();++i)
   if(robin.inven[i].type==ITEM_CANNON && robin.inven[i].count>0) {
    ++cannonSeen;
    if(robin.inven[i].detail==CastleMenuModel::Clamp(robin.castle)) ++cannonMine;
@@ -6345,7 +6353,7 @@ static void LoadoutDefaultFill(void)
   const ITEM& old=robin.inven[gLoadout[n]];
   if(old.type==ITEM_CANNON && old.detail!=CastleMenuModel::Clamp(robin.castle)) LoadoutToggle(gLoadout[n]);
  }
- for(int i=0;i<TOTALINVENTORY;++i)
+ for(int i=0;i<GetMaxInven();++i)
   if(robin.inven[i].type==ITEM_CANNON && robin.inven[i].count>0 &&
      robin.inven[i].detail==CastleMenuModel::Clamp(robin.castle)) {
    if(LoadoutFind(i)<0 && !LoadoutToggle(i) && !gLoadoutFillWhy)
@@ -6356,7 +6364,7 @@ static void LoadoutDefaultFill(void)
  //TODO(diag)
  {
   int sword=0;
-  for(int i=0;i<TOTALINVENTORY;++i)
+  for(int i=0;i<GetMaxInven();++i)
    if(robin.inven[i].type==ITEM_SWORD && robin.inven[i].count>0) ++sword;
 
   sprintf(gLoadoutFillLog,"h%d sw%d can%d/%d c%d pt%d/%d cell%d/%d",
@@ -6796,7 +6804,7 @@ static void LoadoutScanOwned(void)
 {
 	memset(gLoadoutOwn, -1, sizeof(gLoadoutOwn));
 
-	for (int i = 0; i < TOTALINVENTORY; i++) {
+	for (int i = 0; i < GetMaxInven(); i++) {
 		const ITEM* it = &robin.inven[i];
 
 		if (it->type == EMPTY || LoadoutCanCarry(it->type) == false)
@@ -7321,7 +7329,7 @@ void CrewGrantEnsure(void)
 		const bool available = MergeCrewAvailable(c);
 
 		int at = -1, empty = -1;
-		for (int i = 0; i < TOTALINVENTORY; ++i) {
+		for (int i = 0; i < GetMaxInven(); ++i) {
 			if (robin.inven[i].type == ITEM_CREW && robin.inven[i].detail == c) {
 				at = i;
 				break;
@@ -7367,7 +7375,7 @@ void CannonGrantEnsure(void)
         const int level = Max(0,Min((int)robin.castleProgress.parts[castle][CANNON_PART],
             InventoryCannons::Levels-1));
         int at = -1, empty = -1;
-        for (int i = 0; i < TOTALINVENTORY; ++i) {
+        for (int i = 0; i < GetMaxInven(); ++i) {
             if (robin.inven[i].type == ITEM_CANNON && robin.inven[i].detail == castle) {
                 at = i; break;
             }
@@ -7436,7 +7444,7 @@ void GearGrantEnsure(void)
 			continue;
 
 		int empty = -1;
-		for (int i = 0; i < TOTALINVENTORY; ++i) {
+		for (int i = 0; i < GetMaxInven(); ++i) {
 			if (robin.inven[i].type == EMPTY) {
 				empty = i;
 				break;
@@ -7593,7 +7601,7 @@ void LoadoutPickStart(int inven)
 	//
 	//그 칸에 실제로 낄 수 있는 것이 들어 있는지까지 본다. 이 한 곳만
 	//막으면 창고에서 집든 가방에서 집든 같은 구멍이 닫힌다.
-	const bool pickable = (inven >= 0 && inven < TOTALINVENTORY)
+	const bool pickable = (inven >= 0 && inven < GetMaxInven())
 		&& robin.inven[inven].type != EMPTY
 		&& LoadoutHeroHas(curHero,robin.inven[inven].type)
         && (robin.inven[inven].type!=ITEM_CANNON || robin.inven[inven].detail==CastleMenuModel::Clamp(robin.castle));
@@ -7613,7 +7621,7 @@ static void LoadoutFlyHome(int inven)
 {
 	GridPart part;
 
-	if (inven < 0 || inven >= TOTALINVENTORY)
+	if (inven < 0 || inven >= GetMaxInven())
 		return;
 
 	for (int i = 0; i < gLoadoutSlotCnt; ++i) {
@@ -7783,7 +7791,7 @@ int CastleTutorialFocus(int rectangles[2][4]){
   const int cell=gLoadoutGridW/Max(1,gGridW);
   // Prefer adding a visible warehouse item to a genuinely empty position.
   for(int slot=0;slot<gLoadoutSlotCnt;++slot){
-   const int inv=gLoadoutSlot[slot];if(inv<0||inv>=TOTALINVENTORY)continue;bool used=false;
+   const int inv=gLoadoutSlot[slot];if(inv<0||inv>=GetMaxInven())continue;bool used=false;
    for(int n=0;n<gLoadoutCnt;++n)used|=gLoadout[n]==inv;
    if(used)continue;
    GridPart part;GridGearPart(&robin.inven[inv],&part);
@@ -7928,7 +7936,7 @@ static void LoadoutGoButtonDraw(void)
 //그림의 모서리고, 반 칸 넘게 걸치면 그 칸으로 붙인다. row 0 이 맨 아랫줄이다.
 static bool LoadoutDropCell(int inven, GridPart* outPart, int* outCol, int* outRow)
 {
-	if (inven < 0 || inven >= TOTALINVENTORY || gGridW <= 0 || gGridH <= 0)
+	if (inven < 0 || inven >= GetMaxInven() || gGridW <= 0 || gGridH <= 0)
 		return false;
 
 	const int cell = gLoadoutGridW / Max(1, gGridW);
@@ -8226,7 +8234,7 @@ static void LoadoutGridDraw(int top, int bottom)
 void LoadoutDraw(void)
 {
 	char str[96];
-	static int list[TOTALINVENTORY];
+	std::vector<int> list(GetMaxInven());
 	int cnt = 0;
 
 	LoadoutDiag("draw", (int)gLoadoutOpen, gLoadoutCnt, 0, 0);
@@ -8738,7 +8746,7 @@ static const ITEM* LoadoutPrimaryWeapon(void)
 	const int required=curHero==1?ITEM_GUN:curHero==2?ITEM_BOOMERANG:ITEM_SWORD;
 	for(int i=0;i<gLoadoutCnt;++i) {
 		const int index=gLoadout[i];
-		if(index<0 || index>=TOTALINVENTORY) continue;
+		if(index<0 || index>=GetMaxInven()) continue;
 		const ITEM& item=robin.inven[index];
 		if(item.type==required && item.count>0) return &item;
 	}
@@ -8792,7 +8800,7 @@ static long long LoadoutCombatPower(void)
 	mix(ao[PLAYER].stat,sizeof(ao[PLAYER].stat));mix(ao[PLAYER].skillLv,sizeof(ao[PLAYER].skillLv));
 	for(int i=0;i<gLoadoutCnt;++i) if(fit[i]&&!gLoadoutBad[i]) {
 		const int index=gLoadoutPackInven[i];
-		if(index>=0 && index<TOTALINVENTORY) {selected.push_back(robin.inven[index]);mix(&robin.inven[index],sizeof(ITEM));}
+		if(index>=0 && index<GetMaxInven()) {selected.push_back(robin.inven[index]);mix(&robin.inven[index],sizeof(ITEM));}
 	}
 	static unsigned long long cachedHash=0;static long long cachedPower=0;
 	if(hash==cachedHash) return cachedPower;
@@ -9197,7 +9205,7 @@ bool GearRoleReview(int operation)
 		bool ok = true;
 		for (int hero = 0; hero <= 2 && ok; ++hero) {
 			memset(robin.inven, 0, sizeof(robin.inven));
-			for (int i = 0; i < TOTALINVENTORY; ++i) robin.inven[i].type = EMPTY;
+			for (int i = 0; i < GetMaxInven(); ++i) robin.inven[i].type = EMPTY;
 
 			const int was = curHero;
 			curHero = hero;
@@ -9416,13 +9424,13 @@ bool BattleMenuPreviewDragCheck(void) {
 	if(!getenv("CS_CASTLE_REVIEW_PATH")||!getenv("CS_BATTLE_MENU_REVIEW")) return false;
     CannonGrantEnsure();
     bool owned[CASTLE_STAGE_CNT] = {};
-    for (int i=0;i<TOTALINVENTORY;++i)
+    for (int i=0;i<GetMaxInven();++i)
         if(robin.inven[i].type==ITEM_CANNON && robin.inven[i].count>0 &&
             robin.inven[i].detail<CASTLE_STAGE_CNT) owned[robin.inven[i].detail]=true;
     for(int c=0;c<CASTLE_STAGE_CNT;++c) if(!owned[c]) return false;
 	LoadoutClear();
 	const int cell=BattleMenuLayout::Cell(DX,_2X);
-	for(int i=0;i<TOTALINVENTORY;++i) {
+	for(int i=0;i<GetMaxInven();++i) {
 		if(robin.inven[i].type==EMPTY||robin.inven[i].count<=0) continue;
 		if(LoadoutCost(&robin.inven[i])>LoadoutPoint()) continue;
 		GridPart part; GridGearPart(&robin.inven[i],&part);
@@ -12391,6 +12399,15 @@ bool LobbySectionOwnsPopups()
 }
 void LobbyDraw(void)
 {
+	if(SharedRewardOpen()){
+
+		ResetRectPoint();SetAlpha(ALPHA_MAX);SetColor(0);grayScale=0;
+		MemRect(0,DY,DX,DY,0x102B37);
+		SharedRewardDraw();
+		LobbyResourceBarsDraw(DY-(GNBHEIGHT-GNB_INIT_HEIGHT));
+		GNBDraw(0,DY-(GNBHEIGHT-GNB_INIT_HEIGHT));
+		++frame;return;
+	}
 	if(!gRenewDungeon && MergeRouletteLobbySceneDraw())return;
 	// Bottom-navigation pages cover the lobby world. Compose their complete
 	// popup stack here, once, including settings/confirmations above the page.
@@ -13710,6 +13727,7 @@ void ClosePopUp(void)
 	}
 	else {
 		const int closingPopUpType = popUp[popUpCnt - 1].type;
+		if(closingPopUpType==POPUPTYPE_GACHA_RATES)GachaRatesScrollClose();
 		if (closingPopUpType == POPUPTYPE_FRIENDS || closingPopUpType == POPUPTYPE_READERBOARD)
 			curMenu = MENU_PLAY;
 

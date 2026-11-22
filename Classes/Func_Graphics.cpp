@@ -1015,7 +1015,7 @@ std::string  GetResourceName(int type, int idx)
 		if(idx>=MONSTER_PARTS_FIRST_IMG&&idx<=MONSTER_PARTS_LAST_IMG)return "res/monster_parts-atlas-"+std::to_string(idx-MONSTER_PARTS_FIRST_IMG)+".png";
 		if(idx>=GRID_ITEM_FIRST_IMG && idx<=GRID_ITEM_LAST_IMG) return "res/grid_items-grid"+std::to_string(idx-GRID_ITEM_FIRST_IMG)+".png";
 		if(idx>=ITEM_SERIES_FIRST_IMG && idx<=ITEM_SERIES_LAST_IMG) return "res/items-item"+std::to_string(idx-ITEM_SERIES_FIRST_IMG)+".png";
-		if(idx==TITLE_IMG) return "res/hybrid_sd3d-title-scene.png";
+		if(idx==TITLE_IMG) return "res/title-mobile-castle-v2.png";
 		if (idx == CASTLE_ARTILLERY_IMG) {
 			fileName = "res/castle_artillery-attacks.png";
 			break;
@@ -5357,10 +5357,26 @@ void DrawScroll(int x, int y, int h, int type)
 
 void DrawStarNum(int icon, int star, int x, int y, float zoom)
 {
-	DrawIcon(icon, x, y, zoom, COLOR_BROWN, false, false, true);
-	//memset(&tempStr, 0, sizeof(tempStr));
-	//sprintf(tempStr, "%d", star);
-	DrawNum2AutoSpaceing(star, x + (float)(ITEMICONSIZE / 2) * zoom, y - (float)16 * _2X * NUM2ZOOM * zoom, CENTER, false, false, (float)ITEMICONSIZE * zoom, false, 1.0f * zoom * NUM2ZOOM, false, true);
+    if(zoom<=0)return;
+    if(icon!=ICON_STAR){
+        DrawIcon(icon,x,y,zoom,COLOR_BROWN,false,false,true);
+        DrawNum2AutoSpaceing(star,x+ITEMICONSIZE*.5f*zoom,y-16*_2X*NUM2ZOOM*zoom,CENTER,false,false,ITEMICONSIZE*zoom,false,zoom*NUM2ZOOM,false,true);
+        return;
+    }
+    const float original=ITEMICONSIZE*zoom;
+    const float size=original*(icon==ICON_STAR?1.6f:1.f);
+    // Retain the caller's badge centre while enlarging the star around it.
+    const float cx=x+original*.5f,cy=y-original*.5f;
+    DrawIcon(icon,(int)(cx-size*.5f),(int)(cy+size*.5f),size/ITEMICONSIZE,COLOR_BROWN,false,false,true);
+    if(!sprite[NUM2_IMG])LoadImg(NUM2_IMG);
+    long long digits=star<0?-(long long)star:star;
+    float glyphHeight=1;
+    do{glyphHeight=Max(glyphHeight,(float)num2Off[(digits%10)*6+1]);digits/=10;}while(digits);
+    // Measure the actual number glyphs instead of using the old fixed baseline.
+    // Fit inside the star's central body, leaving its points and border visible.
+    const float numberZoom=Min(size*.40f/glyphHeight,size*.43f/Max(1.f,GetNumDx2(star,false,0,false,1.f,false)));
+    const float numberCy=cy-(icon==ICON_STAR?size*.025f:0.f);
+    DrawNum2(star,(int)cx,(int)(numberCy+glyphHeight*numberZoom*.5f),CENTER,0,false,false,numberZoom,false);
 }
 
 //size�� ����, �̵��? ����

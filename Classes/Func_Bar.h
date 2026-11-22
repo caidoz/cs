@@ -6,6 +6,8 @@
 void DrawBarIcon(int type, int x, int y, float zoom);
 void BarDraw(BAR*, float zoom);
 void LobbyResourceBarsDraw(int y);
+void LobbyResourceBarAnchor(int y,int slot,int* cx,int* cy);	//재화 아이콘 가운데(0 골드 1 다이아 2 행동력)
+extern long long gLobbyGoldInFlight;	//성 금고에서 날아오는 중인 골드. 표시에서만 뺀다
 void MedalBarDraw(int, int, long long, bool, float zoom);
 void PvpEventBarDraw(GAMEEVENT*, int, int, int, int, int, bool, bool, float);
 void DevilHeartDraw(int x, int y, float zoom);

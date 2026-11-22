@@ -264,3 +264,4 @@ extern long long gNetRevision;
 void NetApplyHeroEffects(void);
 // Headless development check of the actual dump encoder and decoder.
 bool NetCastleProtocolSelfTest(void);
+bool NetInventoryProtocolSelfTest(void);

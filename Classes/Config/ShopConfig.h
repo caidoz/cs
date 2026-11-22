@@ -9,9 +9,20 @@
 
 // Purchase prices are independent of stage reward-box valuation.
 namespace ShopTreasure {
+struct Loot {int cardsMin,cardsMax,goldMin,goldMax,goldRate;int stars[6];};
+inline const Loot& LootFor(int tier){
+ static const Loot rows[]={
+  {2,4,100,200,50,{70,30,0,0,0,0}},
+  {3,5,300,600,65,{45,40,15,0,0,0}},
+  {4,6,1000,2000,75,{25,40,25,10,0,0}},
+  {5,7,3000,6000,85,{15,25,30,20,10,0}},
+  {6,9,10000,20000,95,{8,17,25,25,18,7}},
+  {8,11,30000,60000,100,{3,10,20,27,25,15}}
+ };return rows[tier<0?0:tier>5?5:tier];
+}
 inline long long Price(int tier){static const long long p[]={100,500,30,100,300,1000};return tier>=0&&tier<6?p[tier]:-1;}
 inline bool UsesGems(int tier){return tier>=2&&tier<6;}
-inline int GoldReward(int tier,int amount){static const int cap[]={25,125,300,1000,3000,10000};return tier>=0&&tier<6&&amount>cap[tier]?cap[tier]:amount;}
+inline int GoldReward(int tier,int amount){const auto& row=LootFor(tier);return amount<row.goldMin?row.goldMin:amount>row.goldMax?row.goldMax:amount;}
 inline int HeartReward(int tier,int amount){static const int cap[]={3,5,8,12,16,20};return tier>=0&&tier<6&&amount>cap[tier]?cap[tier]:amount;}
 }
 namespace ShopGold {

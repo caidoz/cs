@@ -1,4 +1,4 @@
-#include "Core.h"
+﻿#include "Core.h"
 #include "Data.h"
 #include "Func.h"
 #include "Text.h"
@@ -64,13 +64,36 @@ static void LobbyResourceAdd(int x,int y,int size,int command){
   draw/64.f,sprite[UI_NEW_IMG],UI_NEW_IMG);
  SetRectPoint(x,y,size,size,command);
 }
+//로비 자원 띠의 칸 나눔. 그리는 쪽과 날아오는 재화의 도착점이 같은 식을 쓴다.
+struct LobbyBarLayout{int left,levelW,goldX,goldW,cashX,cashW,energyX,energyW,h,cy,iconSize;};
+static LobbyBarLayout LobbyBarLayoutAt(int y){
+ LobbyBarLayout l;
+ const int gap=2*_2X,usable=DX-36*_2X-gap*5;
+ l.left=xOffset+gap;
+ l.levelW=(int)(usable*.15f);const int moneyW=(int)(usable*.28f);
+ l.goldW=moneyW+32;l.cashW=moneyW-16;l.energyW=usable-l.levelW-moneyW*2-32;
+ l.goldX=l.left+l.levelW+gap;l.cashX=l.goldX+l.goldW+gap;l.energyX=l.cashX+l.cashW+gap;
+ l.h=LOBBY_BAR_H;l.cy=y-l.h/2;l.iconSize=(int)(ITEMICONSIZE*.99f);
+ return l;
+}
+//재화 아이콘의 가운데. slot 0 골드, 1 다이아, 2 행동력. 성 금고에서 날아오는 동전이 여기로 온다.
+void LobbyResourceBarAnchor(int y,int slot,int* cx,int* cy)
+{
+ const LobbyBarLayout l=LobbyBarLayoutAt(y);
+ const int currencySize=(int)(l.iconSize*1.1f);
+ if(slot==0){*cx=l.goldX+6+currencySize/2;*cy=l.cy;}
+ else if(slot==1){*cx=l.cashX+6+currencySize/2;*cy=l.cy;}
+ else{const int bolt=(int)(17*_2X*1.1f);*cx=l.energyX+4+bolt/2;*cy=l.cy;}
+}
+//날아오는 중인 골드. 지급은 누른 순간 끝났지만, 숫자는 동전이 닿을 때 오른다.
+long long gLobbyGoldInFlight=0;
 void LobbyResourceBarsDraw(int y)
 {
- const int gap=2*_2X,left=xOffset+gap,usable=DX-36*_2X-gap*5;
- const int levelW=(int)(usable*.15f),moneyW=(int)(usable*.28f);
- const int goldW=moneyW+32,cashW=moneyW-16,energyW=usable-levelW-moneyW*2-32;
- const int goldX=left+levelW+gap,cashX=goldX+goldW+gap,energyX=cashX+cashW+gap;
- const int h=LOBBY_BAR_H,cy=y-h/2,plusSize=26,iconSize=(int)(ITEMICONSIZE*.99f);
+ const LobbyBarLayout lay=LobbyBarLayoutAt(y);
+ const int left=lay.left,levelW=lay.levelW;
+ const int goldW=lay.goldW,cashW=lay.cashW,energyW=lay.energyW;
+ const int goldX=lay.goldX,cashX=lay.cashX,energyX=lay.energyX;
+ const int h=lay.h,cy=lay.cy,plusSize=26,iconSize=lay.iconSize;
  const float iconZoom=.99f;
  const float progress=Max(0.f,Min(1.f,(float)(ao[PLAYER].exps-NextExp(robin.lv-1))/Max(1.f,(float)(NextExp(robin.lv)-NextExp(robin.lv-1)))));
  LobbyResourceFrame(left,y,levelW,BARCOLOR_PURPLE,progress);
@@ -97,11 +120,12 @@ void LobbyResourceBarsDraw(int y)
    }
   }
   const int px=x+w-plusSize-6,py=cy+plusSize/2;
-  if(!i&&robin.gold>=1000000){
-   const long long whole=robin.gold/1000000,tenth=robin.gold%1000000/100000;
+  const long long shownGold=Max(0LL,robin.gold-Max(0LL,gLobbyGoldInFlight));
+  if(!i&&shownGold>=1000000){
+   const long long whole=shownGold/1000000,tenth=shownGold%1000000/100000;
    if(tenth)snprintf(value,sizeof(value),"%lld.%lldM",whole,tenth);
    else snprintf(value,sizeof(value),"%lldM",whole);
-  }else snprintf(value,sizeof(value),"%lld",i?robin.coin:robin.gold);
+  }else snprintf(value,sizeof(value),"%lld",i?robin.coin:shownGold);
   LobbyResourceNumber(i+1,value,x+currencySize+10,px-4,cy,(FONT_HEIGHT+_2X)*.8f+2);
   LobbyResourceAdd(px,py,plusSize,command);
  }

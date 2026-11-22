@@ -6,6 +6,15 @@ int image(int castle,int part){return CASTLE_MIST_FIRST_IMG+std::max(0,std::min(
 void crop(int img,float sx,float sy,float sw,float sh,const Box& b,bool mirror=false,bool floor=false){
  if(!sprite[img])LoadImg(img);if(!sprite[img]||sw<=0||sh<=0||b.w<=0||b.h<=0)return;
  const float z=std::max(b.w/sw,b.h/sh),cw=b.w/z,ch=b.h/z;
+ // This renderer visits sprites directly, so software section clipping must
+ // crop both destination and source before submitting the quad.
+ const float dx=mirror?DX-b.x-b.w:b.x,dy=(float)b.y;
+ const float left=std::max(dx,(float)clipX),right=std::min(dx+b.w,(float)clipX2);
+ const float top=std::min(dy,(float)clipY),bottom=std::max(dy-b.h,(float)clipY2);
+ if(right<=left||top<=bottom)return;
+ const float sourceX=sx+(sw-cw)*.5f+(mirror?dx+b.w-right:left-dx)/z;
+ const float sourceY=sy+(floor?sh-ch:(sh-ch)*.5f)+(dy-top)/z;
+
  GetSpriteIndex(img);
  if(getSpriteIdx==totalRenderCnt){
   renderSprite[getSpriteIdx]=cocos2d::Sprite::createWithTexture(sprite[img]->getTexture());renderSprite[getSpriteIdx]->retain();renderSpriteIndex[getSpriteIdx]=getSpriteTexture;
@@ -13,8 +22,8 @@ void crop(int img,float sx,float sy,float sw,float sh,const Box& b,bool mirror=f
   ++sameRenderSpriteMax[img];++sameRenderSpriteCur[img];++totalRenderCnt;
  }
  auto* sp=renderSprite[getSpriteIdx];sp->setTexture(sprite[img]->getTexture());
- sp->setTextureRect(cocos2d::Rect(sx+(sw-cw)/2,sy+(floor?sh-ch:(sh-ch)/2),cw,ch));
- sp->setAnchorPoint({0,1});sp->setPosition({(float)(mirror?DX-b.x-b.w:b.x),(float)b.y});
+ sp->setTextureRect(cocos2d::Rect(sourceX,sourceY,(right-left)/z,(top-bottom)/z));
+ sp->setAnchorPoint({0,1});sp->setPosition({left,top});
  sp->setScale(z);sp->setRotation(0);sp->setFlippedX(mirror);sp->setFlippedY(false);
  sp->setColor(cocos2d::Color3B::WHITE);sp->setOpacity(m_lgrpAlpha*255/32);
  sp->setGLProgram(cocos2d::GLProgramCache::getInstance()->getGLProgram(cocos2d::GLProgram::SHADER_NAME_POSITION_TEXTURE_COLOR_NO_MVP));AfterSpriting(sp);

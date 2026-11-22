@@ -32,7 +32,7 @@ static void RenewalCrewDraw(){
   const int x=168+(i%3)*pitch,y=body-12-(i/3)*(slotH+8);
   DrawPixelPanel(x,y,pitch-8,slotH,menuX==i?0x2F6570:0x152D37,menuX==i?0xC5A269:0x65827F);
   const int inv=robin.slotCrew[i]>=0?GetCrewInventoryIdx(robin.slotCrew[i]):-1;
-  if(inv>=0&&inv<TOTALINVENTORY){
+  if(inv>=0&&inv<GetMaxInven()){
    CrewPortrait(robin.inven[inv].detail,x+(pitch-8)/2,y-slotH+12,50);
    stars+=GetItemStar(ITEM_CREW,robin.inven[inv].detail,robin.inven[inv].grade);
   }else{SetFontColor(0xA6BAB1);CenterTextStrSolid("+",x+(pitch-8)/2,y-18,.85f);}
@@ -43,8 +43,8 @@ static void RenewalCrewDraw(){
  CenterTextStrSolid(text,DX/2,top-preview-12,1.f);
  SetFontColor(0xAEC4B9);CenterTextStrSolid("슬롯을 고르고 동료를 선택하세요",DX/2,top-preview-46,.62f);
  Tabs(top-preview-86);
- int items[TOTALINVENTORY],count=0;
- for(int i=0;i<TOTALINVENTORY;++i)if(robin.inven[i].type==ITEM_CREW)items[count++]=i;
+ std::vector<int> items(GetMaxInven());int count=0;
+ for(int i=0;i<GetMaxInven();++i)if(robin.inven[i].type==ITEM_CREW)items[count++]=i;
  const int cols=4,pitchX=(DX-32)/cols,cell=pitchX-8,rowH=120,height=listTop-20;
  scT[MENU_CREW]=Max(0,((count+cols-1)/cols)*rowH-height);scY[MENU_CREW]=Min(scT[MENU_CREW],Max(0,scY[MENU_CREW]));
  SetSectionClip(16,listTop,DX-32,height,false);

@@ -510,7 +510,7 @@ void Core::onTouchCancelled(Touch* touch, Event* unused_event)
 	//길게 누르기로 둔다. 잠근 것은 일괄 판매와 합성에서 빠진다.
 	if (touchedFrame >= AUTOPLAYFRAME
 		&& heldTouchFunc >= TOUCH_FUNC_ITEMDETAIL
-		&& heldTouchFunc < TOUCH_FUNC_ITEMDETAIL + TOTALINVENTORY) {
+		&& heldTouchFunc < TOUCH_FUNC_ITEMDETAIL + INVENTORY_COMMAND_RANGE) {
 		ItemToggleLock(heldTouchFunc - TOUCH_FUNC_ITEMDETAIL);
 		PlayMusic(M_BUTTON);
 
@@ -1367,6 +1367,7 @@ void DoubleBuffering(int drawHandleIdx)
 
 void PaintClet(int x, int y, int w, int h)
 {
+
 	// Separate TURNRPG loop: never run Play()/GridTest or realtime combat beneath it.
 	if (getenv("CS_MERGE_REVIEW") && drawHandle==MD_TITLE && !MergeRouletteActive()) {
 		if (getenv("CS_MERGE_SIEGE_REVIEW")) MergeRouletteBeginSiege();
@@ -1628,7 +1629,9 @@ void PaintClet(int x, int y, int w, int h)
 				OpeningDraw();
 				break;
 			case MD_LOBBY:
+
 				LobbyDraw();
+
 				MergeRouletteLobbyDraw();
 				break;
 			case MD_PLAY:
@@ -1689,7 +1692,8 @@ void PaintClet(int x, int y, int w, int h)
 				AlertDraw();
 				break;
 			case MD_GACHA:
-				Play();
+                if(gachaGrantedPresentation){++frame;MemRect(0,DY,DX,DY,0x080716);GachaBackdropDraw();}
+                else Play();
 				GachaDraw();
 				break;
 			case MD_STAGECLEAR:
@@ -2439,6 +2443,7 @@ void PaintClet(int x, int y, int w, int h)
 
 	//카드 위에 얹는 문구(처음 얻은 것 / 5성 이상). GachaDraw()가 세워 둔다.
 	//카드를 다 그린 다음이라야 글자가 카드에 안 덮인다.
+
 	if (gachaAlphaBannerIdx >= 0) {
 		DrawGoldAlpha((int)(xOffset + gachaAlphaBannerX),
 			(int)gachaAlphaBannerY, gachaAlphaBannerIdx, FONT_GOLD_LARGE,

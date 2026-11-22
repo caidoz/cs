@@ -22,6 +22,7 @@
 #include "Data/CastlePartData.h"	//성 파츠 표(castlePartLv 가 쓴다)
 #include "ui/UIWebView.h"
 #include <vector>
+#include <array>
 
 using namespace cocos2d;
 using namespace cocos2d::experimental;
@@ -189,6 +190,23 @@ typedef struct _item {
 		);
 	}
 } ITEM;
+
+// Keep the legacy inline layout for old binary profiles. Runtime storage grows
+// beyond it; the table-based network save writes every allocated item slot.
+ITEM& InventoryOverflowAt(int index);
+int InventorySlots();
+void InventoryClearOverflow();
+std::vector<ITEM> InventoryOverflowSnapshot();
+void InventoryRestoreOverflow(const std::vector<ITEM>& items);
+int InventoryUsed();
+struct INVENTORY_STORAGE {
+ ITEM legacy[TOTALINVENTORY];
+ ITEM& operator[](int index){return index<TOTALINVENTORY?legacy[index]:InventoryOverflowAt(index-TOTALINVENTORY);}
+ const ITEM& operator[](int index) const{return index<TOTALINVENTORY?legacy[index]:InventoryOverflowAt(index-TOTALINVENTORY);}
+ operator ITEM*(){return legacy;}
+ operator const ITEM*() const{return legacy;}
+};
+static_assert(sizeof(INVENTORY_STORAGE)==sizeof(ITEM)*TOTALINVENTORY,"Legacy inventory layout must remain compatible");
 
 //Structure
 typedef struct _obj {
@@ -591,7 +609,7 @@ typedef struct _house {
 //여기는 저장되는 데이터만
 typedef struct _robin {
 	CHARDATA charData[TOTALPLAYER];//서버에 저장되는 로빈에 대한 데이터//차후에 상대방 유저가 
-	ITEM inven[TOTALINVENTORY];//인벤토리는 공유한다.
+	INVENTORY_STORAGE inven;
 	ITEM newItem;
 	//성에서는 현재 획득한 크류들이 자유스럽게 돌아다니는 것이 아니라, 정해진 위치에 박혀서 나오는것으로 하자.
 	//
@@ -1380,7 +1398,7 @@ extern signed char touchQuickIcon;
 extern signed char touchDrawButton;
 extern signed char touch;
 extern int touchIndex;
-extern int touchRect[TOTALTOUCHCNT][5];//int rx, int ry, int width, int height, int func
+extern std::vector<std::array<int,5>> touchRect;//int rx, int ry, int width, int height, int func
 extern int startTouchRect[5];
 //버튼 감촉. 자세한 것은 CoreGlobals.cpp 참고.
 extern int buttonPressFunc;

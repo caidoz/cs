@@ -2952,15 +2952,6 @@
       "encoded_sha256": "00ad5f0c524c9068eddf505a9d6bb778337655a4edf58f3c2ac3d43017f0bea4"
     },
     {
-      "source": "asset_library/production/runtime-6cb9546bfe3f106c88a94030d7cad114b400e6985b49fb64690bc352faf70e12.webp",
-      "target": "res/c3.png",
-      "original_source": "asset_library/reference/Resources/res/c3.png",
-      "encoding": "webp-lossless",
-      "rgba_sha256": "bc60ab02f9ea5e9eccd3aaeab9147be87e4d0d8d247773931027923bea69ba44",
-      "original_sha256": "aae5ba713151fc10a1b102b42a79b6a1b4d0648f3c9d1241fb9c608d00b1e22e",
-      "encoded_sha256": "9b6f41b01cc6fb5b3f78629841dd3fcc061ade35b6cebe3a94ebca15fdc71fb0"
-    },
-    {
       "source": "asset_library/production/runtime-cbfd9f2a5c53f6f55aa984c5324b9d2e04ff9882a706cd9230d7d0e1987d1a96.webp",
       "target": "res/c30.png",
       "original_source": "asset_library/reference/Resources/res/c30.png",
@@ -8244,15 +8235,6 @@
       "encoded_sha256": "d9c30637bc0ac78aa9b89ca1221ffb9abed1eef1e5f125f62c09ae566917a730"
     },
     {
-      "source": "asset_library/production/runtime-3db27b79f7881a4be2f8f4a5ea6fdcc3d741314a12bab441fb4b67b54795db0d.webp",
-      "target": "res/hybrid_sd3d-title-scene.png",
-      "original_source": "asset_library/reference/Resources/res/hybrid_sd3d/title-scene.png",
-      "encoding": "webp-lossless",
-      "rgba_sha256": "77afee8967e85179b96d22f0ba2c8b30a67977544fa2f61f0d190d5534669684",
-      "original_sha256": "69af895107e9b878ac5cdc52ebbd7d1e409a34e3cd616562f1da9161f24e0f51",
-      "encoded_sha256": "59da7ced103faa7f0c6d339b937e0effb6af3e667740c61d62c264841df63ce2"
-    },
-    {
       "source": "asset_library/production/runtime-00984c38a10e79fbf00aa292f0b5ac1a4d52a5148a9150c51b82b4bae6b667bc.webp",
       "target": "res/i0.png",
       "original_source": "asset_library/reference/Resources/res/i0.png",
@@ -11061,15 +11043,6 @@
       "encoded_sha256": "8f722c0ac21d47d2061a8310ef03a95159e373d03c529842a6667fd7f99d8634"
     },
     {
-      "source": "asset_library/production/runtime-c86882f1496626ba2de82d93e111c63b7456eefc2cd8799afaf2dbdf65e959b3.webp",
-      "target": "res/items-item384.png",
-      "original_source": "asset_library/reference/Resources/res/items/item384.png",
-      "encoding": "webp-lossless",
-      "rgba_sha256": "c25bf15ca4ff97215919d0bcfaddc44591a5b98d2605f7904054519a6cf8865d",
-      "original_sha256": "e2481c30a77d5f0b3ec0e4a88ef16885f63eecb0f128c07d48dee230b6109f75",
-      "encoded_sha256": "b61d2eeae06ee2adaf42bbc4934c84f234081ac6cf9db3edca63e797dbe2926d"
-    },
-    {
       "source": "asset_library/production/runtime-0fbca6c5ca771fe9bf70d417308de5666676caea1979afd853779a4c63234002.webp",
       "target": "res/items-item394.png",
       "original_source": "asset_library/reference/Resources/res/items/item394.png",
@@ -12600,15 +12573,6 @@
       "encoded_sha256": "2abefbe70d38f808af5cf4723315c7cf788842cc463fb9d890ddcfe1e5d884a1"
     },
     {
-      "source": "asset_library/production/runtime-c72b8a7d8bb4099ea48831e5efa3a3153d7077392f35f9123abfbe24e44ab473.webp",
-      "target": "res/monster_parts-atlas-0.png",
-      "original_source": "asset_library/reference/Resources/res/monster_parts/atlas-0.png",
-      "encoding": "webp-lossless",
-      "rgba_sha256": "9ce42126fa39f20516c10e42e74e35cc802daf01cbc1a0b9edce1b56581807a6",
-      "original_sha256": "415ae04fb6d9664dde5ff0a0183d0a1eadcb154a4010b13fc3f02127fe3a9fff",
-      "encoded_sha256": "acd4170117f60b0dcefdab3eee74bf37fd94918f7c0d278c61173a49fef5c392"
-    },
-    {
       "source": "asset_library/production/runtime-b6a73049a8d770e60129067f155cc2b38c5907205e5c84a459e677b666b8f537.webp",
       "target": "res/monster_parts-atlas-1.png",
       "original_source": "asset_library/reference/Resources/res/monster_parts/atlas-1.png",
@@ -13075,6 +13039,24 @@
       "rgba_sha256": "ef031dd869e296e72d52d2e6b7351ea26cb15939daf21a2ef181108163956171",
       "original_sha256": "f377f8a7abf7906aca81acda5edc18359220b4f2ad117969e3c19a9705c37837",
       "encoded_sha256": "aad2e8d67169ee3c3fd2fc0fb6bc0d449de54bce9482e00e2066040985a8ab53"
+    },
+    {
+      "source": "asset_library/production/runtime-67a4f39cba691b4979d08855087a7bcc26e3aea1c4381ac239a74572c6d3c405.webp",
+      "target": "res/c3.png",
+      "original_source": "asset_library/production/snail-flat-cmf.png",
+      "encoding": "webp-lossless",
+      "rgba_sha256": "0696421f7a3cfaeaf779c34aab101112e7ff3bc132e101b773c38a2afabe48cf",
+      "original_sha256": "f5d9bc042b63c52aaa03fed51720d40ecf20c2ba8d79045fcfc3d0e6e422748f",
+      "encoded_sha256": "1da17dc3b8417560db7f4794b6cee2560459795ee2e3606bff7ba883b9146a78"
+    },
+    {
+      "source": "asset_library/production/runtime-4461be81f35e469d0239f47f98df2bd7178390249d23f011363dee25dd4a944a.webp",
+      "target": "res/monster_parts-atlas-0.png",
+      "original_source": "asset_library/production/snail-flat-parts-atlas.png",
+      "encoding": "webp-lossless",
+      "rgba_sha256": "508128a04317e68cbf4aec5182a8af98542ff957b0e15d20e2847eed64c65aaf",
+      "original_sha256": "527b9e0d2e6a9138b17fd7af836842f64b83462c403d2a5718b67830c4660739",
+      "encoded_sha256": "5d5b56e39deec90e531ebfbfab61d99df619c1282723ad5cf237bad7dd30e00d"
     },
     {
       "source": "asset_library/production/runtime-d6ee72ff52c8c235e2e49ac3edc89a1cf91ecd6ba2970ee3cb064202945e5bb9.webp",
@@ -13660,6 +13642,15 @@
       "rgba_sha256": "88b91943e836a47fdfe74c744dacb99a7d895e691ae4b46c7385916a73547034",
       "original_sha256": "c6b26cf39e5df6d571106de120b7a19a4d745daa3a36e485b1a9bd0441b3a4f1",
       "encoded_sha256": "09e6c3ee2b13ab2a0e0bb759a69ecb37f3e8c799446cecec57b090e1b6dfdd51"
+    },
+    {
+      "source": "asset_library/production/runtime-5542acbf753ed7e651d29ed319ad2c496de4623420bbf77bde31f30a0317798c.webp",
+      "target": "res/title-mobile-castle-v2.png",
+      "original_source": "asset_library/production/title-mobile-castle-v2.png",
+      "encoding": "webp-lossless",
+      "rgba_sha256": "b584861874ea17feabba9111fe509a1697228c8c14dcc97690f393375c49d041",
+      "original_sha256": "99272335d015217da3c9d5ddda93466762ad27350999f284737dc9de8eb9476e",
+      "encoded_sha256": "3aa38de4d8b60785bb39377577e249841a51300ba605919b1f145f21dc4ff3b2"
     },
     {
       "source": "asset_library/production/runtime-edcd616daddcb323ac1a1d3684f03136fadaeb2978b5d3ee028720a87a947654.webp",

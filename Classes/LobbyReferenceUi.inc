@@ -22,10 +22,10 @@ static void DrawLobbyReferenceFooter(){
  char text[128];snprintf(text,sizeof(text),"전투력 %lld",GetCombatPower(&ao[PLAYER]));
  SetFontColor(0xFFF0CD);DrawTextStrSystem(text,summaryX+50,nav+157,.82f,LEFT,false);
  const int split=summaryX+summaryW/2+4;MemRect(split,nav+160,1,24,0xB49D72);
- int used=0;for(int n=0;n<TOTALINVENTORY;++n)if(robin.inven[n].type!=EMPTY&&robin.inven[n].count>0)++used;
+ int used=0;for(int n=0;n<GetMaxInven();++n)if(robin.inven[n].type!=EMPTY&&robin.inven[n].count>0)++used;
  const int chest=BOX0_IMG+BOX_PAID0-BOX_CASTLE0;if(!sprite[chest])LoadImg(chest);
  DrawImageScale(510,512,0,0,split+12,nav+160,false,0,0,0,0,.055f,.055f,sprite[chest],chest);
- snprintf(text,sizeof(text),"창고 %d / %d",used,CastleInventoryCapacity(robin.castle));
+ snprintf(text,sizeof(text),u8"보관 중 %d",used);
  SetFontColor(0xFFF0CD);DrawTextStrSystem(text,split+48,nav+157,Min(.78f,(summaryX+summaryW-split-58)/Max(1.f,StringWidth(text,1.f))),LEFT,false);
  SetColor(saved);
  const int top=nav+104,left=DX*9/100,pvpW=DX*22/100,gap=16,ctaX=left+pvpW+gap,ctaW=DX-ctaX-24,h=72;

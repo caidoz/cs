@@ -1156,7 +1156,7 @@ int GetTutorialCrewCardTouchFunc(void)
 		return 0;
 
 	//세바스찬이 아닌 첫 동료 = 상자에서 새로 얻은 동료
-	for (i = 0; i < TOTALINVENTORY; i++) {
+	for (i = 0; i < GetMaxInven(); i++) {
 		if (robin.inven[i].type == ITEM_CREW && robin.inven[i].detail != CREW_SEBASTIAN && robin.inven[i].lv > 0)
 			return TOUCH_FUNC_ITEMDETAIL + i;
 	}
@@ -2601,7 +2601,7 @@ void DemoCore(void)
 				//robin.inven[0].count = 0;//몽둥이 개수 0
 				memset(robin.inven, 0, sizeof(robin.inven));
 
-				for (j = 0; j < TOTALINVENTORY; j++) {
+				for (j = 0; j < GetMaxInven(); j++) {
 					robin.inven[j].type = EMPTY;
 					for (k = 0; k < 12; k++)
 						robin.inven[j].option[k][0] = EMPTYINT;

@@ -1,6 +1,7 @@
 ﻿// Explicit isolated UI review; enabled only with CS_CASTLE_REVIEW_PATH.
 #include "Data/InventoryCannonSprites.h"
 #include "GoldAmountFormat.h"
+#include "Config/ShopConfig.h"
 static void CastleReviewTrace(const char* message) {
     const char* path=getenv("CS_CASTLE_REVIEW_PATH");
     if(!path) return;
@@ -54,37 +55,109 @@ static void CastleMenuReviewStep()
         if(tick==305)CastleReviewTrace("DONE entry choice review");
         return;
     }
+    if(getenv("CS_VAULT_COLLECT_REVIEW")){
+        static int tick=0;static bool pending=false;if(pending)return;++tick;
+        if(tick==1){NewGame();robin.demoSeen[DEMO_TUTORIAL_END]=true;CastleTutorialLoad(CastleTutorial::Done);GotoLobby();while(popUpCnt>0)ClosePopUp();LoadoutSetOpen(false);}
+        const int step=tick==30?0:tick==50?1:tick==170?2:tick==185?3:tick==200?4:tick==320?5:-1;
+        if(step>=0)CastleReviewTrace(MergeRouletteVaultReview(step)?"PASS vault collect accounting and flight":"FAIL vault collect");
+        const char* shot=tick==40?"vault-ready.png":tick==64?"vault-flight.png":tick==118?"vault-cards.png":tick==175?"vault-done.png":tick==214?"vault-gold-only.png":nullptr;
+        if(shot){pending=true;cocos2d::utils::captureScreen([](bool ok,const std::string&){pending=false;CastleReviewTrace(ok?"PASS vault capture":"FAIL vault capture");},std::string(path)+shot);}
+        if(tick==325)CastleReviewTrace("DONE vault collect review");
+        return;
+    }
     if(CastleUpgradeBlockReview(path))return;
     if(CastleFourFacilityReview(path))return;
     if(getenv("CS_BOX_INFO_REVIEW")){
         static int tick=0;static bool pending=false;static long long beforeGold=0,beforeGems=0;if(pending)return;++tick;
         if(tick==1){NewGame();robin.demoSeen[DEMO_TUTORIAL_END]=true;CastleTutorialLoad(CastleTutorial::Done);GotoLobby();while(popUpCnt>0)ClosePopUp();LoadoutSetOpen(false);robin.gold=110;robin.coin=0;}
         if(tick==20){touchFunc(TOUCH_FUNC_SHOP);PlayKey(PLAYER);systemKey=0;}
+        if(tick==22){
+            auto savedRects=std::move(touchRect);const int savedIndex=touchIndex;
+            const int cx=clipX,cy=clipY,cx2=clipX2,cy2=clipY2;
+            const bool savedLock=gTouchRectLocked;
+            SetSectionClip(0,DY,DX,DY,true);ResetRectPoint();
+            for(int i=0;i<512;++i)SetRectPoint(10,DY-10,20,20,TOTALTOUCHCNT-1-i);
+            bool touchOk=touchIndex==512&&GetTouchFunc(15,DY-15)==TOTALTOUCHCNT-512;
+            ResetRectPoint();touchOk=touchOk&&GetTouchFunc(15,DY-15)==0;
+            SetRectPoint(10,DY-10,20,20,TOUCH_FUNC_SHOP);
+            touchOk=touchOk&&touchIndex==1&&GetTouchFunc(15,DY-15)==TOUCH_FUNC_SHOP;
+            char storage[160];snprintf(storage,sizeof(storage),"touch storage old_bytes=%llu live_capacity_bytes=%llu",(unsigned long long)TOTALTOUCHCNT*5*sizeof(int),(unsigned long long)touchRect.capacity()*sizeof(touchRect[0]));CastleReviewTrace(storage);
+            CastleReviewTrace(touchOk?"PASS sparse commands use live rectangles and reset ignores stale hits":"FAIL touch rectangle storage");
+            touchRect=std::move(savedRects);touchIndex=savedIndex;gTouchRectLocked=savedLock;
+            clipX=cx;clipY=cy;clipX2=cx2;clipY2=cy2;
+            CastleReviewTrace(NetInventoryProtocolSelfTest()?"PASS 750 separate equipment grow sort save and reload beyond legacy storage":"FAIL growing inventory");
+            CastleReviewTrace(EquipmentMenuV2ReviewEquipping()?"PASS extended inventory equipment selection for all heroes":"FAIL extended equipment selection");
+            CastleReviewTrace(ShopBoxLootReview()?"PASS six loot tiers exact odds weighted variants no energy monotonic gold":"FAIL loot distribution");
+        }
         if(tick==80)scY[MENU_SHOP]=scT[MENU_SHOP];
         if(tick==120)scY[MENU_SHOP]=0;
-        if(tick==135){beforeGold=robin.gold;beforeGems=robin.coin;CastleReviewClick(TOUCH_FUNC_SHOP_BUYBOX1+1);PlayKey(PLAYER);systemKey=0;}
+        if(tick==135){robin.gold=99;beforeGold=robin.gold;beforeGems=robin.coin;CastleReviewClick(TOUCH_FUNC_SHOP_BUYBOX1);PlayKey(PLAYER);systemKey=0;}
         if(tick==155)CastleReviewTrace(robin.gold==beforeGold&&robin.coin==beforeGems&&popUpCnt>0?"PASS product opens details without charging":"FAIL detail charged currency");
         const char* shot=tick==60?"boxes-top.png":tick==100?"boxes-bottom.png":tick==160?"box-detail.png":nullptr;
         if(shot){pending=true;cocos2d::utils::captureScreen([](bool ok,const std::string&){pending=false;CastleReviewTrace(ok?"PASS box capture":"FAIL box capture");},std::string(path)+shot);}
         if(tick==170&&!getenv("CS_SHOP_PURCHASE_FLOW_REVIEW"))CastleReviewTrace("DONE box info review");
         if(getenv("CS_SHOP_PURCHASE_FLOW_REVIEW")){
-            if(tick==175){
+            static int shopScrollBeforeRates=0,shopLimitBeforeRates=0;static bool done=false;if(done)return;
+            static bool fell=false,openedChest=false,openedShot=false,summaryShot=false;
+            static float previousChestY=0;static std::vector<ITEM> paidInventory;
+            if(tick>245&&drawHandle==MD_GACHA){
+                if(previousChestY>0&&boxMark[0].motionFrame<0&&boxMark[0].y<previousChestY)fell=true;
+                previousChestY=boxMark[0].y;
+                if(boxMark[0].motion==BOXSTATUS_OPENED)openedChest=true;
+                const char* originalShot=openedChest&&!openedShot?"original-chest-open.png":gachaDepth==GACHA_DEPTH_SUMMARY&&!summaryShot?"original-summary.png":nullptr;
+                if(originalShot){
+                    if(gachaDepth==GACHA_DEPTH_SUMMARY)summaryShot=true;else openedShot=true;
+                    pending=true;cocos2d::utils::captureScreen([](bool ok,const std::string&){pending=false;CastleReviewTrace(ok?"PASS original chest capture":"FAIL original chest capture");},std::string(path)+originalShot);return;
+                }
+            }
+
+            if(tick==164){shopScrollBeforeRates=scY[MENU_SHOP];shopLimitBeforeRates=scT[MENU_SHOP];}
+            if(tick==165){CastleReviewClick(TOUCH_FUNC_SHOP_GACHA_RATES);PlayKey(PLAYER);systemKey=0;}
+            if(tick==185){
+                Core* layer=nullptr;for(auto node:curScene->getChildren())if((layer=dynamic_cast<Core*>(node)))break;
+                const int before=scY[MENU_SHOP];
+                if(layer){cocos2d::Touch touch;touch.setTouchInfo(992,DX*.5f,DY*.65f);layer->onTouchBegan(&touch,nullptr);
+                    for(int i=1;i<=8;++i){touch.setTouchInfo(992,DX*.5f,DY*(.65f-.3f*i/8));layer->onTouchMoved(&touch,nullptr);}
+                    layer->onTouchEnded(&touch,nullptr);
+                }
+                scAccelY=0;
+                CastleReviewTrace(scY[MENU_SHOP]>before?"PASS real touch drag scrolls probability popup":"FAIL probability touch drag");
+            }
+            if(tick==195){scY[MENU_SHOP]=scT[MENU_SHOP];scAccelY=0;}
+            if(tick==205)CastleReviewTrace(GachaRatesScrollAtBottomReview()?"PASS probability last card visible and bottom survives parent render":"FAIL probability bottom clipped");
+            if(tick==180||tick==205||tick==270){
+                const char* name=tick==180?"rates.png":tick==205?"rates-scroll.png":"purchase-reveal.png";
+                pending=true;cocos2d::utils::captureScreen([](bool ok,const std::string&){pending=false;CastleReviewTrace(ok?"PASS box capture":"FAIL box capture");},std::string(path)+name);
+            }
+            if(tick==215){CastleReviewClick(TOUCH_FUNC_SHOP_IAP_CANCEL);PlayKey(PLAYER);systemKey=0;}
+            if(tick==216)CastleReviewTrace(scY[MENU_SHOP]==shopScrollBeforeRates&&scT[MENU_SHOP]==shopLimitBeforeRates?"PASS probability close restores shop scroll":"FAIL shop scroll restoration");
+            if(tick==220){
                 CastleReviewClick(TOUCH_FUNC_SHOP_IAP_CANCEL);PlayKey(PLAYER);systemKey=0;
                 // This isolated review starts with a full character fixture.
                 // Reserve room for a valid purchase after the read-only case.
                 for(int i=0;i<GetMaxInven();++i){memset(&robin.inven[i],0,sizeof(ITEM));robin.inven[i].type=EMPTY;}
             }
-            if(tick==185){CastleReviewClick(TOUCH_FUNC_SHOP_BUYBOX1);PlayKey(PLAYER);systemKey=0;}
-            if(tick==200){beforeGold=robin.gold;beforeGems=robin.coin;CastleReviewClick(TOUCH_FUNC_SHOP_IAP_CONFIRM);PlayKey(PLAYER);systemKey=0;}
-            if(tick==225){
-                bool result=false;for(int i=0;i<touchIndex;++i)if(touchRect[i][4]==TOUCH_FUNC_SHOP_RESULT_CLOSE)result=true;
+            if(tick==230){robin.gold=1000;CastleReviewClick(TOUCH_FUNC_SHOP_BUYBOX1);PlayKey(PLAYER);systemKey=0;}
+            if(tick==245){beforeGold=robin.gold;beforeGems=robin.coin;CastleReviewClick(TOUCH_FUNC_SHOP_IAP_CONFIRM);PlayKey(PLAYER);systemKey=0;}
+            if(tick==340){
+                bool result=drawHandle==MD_GACHA&&gachaGrantedPresentation;
                 char diagnostic[160];snprintf(diagnostic,sizeof(diagnostic),"purchase result=%d gold=%lld before=%lld popups=%d",result,(long long)robin.gold,beforeGold,popUpCnt);CastleReviewTrace(diagnostic);
                 pending=true;cocos2d::utils::captureScreen([](bool ok,const std::string&){pending=false;CastleReviewTrace(ok?"PASS box capture":"FAIL box capture");},std::string(path)+"purchase-result.png");
             }
-            if(tick==235){
-                bool result=false;for(int i=0;i<touchIndex;++i)if(touchRect[i][4]==TOUCH_FUNC_SHOP_RESULT_CLOSE)result=true;
-                CastleReviewTrace(result&&robin.gold<beforeGold&&robin.gold>=beforeGold-GetBoxPrice(BOX_PAID0,GRADE_NORMAL)&&robin.coin==beforeGems?"PASS purchase confirms then shows granted rewards":"FAIL purchase result flow");
-                CastleReviewTrace("DONE box info review");
+            if(tick==350){
+                bool result=drawHandle==MD_GACHA&&gachaGrantedPresentation;
+                CastleReviewTrace(result&&robin.gold<=beforeGold-GetBoxPrice(BOX_PAID0,GRADE_NORMAL)+ShopTreasure::LootFor(0).goldMax&&robin.gold>=beforeGold-GetBoxPrice(BOX_PAID0,GRADE_NORMAL)&&robin.coin==beforeGems?"PASS purchase confirms then shows granted rewards":"FAIL purchase result flow");
+            }
+            if(tick==355){beforeGold=robin.gold;beforeGems=robin.coin;paidInventory.clear();for(int i=0;i<GetMaxInven();++i)paidInventory.push_back(robin.inven[i]);}
+            if(tick>355&&drawHandle==MD_GACHA&&tick%8==0)GachaKey();
+            if(tick>355&&drawHandle!=MD_GACHA){
+                bool inventorySame=paidInventory.size()==(size_t)GetMaxInven();
+                for(int i=0;inventorySame&&i<GetMaxInven();++i)inventorySame=!memcmp(&paidInventory[i],&robin.inven[i],sizeof(ITEM));
+                CastleReviewTrace(inventorySame?"PASS original reveal preserves all granted item instances and counts":"FAIL duplicate item grant");
+                CastleReviewTrace(fell&&openedChest&&summaryShot?"PASS original fall open cards summary flow":"FAIL original chest animation path");
+
+                CastleReviewTrace(!gachaGrantedPresentation&&robin.gold==beforeGold&&robin.coin==beforeGems?"PASS common reveal closes without duplicate grants":"FAIL common reward close");
+                CastleReviewTrace("DONE box info review");done=true;
             }
         }
         return;
@@ -623,11 +696,8 @@ static void CastleMenuReviewStep()
         const char* shot=tick==60?"recommended.png":tick==100?"supplies.png":tick==140?"supply-pool.png":tick==180?"packages.png":tick==240?"supplies-bottom.png":nullptr;
         if(shot) cocos2d::utils::captureScreen([](bool ok,const std::string&) {CastleReviewTrace(ok?"PASS spec capture":"FAIL spec capture");},std::string(path)+shot);
         if(tick==80) CastleReviewClick(TOUCH_FUNC_SHOP_MAIN_TAB+1);
-        if(tick==110) CastleReviewClick(TOUCH_FUNC_SHOP_HERO+1);
-        if(tick==115) CastleReviewClick(TOUCH_FUNC_SHOP_HERO+2);
-        if(tick==120) CastleReviewClick(TOUCH_FUNC_SHOP_SUPPLY_DETAIL);
-        if(tick==150) CastleReviewClick(TOUCH_FUNC_SHOP_CATALOG_CLOSE);
-        if(tick==160) CastleReviewClick(TOUCH_FUNC_SHOP_MAIN_TAB+2);
+        if(tick==110) CastleReviewClick(TOUCH_FUNC_SHOP_MAIN_TAB+2);
+        if(tick==160) CastleReviewClick(TOUCH_FUNC_SHOP_MAIN_TAB+1);
         if(tick==180) {
             bool sale=false,dock=false;
             for(int i=0;i<touchIndex;++i) {
@@ -637,7 +707,7 @@ static void CastleMenuReviewStep()
             }
             CastleReviewTrace(!sale&&!dock?"PASS unavailable packages hidden and dock input covered":"FAIL fake package or dock input");
         }
-        if(tick==200) {robin.gold=Max(robin.gold,GetBoxPrice(BOX_PAID5,GRADE_NORMAL));CastleReviewClick(TOUCH_FUNC_SHOP_MAIN_TAB+1);}
+        if(tick==200) {robin.gold=Max(robin.gold,GetBoxPrice(BOX_PAID5,GRADE_NORMAL));CastleReviewClick(TOUCH_FUNC_SHOP_MAIN_TAB);}
         if(tick==220) scY[MENU_SHOP]=scT[MENU_SHOP];
         if(tick==250) {cancelGold=robin.gold;CastleReviewClick(TOUCH_FUNC_SHOP_BUYBOX6);PlayKey(PLAYER);systemKey=0;}
         if(tick==265) {CastleReviewClick(TOUCH_FUNC_SHOP_IAP_CANCEL);PlayKey(PLAYER);systemKey=0;}

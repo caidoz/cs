@@ -33,6 +33,13 @@
 
 - 성 메뉴 성능·스크롤 수정: `LobbyDraw`는 단독 성 메뉴가 화면을 덮으면 뒤의 로비 성/동료를 그리지 않는다. `CastleFinal::Panel`은 최대 32개 스타일을 캐시하고 원본 성 미리보기는 크기·시설 레벨별로 캐시한다. 한 프레임에 같은 그림을 여러 번 표시할 때 Sprite 명령은 각각 사용한다. 스크롤은 `y - previousY`이며 터치 종료 때 레거시 범위로 덮어쓰지 않는다. `tools/castles/verify_scroll_perf.py`로 두 화면 크기에서 성능·양방향 스크롤·클리핑·시설 변경을 검증한다.
 
+### 로비 성 금고 수거 단추 (2026-11-21)
+
+- 금고(시간 비례 적립·상한·8시간 오프라인 한도)는 그대로 `Func_Item.cpp`의 `CastleIncome*`다. 새 저장 필드는 없다. 로비 단추와 연출은 `Classes/CastleVaultCollect.inc`(`CastleVault` 네임스페이스, `Func_MergeRoulette.cpp`가 포함) 한 곳이다.
+- 단추는 오른쪽 위, 환경설정 톱니 터치 영역 아래. 채움 게이지·쌓인 골드·가득 차면 테두리 펄스. 누르면 `CastleIncomeTake()`로 즉시 지급·저장하고 연출만 뒤따른다. 골드는 상단 골드 칸의 동전 자리(`LobbyResourceBarAnchor`)로, 장비 카드는 하단 `영웅`으로, 동료 조각은 `동료`로 날아간다(옛 뽑기 `GACHA_DEPTH_FLYTOBAR` 규칙). 날아가는 중인 골드는 `gLobbyGoldInFlight`로 상단 숫자에서만 뺀다.
+- 보너스는 골드 기준이며 `BalanceConfig.h`의 `VAULT_*`: 상한 대비 50% 이상이고 장비를 가진 플레이어면 히어로 라인 장비 1장(원정과 같은 `MergeExpedition::rowFor` 레벨), 100%이고 동료를 가진 플레이어면 보유 동료 조각 1개(`count+1`). 동료 보유 판정은 `lv>=1`이다(`count`는 조각 수라 0일 수 있다).
+- 검증: `python tools/lobby/verify_castle_vault.py` → `output/castle-vault/{850,1408}/`(가득 참→골드·장비·동료 세 갈래, 빈 금고, 골드만). `verify_entry_choice.py`도 함께 돌려 로비 터치 충돌이 없는지 본다.
+
 ### 몬스터 부위와 행동 전투 인수인계 (2026-11-16)
 
 - [몬스터 부위 인벤토리와 공격 및 보강 기획](docs/MONSTER_PARTS_COMBAT_DESIGN.md)을 먼저 읽는다. 기본 51종 및 색상 변종 포함 357개체의 부위 역할과 공격 구성을 수록한다.

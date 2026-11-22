@@ -3,6 +3,7 @@
 inline std::string legacySnapshotV13(const MergeRoulette::Run& run){
     std::istringstream input(run.encode());std::vector<std::string> fields;std::string field;
     while(input>>field)fields.push_back(field);
+    if(MergeRoulette::SaveVersion>=15)fields.pop_back(); // local energy was added after v14
     size_t cursor=2+15+3+2+MergeRoulette::Height;
     for(int list=0;list<2;++list){
         const int count=std::stoi(fields[cursor++]);

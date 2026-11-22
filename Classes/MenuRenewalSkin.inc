@@ -1,4 +1,4 @@
-// Lightweight UI skin. One pooled quad per panel; no bitmap mockups in the UI.
+﻿// Lightweight UI skin. One pooled quad per panel; no bitmap mockups in the UI.
 #include "Data/CastleRoomUpgrades.h"
 static int sReferencePanel=0;
 static bool DrawRenewalPanelRaw(int x,int y,int w,int h,int fill,int edge){
@@ -170,14 +170,7 @@ void DrawMenuBackdropCrop(cocos2d::Texture2D* texture,int sx,int sy,int sw,int s
  q->setOpacity(m_lgrpAlpha*255/32);AuditDrawnTexture(texture);q->visit();
 }
 void DrawCastleMenuBackdrop(int x,int top,int w,int h,int castle){
- // Reuse the ten existing native pixel room atlases; no new detailed art.
- castle=Max(0,Min(9,castle));const int img=MERGE_REBUILD_ROOMS_IMG+castle;
- if(!sprite[img])LoadImg(img);if(!sprite[img])return;
- auto* texture=sprite[img]->getTexture();texture->setAliasTexParameters();
- const auto size=texture->getContentSizeInPixels();const int tw=(int)size.width/4,th=(int)size.height/6;
- const float scale=Max(w/(float)tw,h/(float)th);
- const int sw=Min(tw,(int)(w/scale)),sh=Min(th,(int)(h/scale));
- DrawMenuBackdropCrop(texture,2*tw+(tw-sw)/2,(th-sh)/2,sw,sh,x,top,w,h);
+ MergeRouletteCastleMenuBackdrop(Max(0,Min(9,castle)),x,top,w,h);
 }
 
 // Every castle has its own fitting room, including the painted circular dais.

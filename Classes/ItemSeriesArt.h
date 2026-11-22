@@ -387,7 +387,7 @@ static const Art Artwork[Count]={
 {24,10,216,237,false},
 {48,15,144,226,false},
 {24,8,216,241,false},
-{1,0,255,256,true},
+{1,0,255,256,false},
 {9,0,247,255,false},
 {16,3,231,250,false},
 {32,6,200,245,false},

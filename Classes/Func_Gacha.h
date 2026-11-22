@@ -316,6 +316,11 @@ const int castleRewardBoxRate[CAP_CASTLE][REWARD_BOX_COUNT] =
 int GetRewardBoxIndex(int boxDetail);
 int GetBoxCandidateCountByStar(int itemType, int star);
 int GetBoxCandidateDetailByStar(int itemType, int star, int candidateIndex);
+struct SHOP_BOX_CANDIDATE {int type,detail,grade,weight;double chance;};
+std::vector<SHOP_BOX_CANDIDATE> ShopBoxCandidates(int tier);
+double ShopBoxStarChance(int tier,int star);
+bool GenerateShopBoxReward(int tier);
+bool ShopBoxLootReview();
 int BoxRandomRange(int minValue, int maxValue);
 int RollBoxGrade(
 	const int gradeRate[BOX_GRADE_COUNT],
@@ -382,3 +387,7 @@ void DrawGachaItemEffect(
 void GachaKey(void);
 
 #endif
+
+// Presentation-only entry for an already committed shop transaction.
+extern bool gachaGrantedPresentation;
+bool GotoGachaGranted(const ITEM* items,int count,int detail);

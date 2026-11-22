@@ -17,7 +17,7 @@
 
 namespace MergeRoulette {
 enum { Width=12, Height=6, Cells=Width*Height, MaxLevel=BLOCK_LV_MAX, SpinLimit=BOARD_SPINS,
-       Roles=4, Sword=4, Armor=5, Boots=6, Helm=7, Gloves=8, Pants=9, FamilyCount=10, GearCount=6, WavesPerStage=15, RosterCell=8, SaveVersion=14 };
+       Roles=4, Sword=4, Armor=5, Boots=6, Helm=7, Gloves=8, Pants=9, FamilyCount=10, GearCount=6, WavesPerStage=15, RosterCell=8, SaveVersion=15 };
 inline int BossTier(int wave) {return wave==4?1:wave==9?2:wave==14?3:0;}
 inline bool DefensiveGear(int family) {return family==Armor||family==Helm||family==Pants;}
 struct Shape {
@@ -110,6 +110,10 @@ struct Run {
     unsigned rng=1;
     int families[3]={Sword,Armor,Boots};
     int selected=Sword, spins=SpinLimit;
+    enum { BattleEnergyMax=5 };
+    int battleEnergy=BattleEnergyMax;
+    bool spendBattleEnergy(){if(battleEnergy<=0)return false;--battleEnergy;return true;}
+    void refillBattleEnergy(){battleEnergy=BattleEnergyMax;}
     long long lives=5, maxLives=5;
     bool realVitals=false;
     long long baseArmor=0,enemyAttack=1;
@@ -794,6 +798,7 @@ struct Run {
         o<<' '<<counterResolved<<' '<<realVitals<<' '<<baseArmor<<' '<<enemyAttack;
         o<<' '<<guard<<' '<<guardMax<<' '<<effects.charge;   //v11: 방어막 통 (v13: 최대치 = 체력×ShieldPct, 장비는 회복)
         o<<' '<<monsterNpc<<' '<<monsterActionTurn<<' '<<passing; //v12: action cycle and spin counter turns
+        o<<' '<<battleEnergy; //v15: local battle supply, separate from admission energy
         return o.str();
     }
     static bool crewOk(const Block& b) {
@@ -802,7 +807,7 @@ struct Run {
     bool decode(const std::string& text) {
         Run r; r.roster=roster; std::istringstream in(text); std::string magic;int version;
         // v7's accessory family (6) becomes boots, preserving the run and utility effects.
-        if(!(in>>magic>>version)||magic!="MR3"||(version!=SaveVersion&&version!=13&&version!=12&&version!=11&&version!=10&&version!=9&&version!=8&&version!=7)) return false;
+        if(!(in>>magic>>version)||magic!="MR3"||(version!=SaveVersion&&version!=14&&version!=13&&version!=12&&version!=11&&version!=10&&version!=9&&version!=8&&version!=7)) return false;
         if(!(in>>r.rng>>r.selected>>r.spins>>r.lives>>r.maxLives>>r.wave>>r.stage>>r.enemyHp>>r.enemyMax
              >>r.dot>>r.dotTurns>>r.skipTurns>>r.choosing>>r.lost>>r.drafted)) return false;
         if(!r.rng || r.selected<0 || r.selected>=FamilyCount || r.spins<0 || r.spins>100
@@ -881,6 +886,7 @@ struct Run {
             if(r.passing?(!r.attacking||count!=0||r.nextShot!=0):(r.attacking&&count!=(int)sorted.size()))return false;
         }
         if(r.counterResolved&&(!r.attacking||r.nextShot!=count||r.enemyHp<=0))return false;
+        if(version>=15&&(!(in>>r.battleEnergy)||r.battleEnergy<0||r.battleEnergy>BattleEnergyMax))return false;
         in>>std::ws;if(!in.eof()) return false;
         if((r.lives==0)!=r.lost&&!(r.attacking&&r.counterResolved&&r.lives==0&&!r.lost)) return false;
         int passiveBefore=0;

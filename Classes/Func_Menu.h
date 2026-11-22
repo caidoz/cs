@@ -141,6 +141,9 @@ void DrawCombatPower(long long pow, int icon, int x, int y, int alpha, float zoo
 void StarBarDraw(long long pow, int icon, int x, int y, int alpha, float zoom, bool rainbowShop = false);
 void IapConfirmDraw(int itemType, int detail, int x, int y, float zoom);
 void GachaRatesDraw(int boxDetail);
+void GachaRatesScrollOpen();
+void GachaRatesScrollClose();
+bool GachaRatesScrollAtBottomReview();
 void ShopJumpToIapSection(int section);
 void ShopSelectPixelCategory(int category);
 bool ShopCatalogTouch(int command);

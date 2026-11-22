@@ -368,7 +368,7 @@ static void NetBuildDump(std::string& out)
 	TableBegin("inventory",
 		"item_uid\tuser_id\titem_type\tdetail\tgrade\tlv\tcnt\tcooldown\texp\tseen");
 
-	for (i = 0; i < TOTALINVENTORY; i++) {
+	for (i = 0; i < GetMaxInven(); i++) {
 		if (robin.inven[i].type == EMPTY)
 			continue;
 
@@ -388,7 +388,7 @@ static void NetBuildDump(std::string& out)
 
 	//---- inventory_option / inventory_socket ----
 	TableBegin("inventory_option", "item_uid\tslot\topt_type\topt_value");
-	for (i = 0; i < TOTALINVENTORY; i++) {
+	for (i = 0; i < GetMaxInven(); i++) {
 		if (robin.inven[i].type == EMPTY)
 			continue;
 
@@ -402,11 +402,20 @@ static void NetBuildDump(std::string& out)
 			PutNum(robin.inven[i].option[j][1]);
 			RowEnd();
 		}
+        // Reserved option slots preserve each instance without changing the
+        // server schema or the legacy ROBINDATA byte layout. Old clients skip them.
+        const ITEM& item=robin.inven[i];
+        const int metadata[]={ (int)(unsigned int)item.id,(int)((unsigned long long)item.id>>32),item.value,item.subValueType,item.subValue,item.icon,(int)item.gold,(int)item.set,item.broken?1:0,item.locked?1:0 };
+        for(int m=0;m<20;++m){
+            int value=0;if(m<10)value=metadata[m];else memcpy(&value,item.name+(m-10)*4,4);
+            if(m>=10&&!value)continue;
+            PutNum(i+1);PutNum(128+m);PutNum(-32760);PutNum(value);RowEnd();
+        }
 	}
 	TableEnd(body);
 
 	TableBegin("inventory_socket", "item_uid\tslot\tgem");
-	for (i = 0; i < TOTALINVENTORY; i++) {
+	for (i = 0; i < GetMaxInven(); i++) {
 		if (robin.inven[i].type == EMPTY)
 			continue;
 
@@ -962,10 +971,11 @@ static void NetApplyDump(NetTableMap& tables)
 		int cG = ColIdx(t, "grade"), cL = ColIdx(t, "lv"), cC = ColIdx(t, "cnt");
 		int cCd = ColIdx(t, "cooldown"), cE = ColIdx(t, "exp"), cS = ColIdx(t, "seen");
 
+		InventoryClearOverflow();
 		//item_uid -> 인벤 자리번호. 옵션/소켓이 이 번호로 붙는다.
 		std::map<long long, int> uidToSlot;
 
-		for (i = 0; i < TOTALINVENTORY; i++) {
+		for (i = 0; i < GetMaxInven(); i++) {
 			memset(&robin.inven[i], 0, sizeof(ITEM));
 			robin.inven[i].type = EMPTY;
 
@@ -978,7 +988,7 @@ static void NetApplyDump(NetTableMap& tables)
 
 		int slot = 0;
 
-		for (r = 0; r < t.rows.size() && slot < TOTALINVENTORY; r++) {
+		for (r = 0; r < t.rows.size(); r++) {
 			ITEM* p = &robin.inven[slot];
 
 			p->type = (unsigned char)RowNum(t.rows[r], cT, EMPTY);
@@ -994,7 +1004,7 @@ static void NetApplyDump(NetTableMap& tables)
 			slot++;
 		}
 
-		robin.count = (unsigned short)slot;
+		robin.count = (unsigned short)Min(65535,slot);
 
 		//옵션
 		if ((it = tables.find("inventory_option")) != tables.end()) {
@@ -1009,6 +1019,18 @@ static void NetApplyDump(NetTableMap& tables)
 					continue;
 
 				j = (int)RowNum(o.rows[r], oS, -1);
+				if(j>=128&&j<148&&RowNum(o.rows[r],oT,0)==-32760){
+                    ITEM& item=robin.inven[f->second];const int value=(int)RowNum(o.rows[r],oV,0);
+                    switch(j-128){
+                    case 0:item.id=(long long)(((unsigned long long)item.id&0xFFFFFFFF00000000ULL)|(unsigned int)value);break;
+                    case 1:item.id=(long long)(((unsigned long long)(unsigned int)value<<32)|((unsigned long long)item.id&0xFFFFFFFFULL));break;
+                    case 2:item.value=value;break;case 3:item.subValueType=value;break;case 4:item.subValue=value;break;
+                    case 5:item.icon=(unsigned short)value;break;case 6:item.gold=(unsigned int)value;break;case 7:item.set=value;break;
+                    case 8:item.broken=value!=0;break;case 9:item.locked=value!=0;break;
+                    default:memcpy(item.name+(j-138)*4,&value,4);break;
+                    }
+                    continue;
+                }
 
 				if (j < 0 || j >= 12)
 					continue;
@@ -1356,6 +1378,33 @@ static void NetApplyDump(NetTableMap& tables)
 //   - revision을 검사해서 나중 것을 거절하고
 //   - 파일(=DB)에 원자적으로 쓴다
 //=============================================================================
+
+bool NetInventoryProtocolSelfTest(void){
+ ROBINDATA* saved=new ROBINDATA(robin);const auto overflow=InventoryOverflowSnapshot();
+ bool ok=true;InventoryClearOverflow();
+ for(int i=0;i<GetMaxInven();++i){memset(&robin.inven[i],0,sizeof(ITEM));robin.inven[i].type=EMPTY;}
+ robin.count=0;
+ for(int n=0;n<750;++n){
+  ok=GetItem(ITEM_SWORD,1,0,GRADE_NORMAL,1,0)!=0&&ok;
+  robin.inven[itemObj].option[0][0]=0;robin.inven[itemObj].option[0][1]=n+1;
+  robin.inven[itemObj].locked=n%2!=0;
+ }
+ ok=ok&&InventoryUsed()==750&&GetMaxInven()>=750;
+ if(!ok)CCLOG("inventory review grant slots=%d used=%d",GetMaxInven(),InventoryUsed());
+ for(int i=0;i<750;++i)for(int j=i+1;j<750;++j)ok=ok&&robin.inven[i].id!=robin.inven[j].id;
+ if(!ok)CCLOG("inventory review instance identity failed");
+ ArrangeInven();
+ const ITEM last=robin.inven[749];
+ std::string dump;NetBuildDump(dump);NetTableMap tables;long long user=0,revision=0;
+ if(NetParseDump(dump,tables,&user,&revision)){
+  ok=ok&&tables["inventory"].rows.size()==750;
+  InventoryClearOverflow();
+  NetApplyDump(tables);
+  ok=ok&&InventoryUsed()==750&&GetMaxInven()>=750&&robin.inven[749].type==ITEM_SWORD&&robin.inven[749].count==last.count&&robin.inven[749].option[0][1]==750&&robin.inven[749].id==last.id&&robin.inven[749].value==last.value&&robin.inven[749].locked==last.locked;
+ }else {ok=false;CCLOG("inventory review dump parse failed");}
+ if(!ok)CCLOG("inventory review restore used=%d slots=%d option=%d identity=%d value=%d locked=%d",InventoryUsed(),GetMaxInven(),robin.inven[749].option[0][1],robin.inven[749].id==last.id,robin.inven[749].value==last.value,robin.inven[749].locked==last.locked);
+ robin=*saved;delete saved;InventoryRestoreOverflow(overflow);return ok;
+}
 
 bool NetCastleProtocolSelfTest(void)
 {

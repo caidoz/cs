@@ -1,4 +1,4 @@
-// Block upgrade screen, using existing six-stage room and cannon resources.
+﻿// Block upgrade screen, using existing six-stage room and cannon resources.
 namespace CastleFinal {
 static void UpgradeAction(const char* text,int x,int top,int width,int command,bool enabled){
  const int h=CastleUpgradeBlocks::TouchHeight;
@@ -65,7 +65,7 @@ void CastleMenuNewDraw(){
  const int ph=PreviewHeight();Panel(left,y,width,ph,0x142E43,0x43859B);
  DrawCastleMenuBackdrop(left+4,y-4,width-8,ph-8,c);
  SetAlpha(10);MemRect(left+4,y-4,width-8,ph-8,0x071527);SetAlpha(32);
- RebuildPreview(c,left+12,y-42,width-24,ph-96);
+ RebuildPreview(c,left+12,y-42,width-24,ph-96,true);
  CastleLabel(CastleFacilities::Themes[c],DX/2,y-14,width-32,.85f);
  Button(robin.castle==c?"현재 출정 성":"출정 성 선택",DX/2-100,y-ph+56,200,48,TOUCH_FUNC_CASTLE_NEW_SELECT,owned&&robin.castle!=c);
  y-=ph+12;

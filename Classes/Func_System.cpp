@@ -2021,6 +2021,7 @@ int GetSlotCrewCnt(void)
 
 void NewGame(void)
 {
+	InventoryClearOverflow();
 	int i, j, k;
 
 	InitGame();
@@ -2040,7 +2041,7 @@ void NewGame(void)
 	robin.count = 0;
 	memset(robin.inven, 0, sizeof(robin.inven));
 
-	for (i = 0; i < TOTALINVENTORY; i++) {
+	for (i = 0; i < GetMaxInven(); i++) {
 		robin.inven[i].type = EMPTY;
 		for (j = 0; j < 12; j++)
 			robin.inven[i].option[j][0] = EMPTYINT;
@@ -4193,8 +4194,16 @@ void GotoNextStage(void)
 //- rewardMark의 순서대로 획득을 하는데, 첫 아이템이 
 //2.박스를 세팅하고,
 //3.
+static std::vector<ITEM> grantedGachaItems;
+bool GotoGachaGranted(const ITEM* items,int count,int detail){
+ if(!items||count<1||count>GACHA_MAX_REWARD_CARD||gachaPrepared)return false;
+ grantedGachaItems.assign(items,items+count);
+ boxMark[0].type=ITEM_BOX;boxMark[0].detail=detail;boxMark[0].grade=GRADE_NORMAL;
+ GotoGacha();grantedGachaItems.clear();return gachaPrepared;
+}
 void GotoGacha()
 {
+ gachaGrantedPresentation=!grantedGachaItems.empty();
 	int i;
 
 	//--------------------------------------------------------
@@ -4355,7 +4364,7 @@ void GotoGacha()
 		false;
 
 	gachaRewardReceived =
-		false;
+		gachaGrantedPresentation;
 
 	gachaCardCanAdvance =
 		false;
@@ -4395,8 +4404,11 @@ void GotoGacha()
 	//--------------------------------------------------------
 	// 실제 성 상자 보상 생성
 	//--------------------------------------------------------
-	if (GenerateCastleBoxReward(
-		gachaBoxDetail) == false)
+	if(gachaGrantedPresentation){
+        boxCardItemCnt[0]=(int)grantedGachaItems.size();
+        for(int n=0;n<boxCardItemCnt[0];++n)boxCardItem[0][n]=grantedGachaItems[n];
+    }
+    if (!gachaGrantedPresentation && GenerateCastleBoxReward(gachaBoxDetail) == false)
 	{
 		CCLOG(
 			"GotoGacha FAILED: GenerateCastleBoxReward detail=%d",
@@ -4850,6 +4862,7 @@ void LoadRoulette(void)
 
 void LoadGame(void)
 {
+	InventoryClearOverflow();
 	int i;
 
 	InitGame();
@@ -4862,7 +4875,7 @@ void LoadGame(void)
 #endif
 
 	//세이브구조체에 카피
-	//for (i = 0; i < TOTALINVENTORY; i++)
+	//for (i = 0; i < GetMaxInven(); i++)
 	//	memcpy(&robin.inven[i], saveMem + i * sizeof(ITEM), sizeof(ITEM));
 	memcpy((char*)&robin, saveMem, sizeof(ROBINDATA));
 	// The former debug capacity was 99; normalize legacy energy to the castle cap.

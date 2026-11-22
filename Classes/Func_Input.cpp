@@ -264,11 +264,11 @@ void TitleKey(void)
 					              - (int)itemStartCnt[t];
 
 					for (d = 0; d < cnt; d++) {
-						while (slot < TOTALINVENTORY
+						while (slot < GetMaxInven()
 							&& robin.inven[slot].type != EMPTY)
 							slot++;
 
-						if (slot >= TOTALINVENTORY)
+						if (slot >= GetMaxInven())
 							break;
 
 						MakeItem(&robin.inven[slot], t, 1, GRADE_NORMAL,
@@ -425,7 +425,7 @@ void TitleKey(void)
 			//인벤 앞쪽 TOTAL_CREW칸이 동료라는 보장은 NewGame() 직후에만 성립하고,
 			//그 뒤 장비/아이템이 들어가면 배치가 달라진다. 그래서 인덱스가 아니라
 			//type으로 찾는다.
-			for (i = 0; i < TOTALINVENTORY; i++) {
+			for (i = 0; i < GetMaxInven(); i++) {
 				if (robin.inven[i].type != ITEM_CREW)
 					continue;
 
@@ -764,7 +764,7 @@ void PlayKey(int obj)
 
 		winAniFrame = 1;
 	}
-	else if (systemKey >= AVK_ITEMDETAIL && systemKey < AVK_ITEMDETAIL + TOTALINVENTORY) {
+	else if (systemKey >= AVK_ITEMDETAIL && systemKey < AVK_ITEMDETAIL + INVENTORY_COMMAND_RANGE) {
 		//튜토리얼에서 안내하던 동료 카드를 눌러 상세보기로 들어왔으면 그 단계를 마친 것으로 둔다.
 		//스팟라이트/터치제한이 이 플래그를 보고 풀린다.
 		if (GetTutorialCrewCardTouchFunc() == TOUCH_FUNC_ITEMDETAIL + (systemKey - AVK_ITEMDETAIL)) {
@@ -911,7 +911,7 @@ void PlayKey(int obj)
 		robin.slotCrew[menuCur] = crewData[(systemKey  - AVK_MENUCUR_CREWSET) *CREWDATASIZE + CREWDATA_TYPE];
 		SetBattleCrew();//다시 재설정.
 	}
-	else if (systemKey >= AVK_EQUIP_INVENTORY && systemKey < AVK_EQUIP_INVENTORY + TOTALINVENTORY) {
+	else if (systemKey >= AVK_EQUIP_INVENTORY && systemKey < AVK_EQUIP_INVENTORY + INVENTORY_COMMAND_RANGE) {
 		switch (robin.inven[systemKey - AVK_EQUIP_INVENTORY].type) {
 		case ITEM_CREW:
 			robin.slotCrew[menuX] = crewData[robin.inven[systemKey - AVK_EQUIP_INVENTORY].detail * CREWDATASIZE + CREWDATA_TYPE];
@@ -931,7 +931,7 @@ void PlayKey(int obj)
 				EquipItem(&ao[PLAYER], &robin.inven[systemKey-AVK_EQUIP_INVENTORY]);
 				SetPlayerHero(curHero);
 				// Equipping compacts/sorts inventory. Keep this exact instance open.
-				if(menuDepth==1)for(int i=0;i<TOTALINVENTORY;++i)
+				if(menuDepth==1)for(int i=0;i<GetMaxInven();++i)
 					if(robin.inven[i].type!=EMPTY&&robin.inven[i].id==selectedId){menuItem=i;break;}
 			}
 
@@ -2221,7 +2221,7 @@ void PlayKey(int obj)
 			POPUP* confirm = (popUpCnt > 0 && popUp[popUpCnt - 1].type == POPUPTYPE_IAP_CONFIRM)
 				? &popUp[popUpCnt - 1] : NULL;
 			if (confirm && confirm->itemType == ITEM_BOX) {
-				scY[MENU_SHOP] = 0;
+				GachaRatesScrollOpen();
 				SetPopUp(POPUPTYPE_GACHA_RATES, DX / 2, POPUPPOSITION_Y,
 					POPUPWINDOWSIZE_X, POPUPWINDOWSIZE_Y, ITEM_BOX, confirm->itemDetail, false,
 					false, false, false, false, false, false, false, false, false, false,
@@ -2919,7 +2919,7 @@ bool gTouchRectLocked = false;
 void ResetRectPoint(void)
 {
 	gTouchRectLocked = false;
-	memset(touchRect, 0, sizeof(touchRect));
+	// Command IDs are sparse; reset the live rectangle count, not their numeric range.
 	touchIndex = 0;
 }
 
@@ -2984,6 +2984,7 @@ void SetRectPoint(int rx, int ry, int width, int height, int func)
 	if (clippedX1 >= clippedX2) return;
 	if (clippedY1 <= clippedY2) return;
 
+	if((size_t)touchIndex==touchRect.size())touchRect.push_back({});
 	touchRect[touchIndex][0] = clippedX1;
 	touchRect[touchIndex][1] = clippedY1;
 	touchRect[touchIndex][2] = clippedX2 - clippedX1;
@@ -3199,13 +3200,13 @@ void touchFunc(int func)
 	else if (func >= TOUCH_FUNC_COLLECTIONS_REWARD && func < TOUCH_FUNC_COLLECTIONS_REWARD + TOTAL_COLLECTIONS) {
 		systemKey = AVK_COLLECTIONS_REWARD + func - TOUCH_FUNC_COLLECTIONS_REWARD;
 	}
-	else if (func >= TOUCH_FUNC_ITEMDETAIL && func < TOUCH_FUNC_ITEMDETAIL + TOTALINVENTORY) {
+	else if (func >= TOUCH_FUNC_ITEMDETAIL && func < TOUCH_FUNC_ITEMDETAIL + INVENTORY_COMMAND_RANGE) {
 		systemKey = AVK_ITEMDETAIL + func - TOUCH_FUNC_ITEMDETAIL;
 	}
 	else if (func >= TOUCH_FUNC_EQUIPDETAIL && func < TOUCH_FUNC_EQUIPDETAIL + TOTALEQUIP) {
 		systemKey = AVK_EQUIPDETAIL + func - TOUCH_FUNC_EQUIPDETAIL;
 	}
-	else if (func >= TOUCH_FUNC_EQUIP_INVENTORY && func < TOUCH_FUNC_EQUIP_INVENTORY + TOTALINVENTORY) {
+	else if (func >= TOUCH_FUNC_EQUIP_INVENTORY && func < TOUCH_FUNC_EQUIP_INVENTORY + INVENTORY_COMMAND_RANGE) {
 		//for (i = 0; i < TOTALITEMTYPE; i++)
 		//	if (func - TOUCH_FUNC_EQUIP_INVENTORY < itemStartCnt[i + 1]) {
 		//		itemType = i;

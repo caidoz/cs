@@ -1733,7 +1733,7 @@ void EquipDetailDraw(ITEM* it)
 
 		//같은 것(종류 · 번호 · 등급)이 몇 점인가. MergeItems 가 세는 것과
 		//같은 기준이다.
-		for (i = 0; i < TOTALINVENTORY; i++) {
+		for (i = 0; i < GetMaxInven(); i++) {
 			const ITEM* o = &robin.inven[i];
 
 			//합치는 쪽과 같은 규칙이다 - 착용 중 · 잠금 · 전설은 재료가
@@ -4318,7 +4318,7 @@ long long GetBoxPrice(int detail, int grade)
 int GetItemCategoryCnt(int category) {
 	int i;
 	int j = 0;
-	for (i = 0; i < TOTALINVENTORY; i++) {
+	for (i = 0; i < GetMaxInven(); i++) {
 		if (robin.inven[i].type == category) {
 			j++;
 		}
@@ -5634,7 +5634,7 @@ int GetCrewInventoryIdx(int type)
 {
 	int i = 0;
 
-	for (i = 0; i < TOTALINVENTORY; i++) {
+	for (i = 0; i < GetMaxInven(); i++) {
 		if (robin.inven[i].type == ITEM_CREW && robin.inven[i].detail == GetCrewIdxFromType(type)) {
 			return i;
 		}
@@ -5664,10 +5664,10 @@ void CrewMenuDraw(int x, int y, float zoom)
 
 	curHero = ROBIN;
 
-	int itemInvenIdxList[TOTALINVENTORY];
+	std::vector<int> itemInvenIdxList(GetMaxInven());
 
 	j = 0;
-	for (i = 0; i < TOTALINVENTORY; i++) {
+	for (i = 0; i < GetMaxInven(); i++) {
 		if (robin.inven[i].type == ITEM_CREW) {
 			itemInvenIdxList[j] = i;
 			j++;
@@ -7020,11 +7020,11 @@ void CollectionsDraw(int x, int y, float zoom)
 	// 3. 장비 리스트
 	SetSectionClip(0, y - (float)560 * zoom, DX, WINY - (float)600 * zoom, false);
 
-	int itemInvenIdxList[TOTALINVENTORY];
+	std::vector<int> itemInvenIdxList(GetMaxInven());
 
 
 	j = 0;
-	for (i = 0; i < TOTALINVENTORY; i++) {
+	for (i = 0; i < GetMaxInven(); i++) {
 		if (robin.inven[i].type == menuX * TOTALCHAR) {
 			itemInvenIdxList[j] = i;
 			j++;
@@ -7589,6 +7589,72 @@ static void DrawTreasurePrice(int detail,int cx,int top,int width){
  DrawIcon(ITEM_PREMIUM_DIAMOND_ICON,left,top,64.0f*.5f/ITEMICONSIZE,false,false,false,true);
  SetFontColor(0xF6EACA);DrawTextStrSystem(number,left+40,top-4,z,LEFT,false);
 }
+namespace ShopRatesScroll {
+ bool active=false;
+ int shopY=0,shopLimit=0;
+ float lastLabelBottom=0,viewBottom=0,viewTop=0;
+}
+void GachaRatesScrollOpen(){
+ if(!ShopRatesScroll::active){ShopRatesScroll::shopY=scY[MENU_SHOP];ShopRatesScroll::shopLimit=scT[MENU_SHOP];}
+ ShopRatesScroll::active=true;scY[MENU_SHOP]=scT[MENU_SHOP]=0;scAccelY=scRecoveryFrameY=0;
+}
+void GachaRatesScrollClose(){
+ if(!ShopRatesScroll::active)return;
+ scY[MENU_SHOP]=ShopRatesScroll::shopY;scT[MENU_SHOP]=ShopRatesScroll::shopLimit;
+ scAccelY=scRecoveryFrameY=0;ShopRatesScroll::active=false;
+}
+bool GachaRatesScrollAtBottomReview(){
+ return ShopRatesScroll::active&&scT[MENU_SHOP]>0&&scY[MENU_SHOP]==scT[MENU_SHOP]&&ShopRatesScroll::lastLabelBottom>=ShopRatesScroll::viewBottom&&ShopRatesScroll::lastLabelBottom<ShopRatesScroll::viewTop;
+}
+static void TreasurePurchaseDraw(int detail){
+ const float s=DX/640.f;const int tier=detail-BOX_PAID0;
+ const auto& loot=ShopTreasure::LootFor(tier);const auto pool=ShopBoxCandidates(tier);
+ static const char* names[]={u8"브론즈 보물상자",u8"실버 보물상자",u8"크리스탈 보물상자",u8"아케인 보물상자",u8"로열 보물상자",u8"레전드 보물상자"};
+ int low=6,high=1;for(const auto& c:pool){low=Min(low,c.grade+1);high=Max(high,c.grade+1);}
+ ResetRectPoint();SetAlpha(23);MemRect(0,DY,DX,DY,0x040B10);SetAlpha(32);SetColor(0);
+ const int w=(int)(552*s),h=(int)(370*s),x=(DX-w)/2,top=DY/2+(int)(80*s);
+ const auto y=[&](int d){return top-(int)(d*s);};
+ const auto text=[&](const char* value,int cx,int ty,float size=0.8f,int color=0xFFF0CD){SetFontColor(color);CenterTextStrSolid(value,cx,ty,size*s);};
+ DrawMenuReferencePanel(x,top,w,h,0,0x173C45,0xD9B775);
+ // A single uniformly scaled chest floats above the compact information panel.
+ const int img=BOX0_IMG+detail-BOX_CASTLE0;if(!sprite[img])LoadImg(img);
+ const float z=220*s/512.f;
+ if(sprite[img])DrawImageScale(496,512,0,0,DX/2-248*z,top+(int)(216*s),false,0,0,0,0,z,z,sprite[img],img);
+ text(names[tier],DX/2,y(21),.97f);
+ DrawMenuReferencePanel(x+w-(int)(43*s),y(10),(int)(32*s),(int)(32*s),0,0x164A5B,0x8DADAD);
+ text("X",x+w-(int)(27*s),y(16),.70f);
+ SetRectPoint(x+w-(int)(43*s),y(10),(int)(32*s),(int)(32*s),TOUCH_FUNC_SHOP_IAP_CANCEL);
+ // Show both possible card families together, rather than a single generic card.
+ DrawMenuReferencePanel(x+(int)(16*s),y(62),w-(int)(32*s),(int)(82*s),0,0x205C60,0xD9B775);
+ for(int k=0;k<2;++k){
+  auto it=std::find_if(pool.begin(),pool.end(),[&](const SHOP_BOX_CANDIDATE& c){return (c.type==ITEM_CREW)==(k==0);});
+  if(it!=pool.end())DrawItemCard(it->type,it->detail,it->grade,1,1,false,x+(int)((30+k*61)*s),y(69),false,.18f*s,false,false,false,false,0);
+ }
+ text(u8"동료 · 장비",x+(int)(245*s),y(75),.79f);
+ text(u8"별 등급 범위",x+(int)(245*s),y(107),.55f,0xC4DDD7);
+ DrawStarNum(ICON_STAR,low,x+(int)(360*s),y(87),.78f*s);
+ text("~",x+(int)(417*s),y(91),.76f);
+ DrawStarNum(ICON_STAR,high,x+(int)(450*s),y(87),.78f*s);
+ const int tileW=(w-(int)(44*s))/2;
+ for(int k=0;k<2;++k)DrawMenuReferencePanel(x+(int)(16*s)+k*(tileW+(int)(12*s)),y(160),tileW,(int)(72*s),0,0x102E38,0x6D9296);
+ DrawItemCardBack(low,x+(int)(29*s),y(169),.105f*s,1);
+ char value[80];snprintf(value,sizeof(value),u8"%d~%d장",loot.cardsMin,loot.cardsMax);
+ text(value,x+(int)(154*s),y(171),.88f);
+ text(u8"카드",x+(int)(154*s),y(204),.52f,0xC4DDD7);
+ const int right=x+(int)(16*s)+tileW+(int)(12*s);
+ DrawIcon(ICON_GOLD,right+(int)(13*s),y(174),31*s/ITEMICONSIZE,false,false,false,true);
+ snprintf(value,sizeof(value),"%d~%d",loot.goldMin,loot.goldMax);
+ text(value,right+(int)(147*s),y(170),tier>=4?.69f:.82f);
+ snprintf(value,sizeof(value),u8"%d%% 확률",loot.goldRate);text(value,right+(int)(147*s),y(204),.52f,0xC4DDD7);
+ DrawMenuReferencePanel(x+(int)(100*s),y(247),w-(int)(200*s),(int)(35*s),0,0x1C5258,0x91B4AE);
+ text(u8"상세 확률표",DX/2,y(254),.66f);
+ SetRectPoint(x+(int)(100*s),y(247),w-(int)(200*s),(int)(35*s),TOUCH_FUNC_SHOP_GACHA_RATES);
+ const bool canBuy=!IapIsBusy()&&(ShopTreasure::UsesGems(tier)?robin.coin:robin.gold)>=GetBoxPrice(detail,GRADE_NORMAL);
+ const int bx=x+(int)(148*s),bw=w-(int)(296*s),by=y(300),bh=(int)(55*s);
+ DrawMenuReferencePanel(bx,by,bw,bh,0,canBuy?0x168044:0x37474B,canBuy?0xF4CB71:0x8B9790);
+ DrawTreasurePrice(detail,DX/2,by-(int)(12*s),bw-(int)(24*s));
+ if(canBuy)SetRectPoint(bx,by,bw,bh,TOUCH_FUNC_SHOP_IAP_CONFIRM);
+}
 void IapConfirmDraw(int itemType, int detail, int cx, int cy, float zoom)
 {
 	bool isBox = itemType == ITEM_BOX;
@@ -7596,6 +7662,7 @@ void IapConfirmDraw(int itemType, int detail, int cx, int cy, float zoom)
 	if ((!isBox && (product < 0 || product >= TOTALIAPPRODUCT))
 		|| (isBox && (detail < BOX_PAID0 || detail > BOX_PAID5)))
 		return;
+	if(isBox){TreasurePurchaseDraw(detail);return;}
 
 	CdBeginBoard();
 	CdDrawFrame(TEXT_SHOP_BUY, TOUCH_FUNC_SHOP_IAP_CANCEL);
@@ -7631,7 +7698,7 @@ void IapConfirmDraw(int itemType, int detail, int cx, int cy, float zoom)
 		//텍스처 오른쪽 절반은 열린 상자다. 경계 필터링으로 그 조각이 보이지
 		//않도록 닫힌 상자의 오른쪽 2px을 제외해서 그린다.
 		DrawImageScale(510, 512, 0, 0, Loc(artX), LocY(artY), false, false,
-			false, false, false, artSize / 510.0f * sCdU,
+			false, false, false, artSize / 512.0f * sCdU,
 			artSize / 512.0f * sCdU, sprite[boxImg], boxImg);
 	}
 	else if (product >= IAP_COIN_01 && product <= IAP_COIN_06) {
@@ -7661,95 +7728,30 @@ void IapConfirmDraw(int itemType, int detail, int cx, int cy, float zoom)
 	}
 
 	if (isBox) {
-		int boxIndex = GetRewardBoxIndex(detail);
-		REWARD_BOX_DATA box = rewardBoxData[boxIndex];
 		const int tier=detail-BOX_PAID0;
-		box.goldMin=ShopTreasure::GoldReward(tier,box.goldMin);box.goldMax=ShopTreasure::GoldReward(tier,box.goldMax);
-		box.heartMin=ShopTreasure::HeartReward(tier,box.heartMin);box.heartMax=ShopTreasure::HeartReward(tier,box.heartMax);
-		//---- 보상 목록 ----
-		//
-		//줄마다 x 를 따로 적어서 235 / 255 / 255 / 245 로 어긋나 있었다.
-		//아이콘 가운데와 글자 왼쪽을 열로 못 박고 모든 줄이 그것만 본다.
-		//
-		//그리는 함수마다 기준점이 다르다(DrawIcon 은 왼쪽 위, 카드는 제 폭
-		//기준). 그래서 열은 가운데로 정하고, 각자 제 크기의 절반만큼 왼쪽으로
-		//물러나 그린다. 크기를 바꿔도 가운데가 안 흔들린다.
-		const float LIST_X = 150.0f;		//판 왼쪽
-		const float LIST_W = 790.0f;
-		const float LIST_Y = 660.0f;		//판 위
-		const float LIST_H = 396.0f;
-		const float ROW_CX = 275.0f;		//아이콘 가운데 열
-		const float ROW_TX = 420.0f;		//글자 왼쪽 열
-		const float ROW_GAP = 92.0f;
-		const float ROW_CY = 712.0f;		//첫 줄 가운데
-		const float ROW_TZ = 1.90f;			//보상 글자 크기
-		const float ICON_Z = 1.70f;			//아이콘 크기
-		const float ICON_H = (float)ITEMICONSIZE * ICON_Z;
+        const auto& loot=ShopTreasure::LootFor(tier);
+        const auto candidates=ShopBoxCandidates(tier);
+        int low=6,high=1;for(const auto& c:candidates){low=Min(low,c.grade+1);high=Max(high,c.grade+1);}
+        CdBody(u8"동료 / 장비 무작위",545,600,1.4f,CENTER,CD_INK);
+        DrawWin9(WP_INNER_X,WP_INNER_Y,WP_INNER_W,WP_INNER_H,WP_INNER_CAP,Loc(150),LocY(660),790*sCdU,396*sCdU,sCdU);
+        for(int k=0;k<2;++k){
+            const float left=205+k*390;
+            auto found=std::find_if(candidates.begin(),candidates.end(),[&](const SHOP_BOX_CANDIDATE& c){return (c.type==ITEM_CREW)==(k==0);});
+            if(found!=candidates.end())DrawItemCard(found->type,found->detail,found->grade,1,1,false,(int)Loc(left),(int)LocY(685),false,.28f*sCdU,false,false,false,false,0);
+            CdText(k==0?u8"동료":u8"장비",left+155,692,1.65f,LEFT,COLOR_WHITE);
+            DrawStarNum(ICON_STAR,low,Loc(left+145),LocY(752),1.35f*sCdU);
+            CdText("~",left+202,753,1.5f,CENTER,COLOR_WHITE);
+            DrawStarNum(ICON_STAR,high,Loc(left+266),LocY(752),1.35f*sCdU);
+        }
+        sprintf(tempStr,u8"%d~%d장",loot.cardsMin,loot.cardsMax);
+        CdText(tempStr,545,835,1.8f,CENTER,COLOR_WHITE);
+        DrawIcon(ICON_GOLD,Loc(230),LocY(910),1.7f*sCdU,false,false,false,true);
+        sprintf(tempStr,"%d~%d",loot.goldMin,loot.goldMax);CdText(tempStr,370,913,1.8f,LEFT,COLOR_WHITE);
+        sprintf(tempStr,"%d%%",loot.goldRate);CdText(tempStr,875,919,1.35f,RIGHT,COLOR_WHITE);
+        DrawWin3(WP_BLUE_X,WP_BLUE_Y,WP_BLUE_W,WP_BLUE_H,WP_BLUE_CAP,Loc(176),LocY(984),738*sCdU,58*sCdU,sCdU);
+        CdText(u8"상세 확률표 보기",545,996,1.7f,CENTER,COLOR_WHITE);
+        SetRectPoint(Loc(176),LocY(984),738*sCdU,58*sCdU,TOUCH_FUNC_SHOP_GACHA_RATES);
 
-		//글자를 아이콘 가운데에 맞춘다. CdText 의 y 는 윗선이라 글자 높이의
-		//절반만큼 내려야 두 개의 가운데가 같아진다.
-		const float ROW_TDY = -(float)FONT_HEIGHT * ROW_TZ / 2;
-
-		//목록 뒤에 판을 깐다. 상자 그림과 목록이 붙어 있으면 어디까지가
-		//상품이고 어디부터가 내용물인지 구분이 안 된다.
-		DrawWin9(WP_INNER_X, WP_INNER_Y, WP_INNER_W, WP_INNER_H, WP_INNER_CAP,
-			Loc(LIST_X), LocY(LIST_Y), LIST_W * sCdU, LIST_H * sCdU, sCdU);
-
-		//카드
-		{
-			const float cardZ = 0.24f;
-			const float cardW = 240.0f * cardZ;
-			const float cardH = 332.0f * cardZ;
-
-			DrawItemCardBack(1, (int)Loc(ROW_CX - cardW / 2),
-				(int)LocY(ROW_CY - cardH / 2), cardZ * sCdU, 1);
-		}
-		CdBody("하트 확정 · 골드 확률 · 나머지 동료/장비",545,600,1.4f,CENTER,CD_INK);
-		sprintf(tempStr, "총 보상 %d~%d개", box.minCard, box.maxCard);
-		CdText(tempStr, ROW_TX, ROW_CY + ROW_TDY, ROW_TZ, LEFT, COLOR_WHITE);
-
-		//하트
-		DrawIcon(ICON_HEART, Loc(ROW_CX - ICON_H / 2),
-			LocY(ROW_CY + ROW_GAP - ICON_H / 2), ICON_Z * sCdU,
-			false, false, true, 1);
-		if(box.heartMin==box.heartMax)sprintf(tempStr,"하트 %d개 확정",box.heartMin);
-		else sprintf(tempStr, "하트 %d~%d개 확정", box.heartMin, box.heartMax);
-		CdText(tempStr, ROW_TX, ROW_CY + ROW_GAP + ROW_TDY, ROW_TZ, LEFT,
-			COLOR_WHITE);
-
-		//골드
-		sprintf(tempStr,"%d%%",box.goldRate);CdText(tempStr,ROW_CX-40,ROW_CY+ROW_GAP*2+ROW_TDY,1.3f,LEFT,COLOR_WHITE);
-		DrawGoldAmount(box.goldMin,Loc(ROW_TX),LocY(ROW_CY+ROW_GAP*2+ROW_TDY),175*sCdU,LEFT);
-		CdText("~",ROW_TX+315,ROW_CY+ROW_GAP*2+ROW_TDY,ROW_TZ,LEFT,COLOR_WHITE);
-		DrawGoldAmount(box.goldMax,Loc(ROW_TX+350),LocY(ROW_CY+ROW_GAP*2+ROW_TDY),175*sCdU,LEFT);
-
-		//---- 상세 확률표 ----
-		//
-		//글자만 있으면 눌러서 가는 곳인지 알 수가 없다. 다른 화면이 쓰는
-		//파란 버튼을 그대로 깔아 누르는 것임을 보인다.
-		{
-			const float btnY = ROW_CY + ROW_GAP * 3 - 32.0f;	//버튼 가운데
-			const float btnH = 78.0f;
-			const float btnX = LIST_X + 26.0f;
-			const float btnW = LIST_W - 52.0f;
-			const float qz = 2.10f;					//물음표 크기
-			const float qd = 66.0f;					//물음표 동그라미 지름
-			const float tz = 1.80f;
-
-			DrawWin3(WP_BLUE_X, WP_BLUE_Y, WP_BLUE_W, WP_BLUE_H, WP_BLUE_CAP,
-				Loc(btnX), LocY(btnY - btnH / 2), btnW * sCdU, btnH * sCdU,
-				sCdU);
-
-			MemRectRound(Loc(ROW_CX - qd / 2), LocY(btnY - qd / 2),
-				qd * sCdU, qd * sCdU, COLOR_PURPLE, qd / 2 * sCdU);
-			CdText("?", ROW_CX, btnY - (float)FONT_HEIGHT * qz / 2, qz,
-				CENTER, COLOR_WHITE);
-			CdText("상세 확률표 보기", ROW_TX,
-				btnY - (float)FONT_HEIGHT * tz / 2, tz, LEFT, COLOR_WHITE);
-
-			SetRectPoint(Loc(btnX), LocY(btnY - btnH / 2), btnW * sCdU,
-				btnH * sCdU, TOUCH_FUNC_SHOP_GACHA_RATES);
-		}
 	}
 	else {
 		static const long long coinAmount[6] = { 1000, 2200, 6000, 25000, 65000, 140000 };
@@ -7801,94 +7803,59 @@ void IapConfirmDraw(int itemType, int detail, int cx, int cy, float zoom)
 		canBuy ? COLOR_WHITE : COLOR_GREY);
 }
 
-void GachaRatesDraw(int boxDetail)
-{
-	int boxIndex = GetRewardBoxIndex(boxDetail);
-	if (boxIndex < 0 || boxIndex >= REWARD_BOX_COUNT)
-		return;
-	const REWARD_BOX_DATA& box = rewardBoxData[boxIndex];
-	CdBeginBoard();
-	ScreenDarken(SCREENDARKEN);
-	//확률표는 별도 창을 쓰지 않고 어두워진 상점 화면 전체 위에 표시한다.
-	CdText("상세 확률표", (float)CD_DESIGNW / 2, 38.0f,
-		2.35f, CENTER, COLOR_WHITE);
-	const float closeSize = 82.0f;
-	const float closeX = (float)CD_DESIGNW - closeSize - 22.0f;
-	const float closeY = 16.0f;
-	SetRectPoint(Loc(closeX), LocY(closeY), closeSize * sCdU,
-		closeSize * sCdU, TOUCH_FUNC_SHOP_IAP_CANCEL);
-	DrawWinFlat(WP_CLOSE_X, WP_CLOSE_Y, WP_CLOSE_W, WP_CLOSE_H,
-		Loc(closeX), LocY(closeY), closeSize / (float)WP_CLOSE_W * sCdU);
-
-	const float clipTop = 122.0f;
-	const float clipBottom = (float)CD_DESIGNH - 12.0f;
-	SetSectionClip((int)Loc(18.0f), (int)LocY(clipTop),
-		(int)(((float)CD_DESIGNW - 36.0f) * sCdU),
-		(int)((clipBottom - clipTop) * sCdU), false);
-	float py = clipTop + 18.0f - (float)scY[MENU_SHOP] / sCdU;
-	static const int equipTypes[6] = {
-		ITEM_SWORD, ITEM_HELM, ITEM_ARMOR, ITEM_GUNTLET, ITEM_KILT, ITEM_GREAVES
-	};
-	for (int grade = 0; grade < BOX_GRADE_COUNT; grade++) {
-		float totalRate = (box.crewRate * box.crewGradeRate[grade]
-			+ box.equipRate * box.equipGradeRate[grade]) / 100.0f;
-		//등급마다 큰 리본을 반복하면 다음 카드 행 위를 덮는다. 작은 등급 헤더만 둔다.
-		if (py >= clipTop && py + 78.0f <= clipBottom) {
-			DrawItemCardBack(grade + 1, (int)Loc(68.0f), (int)LocY(py + 5.0f),
-				0.22f * sCdU, 1);
-			sprintf(tempStr, "★ %d     %.2f%%", grade + 1, totalRate);
-			CdBody(tempStr, 1000.0f, py + 24.0f, 1.60f, RIGHT, COLOR_WHITE);
-		}
-		py += 88.0f;
-		int col = 0;
-		int crewCount = GetBoxCandidateCountByStar(ITEM_CREW, grade + 1);
-		for (int i = 0; i < crewCount; i++) {
-			int detail = GetBoxCandidateDetailByStar(ITEM_CREW, grade + 1, i);
-			float cardX = 38.0f + (col % 5) * 210.0f;
-			float cardY = py + (col / 5) * 260.0f;
-			float itemRate = crewCount > 0
-				? box.crewRate * box.crewGradeRate[grade] / 100.0f / crewCount : 0.0f;
-			if (cardY + 220.0f >= clipTop && cardY <= clipBottom) {
-				DrawItemCard(ITEM_CREW, detail, grade, 1, 1, false,
-					(int)Loc(cardX), (int)LocY(cardY), false,
-					0.68f * sCdU, false, false, false, false, 0);
-				sprintf(tempStr, "%.3f%%", itemRate);
-				CdBody(tempStr, cardX + 82.0f, cardY + 214.0f, 1.10f, CENTER, COLOR_WHITE);
-			}
-			col++;
-		}
-		int validEquipTypes = 0;
-		for (int t = 0; t < 6; t++)
-			if (GetBoxCandidateCountByStar(equipTypes[t], grade + 1) > 0)
-				validEquipTypes++;
-		for (int t = 0; t < 6; t++) {
-			int count = GetBoxCandidateCountByStar(equipTypes[t], grade + 1);
-			for (int i = 0; i < count; i++) {
-				int detail = GetBoxCandidateDetailByStar(equipTypes[t], grade + 1, i);
-				float cardX = 38.0f + (col % 5) * 210.0f;
-				float cardY = py + (col / 5) * 260.0f;
-				float itemRate = count > 0 && validEquipTypes > 0
-					? box.equipRate * box.equipGradeRate[grade] / 100.0f
-					/ validEquipTypes / count : 0.0f;
-				if (cardY + 220.0f >= clipTop && cardY <= clipBottom) {
-					DrawItemCard(equipTypes[t], detail, grade, 1, 1, false,
-						(int)Loc(cardX), (int)LocY(cardY), false,
-						0.68f * sCdU, false, false, false, false, 0);
-					sprintf(tempStr, "%.3f%%", itemRate);
-					CdBody(tempStr, cardX + 82.0f, cardY + 214.0f, 1.10f, CENTER, COLOR_WHITE);
-				}
-				col++;
-			}
-		}
-		py += Max(1, (col + 4) / 5) * 260.0f + 54.0f;
-	}
-	UnSectionClip(false);
-	float contentHeight = py + (float)scY[MENU_SHOP] / sCdU - clipTop;
-	//scY/scT는 화면 픽셀 단위다. 설계판 높이를 실제 배율로 바꿔 스크롤 범위를 잡는다.
-	scT[MENU_SHOP] = Max(0, (int)((contentHeight - (clipBottom - clipTop)) * sCdU));
-	if (scY[MENU_SHOP] > scT[MENU_SHOP]) scY[MENU_SHOP] = scT[MENU_SHOP];
-	DrawScroll((int)Loc(1060.0f), (int)LocY(clipTop),
-		(int)((clipBottom - clipTop) * sCdU), MENU_SHOP);
+void GachaRatesDraw(int boxDetail){
+ const int tier=boxDetail-BOX_PAID0;if(tier<0||tier>=6)return;
+ const auto candidates=ShopBoxCandidates(tier);
+ // This is a full-height scroll page, not a fixed-height item-detail board.
+ sCdU=DX/(float)CD_DESIGNW;sCdOx=0;sCdOy=DY-GNBHEIGHT;
+ ScreenDarken(SCREENDARKEN);ResetRectPoint();
+ CdText(u8"상세 확률표",CD_DESIGNW/2.f,38,2.35f,CENTER,COLOR_WHITE);
+ SetRectPoint(Loc(984),LocY(16),82*sCdU,82*sCdU,TOUCH_FUNC_SHOP_IAP_CANCEL);
+ DrawWinFlat(WP_CLOSE_X,WP_CLOSE_Y,WP_CLOSE_W,WP_CLOSE_H,Loc(984),LocY(16),82.f/WP_CLOSE_W*sCdU);
+ const float top=122,bottom=(sCdOy-8.f)/sCdU;
+ SetSectionClip((int)Loc(18),(int)LocY(top),(int)((CD_DESIGNW-36)*sCdU),(int)((bottom-top)*sCdU),false);
+ float py=top+18-scY[MENU_SHOP]/sCdU;
+ // Summary is per equipment/companion card, excluding the independent gold roll.
+ CdBody(u8"카드 1장 기준 · 동료 60% / 장비 40%",545,py,1.25f,CENTER,0xD2E7E1);py+=60;
+ int summaryCount=0;
+ for(int star=6;star>=1;--star){
+  double chance=0;for(const auto& c:candidates)if(c.grade+1==star)chance+=c.chance;if(chance<=0)continue;
+  const int slot=summaryCount++;
+  const float x=45+(slot%3)*338,y=py+(slot/3)*100;
+  if(y+86>=top&&y<=bottom){
+   DrawMenuReferencePanel((int)Loc(x),(int)LocY(y),(int)(322*sCdU),(int)(86*sCdU),0,0x16454B,0xDFC07A);
+   DrawStarNum(ICON_STAR,star,Loc(x+73),LocY(y+23),1.4f*sCdU);
+   sprintf(tempStr,"%.2f%%",chance);CdBody(tempStr,x+220,y+25,1.55f,CENTER,COLOR_WHITE);
+  }
+ }
+ py+=((summaryCount+2)/3)*100+28;
+ for(int star=6;star>=1;--star){
+  std::vector<SHOP_BOX_CANDIDATE> group;for(const auto& c:candidates)if(c.grade+1==star)group.push_back(c);
+  if(group.empty())continue;
+  if(py+60>=top&&py<=bottom){
+   DrawMenuReferencePanel((int)Loc(40),(int)LocY(py),(int)(1008*sCdU),(int)(60*sCdU),0,0x16353F,0xA6A07E);
+   DrawStarNum(ICON_STAR,star,Loc(110),LocY(py+12),1.15f*sCdU);
+   CdBody(u8"개별 카드 확률",290,py+14,1.3f,LEFT,COLOR_WHITE);
+  }
+  py+=86;
+  for(int i=0;i<(int)group.size();++i){
+   const auto& c=group[i];const float x=38+(i%5)*210,y=py+(i/5)*300;
+   if(y+268>=top&&y<=bottom){
+    DrawItemCard(c.type,c.detail,c.grade,1,1,false,(int)Loc(x),(int)LocY(y),false,.68f*sCdU,false,false,false,false,0);
+    sprintf(tempStr,"%.3f%%",c.chance);CdBody(tempStr,x+82,y+247,1.1f,CENTER,COLOR_WHITE);
+   }
+   ShopRatesScroll::lastLabelBottom=LocY(y+247+FONT_HEIGHT*1.1f);
+  }
+  py+=((group.size()+4)/5)*300+35;
+ }
+ UnSectionClip(false);
+ // Leave breathing room below the final probability row at the lower edge.
+ const float content=py+scY[MENU_SHOP]/sCdU-top+80;
+ ShopRatesScroll::viewBottom=LocY(bottom);
+ ShopRatesScroll::viewTop=LocY(top);
+ scT[MENU_SHOP]=Max(0,(int)((content-(bottom-top))*sCdU));
+ scY[MENU_SHOP]=Min(scY[MENU_SHOP],scT[MENU_SHOP]);
+ DrawScroll((int)Loc(1060),(int)LocY(top),(int)((bottom-top)*sCdU),MENU_SHOP);
 }
 
 //구역 제목 리본.
@@ -7997,14 +7964,20 @@ static void ShopBoxCard(int i, float x, float y, float w, float h, float zoom)
  const float art=Min(w*.43f,124.f),z=art/512.f;
  const int saved=baseColor;SetColor(0);
  DrawImage(510,512,0,0,x+(w-art)/2,y-42,false,0,0,0,0,z,sprite[chest],chest);SetColor(saved);
- // Show the reward categories at a glance. Quantities and odds live in detail.
- const int icons[]={0,GetItemIcon(ITEM_SWORD,0,GRADE_NORMAL),ICON_HEART,ICON_GOLD};
- const float iconSize=40,step=(w-32)/4;
- const int crewType=crewData[CREWDATA_TYPE],crewCmf=enemyData[crewType*ENEMYDATASIZE+ENEMYDATA_CMF];
- DrawCmfDetailShadow(crewCmf,crewPos[crewType*5],x+16+step/2,y-212,RIGHT,enemyZoom[crewType]*.65f);
- for(int k=1;k<4;++k)DrawIcon(icons[k],x+16+step*k+(step-iconSize)/2,y-172,
-  iconSize/ITEMICONSIZE,false,false,false,true);
- SetFontColor(0xD7ECE8);CenterTextStrSolid("동료 · 장비 · 하트 · 골드",x+w/2,y-218,.60f);
+ const int icons[]={GetItemIcon(ITEM_CREW,0,GRADE_NORMAL),GetItemIcon(ITEM_SWORD,0,GRADE_NORMAL),ICON_GOLD};
+ const float size=44,step=(w-40)/3;
+ for(int k=0;k<3;++k){
+  const int ix=(int)(x+20+step*k+(step-size)/2),iy=(int)(y-176);
+  DrawMenuReferencePanel(ix-4,iy+4,(int)size+8,(int)size+8,0,0x13353A,0xC9AF78);
+  if(k==0){
+   const int npc=crewData[CREWDATA_TYPE],cmf=enemyData[npc*ENEMYDATASIZE+ENEMYDATA_CMF];
+   if(cmfLoaded[cmf]!=cmf)CmfRead(cmf,cmf);
+   const int motion=crewPos[npc*5];const auto* bounds=cmfMotionImgSize[cmf]+motion*4;
+   const float scale=Min((size-4)/Max(1.f,(float)bounds[2]),(size-4)/Max(1.f,(float)bounds[3]));
+   DrawCmfDetail(cmf,motion,ix+size/2,iy-size/2,RIGHT,scale,0,true);
+  }else DrawIcon(icons[k],ix,iy,size/ITEMICONSIZE,0x070C20,false,false,true);
+ }
+ SetFontColor(0xD7ECE8);CenterTextStrSolid(u8"동료 · 장비 · 골드",x+w/2,y-229,.60f);
  const int by=(int)(y-h+46),priceW=(int)(w*.52f)-12,infoX=(int)(x+w*.52f),infoW=(int)(w*.48f)-12;
  DrawMenuReferencePanel((int)x+10,by,priceW,36,0,0x0D3037,0xDDB77D);
  DrawTreasurePrice(detail,(int)x+10+priceW/2,by-5,priceW-8);
@@ -8215,6 +8188,14 @@ void ShopSelectPixelCategory(int category)
 
 void ShopDraw(int x,int y,float zoom)
 {
+ if(SharedRewardOpen()){
+  // The reveal owns the screen; do not redraw obscured shop panels/cards.
+  MemRect(0,DY,DX,DY,0x102B37);SharedRewardDraw();return;
+ }
+	// The dimmed shop must not clamp the active probability popup's offset.
+	const bool rates=ShopRatesScroll::active;
+	const int ratesY=scY[MENU_SHOP],ratesLimit=scT[MENU_SHOP];
+	if(rates){scY[MENU_SHOP]=ShopRatesScroll::shopY;scT[MENU_SHOP]=ShopRatesScroll::shopLimit;}
 	if(drawHandle==MD_LOBBY) y=DY-(GNBHEIGHT-GNB_INIT_HEIGHT)-LOBBY_BAR_H-3*_2X;
 	const int width=(int)(DX*zoom),height=(int)(y*zoom);
 	ResetRectPoint();DrawPixelPanel(x,y,width,height);
@@ -8223,6 +8204,7 @@ void ShopDraw(int x,int y,float zoom)
 	DrawMenuBackButton(x+12,y-4,TOUCH_FUNC_POPUP_CLOSE);
 	// The left back button is the sole page exit.
 	ShopSpec::Draw(x,y,width,height,zoom);
+	if(rates){scY[MENU_SHOP]=ratesY;scT[MENU_SHOP]=ratesLimit;}
 }
 
 #include "CastleMenuRuntime.inc"

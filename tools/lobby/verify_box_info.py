@@ -20,14 +20,25 @@ for height in (850,1408):
     with (out/'run.log').open('w') as log:
         process=subprocess.Popen([str(root/'proj.win32/Debug.win32'/args.exe)],cwd=root/'Resources',env=env,startupinfo=startup,stdout=log,stderr=log)
         try:
-            deadline=time.monotonic()+40
+            deadline=time.monotonic()+80
             while time.monotonic()<deadline:
                 result=trace.read_text()
                 if 'FAIL' in result:raise RuntimeError(result)
                 if 'DONE' in result:
-                    assert result.count('PASS box capture')==(4 if args.purchase_flow else 3),result
+                    assert result.count('PASS box capture')==(7 if args.purchase_flow else 3),result
+                    assert 'PASS sparse commands use live rectangles and reset ignores stale hits' in result,result
+                    assert 'PASS six loot tiers exact odds weighted variants no energy monotonic gold' in result,result
+                    assert 'PASS 750 separate equipment grow sort save and reload beyond legacy storage' in result,result
+                    assert 'PASS extended inventory equipment selection for all heroes' in result,result
                     assert 'PASS product opens details without charging' in result,result
-                    if args.purchase_flow:assert 'PASS purchase confirms then shows granted rewards' in result,result
+                    if args.purchase_flow:
+                        assert 'PASS purchase confirms then shows granted rewards' in result,result
+                        assert 'PASS common reveal closes without duplicate grants' in result,result
+                        assert 'PASS original fall open cards summary flow' in result,result
+                        assert 'PASS original reveal preserves all granted item instances and counts' in result,result
+                        assert 'PASS real touch drag scrolls probability popup' in result,result
+                        assert 'PASS probability last card visible and bottom survives parent render' in result,result
+                        assert 'PASS probability close restores shop scroll' in result,result
                     assert 'PASS touch' in result,result
                     print(f'PASS {height}: top, bottom, and insufficient-currency detail access',flush=True)
                     break
