@@ -1373,7 +1373,7 @@ void PaintClet(int x, int y, int w, int h)
 		if (getenv("CS_MERGE_SIEGE_REVIEW")) MergeRouletteBeginSiege();
 		else MergeRouletteBegin();
 	}
-	if (MergeRouletteActive()) { MergeRouletteDraw(); return; }
+	if (MergeRouletteActive()) { MergeRouletteDraw(); HitZoomPause();CastleTutorialDraw();HitZoomResume(); return; }   //전투판 위에도 튜토리얼 안내를 그린다
 	int i, j;
 	//아래에서 MD_NEWCOLLECTION/MD_NEWCARD일 때만 값을 잡는데, MD_STAGECLEAR의
 	//StageInfoDraw()도 이 값을 배율로 받는다. 그 경로에서는 초기화도 안 된 값이었다.

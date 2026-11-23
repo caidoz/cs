@@ -17,7 +17,7 @@
 - `CastleFacilityTone.inc`은 실내를 CMF와 비슷한 128×64 논리 픽셀 단위로 샘플링하고 성별로 명도·채도를 보정한다. 작은 가구와 도구를 뒤쪽에 모으고 앞쪽 바닥은 동료 이동 공간으로 남긴다. 현재 로비는 4개 방에서 실제 보유 동료를 계속 걷게 한다.
 - 포탑은 성별 Lv.0~5다. 기존 60단계 포탑 아트를 실제 포탑/버튼/메뉴에서 사용하고, 투석기의 움직이는 팔은 유지하면서 받침을 강화한다. 첨탑은 별도 강화 항목 없이 포탑과 함께 연결부·지지대만 보강한다. 고유 실루엣과 높이는 유지한다. 현재 턴 전투의 포 이름은 `CastleFacilities::TurretNames`이며 `TurretAttackPresentation.h`의 실제 발사 유형에 맞춘다(레거시 실시간 전투 프로필 이름과 구분).
 - `CastleMenuModel::Progress.version=2`: 저장 배열 크기(10×5)는 유지한다. 방 네 곳은 모든 성에 공통인 영구 강화로 동기화하며, 마이그레이션은 보유 성의 기존 강화 중 높은 단계를 유지한다. 포탑인 `parts[c][3]`은 성마다 유지한다. 다섯 번째 과거 방 슬롯은 호환성을 위해 남긴다.
-- 방 강화는 레벨당 히어로 공격력 4%, 최대 체력 6%, 방어력 4%, 골드 생산 25%/저장 50%다. 에너지 회복이나 동료 공격 횟수를 늘리지 않는다. 기존 가방/배치 칸 증가와는 분리한다. 턴 포격 계수는 50/80/110/150/200/250%이며 히어로 공격 시설 보너스를 다시 증폭하지 않는다.
+- 방 강화는 레벨당 히어로 공격력 4%, 최대 체력 6%, 방어력 4%, 골드 생산 25%/저장 50%다. 에너지 회복이나 동료 공격 횟수를 늘리지 않는다. 기존 가방/배치 칸 증가와는 분리한다. 턴 포격 계수는 200/280/380/500/650/850%(2026-11-22, 옛 50~250%의 4배)이며 히어로 공격 시설 보너스를 다시 증폭하지 않는다. 히어로 검 블록은 공격력×300%(`Run::HeroGearPct`)다. 합성 전투 적 체력 곡선은 `MergeWaveCurve.h` 한 곳(×250%, 로스터 전력 제곱근 보정, `content/balance.tsv`의 `MERGE_*`)이며 측정은 `tools/merge_roulette/balance_sim.cpp`다.
 - 메뉴는 `CastleFourFacilityMenu.inc`의 5개 시설 목록이다. `MergeRouletteOriginalPreview`가 10개 성 모두 실제 메시와 방 그림으로 미리보기를 만들며, 성·크기·방/포탑 레벨을 키로 캐시한다. `MergeCastleLobbyRebuild.inc`의 로비 방 터치 영역도 반드시 4개만 등록한다.
 - 검증: `tools/castles/test_four_facilities.cpp`, `test_castle_menu.cpp`, `test_facility_levels.cpp`; `verify_facility_rooms.py --exe cs.four-rooms-review.exe`; `verify_four_facility_menu.py`; `tools/merge_roulette/verify_turret_attack.py --exe cs.four-rooms-review.exe`; `tools/art/verify_mist_resources.py --exe cs.four-rooms-review.exe`; `verify_facility_economy.ps1`.
 - 시각 비교 페이지: `python tools/castles/build_four_facility_gallery.py` → `output/castle-four-room-design/index.html`. 빌드 중간 파일은 `PreviewIntDir=Debug.four-rooms/`로 분리하고 검증 실행 파일은 `cs.four-rooms-review.exe`를 사용한다.
@@ -32,6 +32,12 @@
 - 전후 측정 및 부모 메뉴/설정 입력 검증: `tools/lobby/verify_menus_perf.py`, 결과 `output/lobby-menus/verification.json`. 비교용 이전 실행 파일은 수정 전 `cs.lobby-menus-before.exe`로 보존했다. 검증 빌드는 `PreviewIntDir=Debug.lobby-menus/`로 분리한다.
 
 - 성 메뉴 성능·스크롤 수정: `LobbyDraw`는 단독 성 메뉴가 화면을 덮으면 뒤의 로비 성/동료를 그리지 않는다. `CastleFinal::Panel`은 최대 32개 스타일을 캐시하고 원본 성 미리보기는 크기·시설 레벨별로 캐시한다. 한 프레임에 같은 그림을 여러 번 표시할 때 Sprite 명령은 각각 사용한다. 스크롤은 `y - previousY`이며 터치 종료 때 레거시 범위로 덮어쓰지 않는다. `tools/castles/verify_scroll_perf.py`로 두 화면 크기에서 성능·양방향 스크롤·클리핑·시설 변경을 검증한다.
+
+### 단순 팝업·단추 통일 (2026-11-23)
+
+- 단순 팝업(확인 / 예·아니오)은 `DrawUiDialog` 한 모양이다(`Classes/UiButtonControls.inc`, 선언 `Func_Graphics.h`): 어두운 청록 판 + 금 테두리(`DrawUiPanel`), 제목·본문·주의, 아래 금테 단추 1~3개(`UiDialogButtonRect`). 옛 `AlertDraw`(SetAlert)도 이 길로 그린다. 새 팝업을 따로 그리지 않는다.
+- 모든 `DrawUiButton`의 기본 틀은 금테(`DrawUiGoldFrame`, 합성 전투 단추와 같은 모양)다. 다른 틀은 `UiButtonStyle::frame`으로만 넘긴다. 카드형 보드(`CdDrawFrame`, 결제·보물상자)는 단순 팝업이 아니라 그대로다.
+- 판의 아랫변 안쪽 선은 테두리 안쪽에 그린다(`panel`/`DrawUiPanel`). 전에는 테두리 줄 위에 덮여 아래 경계선이 안 보였다.
 
 ### 로비 성 금고 수거 단추 (2026-11-21)
 
@@ -76,6 +82,7 @@
   * [docs/밸런스_식.md](docs/밸런스_식.md) — **지금 코드가 실제로 쓰는 식 전부**. 장비 환산 · 2단 게이지 · 피해 계산 · 공격 주기 · 적 체력 곡선 · 가방 한도 · 성 경제 · PVP · 인접 시너지. 수치를 고치기 전에 여기서 그 식이 사는 자리를 먼저 찾으십시오.
   * [docs/기획_전투신.md](docs/기획_전투신.md) — 전투 연출(누가 어떻게 때리고 맞는가, 칼이 여럿일 때 몸은 무엇을 하는가)
   * [docs/CASTLE_NPC_PLACEMENT_HANDOFF.md](docs/CASTLE_NPC_PLACEMENT_HANDOFF.md) — 성 실내 NPC 배치표(`CastleNpcPlacement::Areas`, 10성 34방)
+  * [docs/기획_튜토리얼_합성.md](docs/기획_튜토리얼_합성.md) — 합성 룰렛 전투판 튜토리얼(몬스터 두 마리: 룰렛·배치·합성·공격·방어막·대포, 로비 힌트 4종, 픽스처·검증 계획). 구현 완료(2026-11-23): `CastleTutorialModel.h`·`CastleTutorialRuntime.inc`·`MergeTutorialRuntime.inc`, 검증 `tools/lobby/verify_castle_tutorial.ps1`. `CastleTutorialRuntime.inc`을 고치면 `Func_Demo.cpp`를 다시 컴파일해야 한다(MSBuild 가 이 포함을 추적하지 않는다).
 
 ---
 

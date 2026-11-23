@@ -303,47 +303,57 @@ static void CastleMenuReviewStep()
         return;
     }
     if(const char* mode=getenv("CS_TUTORIAL_REVIEW")){
-        static int tick=0;static bool pending=false;static int heldTick=0;
-        static auto focusAt=std::chrono::steady_clock::now();
+        //합성 전투판 튜토리얼(docs/기획_튜토리얼_합성.md §8). fresh: 열 단계를 사람처럼 지난다 · resume: 저장된 단계에서 잇는다 · done: 완료 유지와 재실행.
+        static int tick=0;static bool pending=false,driven=false,captureArmed=false;
+        static std::string capturePath,captureName;
+        static auto captureAt=std::chrono::steady_clock::now();
         if(pending)return;
-        if(heldTick){
-            if(std::chrono::steady_clock::now()<focusAt)return;
-            char name[40];sprintf(name,"focus-%03d.png",heldTick);heldTick=0;pending=true;
-            cocos2d::utils::captureScreen([](bool ok,const std::string&){pending=false;CastleReviewTrace(ok?"PASS circular focus capture":"FAIL focus capture");},std::string(path)+name);return;
+        //캡처는 1.6초 뒤에 찍는다 - 마스크와 손가락은 그 화면이 0.9초 보인 뒤 0.4초에 걸쳐 나타난다.
+        static auto focusSince=std::chrono::steady_clock::now();
+        {int r[2][4]={};if(MergeTutorialFocus(r)==0)focusSince=std::chrono::steady_clock::now();}   //밝힐 것이 끊기면 안내도 다시 1.3초 뒤에 뜬다
+        if(captureArmed){
+            const auto now=std::chrono::steady_clock::now();
+            if(now<captureAt||std::chrono::duration<float>(now-focusSince).count()<1.5f)return;
+            captureArmed=false;pending=true;
+            cocos2d::utils::captureScreen([](bool ok,const std::string&){pending=false;CastleReviewTrace(ok?"PASS tutorial capture":"FAIL tutorial capture");},capturePath+captureName+".png");
+            return;
         }
         ++tick;
         if(tick==1){
+            capturePath=path;
             NetBootstrapBegin();NetChooseLogin(LOGIN_GUEST);
             if(!strcmp(mode,"fresh"))NewGame();
             GotoLobby();while(popUpCnt>0)ClosePopUp();
         }
         NetUpdate();
         if(!strcmp(mode,"resume")){
-            if(tick==30){char info[80];sprintf(info,"INFO resumed tutorial step %d",gCastleTutorialStep);CastleReviewTrace(info);CastleReviewTrace(gCastleTutorialStep==1?"PASS tutorial persisted resume":"FAIL tutorial persistence");CastleTutorialCommand(TOUCH_FUNC_TUTORIAL_SKIP);NetFlush();}
+            if(tick==30){char info[80];sprintf(info,"INFO resumed tutorial step %d",gCastleTutorialStep);CastleReviewTrace(info);CastleReviewTrace(gCastleTutorialStep==CastleTutorial::Depart?"PASS tutorial persisted resume":"FAIL tutorial persistence");CastleTutorialCommand(TOUCH_FUNC_TUTORIAL_SKIP);NetFlush();}
             if(tick==130)CastleReviewTrace("PASS tutorial complete");return;
         }
         if(!strcmp(mode,"done")){
-            if(tick==30){CastleReviewTrace(gCastleTutorialStep==9?"PASS tutorial completion persists":"FAIL tutorial completion persistence");CastleReviewClick(TOUCH_FUNC_TUTORIAL_HELP);}
-            if(tick==40)CastleReviewTrace(gCastleTutorialStep==1?"PASS tutorial replay without reset":"FAIL tutorial replay");
+            if(tick==30){CastleReviewTrace(gCastleTutorialStep==CastleTutorial::Done?"PASS tutorial completion persists":"FAIL tutorial completion persistence");CastleReviewClick(TOUCH_FUNC_TUTORIAL_HELP);}
+            if(tick==40)CastleReviewTrace(gCastleTutorialStep==CastleTutorial::Depart?"PASS tutorial replay without reset":"FAIL tutorial replay");
             if(tick==130)CastleReviewTrace("PASS tutorial complete");return;
         }
-        if(tick==20)CastleReviewTrace(gCastleTutorialStep==1?"PASS new game tutorial welcome":"FAIL tutorial welcome");
-        if(tick==25)CastleReviewTrace("PASS textless tutorial auto entry");
-        if(tick==30){CastleReviewClick(TOUCH_FUNC_GOTOBATTLE);PlayKey(PLAYER);systemKey=0;}
-        if(tick==65){CastleReviewTrace(gCastleTutorialStep==2&&LoadoutOpen()?"PASS actual adventure enters placement":"FAIL tutorial adventure");CastleReviewTrace(CastleTutorialReviewAction(0)?"PASS cancelled drag does not advance":"FAIL tutorial cancelled drag");}
-        if(tick==70)CastleReviewTrace(CastleTutorialReviewAction(1)?"PASS valid actual drag advances":"FAIL tutorial valid drag");
-        if(tick==80)CastleReviewTrace(CastleTutorialReviewAction(2)?"PASS actual setup release":"FAIL tutorial setup");
-        if(tick==90){if(GridTestOfferOpen())GridTestSkipOffer();else StageRtToggleAuto();}
-        if(tick==95)CastleReviewTrace(gCastleTutorialStep==5?"PASS actual combat advances guide":"FAIL tutorial combat");
-        if(tick==100)CastleReviewTrace(CastleTutorialReviewAction(3)?"PASS insufficient funds preserves tutorial step":"FAIL tutorial purchase guard");
-        if(tick==110)CastleReviewTrace(CastleTutorialReviewAction(4)?"PASS actual charged purchase advances":"FAIL tutorial purchase");
-        if(tick==120){if(GridTestOfferOpen())GridTestSkipOffer();else StageRtToggleAuto();}
-        if(tick==130)CastleReviewTrace(gCastleTutorialStep==8?"PASS next wave growth guide":"FAIL tutorial next wave");
-        const bool shot=tick==22||tick==67||tick==85||tick==105||tick==132;
-        if(shot){heldTick=tick;focusAt=std::chrono::steady_clock::now()+std::chrono::milliseconds(1600);char name[32];sprintf(name,"guide-%03d.png",tick);pending=true;cocos2d::utils::captureScreen([](bool ok,const std::string&){pending=false;CastleReviewTrace(ok?"PASS tutorial capture":"FAIL tutorial capture");},std::string(path)+name);}
-        if(tick==140){GotoLobby();CastleTutorialCommand(TOUCH_FUNC_TUTORIAL_HELP);CastleTutorialCommand(TOUCH_FUNC_TUTORIAL_NEXT);NetFlush();}
-        if(tick==145)CastleReviewTrace(gCastleTutorialStep==1?"PASS tutorial resume checkpoint":"FAIL tutorial checkpoint");
-        if(tick==260)CastleReviewTrace("PASS tutorial complete");
+        static auto traceFn=[](const char* text){CastleReviewTrace(text);};
+        static auto captureFn=[](const char* name){captureName=name;captureAt=std::chrono::steady_clock::now()+std::chrono::milliseconds(1600);captureArmed=true;};
+        if(tick==20)CastleReviewTrace(gCastleTutorialStep==CastleTutorial::Depart?"PASS new game tutorial starts at depart":"FAIL tutorial welcome");
+        if(tick==40){   //로비: 다른 단추는 안 먹고 전투 시작만 먹는다
+            const int before=gCastleTutorialStep;
+            MergeRouletteTouch(0,901,DX*.5f,DY*.5f);MergeRouletteTouch(2,901,DX*.5f,DY*.5f);
+            CastleReviewTrace(gCastleTutorialStep==before&&!MergeRouletteActive()?"PASS depart ignores other lobby touches":"FAIL depart gate");
+        }
+        if(tick==60){int r[2][4]={};const int n=MergeTutorialFocus(r);CastleReviewTrace(n==1?"PASS depart focuses the start button":"FAIL depart focus");
+            if(n){const float x=r[0][0]+r[0][2]*.5f,y=r[0][1]-r[0][3]*.5f;MergeRouletteTouch(0,902,x,y);MergeRouletteTouch(2,902,x,y);}}
+        if(tick==75){captureFn("tutorial-00-depart");}
+        if(tick==90){int r[2][4]={};const int n=MergeTutorialFocus(r);   //들어가기 창의 「전투」
+            if(n){const float x=r[0][0]+r[0][2]*.5f,y=r[0][1]-r[0][3]*.5f;MergeRouletteTouch(0,903,x,y);MergeRouletteTouch(2,903,x,y);}}
+        if(tick==120)CastleReviewTrace(MergeRouletteActive()&&gCastleTutorialStep==CastleTutorial::Spin?"PASS entering the battle advances to spin":"FAIL battle entry");
+        //열 단계는 관찰 2초 넷·릴·등장·보상창을 다 합쳐 보통 40~60초다. 9000틀(150초)까지 기다린다.
+        if(tick>120&&tick<9000&&!driven){driven=MergeTutorialReviewDrive(traceFn,captureFn);if(driven)tick=9000;}
+        if(tick==9010){GotoLobby();CastleTutorialCommand(TOUCH_FUNC_TUTORIAL_HELP);NetFlush();}
+        if(tick==9020)CastleReviewTrace(gCastleTutorialStep==CastleTutorial::Depart?"PASS tutorial resume checkpoint":"FAIL tutorial checkpoint");
+        if(tick==9060)CastleReviewTrace(driven?"PASS tutorial complete":"FAIL tutorial drive timeout");
         return;
     }
     if(const char* mode=getenv("CS_TITLE_LOGIN_REVIEW")){
@@ -355,6 +365,9 @@ static void CastleMenuReviewStep()
             CastleReviewTrace(drawHandle==MD_TITLE&&guest&&!start&&resetButton&&!TitleLoginBusy()?"PASS manual guest gate with reset button":"FAIL title manual gate");
             CastleReviewTrace(!NetLoginProviderAvailable(LOGIN_GOOGLE)&&!NetLoginProviderAvailable(LOGIN_APPLE)?"PASS social providers do not impersonate guest":"FAIL social provider gating");
             pending=true;cocos2d::utils::captureScreen([](bool ok,const std::string&){pending=false;CastleReviewTrace(ok?"PASS title login capture":"FAIL title login capture");},std::string(path)+mode+"-login.png");
+        }
+        if(tick==45){
+            pending=true;cocos2d::utils::captureScreen([](bool ok,const std::string&){pending=false;CastleReviewTrace(ok?"PASS animated title second frame":"FAIL animated title second frame");},std::string(path)+mode+"-motion.png");
         }
         if(reset&&tick==35){robin.gold=777777;robin.stage=10;CastleReviewClick(TOUCH_FUNC_TITLE_RESET_SAVE);TitleLoginReset();}
         if(reset&&tick==50)CastleReviewTrace(drawHandle==MD_TITLE&&!TitleLoginBusy()&&robin.gold!=777777&&robin.stage==0?"PASS reset progress stays on title":"FAIL reset progress");

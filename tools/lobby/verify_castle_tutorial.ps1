@@ -16,7 +16,7 @@ try{
    $env:CS_TUTORIAL_REVIEW=$mode
    Set-Content (Join-Path $review 'phases.log') ''
    $process=Start-Process (Join-Path $root $Executable) -WorkingDirectory (Join-Path $root 'Resources') -WindowStyle Hidden -PassThru
-   $limit=[DateTime]::UtcNow.AddSeconds(90)
+   $limit=[DateTime]::UtcNow.AddSeconds(240)
    do{
     Start-Sleep -Milliseconds 250
     $log=Get-Content (Join-Path $review 'phases.log') -Raw

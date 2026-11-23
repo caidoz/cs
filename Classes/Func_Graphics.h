@@ -164,6 +164,12 @@ static_assert(sizeof(UiButtonStyle)==24+2*sizeof(void*),"UI button style must ha
 float UiMinimumTextZoom();
 float UiTextLineHeight(float zoom);
 void DrawUiTextBox(const char* text,int x,int top,int w,int h,int color,float zoom=1.f);
+//금테 단추 틀(모든 DrawUiButton 의 기본 틀), 팝업 판, 단순 팝업. UiButtonControls.inc.
+void DrawUiGoldFrame(int x,int top,int w,int h,bool enabled,int fill);
+void DrawUiPanel(int x,int top,int w,int h,int fill,int edge);
+void UiDialogRect(int* x,int* top,int* w,int* h);
+void UiDialogButtonRect(int index,int count,int* x,int* top,int* w,int* h);
+void DrawUiDialog(const char* title,const char* message,const char* note,int buttonCount,const char* const* labels,const int* funcs,const int* fills,const bool* enabled);
 void DrawUiButton(int x, int y, int w, int h, const char* text, int func,
 	bool on = false, bool enabled = true);
 void DrawUiButton(int x,int y,int w,int h,const char* text,int func,bool on,bool enabled,const UiButtonStyle& style);

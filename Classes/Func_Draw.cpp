@@ -1489,6 +1489,8 @@ void TitleTermsCommand(int command)
 
 static void DrawCastleSurvivorTitleArt(void)
 {
+        const bool animated=MergeRouletteTitleCastlesDraw();
+        if(!animated){
 		MemRect(0, DY, DX, DY, 0x000000);
 		if (!sprite[TITLE_IMG]) LoadImg(TITLE_IMG);
 		if (sprite[TITLE_IMG]) {
@@ -1513,13 +1515,14 @@ static void DrawCastleSurvivorTitleArt(void)
 				          false, false, false, false, false, zoom, sprite[TITLE_IMG], TITLE_IMG);
 			}
 		}
+        }
 		// A separate logo stays legible on both squat and tall devices.
 		if(!sprite[HYBRID_TITLE_LOGO_IMG])LoadImg(HYBRID_TITLE_LOGO_IMG);
 		if(sprite[HYBRID_TITLE_LOGO_IMG]){
 		 const auto sz=sprite[HYBRID_TITLE_LOGO_IMG]->getContentSize();
-		 const float z=Min(DX*.90f/sz.width,DY*.28f/sz.height);
+		 const float z=Min(DX*.90f/sz.width,DY*(animated?.18f:.28f)/sz.height);
 		 sprite[HYBRID_TITLE_LOGO_IMG]->getTexture()->setAntiAliasTexParameters();
-		 DrawImage((int)sz.width,(int)sz.height,0,0,(int)((DX-sz.width*z)/2),DY-24*_2X,false,0,0,0,0,z,sprite[HYBRID_TITLE_LOGO_IMG],HYBRID_TITLE_LOGO_IMG);
+		 DrawImage((int)sz.width,(int)sz.height,0,0,(int)((DX-sz.width*z)/2),DY-(animated?(int)(16*DX/640.f):24*_2X),false,0,0,0,0,z,sprite[HYBRID_TITLE_LOGO_IMG],HYBRID_TITLE_LOGO_IMG);
 		}
 }
 
@@ -7783,87 +7786,10 @@ void LoadoutRelease(bool cancelled)
 }
 
 // Uses the same packed geometry and collision checks as the real drag handler.
-int CastleTutorialFocus(int rectangles[2][4]){
- if(gCastleTutorialStep==CastleTutorial::Place&&LoadoutOpen()){
-  unsigned char occ[GRIDTEST_H][GRIDTEST_W];GridPart parts[LOADOUT_MAX];
-  int cols[LOADOUT_MAX],rows[LOADOUT_MAX];bool fit[LOADOUT_MAX]={};
-  LoadoutPreviewPack(occ,parts,cols,rows,fit);
-  const int cell=gLoadoutGridW/Max(1,gGridW);
-  // Prefer adding a visible warehouse item to a genuinely empty position.
-  for(int slot=0;slot<gLoadoutSlotCnt;++slot){
-   const int inv=gLoadoutSlot[slot];if(inv<0||inv>=GetMaxInven())continue;bool used=false;
-   for(int n=0;n<gLoadoutCnt;++n)used|=gLoadout[n]==inv;
-   if(used)continue;
-   GridPart part;GridGearPart(&robin.inven[inv],&part);
-   for(int r=0;r<gGridH;++r)for(int c=0;c<gGridW;++c)if(LoadoutPreviewCanPlace(&part,c,r,occ)){
-    for(int n=touchIndex-1;n>=0;--n)if(touchRect[n][4]==TOUCH_FUNC_LOADOUT_ITEM+slot){
-     for(int k=0;k<4;++k)rectangles[0][k]=touchRect[n][k];
-     rectangles[1][0]=gLoadoutGridX+c*cell;rectangles[1][1]=gLoadoutGridY-(gGridH-r-part.h)*cell;
-     rectangles[1][2]=part.w*cell;rectangles[1][3]=part.h*cell;return 2;
-    }
-   }
-  }
-  // A full starting grid still permits a valid lift and replacement.
-  for(int n=0;n<gLoadoutCnt;++n)if(fit[n]){
-   rectangles[0][0]=gLoadoutGridX+cols[n]*cell;rectangles[0][1]=gLoadoutGridY-(gGridH-rows[n]-parts[n].h)*cell;
-   rectangles[0][2]=parts[n].w*cell;rectangles[0][3]=parts[n].h*cell;return 1;
-  }
- }
- if(gCastleTutorialStep==CastleTutorial::Shop&&GridTestOfferOpen()){
-  for(int i=0;i<GRIDTEST_OFFERCNT;++i){
-   if(gOffer[i].purchased||gOfferSpin[i]>0||gOffer[i].kind!=OFFER_PART||GridShopPrice(gOffer[i].price)>StageGold())continue;
-   const GridPart part=GridOfferPart(gOffer[i]);
-   for(int r=0;r<gGridH;++r)for(int c=0;c<gGridW;++c)if(GridTestCanPlace(&part,c,r,-1)){
-    for(int n=touchIndex-1;n>=0;--n)if(touchRect[n][4]==TOUCH_FUNC_GRIDTEST_OFFER+i){
-     for(int k=0;k<4;++k)rectangles[0][k]=touchRect[n][k];
-     rectangles[1][0]=GridCellX(c);rectangles[1][1]=GridCellY(r);
-     rectangles[1][2]=part.w*gGridCell;rectangles[1][3]=part.h*gGridCell;return 2;
-    }
-   }
-  }
- }
- return 0;
-}
-
-bool CastleTutorialReviewAction(int action){
- if(!getenv("CS_TUTORIAL_REVIEW"))return false;
- if(action==0||action==1){
-  if(!LoadoutOpen()||gLoadoutCnt<=0)return false;
-  unsigned char occ[GRIDTEST_H][GRIDTEST_W];GridPart parts[LOADOUT_MAX];
-  int cols[LOADOUT_MAX],rows[LOADOUT_MAX];bool fit[LOADOUT_MAX]={};
-  LoadoutPreviewPack(occ,parts,cols,rows,fit);int slot=-1;
-  for(int i=0;i<gLoadoutCnt;++i)if(fit[i]){slot=i;break;}
-  if(slot<0)return false;
-  const int cell=gLoadoutGridW/Max(1,gGridW);
-  touchX=gLoadoutGridX+(cols[slot]+parts[slot].w*.5f)*cell;
-  touchY=gLoadoutGridY-(gGridH-rows[slot]-parts[slot].h*.5f)*cell;
-  gLoadoutDrag=gLoadout[slot];gLoadoutDragFromBag=true;
-  gLoadoutDragX=touchX-100;gLoadoutDragY=touchY;
-  LoadoutRelease(action==0);
-  return action==0?gCastleTutorialStep==CastleTutorial::Place:gCastleTutorialStep==CastleTutorial::Ready;
- }
- if(action==2){
-  int x,y,w,h;LoadoutGoButtonRect(&x,&y,&w,&h);
-  touchX=endTouchX=x+w/2;touchY=endTouchY=y-h/2;
-  gLoadoutGestureMode=0;LoadoutSetupPress();LoadoutRelease(false);
-  return !LoadoutOpen();
- }
- if(action==3||action==4){
-  if(action==3){StageRtSetAuto(false);GridTestRefresh();}
-  for(int i=0;i<GRIDTEST_OFFERCNT;++i){
-   if(gOffer[i].kind!=OFFER_PART||gOffer[i].purchased)continue;
-   const auto part=GridOfferPart(gOffer[i]);int col=-1,row=-1;
-   for(int r=0;r<gGridH&&col<0;++r)for(int c=0;c<gGridW;++c)if(GridTestCanPlace(&part,c,r,-1)){col=c;row=r;break;}
-   if(col<0)continue;
-   StageGoldSet(action==3?0:1000);gOfferSpin[i]=0;
-   touchX=GridCellX(col)+part.w*gGridCell/2;touchY=GridCellY(row)-part.h*gGridCell/2;
-   GridTestPick(i,true);gGridDragValid=true;gGridDragCol=col;gGridDragRow=row;GridTestRelease();
-   return action==3?(gCastleTutorialStep==CastleTutorial::Shop&&StageGold()==0):(gCastleTutorialStep==CastleTutorial::Continue&&StageGold()<1000);
-  }
-  return false;
- }
- return false;
-}
+//튜토리얼이 밝힐 자리는 합성 전투판이 안다(MergeTutorialRuntime.inc). 옛 출정 준비·전투 상점 분기는 뺐다.
+int CastleTutorialFocus(int rectangles[2][4]){return MergeTutorialFocus(rectangles);}
+//옛 실시간 전투 튜토리얼의 리뷰 동작. 지금 튜토리얼은 전투판 리뷰(MergeTutorialReviewDrive)가 운전한다.
+bool CastleTutorialReviewAction(int){return false;}
 
 //---- 히어로 고르기 ----
 //

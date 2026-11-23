@@ -111,6 +111,11 @@ struct Run {
     int families[3]={Sword,Armor,Boots};
     int selected=Sword, spins=SpinLimit;
     enum { BattleEnergyMax=5 };
+    //히어로 검 블록의 기준값 = 공격력 × 300% (2026-11-22). 동료 STR 이 ★1 15 → ★6 1500 으로 벌어지는데 검은
+    //공격력 27 × 3^(Lv-1) 이라 ★3 동료 한 장에 밀렸다. 300% 면 ★1·2 동료는 검 Lv1 아래, ★3 이 검 Lv1 과
+    //비슷, ★4 가 검 Lv2 급 - "히어로가 제일 세고 동료가 다음" 이 ★4 까지 유지된다. ★5·6 은 히어로 궁극기
+    //값(공격력×400%)을 쓰므로 무기 강화가 그대로 따라온다. 대포(cannonShell)는 따로 포탑 계수를 쓴다.
+    enum { HeroGearPct=300 };
     int battleEnergy=BattleEnergyMax;
     bool spendBattleEnergy(){if(battleEnergy<=0)return false;--battleEnergy;return true;}
     void refillBattleEnergy(){battleEnergy=BattleEnergyMax;}
@@ -377,6 +382,21 @@ struct Run {
         else { board.erase(board.begin()+index); board.push_back(moving); }
         return true;
     }
+    // Plan one merge without changing the live board or its random stream.
+    bool automaticMergePlan(Run& out,bool& fromTray,int& source,int& target) const {
+        if(choosing||attacking||lost)return false;
+        for(int trayPass=0;trayPass<2;++trayPass){
+            const auto& items=trayPass?tray:board;
+            for(int i=0;i<(int)items.size();++i)for(int j=0;j<(int)board.size();++j){
+                if(!trayPass&&i<=j)continue;
+                if(!mergeable(items[i],board[j]))continue;
+                Run trial=*this;
+                if(!trial.place(trayPass!=0,i,board[j].x,board[j].y,false))continue;
+                out=trial;fromTray=trayPass!=0;source=i;target=j;return true;
+            }
+        }
+        return false;
+    }
     //톡 치면 돌린다(가로·세로 바꿈). 판 밖으로 나가면 안쪽으로 당겨 넣고, 겹치는 것은 둔다.
     bool rotate(int index) {
         if(choosing || attacking || lost || index<0 || index>=(int)board.size()) return false;
@@ -405,6 +425,25 @@ struct Run {
         for(int y=0;y<shape.height;++y) for(int x=0;x<shape.width;++x)
             if(at(x,y)<0 && place(true,index,x,y,false)) return true;
         return false;
+    }
+    // Spin rewards still land on a crowded board; the player resolves overlaps.
+    bool scatterPlace(int index) {
+        if(autoPlace(index))return true;
+        if(choosing||attacking||lost||index<0||index>=(int)tray.size())return false;
+        Block best;int bestScore=-1;
+        for(int turn=0;turn<2;++turn)for(int y=0;y<shape.height;++y)for(int x=0;x<shape.width;++x){
+            Block b=tray[index];b.x=x;b.y=y;if(turn)b.rot=!b.rot;
+            if(!fits(b,-1,-1,true))continue;
+            int score=0;
+            for(const Block& old:board){
+                const int w=std::max(0,std::min(b.x+Wide(b),old.x+Wide(old))-std::max(b.x,old.x));
+                const int h=std::max(0,std::min(b.y+Tall(b),old.y+Tall(old))-std::max(b.y,old.y));
+                score+=w*h;
+            }
+            if(bestScore<0||score<bestScore){best=b;bestScore=score;}
+        }
+        if(bestScore<0)return false;
+        board.push_back(best);tray.erase(tray.begin()+index);return true;
     }
     bool drop(bool fromTray,int index,float centerX,float centerY){
         const auto& source=fromTray?tray:board;
@@ -575,13 +614,26 @@ struct Run {
         for(int f=Sword;f<FamilyCount;++f) gear[gn++]=f;
         for(int k=0;k<3;++k) if(families[k]<Roles) role[rn++]=families[k];
 
+        //---- 세 칸에 장비와 동료가 하나씩은 선다 ----
+        //
+        //칸마다 독립으로 동전을 던지면 70:30 이라도 셋 다 장비(34%)·셋 다 동료(3%) 가 흔해서
+        //"장비만 몰려 나온다 / 동료만 몰려 나온다" 로 읽혔다. 동전은 그대로 던지되(난수 순서 보존),
+        //셋이 한쪽으로 쏠리면 가장 애매했던 칸 하나를 반대쪽으로 돌린다 - 역할이 하나라도 있을 때만.
+        if(!rn){   //역할이 없으면 전부 장비 - 옛 난수 순서(동전, 부위, 동전, 부위…)를 그대로 지킨다
+            for(int i=0;i<3;++i){random(100);tray.push_back(starter(gear[random((unsigned)gn)]));}
+            return true;
+        }
+        int coin[3];bool wantGear[3];
+        for(int i=0;i<3;++i){coin[i]=(int)random(100);wantGear[i]=coin[i]<BOARD_GEAR_PCT;}
+        {
+            int gears=0;for(int i=0;i<3;++i)gears+=wantGear[i]?1:0;
+            if(gears==3){int flip=0;for(int i=1;i<3;++i)if(coin[i]>coin[flip])flip=i;wantGear[flip]=false;}   //동전이 가장 컸던 칸
+            else if(gears==0){int flip=0;for(int i=1;i<3;++i)if(coin[i]<coin[flip])flip=i;wantGear[flip]=true;}   //동전이 가장 작았던 칸
+        }
         for(int i=0;i<3;++i) {
-            const bool wantGear=(int)random(100)<BOARD_GEAR_PCT;
             int family;
-
-            if(wantGear||!rn) family=gear[random((unsigned)gn)];
+            if(wantGear[i]) family=gear[random((unsigned)gn)];
             else family=role[random((unsigned)rn)];
-
             tray.push_back(starter(family));
         }
         return true;
@@ -611,7 +663,7 @@ struct Run {
             if(trait==Chill) {e.skip+=MergeBoard::ChillSkipTurns(lv);if(lv<=2)e.half=true;}
             if(trait==Strike)raw+=raw*MergeBoard::StrikePct(lv)/100;
             if(trait==Volley)raw+=raw*MergeBoard::VolleyPct(lv)/100;   //적이 하나라 탄이 전부 한 놈에게
-        } else raw=std::max(st.weapon,b.ownedPower)*MergeBoard::GearMulOf(b.family-Sword,lv);
+        } else raw=std::max(st.weapon,b.ownedPower)*HeroGearPct/100*MergeBoard::GearMulOf(b.family-Sword,lv);   //히어로 검은 공격력의 300%
         s.damage=raw*(100+e.expose)/100*e.inspire;e.inspire=1;
         if(b.family<Roles) {
             if(trait==Expose) e.expose+=MergeBoard::ExposePct(lv);

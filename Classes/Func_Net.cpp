@@ -315,7 +315,7 @@ static void NetBuildDump(std::string& out)
 	}
 	if(gCastleTutorialStep>=0){
 		PutNum(gNetUserId);PutNum(8);PutNum(0);PutNum(1);RowEnd();
-		PutNum(gNetUserId);PutNum(8);PutNum(1);PutNum(gCastleTutorialStep);RowEnd();
+		PutNum(gNetUserId);PutNum(8);PutNum(1);PutNum(CastleTutorialPacked());RowEnd();   //단계 | 로비 힌트<<8
 	}
 	CastleProgressEnsure();
 	PutNum(gNetUserId); PutNum(7); PutNum(0); PutNum(1); RowEnd();

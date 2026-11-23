@@ -1,5 +1,7 @@
 ﻿#pragma once
 bool MergeRouletteActive();
+bool MergeTutorialReviewDrive(void (*trace)(const char*),void (*capture)(const char*));   //CS_TUTORIAL_REVIEW 운전(MergeTutorialRuntime.inc)
+bool MergeRouletteTitleCastlesDraw();
 void SharedRewardShow(const ITEM* items,int count);
 bool SharedRewardOpen();
 void SharedRewardDraw();

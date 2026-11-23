@@ -132,7 +132,7 @@ bool AppDelegate::applicationDidFinishLaunching() {
 	director->setDisplayStats(true);
 
 	// set FPS. the default value is 1.0/60 if you don't call this
-	director->setAnimationInterval(1.0f / 60.0f);
+	//director->setAnimationInterval(1.0f / 60.0f);
 	//director->setAnimationInterval(1.0f / 6.0f);
 	//director->setAnimationInterval(1.0f / 20.0f);
 

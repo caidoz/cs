@@ -1,18 +1,20 @@
 ﻿#include "CastleTutorialModel.h"
 #include <chrono>
 int gCastleTutorialStep=-1;
+int gCastleTutorialHints=0;   //로비 힌트 비트(CastleTutorial::Hint). 단계와 같은 플래그의 윗 비트에 저장한다
 namespace CastleGuide {
-// Temporarily suspend guidance while the menus are being reviewed. Keep saved progress.
-static bool DisabledReview(){return !getenv("CS_TUTORIAL_REVIEW");}
-static void SaveStep(int step){if(gCastleTutorialStep==step)return;gCastleTutorialStep=step;SaveGame();}
+// 다른 화면 리뷰(CS_*_REVIEW)가 도는 동안은 안내를 끈다 - 리뷰 캡처에 손가락이 끼면 안 된다.
+// CS_TUTORIAL_REVIEW 가 켜져 있으면 리뷰 중에도 안내한다. 보통 플레이에서는 늘 켜져 있다.
+static bool DisabledReview(){
+ if(getenv("CS_TUTORIAL_REVIEW"))return false;
+ static const char* keys[]={"CS_MERGE_REVIEW","CS_CASTLE_REVIEW_PATH","CS_BATTLE_MENU_REVIEW","CS_STAGE_COMBAT_REVIEW","CS_GEAR_ROLE_REVIEW","CS_MAX_WEAPON_REVIEW","CS_ALLY_LINK_REVIEW","CS_ALLIES_BALANCE_REVIEW"};
+ for(const char* key:keys)if(getenv(key))return true;
+ return false;
+}
+static int Packed(){return (gCastleTutorialStep<0?0:gCastleTutorialStep)|(gCastleTutorialHints<<8);}
+static void SaveStep(int step){if(gCastleTutorialStep==step)return;gCastleTutorialStep=step;MergeTutorialStepChanged();SaveGame();}
 static bool Scene(){return drawHandle==MD_LOBBY||drawHandle==MD_PLAY;}
-static int Target(){switch(gCastleTutorialStep){
- case CastleTutorial::Depart:return TOUCH_FUNC_GOTOBATTLE;
- case CastleTutorial::Place:return TOUCH_FUNC_LOADOUT_BAND;
- case CastleTutorial::Ready:return TOUCH_FUNC_LOADOUT_GO;
- case CastleTutorial::Start:case CastleTutorial::Continue:return GridTestOfferOpen()?TOUCH_FUNC_GRIDTEST_SKIP:TOUCH_FUNC_STAGE_AUTOBATTLE;
- case CastleTutorial::Growth:return TOUCH_FUNC_LOBBY_CASTLE;
- default:return -1;}}
+static int Target(){return -1;}   //밝힐 자리는 전부 전투판이 네모로 준다(MergeTutorialFocus)
 static void Button(const char* text,int x,int y,int w,int command){
  DrawUiButton(x,y,w,48,text,command);
 }
@@ -62,14 +64,18 @@ void main(){
 
 static void Caption(const float circles[2][3],int count){
  const char* title="";const char* instruction="";
+ //한 단계 = 한 줄 = 한 조작. 20자 안(docs/기획_튜토리얼_합성.md §3).
  switch(gCastleTutorialStep){
- case CastleTutorial::Depart:title="모험 시작";instruction="모험 시작 버튼을 눌러 출정하세요.";break;
- case CastleTutorial::Place:title="전투 준비";instruction="성의 창고에서 동료나 장비를\n전투맵의 밝은 영역에 배치하세요.";break;
- case CastleTutorial::Ready:title="배치 완료";instruction="세팅 완료 버튼을 누르세요.";break;
- case CastleTutorial::Start:title="전투 시작";instruction="전투 시작 버튼을 눌러주세요.";break;
- case CastleTutorial::Shop:title="전투 상점";instruction="상품을 밝은 영역으로 끌어\n구매하고 배치하세요.";break;
- case CastleTutorial::Continue:title="다음 웨이브";instruction="전투를 다시 시작하세요.";break;
- case CastleTutorial::Growth:title="성 성장";instruction="성 메뉴를 열어\n업그레이드를 확인하세요.";break;
+ case CastleTutorial::Depart:title="출정";instruction="전투 시작을 누르세요";break;
+ case CastleTutorial::Spin:title="룰렛";instruction="룰렛을 돌리세요. 번개 1개";break;
+ case CastleTutorial::Land:title="착지";instruction="룰렛 결과가 판에 내려앉습니다";break;
+ case CastleTutorial::Merge:title="합성";instruction="같은 블록은 저절로 합쳐집니다";break;
+ case CastleTutorial::Attack:title="공격";instruction="공격! 판의 블록이 전부 나갑니다";break;
+ case CastleTutorial::Reward:title="보상";instruction="잡았습니다. 보상을 받으세요";break;
+ case CastleTutorial::Energy:title="번개";instruction="몬스터 하나에 번개 5개";break;
+ case CastleTutorial::Shield:title="방어막";instruction="반격은 방어막부터, 비면 체력입니다";break;
+ case CastleTutorial::Cannon:title="대포";instruction="대포는 판 없이 바로 때립니다";break;
+ case CastleTutorial::Free:title="자유";instruction="이제 자유. 5·10·15번째는 보스";break;
  default:return;
  }
  // Twenty full-width glyphs per line at most, also respecting actual width.
@@ -99,23 +105,37 @@ static void Caption(const float circles[2][3],int count){
 }
 
 }
-void CastleTutorialLoad(int step){gCastleTutorialStep=CastleTutorial::Clamp(step);}
-void CastleTutorialNewGame(){gCastleTutorialStep=CastleTutorial::Welcome;robin.demoSeen[DEMO_TUTORIAL_END]=true;}
+//저장 값 = 단계(아래 8비트) | 힌트 비트 << 8. 옛 세이브(단계만)도 그대로 읽힌다.
+void CastleTutorialLoad(int packed){
+ if(packed<0){gCastleTutorialStep=-1;gCastleTutorialHints=0;return;}
+ gCastleTutorialStep=CastleTutorial::Clamp(packed&0xFF);gCastleTutorialHints=(packed>>8)&0xFF;
+}
+int CastleTutorialPacked(){return CastleGuide::Packed();}
+void CastleTutorialNewGame(){gCastleTutorialStep=CastleTutorial::Welcome;gCastleTutorialHints=0;robin.demoSeen[DEMO_TUTORIAL_END]=true;}
+bool CastleTutorialLive(){return !CastleGuide::DisabledReview()&&gCastleTutorialStep>=0;}
+bool CastleTutorialHintSeen(int bit){return (gCastleTutorialHints&bit)!=0;}
+void CastleTutorialHintMark(int bit){if(gCastleTutorialHints&bit)return;gCastleTutorialHints|=bit;SaveGame();}
 void CastleTutorialEvent(int event){
  if(CastleGuide::DisabledReview()||!CastleGuide::Scene())return;
  CastleGuide::SaveStep(CastleTutorial::Advance(gCastleTutorialStep,(CastleTutorial::Event)event));
 }
+//관찰 단계(번개·방어막·자유)는 2초가 지나면 스스로 넘어간다. 단계가 바뀐 시각을 여기서 잰다.
+static int sObservedStep=-1;static std::chrono::steady_clock::time_point sObservedAt;
 void CastleTutorialUpdate(){
  using namespace CastleTutorial;
  if(CastleGuide::DisabledReview()||!CastleGuide::Scene())return;
  if(gCastleTutorialStep<0){CastleGuide::SaveStep(robin.stage>0||robin.demoSeen[DEMO_TUTORIAL_END]?Done:Welcome);}
  if(gCastleTutorialStep==Welcome)CastleGuide::SaveStep(Depart);
- if(gCastleTutorialStep==Growth&&drawHandle==MD_LOBBY&&curMenu==MENU_CASTLE&&popUpCnt>0)CastleTutorialEvent(Next);
  if(gCastleTutorialStep>=Done)return;
- if(drawHandle==MD_LOBBY&&gCastleTutorialStep>=CastleTutorial::Place&&gCastleTutorialStep<=Continue){CastleGuide::SaveStep(Depart);return;}
- if(gCastleTutorialStep==Depart&&drawHandle==MD_PLAY&&LoadoutOpen())CastleTutorialEvent(Entered);
- else if(gCastleTutorialStep==Ready&&drawHandle==MD_PLAY&&!LoadoutOpen())CastleTutorialEvent(Setup);
- else if((gCastleTutorialStep==Start||gCastleTutorialStep==Continue)&&StageRtAutoOn())CastleTutorialEvent(Started);
+ //전투 밖(로비)에서 전투 단계에 있으면 처음으로 돌린다 - 나갔다 들어오면 새 판이다.
+ if(drawHandle==MD_LOBBY&&!MergeRouletteActive()&&gCastleTutorialStep>Depart){CastleGuide::SaveStep(Depart);return;}
+ if(Observing(gCastleTutorialStep)){
+  int rects[2][4]={};
+  if(MergeTutorialFocus(rects)==0){sObservedStep=-1;return;}   //아직 밝힐 것이 안 보이면 시계도 안 돈다
+  const auto now=std::chrono::steady_clock::now();
+  if(sObservedStep!=gCastleTutorialStep){sObservedStep=gCastleTutorialStep;sObservedAt=now;return;}
+  if(std::chrono::duration<float>(now-sObservedAt).count()>=2.0f+1.3f)CastleTutorialEvent(Observed);   //마스크가 뜨는 1.3초 + 2초
+ }else sObservedStep=-1;
 }
 bool CastleTutorialCommand(int command){
  using namespace CastleTutorial;
@@ -123,7 +143,7 @@ bool CastleTutorialCommand(int command){
  if(CastleGuide::DisabledReview()||!CastleGuide::Scene())return true;
  if(command==TOUCH_FUNC_TUTORIAL_HELP){CastleGuide::SaveStep(Welcome);return true;}
  if(gCastleTutorialStep<0||gCastleTutorialStep>=Done)return true;
- if(command==TOUCH_FUNC_TUTORIAL_SKIP)CastleGuide::SaveStep(Done);
+ if(command==TOUCH_FUNC_TUTORIAL_SKIP){MergeTutorialUnlock();CastleGuide::SaveStep(Done);}
  else if(command==TOUCH_FUNC_TUTORIAL_SKIP_STEP)CastleGuide::SaveStep(gCastleTutorialStep+1);
  else if(command==TOUCH_FUNC_TUTORIAL_NEXT)CastleTutorialEvent(Next);
  return true;
@@ -136,8 +156,6 @@ void CastleTutorialDraw(){
   return;
  }
  if(gCastleTutorialStep<0||popUpCnt>0||isDemo)return;
- // No overlay during automatic combat: the player must be able to watch it.
- if(gCastleTutorialStep==Fight)return;
  int holes[2][4]={};int count=CastleTutorialFocus(holes);
  if(!count){
   for(int i=touchIndex-1;i>=0;--i)if(touchRect[i][4]==CastleGuide::Target()){
@@ -180,6 +198,7 @@ void CastleTutorialDraw(){
  }
  SetAlpha(32);
  DrawHandAtTarget((int)hx,(int)hy,robin.playtime/MOTIONDIV,1.8f);
- CastleGuide::Button("X",DX-44,DY-LOBBY_BAR_H-8,32,TOUCH_FUNC_TUTORIAL_SKIP);
+ //건너뛰기는 합성(3단계)을 해 본 뒤부터. 룰렛·배치·합성은 해 보지 않고는 못 나간다.
+ if(Skippable(gCastleTutorialStep))CastleGuide::Button("건너뛰기",DX-124,DY-LOBBY_BAR_H-8,112,TOUCH_FUNC_TUTORIAL_SKIP);
  SetAlpha(savedAlpha);
 }

@@ -14,6 +14,10 @@
 #include "SquareGearIcons.h"
 #include "MergeCombatPresentation.h"
 #include "MergeExpeditionModel.h"
+#include "MergeWaveCurve.h"
+#include "CastleTutorialModel.h"
+//튜토리얼 훅(MergeTutorialRuntime.inc 가 정의). 포함 지점보다 앞에서 쓰는 것만 전역 함수로 뺐다.
+void MergeTutorialBeginBattle();void MergeTutorialRememberAllyPlate(int x,int y,int w,int h);void MergeTutorialRememberHeader(int x,int y,int w,int h);void MergeTutorialDrawLobbyHints();
 #include "MergeOwnedGearPolicy.h"
 #include "TurretAttackPresentation.h"
 #include "CastleArtGeometry.h"
@@ -40,6 +44,11 @@
 namespace {
 using namespace MergeRoulette;
 Run run;
+struct AutomaticMerge {
+    Run plan;Block moving,staging;bool fromTray=false,targetLifted=false;
+    int source=-1,target=-1,age=-1;
+    bool active() const{return age>=0;}
+} automaticMerge;
 Stats stats;
 MergeCombat::AnimatedValue guardDisplay,heroHealthDisplay,enemyHealthDisplay;
 MergeCombat::AnimatedValue attackDisplay;
@@ -72,10 +81,13 @@ static const int ownedGearTypes[GearCount]={ITEM_SWORD,ITEM_ARMOR,ITEM_GREAVES,I
 bool active=false,review=false;
 bool entryChoiceOpen=false;
 bool resumePromptOpen=false,resumePromptChecked=false;
+bool quitPromptOpen=false;int quitPromptFinger=-1,quitPromptChoice=-1,exitPromptFinger=-1;
 int resumePromptFinger=-1,resumePromptChoice=-1;
 int resumeReviewPhase=0;long long resumeReviewEnergy=0;std::string resumeReviewSave;
 int entryChoiceFinger=-1,entryChoicePressed=-1;
 const ITEM* gearTableOverride=nullptr;   //MergeSiege.inc 가 상대 판을 그릴 때 끼운다
+bool nativeTitleIsolate=false;
+bool nativeTitleBodyOnly=false;
 bool siegeActive=false;   //공성전(PVP 디버그) 중. MergeSiege.inc
 int siegeHullStage=-1;    //공성전: 그릴 성(상대의 성). -1 이면 run.stage
 namespace Siege{extern bool swapped;extern int castle,refRows,region;}
@@ -174,6 +186,7 @@ float deckMergeGhostX[2]={};
 void observeDeckMerge() {
     if(deckMergeSeen==run.mergeSeq)return;
     deckMergeSeen=run.mergeSeq;
+    CastleTutorialEvent(CastleTutorial::Merged);   //튜토리얼: 합쳐졌다(장비·동료 가리지 않는다)
     if(run.mergeResult.family<0||run.mergeResult.family>=Roles||run.mergeResult.crew<0)return;
     deckMerge=DeckMergePresentation();deckMerge.result=run.mergeResult;
     deckMerge.resultWasVisible=deckReveal[deckMerge.result.crew].visible();
@@ -292,7 +305,7 @@ int reviewCombatTick=-1,introCaptures=0,entryCaptures=0;
 bool reviewCapturePending=false,reviewFinalCapture=false,reviewDone=false;
 int mistReviewSample=0,mistReviewHold=0;
 std::vector<std::string> reviewCaptureQueue;
-constexpr float IntroDuration=3.8f;
+constexpr float IntroDuration=4.6f;
 bool introActive() {return introElapsed>=0&&introElapsed<IntroDuration;}
 Shape castleShape(int stage) {return BattleShape(stage);}
 bool usesCastleGrid() {
@@ -311,7 +324,7 @@ struct Box {
 //합쳐져도 블록 하나가 조용히 바뀔 뿐이라 "합쳐졌다" 가 안 읽혔다.
 //모델이 남긴 번호(run.mergeSeq)가 달라지면 그 자리에서 짧게 터뜨린다.
 unsigned mergeSeenSeq=0;
-int mergeFlash=0;
+int mergeFlash=0,mergeFlashDuration=1;
 Box mergeBox={0,0,0,0};
 int mergeShownLevel=0;
 struct Layout {
@@ -370,7 +383,7 @@ Layout layout() {
     const int controlsLift=(int)(MergeCombat::lobbyCastleLift((float)DX,(float)DY)-25*s+castleArtOffset(hull));
     l.board.y+=controlsLift;l.arenaBottom+=lift;l.ground+=lift;
     l.slot.y+=controlsLift;l.lever.y+=controlsLift;l.heart.y+=controlsLift;
-    l.exit={(int)(10*s),DY-(int)(8*s),(int)(66*s),(int)(28*s)};   //왼쪽 위. 오른쪽 위는 몬스터 판 자리
+    l.exit={(int)(10*s),DY-(int)(8*s),(int)(100*s),(int)(40*s)};   //왼쪽 위. 오른쪽 위는 몬스터 판 자리. 66×28 이면 공용 단추가 "나가기" 를 세 줄로 접어 "기" 만 보였다
     l.left={(int)(48*s),l.slot.y,(int)(36*s),l.slot.h};
     l.right={DX-(int)(84*s),l.slot.y,(int)(36*s),l.slot.h};
     l.reroll=l.spin;l.confirm=l.attack;
@@ -425,7 +438,7 @@ void panel(const Box& b,int color,int border=0x61718C) {
     mergeRect(b.x,b.y,b.w,b.h,border);
     mergeRect(b.x+p,b.y-p,b.w-2*p,b.h-2*p,color);
     mergeRect(b.x+2*p,b.y-2*p,b.w-4*p,p,0x7B7C80);
-    mergeRect(b.x+p,b.y-b.h+p,b.w-2*p,p,0x151421);
+    mergeRect(b.x+p,b.y-b.h+2*p,b.w-2*p,p,0x151421);   //아랫변 안쪽 선. 전에는 테두리 줄 위에 그려져 아래 경계선이 안 보였다
 }
 void label(const char* text,int x,int y,float size=0.7f,int color=0xF4E8CC) {
     SetFontColor(color);CenterTextStrSolid(text,x,y,size*DX/640.0f);
@@ -773,14 +786,24 @@ int grayOf(int c) {
     return (l<<16)|(l<<8)|l;
 }
 void mergeButtonFrame(int,int,int,int,bool,int);
+void choiceIcons(int kind,int x,int y,int size){
+    const int actionSize=size*32/72,boltSize=size*28/72;
+    const int actionTop=y-(size-actionSize)/2;
+    if(kind==ChoiceAttack)DrawIcon(ICON_EVENT_2SWORD,x,actionTop,actionSize/(float)ITEMICONSIZE,0x070C20,false,false,1.5f);
+    else if(kind==ChoiceSpin)reelIcon(x,actionTop,actionSize);
+    else cannonIcon(x,actionTop,actionSize);
+    if(!sprite[LOBBY_ENERGY_IMG])LoadImg(LOBBY_ENERGY_IMG);
+    DrawImage(128,128,0,0,x+size-boltSize,y-(size-boltSize)/2,false,0,0,0,0,boltSize/128.f,sprite[LOBBY_ENERGY_IMG],LOBBY_ENERGY_IMG);
+}
 void choice(const Box& b,int kind,bool enabled) {
     static const int colors[]={0x1369D9,0xEC4A13,0x8A6A1E};
     UiButtonStyle style;style.fill=colors[kind];style.frame=mergeButtonFrame;
-    if(kind==ChoiceAttack)style.icon=[](int x,int y,int n){DrawIcon(ICON_EVENT_2SWORD,x,y,n/(float)ITEMICONSIZE,0x070C20,false,false,1.5f);};
-    else if(kind==ChoiceSpin)style.icon=[](int x,int y,int n){reelIcon(x,y,n);};
-    else style.icon=[](int x,int y,int n){cannonIcon(x,y,n);};
+    style.iconSize=72;
+    if(kind==ChoiceAttack)style.icon=[](int x,int y,int n){choiceIcons(ChoiceAttack,x,y,n);};
+    else if(kind==ChoiceSpin)style.icon=[](int x,int y,int n){choiceIcons(ChoiceSpin,x,y,n);};
+    else style.icon=[](int x,int y,int n){choiceIcons(ChoiceCannon,x,y,n);};
     grayScale=enabled?0:32;
-    DrawUiButtonIcon(b.x,b.y,b.w,b.h,0,u8"\uBC88\uAC1C -1",0,false,enabled,style);
+    DrawUiButtonIcon(b.x,b.y,b.w,b.h,0,"-1",0,false,enabled,style);
     grayScale=0;
 }
 //대포 한 발의 값. 히어로 무기값 × 성 대포 단계 계수. 5단이 ★1 검 블록 두어 개 몫이라
@@ -1022,7 +1045,7 @@ int crewIdleMotion(int crew,int step) {
 //모션 번호(crewWalkMotion)와 보는 쪽을 밖에서 받는다. motion<0 이면
 //쉬는 자세 첫 장 - 릴과 판, 그리고 걷는 그림이 없는 주민이 그렇다.
 float gridCrewZoomSeen[64]={};
-void crewArt(int crew,const Box& box,float fraction,int footLift,int motionIn,int dir,float fixedZoom=-1.f) {
+void crewArt(int crew,const Box& box,float fraction,int footLift,int motionIn,int dir,float fixedZoom=-1.f,float rotation=0.f) {
     if(crew<0||crew>=64)return;
     int npc=crewData[crew*CREWDATASIZE+CREWDATA_TYPE];
     int cmf=enemyData[npc*ENEMYDATASIZE+ENEMYDATA_CMF];
@@ -1033,8 +1056,29 @@ void crewArt(int crew,const Box& box,float fraction,int footLift,int motionIn,in
     const auto* bounds=cmfMotionImgSize[cmf]+motion*4;
     int p=std::max(1,(int)(DX/640.f));
     float z=fixedZoom>=0?fixedZoom:std::min((box.w-2*p)/(float)std::max(1,(int)bounds[2]),(box.h-7*p-footLift)/(float)std::max(1,(int)bounds[3]))*fraction;
-    iconGround(box,std::max(box.w/2,(int)(bounds[2]*z*.85f)),footLift);
-    DrawCmfDetail(cmf,motion,box.x+box.w/2,box.y-box.h+5*p+footLift+(int)(bounds[3]*z/2),dir,z,0,true);
+    const bool turned=rotation!=0.f;
+    if(fixedZoom>=0){
+        const int artWidth=std::max(1,(int)bounds[turned?3:2]),artHeight=std::max(1,(int)bounds[turned?2:3]);
+        const int roomHeight=turned?box.h-14*p:box.h-7*p-footLift-(int)(12*DX/640.f);
+        z=std::max(0.f,std::min(z,std::min((box.w-(turned?12:4)*p)/(float)artWidth,std::max(1,roomHeight)/(float)artHeight)));
+        gridCrewZoomSeen[crew]=z;
+    }
+    if(turned&&!(review&&std::getenv("CS_CREW_SHADOW_HIDE_REVIEW"))){
+        const int cx=clipX,cy=clipY,cx2=clipX2,cy2=clipY2;
+        SetSectionClip(box.x,box.y,box.w,box.h,false);
+        clipX=std::max(clipX,cx);clipY=std::min(clipY,cy);
+        clipX2=std::min(clipX2,cx2);clipY2=std::max(clipY2,cy2);
+        // A clockwise turn puts the feet at the left edge of the sprite.
+        // Keep its contact shadow under those feet, rather than under its torso.
+        Box feet=box;feet.x=box.x+14*p-box.w/2;
+        const int shadowWidth=std::max(26*p,(int)(bounds[2]*z*1.05f));
+        iconGround(feet,shadowWidth,-2*p);
+        iconGround(feet,shadowWidth,-2*p);
+        clipX=cx;clipY=cy;clipX2=cx2;clipY2=cy2;
+    }else if(!turned)iconGround(box,std::max(box.w/2,(int)(bounds[2]*z*.85f)),footLift);
+    const int centerX=turned?box.x+4*p+(int)(bounds[3]*z/2):box.x+box.w/2;
+    const int centerY=turned?box.y-box.h+4*p+(int)(bounds[2]*z/2):box.y-box.h+5*p+footLift+(int)(bounds[3]*z/2);
+    if(!(turned&&review&&std::getenv("CS_CREW_BODY_HIDE_REVIEW")))DrawCmfDetail(cmf,motion,centerX,centerY,dir,z,rotation,true);
 }
 void icon(int family,const Box& box,float fraction=0.96f,bool atlas=false,int level=1,int crew=-1,int footLift=0,const Block* instance=nullptr) {
     if(family<0||family>=FamilyCount)return;
@@ -1049,9 +1093,10 @@ void icon(int family,const Box& box,float fraction=0.96f,bool atlas=false,int le
         if(atlas)placement.y+=std::max(1,(int)(6*DX/640.f));
                 // Every grid companion uses one native sprite zoom. Bounds only
         // position its feet; neither character size nor tile shape changes zoom.
-        const float gridZoom=1.35f*(DX/640.f);
-        if(!atlas&&crew>=0&&crew<64)gridCrewZoomSeen[crew]=gridZoom;
-        crewArt(crew,placement,fraction,footLift,-1,RIGHT,atlas?-1.f:gridZoom);
+        const float gridZoom=1.215f*(DX/640.f);
+        const bool turned=!atlas&&instance&&instance->rot&&Wide(*instance)!=Tall(*instance);
+        if(turned)placement.y-=(int)(12*DX/640.f);
+        crewArt(crew,placement,fraction,footLift,-1,RIGHT,atlas?-1.f:gridZoom,turned?90.f:0.f);
     } else {
         //공성전의 상대 판은 상대 히어로 라인의 장비로 그린다(gearTableOverride, MergeSiege.inc).
         const int lvAt=std::max(0,std::min(MaxLevel-1,level-1));
@@ -1122,6 +1167,52 @@ void drawBlock(const Block& b,const Box& box,bool ghost=false) {
 Box blockBox(const Block& b,const Layout& l) {
     return {l.board.x+b.x*l.cell,l.board.y-b.y*l.cellH,Wide(b)*l.cell,Tall(b)*l.cellH};
 }
+bool automaticMergesEnabled(){return (!siegeActive||!Siege::swapped)&&(!review||std::getenv("CS_AUTO_MERGE_REVIEW"));}
+bool beginAutomaticMerge(){
+    if(!automaticMergesEnabled()||automaticMerge.active()||picked>=0)return false;
+    AutomaticMerge next;
+    if(!run.automaticMergePlan(next.plan,next.fromTray,next.source,next.target))return false;
+    next.moving=(next.fromTray?run.tray:run.board)[next.source];
+    next.staging=next.moving;
+    bool found=false;
+    for(int y=0;next.fromTray&&y<run.shape.height&&!found;++y)for(int x=0;x<run.shape.width;++x){
+        Block b=next.moving;b.x=x;b.y=y;
+        if(run.fits(b,next.fromTray?-1:next.source)){next.staging=b;found=true;break;}
+    }
+    // On a full board the lifted material leaves its own empty footprint.
+    if(!found&&next.fromTray){
+        next.staging=run.board[next.target];
+        next.targetLifted=true;
+    }
+    next.age=0;automaticMerge=next;picked=finger=-1;
+    PlayMusic(M_ROULETTEUP);return true;
+}
+void drawAutomaticMerge(const Layout& l){
+    if(!automaticMerge.active())return;
+    const auto& a=automaticMerge;
+    Box from=a.fromTray?slotWindow(l.slot,std::min(2,a.source)):blockBox(a.moving,l);
+    const Box stage=blockBox(a.staging,l);
+    Box target=blockBox(run.board[a.target],l);
+    if(a.targetLifted){
+        target.y+=(int)(64*l.scale);
+        Box lifted=blockBox(run.board[a.target],l);
+        lifted.y+=(int)(std::min(1.f,a.age/12.f)*64*l.scale);
+        drawBlock(run.board[a.target],lifted);
+    }
+    Box raised=from;raised.y+=(int)(48*l.scale);
+    Box start,end;float t;
+    if(!a.fromTray){start=from;end=target;t=std::min(1.f,a.age/24.f);}
+    else if(a.age<12){start=from;end=raised;t=a.age/12.f;}
+    else if(a.age<32){start=raised;end=stage;t=(a.age-12)/20.f;}
+    else{start=stage;end=target;t=std::min(1.f,(a.age-32)/24.f);}
+    const float ease=t*t*(3-2*t);
+    Box box={(int)(start.x+(end.x-start.x)*ease),(int)(start.y+(end.y-start.y)*ease),
+        (int)(start.w+(end.w-start.w)*ease),(int)(start.h+(end.h-start.h)*ease)};
+    if(a.fromTray&&a.age>=12&&a.age<32)box.y+=(int)(std::sin(t*3.14159265f)*34*l.scale);
+    if(!a.fromTray||a.age>=32)box.y+=(int)(std::sin(t*3.14159265f)*48*l.scale);
+    if(a.fromTray){SetAlpha(20);MemRectFrameThick(stage.x,stage.y,stage.w,stage.h,0xFFE397,std::max(1,(int)(2*l.scale)));SetAlpha(32);}
+    drawBlock(a.moving,box);
+}
 int trashSwallowTicks=0;
 float trashOpenness=0;
 Box rouletteTrash(const Layout& l){return {(int)(DX-92*l.scale),l.slot.y-(int)(12*l.scale),(int)(76*l.scale),(int)(80*l.scale)};}
@@ -1161,8 +1252,9 @@ bool beginSpinLanding(){
     const auto source=run.tray;
     for(const auto& item:source){
         const auto before=spinLandingPlan.board;
-        if(!spinLandingPlan.autoPlace(0)){
-            spinDrops.clear();message=u8"\uacb0\uacfc\ub97c \ubc30\uce58\ud558\uac70\ub098 \uc624\ub978\ucabd \uc4f0\ub808\uae30\ud1b5\uc5d0 \ubc84\ub824\uc8fc\uc138\uc694.";messageTime=3;return false;
+        if(!spinLandingPlan.scatterPlace(0)){
+            if(!spinDrops.empty())break;
+            message=u8"\uacb0\uacfc\ub97c \ubc30\uce58\ud558\uac70\ub098 \uc624\ub978\ucabd \uc4f0\ub808\uae30\ud1b5\uc5d0 \ubc84\ub824\uc8fc\uc138\uc694.";messageTime=3;return false;
         }
         Block target=spinLandingPlan.board.back();
         if(before.size()==spinLandingPlan.board.size())for(int i=0;i<(int)before.size();++i){
@@ -1205,23 +1297,22 @@ void drawSpinLanding(const Layout& l){
         icon(drop.source.family,{cx-w/2,cy+h/2,w,h},1.f,false,drop.source.level,drop.source.crew,0,&drop.source);
     }
 }
-float flightStart(int i) {return 2.05f+i*.22f;}
+float flightStart(int i) {return 2.85f+i*.22f;}
 void drawIntro(const Layout& l) {
     if(!introActive())return;
     float s=l.scale,t=introElapsed;
     SetAlpha(32);
     const Box slot=l.slot;
-    if(t<1.9f)label("무료 시작 뽑기",DX/2,slot.y+(int)(17*s),.5f,0xFFF1BD);
     drawSlotFrame(slot);
     for(int i=0;i<3;++i) {
-        float stop=1.2f+i*.24f;
+        float stop=2.f+i*.24f;
         Box reel=slotWindow(slot,i);
         SetSectionClip(reel.x,reel.y,reel.w,reel.h,false);
         int pitch=(int)(108*s);
         if(t<stop) {
             float distance=t-.375f*t*t/stop;
-            int offset=(int)std::fmod(distance*(560+70*i)*s,(float)pitch);
-            int index=(int)(t*(18+3*i));
+            int offset=(int)std::fmod(distance*(920+110*i)*s,(float)pitch);
+            int index=(int)(t*(30+5*i));
             for(int j=-2;j<=2;++j) {
                 int f=pool[(index+j+2+i*7)%pool.size()];
                 SetSectionClip(reel.x,reel.y,reel.w,reel.h,false);
@@ -1281,18 +1372,23 @@ bool entryResume(Run* destination=nullptr){
     if(destination)*destination=saved;
     return true;
 }
+//이어 하기·그만두기 창은 공용 단순 팝업(DrawUiDialog)이다. 단추 자리도 공용 식(UiDialogButtonRect)에서 받는다.
 Box resumeChoiceBox(int choice){
- const float s=DX/640.f;return {(int)((choice?330:50)*s),DY/2-(int)(100*s),(int)(260*s),(int)(64*s)};
+ int x,top,w,h;UiDialogButtonRect(choice,2,&x,&top,&w,&h);return {x,top,w,h};
 }
 void drawResumePrompt(){
- const float s=DX/640.f;ResetRectPoint();SetAlpha(23);MemRect(0,DY,DX,DY,0);SetAlpha(32);
- const int x=(int)(30*s),top=DY/2+(int)(190*s),w=(int)(580*s);
- panel({x,top,w,(int)(380*s)},0x163C46,0xE4C374);
- DrawUiTextBox(u8"\uC9C4\uD589 \uC911\uC778 \uC804\uD22C",x+20*s,top-16*s,w-40*s,48*s,0xFFF0CD);
- DrawUiTextBox(u8"\uC774\uC804 \uC804\uD22C\uB97C \uC774\uC5B4\uD558\uC2DC\uACA0\uC2B5\uB2C8\uAE4C?",x+20*s,top-84*s,w-40*s,64*s,0xFFFFFF);
- DrawUiTextBox(u8"\uC885\uB8CC\uD558\uBA74 \uC0AC\uC6A9\uD55C \uCD9C\uC815 \uC5D0\uB108\uC9C0\uB294 \uBC18\uD658\uB418\uC9C0 \uC54A\uC2B5\uB2C8\uB2E4.",x+20*s,top-158*s,w-40*s,96*s,0xD6DBD6);
- button(resumeChoiceBox(0),u8"\uC804\uD22C \uC885\uB8CC",nullptr,0x344553);
- button(resumeChoiceBox(1),u8"\uC774\uC5B4\uD558\uAE30",nullptr,0x196345);
+ ResetRectPoint();
+ static const char* labels[2]={u8"\uC804\uD22C \uC885\uB8CC",u8"\uC774\uC5B4\uD558\uAE30"};
+ static const int fills[2]={0x344553,0x196345};
+ DrawUiDialog(u8"\uC9C4\uD589 \uC911\uC778 \uC804\uD22C",u8"\uC774\uC804 \uC804\uD22C\uB97C \uC774\uC5B4\uD558\uC2DC\uACA0\uC2B5\uB2C8\uAE4C?",
+  u8"\uC885\uB8CC\uD558\uBA74 \uC0AC\uC6A9\uD55C \uCD9C\uC815 \uC5D0\uB108\uC9C0\uB294 \uBC18\uD658\uB418\uC9C0 \uC54A\uC2B5\uB2C8\uB2E4.",2,labels,nullptr,fills,nullptr);
+}
+void drawQuitPrompt(){
+ ResetRectPoint();
+ static const char* labels[2]={u8"\uadf8\ub9cc\ub450\uae30",u8"\ucde8\uc18c"};
+ static const int fills[2]={0x8C3F32,0x196345};
+ DrawUiDialog(nullptr,u8"\uc804\ud22c\ub97c \uadf8\ub9cc\ub450\uc2dc\uaca0\uc2b5\ub2c8\uae4c?",
+  u8"\uadf8\ub9cc\ub450\uba74 \ud604\uc7ac \uc804\ud22c\uac00 \uc885\ub8cc\ub429\ub2c8\ub2e4.\n\uc0ac\uc6a9\ud55c \ucd9c\uc815 \uc5d0\ub108\uc9c0\ub294 \ubc18\ud658\ub418\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.",2,labels,nullptr,fills,nullptr);
 }
 void drawStageProgress(int top,int wave,float s){
     const int pitch=(int)(30*s),left=DX/2-7*pitch;
@@ -1431,20 +1527,28 @@ void drawEntryChoice(){
 //        치면 넘어가는 크기다. 옛 ×5/×10/×100 은 실시간 전투의 수치라 턴제엔 맞지 않는다.
 //공격은 그 웨이브 잡몹 체력의 1/14 - 보스는 counterDamage 가 다시 두 배로 친다.
 //1성 기준 잡몹 165 → 594, 보스 594 · 1,155 · 1,881, 공격 12 → 42(최종 보스 반격 84).
+//---- 전력 지수 ----
+//
+//지금 판에 설 수 있는 가장 센 ★1 블록값: 히어로 검(공격 × HeroGearPct%) 과 로스터에서 가장 센 동료 power 중
+//큰 쪽. 적 체력이 이 값의 제곱근으로 는다(MergeWaveCurve.h). 공성전은 상대 판이라 보정하지 않는다.
+long long rosterPowerIndex() {
+    long long best=std::max(1LL,stats.weapon*Run::HeroGearPct/100);
+    for(int role=0;role<Roles;++role)for(int star=1;star<=MaxLevel;++star)
+        for(int k=0;k<roster.count[role][star];++k){const int c=roster.crew[role][star][k];if(c>=0&&c<64)best=std::max(best,stats.crew[c].power);}
+    return best;
+}
+//적 체력·공격 곡선은 MergeWaveCurve.h 한 곳이다(측정기 balance_sim 과 같은 식).
 long long waveHp(int stage,int wave) {
-    const int w=std::max(0,std::min(WavesPerStage-1,wave)),boss=BossTier(w);
-    const long long base=hpFor(stage,0),pct=50+10*w,mul=boss==3?300:boss==2?250:boss==1?200:100;
-    return std::max(1LL,base*pct/100*mul/100);
+    return MergeWave::waveHp(stage,wave,siegeActive?MERGE_POWER_BASE:rosterPowerIndex());
 }
 long long waveAttack(int stage,int wave) {
-    const int w=std::max(0,std::min(WavesPerStage-1,wave));
-    return std::max(1LL,hpFor(stage,0)*(50+10*w)/100/14);
+    return MergeWave::waveAttack(stage,wave);
 }
 void drawWaveHeader(const Layout& l) {
     const float s=l.scale;
     //제목 한 줄과 웨이브 점 한 줄뿐이다. 아래 설명 글은 뺐고 높이도 그만큼(80 → 58) 줄였다.
     const Box header={DX/2-(int)(205*s),DY-(int)(7*s),(int)(410*s),(int)(58*s)};
-    panel(header,0x142B38,0x9E925D);
+    panel(header,0x142B38,0x9E925D);MergeTutorialRememberHeader(header.x,header.y,header.w,header.h);
     char text[128];
     std::snprintf(text,sizeof(text),"%s · 스테이지 %d",StageBg::RegionName(combatRegion()),run.stage%STAGE_PER_CYCLE+1);
     label(text,DX/2,header.y-(int)(7*s),.76f);
@@ -1933,7 +2037,7 @@ void drawWorld(const Layout& l,bool combat) {
     deckMergeGhostsDrawn=0;
     SetAlpha(32);SetColor(0);grayScale=0;
     if(!combat)castleScrollSeconds+=std::min(.1f,std::max(0.f,cocos2d::Director::getInstance()->getDeltaTime()))*.25f;
-    {StageBg::Borrow scroll(combatRegion(),castleScrollSeconds);
+    if(!nativeTitleIsolate){StageBg::Borrow scroll(combatRegion(),castleScrollSeconds);
         const int c=siegeHullStage>=0?siegeHullStage:std::max(0,std::min(9,run.stage));
         const auto& wheels=MistCastle::wheelAnchors[c];
         const int contact=std::max(wheels[0][1]+wheels[0][2],wheels[1][1]+wheels[1][2]);
@@ -1942,8 +2046,9 @@ void drawWorld(const Layout& l,bool combat) {
     if(combat){
         drawBattleCover(l);
         const int c=siegeHullStage>=0?siegeHullStage:std::max(0,std::min(9,run.stage));
-        MistCastle::wheels(c,castleWheelAngle(92*OriginalCastle::zoom()),siegeActive);
+        if(!nativeTitleBodyOnly)MistCastle::wheels(c,castleWheelAngle(92*OriginalCastle::zoom()),siegeActive);
     }
+    if(nativeTitleBodyOnly)return;
     //---- 데크의 줄 ----
     //
     //전에는 히어로가 DX*0.57 에 서고 동료가 그 왼쪽으로 늘어섰다. 대포가
@@ -1960,13 +2065,13 @@ void drawWorld(const Layout& l,bool combat) {
     const int allyX=(int)(DX*.24f),foeX=(int)(DX*.42f);
     const int hx=siegeActive?(sidesSwapped?foeX:allyX):monsterHeroX(l);
     const int heroDir=sidesSwapped?LEFT:RIGHT;
-    const int hy=l.ground+(int)(16*s),ex=siegeActive?(sidesSwapped?allyX:foeX):(int)(DX*.85f),ey=l.ground+(int)(16*s);
+    const int hy=l.ground+(int)(4*s),ex=siegeActive?(sidesSwapped?allyX:foeX):(int)(DX*.85f),ey=l.ground+(int)(4*s);
     const float deckY=(float)hy;
     allyBodyX=hx;allyBodyY=hy+(int)(40*s);allyBodyKnown=true;   //히어로 그림은 x 가 몸통 가운데다
     SetSectionClip(0,DY,DX,DY-l.board.y,false);
     // Submit all monsters before allies, so weapons and allied effects stay in front.
-    if(combat&&siegeActive){Siege::drawFoe(l,ex,ey);}   //공성전: 몬스터 자리에 상대 성주(DrawPlayer, 가운데 앵커)
-    else if(combat) {
+    if(combat&&siegeActive&&!nativeTitleIsolate){Siege::drawFoe(l,ex,ey);}   //공성전: 몬스터 자리에 상대 성주(DrawPlayer, 가운데 앵커)
+    else if(combat&&!nativeTitleIsolate) {
     int npc=waveTransition.defeatedVisible()?defeatedNpc:combatEnemyNpc();
     int cmf=enemyData[npc*ENEMYDATASIZE+ENEMYDATA_CMF];
     if(cmfLoaded[cmf]!=cmf)CmfRead(cmf,cmf);
@@ -2004,7 +2109,8 @@ void drawWorld(const Layout& l,bool combat) {
     renderedEnemyX=enemyX;renderedEnemyMotion=enemyMotion;renderedEnemyDir=enemyDir;
     int monsterY=ey;
     const bool defeated=waveTransition.defeatedVisible();
-    const bool showMonster=defeated||waveTransition.incomingVisible();
+    const bool showMonster=(defeated||waveTransition.incomingVisible())&&(!startEventActive()||startEventElapsed>=1.25f);
+    if(startEventActive())enemyX+=(int)((1.f-MergeCastleTransition::Ease(startEventElapsed,1.25f,.7f))*DX*.35f);
     if(defeated){
         enemyMotion=defeatedMotion;SetAlpha((int)(32*waveTransition.defeatAlpha()));
         monsterY-=(int)((1-waveTransition.defeatAlpha())*12*s);
@@ -2205,7 +2311,7 @@ void drawWorld(const Layout& l,bool combat) {
             deckCrewX[seen[k]]=(float)x;deckCrewPositionKnown[seen[k]]=true;
             const auto& reveal=deckReveal[seen[k]];
             const float t=combat?reveal.progress():1.f,ease=1.f-std::pow(1.f-t,3.f);
-            SetAlpha((int)((firing&&!mine?20:32)*ease));
+            SetAlpha((int)(32*ease));
             // Bodies and shadows share the fixed deck baseline during arrival.
             drawDeckShadow(cmf,x,y,z*(.7f+.3f*ease));
             if(mine) {
@@ -2277,15 +2383,21 @@ void drawWorld(const Layout& l,bool combat) {
     UnSectionClip(false);
 
 }
-void close() {
-    if(waveTransition.active())return;
+void leaveBattle(bool abandon){
+    if(abandon){robin.mergeRouletteRun[0]=0;SaveGame();RewardPopup::closeNow();}
+    else save();
+    quitPromptOpen=false;quitPromptFinger=quitPromptChoice=exitPromptFinger=-1;
     siegeActive=false;siegeHullStage=-1;
-    if(run.attacking) {message="공격 연출이 끝난 뒤 나갈 수 있습니다.";return;}
-    save();active=false;resumePromptChecked=false;option.gameMode=(unsigned char)oldMode;
+    active=false;resumePromptChecked=false;option.gameMode=(unsigned char)oldMode;
     picked=-1;finger=-1;systemKey=0;
     is_key_pressed=is_touchkey_pressed=is_key_released=false;
     is_press_finished=is_release_finished=true;
     drawHandle=MD_LOBBY;mustRefresh=true;
+}
+void close() {
+    if(waveTransition.active())return;
+    if(run.attacking) {message=u8"\uACF5\uACA9 \uC5F0\uCD9C\uC774 \uB05D\uB09C \uB4A4 \uB098\uAC08 \uC218 \uC788\uC2B5\uB2C8\uB2E4.";return;}
+    leaveBattle(false);
 }
 #include "MergeSiege.inc"
 #include "MergeMonsterParts.inc"
@@ -2297,10 +2409,14 @@ void close() {
 //겹친 채로 트레이를 비우면 턴을 바로 넘기지 않는다. 겹침을 푼 순간 넘긴다.
 bool pendingPass=false;
 void endSpinTurn() {
-    if(siegeActive){Siege::afterMySpin();return;}
-    if(!run.tray.empty()||run.attacking||run.lost||run.choosing||waveTransition.active())return;
+    if(run.attacking||run.lost||run.choosing||waveTransition.active())return;
+    if(automaticMerge.active()){pendingPass=true;return;}
+    if(beginAutomaticMerge()){pendingPass=true;return;}
+    if(!run.tray.empty())return;
+    CastleTutorialEvent(CastleTutorial::Placed);   //튜토리얼: 트레이를 다 놓았다
     if(!run.boardResolved()){pendingPass=true;return;}
     pendingPass=false;
+    if(siegeActive){Siege::afterMySpin();return;}
     if(run.passTurn(stats)){action=CombatAction();enemyTurn=EnemyTurn();animation=0;save();}
 }
 static const char* OverlapMessage=u8"겹쳐 놓았습니다. 겹침을 풀어야 룰렛·공격·대포를 쓸 수 있습니다.";
@@ -2348,6 +2464,11 @@ void finishCombatTurn() {
     save();
 }
 void tick(float dt) {
+    if(startEventActive()){
+        startEventElapsed=std::min(StartEventDuration,startEventElapsed+dt);
+        castleScrollSeconds+=dt*.75f*(1.f-MergeCastleTransition::Ease(startEventElapsed,.4f,1.2f));
+        return;
+    }
     if(siegeActive)run.configureMonster(-1);else MonsterBoard::ensure();
     if(costumeEffectTicks>0)--costumeEffectTicks;
     if(trashSwallowTicks>0)--trashSwallowTicks;
@@ -2379,10 +2500,10 @@ void tick(float dt) {
     if(introActive()) {
         float before=introElapsed;
         introElapsed+=dt;
-        const float phase=std::min(1.f,introElapsed/1.68f);
-        gearAngle=450.f*(1.f-std::pow(1.f-phase,3.f));
+        const float phase=std::min(1.f,introElapsed/2.48f);
+        gearAngle=1350.f*(1.f-std::pow(1.f-phase,3.f));
         for(int i=0;i<3;++i) {
-            float stop=1.2f+i*.24f,land=flightStart(i)+.7f;
+            float stop=2.f+i*.24f,land=flightStart(i)+.7f;
             if(before<stop&&introElapsed>=stop)PlayMusic(M_ROULETTEUP);
             if(before<land&&introElapsed>=land)PlayMusic(M_POWERUP);
         }
@@ -2412,19 +2533,34 @@ void tick(float dt) {
     if(spinFlying()){
         ++spinFlightFrame;
         for(int i=0;i<(int)spinDrops.size();++i)if(spinFlightFrame==36+i*4)PlayMusic(M_POWERUP);
-        if(spinFlightFrame>=48){run=spinLandingPlan;spinFlightFrame=-1;save();endSpinTurn();}   //돌리기 한 번 = 턴 하나. 결과가 앉으면 적이 때린다
+        if(spinFlightFrame>=48){run=spinLandingPlan;spinFlightFrame=-1;pendingPass=true;if(!run.boardResolved()){message=OverlapMessage;messageTime=4;}save();endSpinTurn();}   //돌리기 한 번 = 턴 하나. 결과가 앉으면 적이 때린다
         return;
+    }
+    if(automaticMerge.active()){
+        if(++automaticMerge.age>=(automaticMerge.fromTray?56:24)){
+            run=automaticMerge.plan;automaticMerge.age=-1;
+            PlayMusic(M_POWERUP);updateHeroCostume();save();
+            beginAutomaticMerge();
+        }
+        return;
+    }
+    if(!run.attacking&&animation==0&&!deckArriving()&&picked<0){
+        if(beginAutomaticMerge())return;
+        if(pendingPass){
+            if(!run.tray.empty()&&beginSpinLanding())return;
+            if(run.tray.empty()&&run.boardResolved()){endSpinTurn();return;}
+        }
     }
     if(animation>0&&!run.attacking){
         const float phase=std::min(1.f,(REEL_SPIN_FRAMES+1-animation)/(float)REEL_SPIN_FRAMES);
-        gearAngle=gearStartAngle+450.f*(1.f-std::pow(1.f-phase,3.f));
+        gearAngle=gearStartAngle+1350.f*(1.f-std::pow(1.f-phase,3.f));
         //릴이 설 때마다 한 번. 시작 뽑기(intro)와 같은 소리다.
         for(int i=0;i<3;++i)if(REEL_SPIN_FRAMES-animation==reelStopFrame(i)){
             PlayMusic(i<(int)run.tray.size()&&run.tray[i].ownedId&&run.tray[i].level>=4?M_ITEM:M_ROULETTEUP);
         }
     }
     if(!run.attacking) {
-        if(animation>0&&--animation==0){beginSpinLanding();save();}
+        if(animation>0&&--animation==0){pendingPass=true;beginSpinLanding();save();}
         return;
     }
     if(run.enemyHp<=0){finishCombatTurn();return;}
@@ -2504,6 +2640,7 @@ void tick(float dt) {
         }
         if(enemyTurn.time.finished()){
             enemyTurn.complete=true;heroHpHold=-1;
+            CastleTutorialEvent(CastleTutorial::CounterTaken);   //튜토리얼: 반격을 맞았다
             if(enemyTurn.healing>0){combatNumbers.push_back({"+"+std::to_string(enemyTurn.healing),DX*.85f,(float)(layout().ground+68*DX/640.f),0x8DFFA2});PlayMusic(M_POWERUP);}
         }
         return;
@@ -2634,15 +2771,15 @@ void arrivalReviewStep(const Layout& l) {
     static int phase=0,firstCrew=-1,newCrew=-1;
     static bool stopped=false,landed=false,rotating=false,spinLanded=false,spinRotating=false,done=false;
     if(done||entering())return;
-    if((introActive()&&introElapsed>=1.85f)||spinFlying()) {
+    if((introActive()&&introElapsed>=2.65f)||spinFlying()) {
         if(!reelResultDrawn[0]||!reelResultDrawn[1]||!reelResultDrawn[2]){
             reviewTrace("FAIL stopped reel went blank during grid transfer");done=true;return;
         }
     }
     if(phase==0) {
         if(firstCrew<0)for(const auto& b:run.board)if(b.family<Roles){firstCrew=b.crew;break;}
-        if(introElapsed<2.75f&&deckResidentCount!=0){reviewTrace("FAIL opening crew leaked before grid landing");done=true;return;}
-        if(!stopped&&introElapsed>=1.85f) {
+        if(introElapsed<3.55f&&deckResidentCount!=0){reviewTrace("FAIL opening crew leaked before grid landing");done=true;return;}
+        if(!stopped&&introElapsed>=2.65f) {
             stopped=true;reviewTrace(deckResidentCount==0?"PASS stopped reels do not reveal pending crew on deck":"FAIL premature deck reveal");
             reviewTrace("PASS stopped reel symbols remain rendered through transfer");
             reviewCapture("arrival-01-stopped-reels");return;
@@ -2790,6 +2927,174 @@ void waveTransitionReviewStep(const Layout& l){
 #include "MergeMonsterPartsReview.inc"
 #include "RewardRevealReview.inc"
 void reviewStep(const Layout& l) {
+    if(review&&std::getenv("CS_START_EVENT_REVIEW")){
+        if(introActive()&&!entering()&&introElapsed>.4f&&!reviewCapturePending&&!reviewDone){
+            reviewTrace(run.board.size()==3&&run.spins==SpinLimit?"PASS opening keeps three free starters and spin budget":"FAIL opening reward changed");
+            reviewCapture("start-event-04-free-spin");reviewTrace("DONE start event review");reviewDone=true;
+        }
+        return;
+    }
+    if(review&&std::getenv("CS_COVER_STYLE_REVIEW")){
+        static int phase=0,hold=0;
+        if(phase>=4)return;
+        if(phase==0){
+            const char* value=std::getenv("CS_COVER_STYLE_STAGE");
+            run=Run();run.roster=&roster;run.choosing=false;run.stage=value?std::max(0,std::min(9,std::atoi(value)-1)):1;
+            run.setShape(castleShape(run.stage));run.enemyHp=run.enemyMax=waveHp(run.stage,0);
+            automaticMerge=AutomaticMerge();pendingPass=false;picked=finger=-1;
+            entryElapsed=MergeCastleTransition::Duration;introElapsed=-1;animation=0;spinFlightFrame=-1;
+            waveTransition=MergeCombat::WaveTransition();action=CombatAction();
+            phase=1;return;
+        }
+        if(++hold<(phase==2?5:75))return;hold=0;
+        if(phase==1){reviewCapture("cover-empty");phase=2;return;}
+        if(phase==2){
+            for(int family:std::vector<int>{0,1,Sword,Armor,Boots}){
+                if(family<Roles&&!roster.has(family,1))continue;
+                run.tray.push_back(run.starter(family));run.autoPlace(0);
+            }
+            phase=3;return;
+        }
+        reviewCapture("cover-with-grid");reviewTrace("PASS dimensional cover rendered with native grid and units");
+        reviewTrace("DONE cover style review");phase=4;return;
+    }
+    if(review&&std::getenv("CS_EXIT_PROMPT_REVIEW")){
+        static int phase=0,pausedTick=0,pausedAction=0;static long long wallet=0;static std::string before;
+        if(phase>=7)return;
+        if(phase==0){
+            run=Run();run.roster=&roster;run.choosing=false;run.setShape(castleShape(0));
+            run.enemyHp=run.enemyMax=100000000;Block b;b.family=Sword;run.tray.push_back(b);run.autoPlace(0);
+            run.battleEnergy=3;run.attack(stats);
+            automaticMerge=AutomaticMerge();pendingPass=false;picked=finger=-1;
+            entryElapsed=MergeCastleTransition::Duration;introElapsed=-1;animation=0;spinFlightFrame=-1;
+            action=CombatAction();enemyTurn=EnemyTurn();waveTransition=MergeCombat::WaveTransition();
+            wallet=robin.heart;phase=1;return;
+        }
+        if(phase==1){
+            reviewTap(l.exit);before=run.encode();pausedTick=ticks;pausedAction=action.time.elapsed;
+            reviewTrace(quitPromptOpen?"PASS exit opens confirmation during attack":"FAIL exit confirmation");phase=2;return;
+        }
+        if(phase==2){
+            reviewTrace(run.encode()==before&&ticks==pausedTick&&action.time.elapsed==pausedAction?"PASS confirmation pauses exact battle state":"FAIL confirmation advanced combat");
+            reviewCapture("exit-confirm");phase=3;return;
+        }
+        if(phase==3){
+            reviewTap(resumeChoiceBox(1));
+            reviewTrace(active&&!quitPromptOpen&&!entering()&&run.encode()==before&&ticks==pausedTick&&action.time.elapsed==pausedAction&&robin.heart==wallet?
+                "PASS cancel returns directly to unchanged battle without cover or energy charge":"FAIL exit cancel");
+            phase=4;return;
+        }
+        if(phase==4){reviewCapture("exit-cancelled");phase=5;return;}
+        if(phase==5){reviewTap(l.exit);phase=6;return;}
+        if(phase==6){
+            reviewTap(resumeChoiceBox(0));
+            reviewTrace(!active&&!quitPromptOpen&&drawHandle==MD_LOBBY&&!robin.mergeRouletteRun[0]&&robin.heart==wallet?
+                "PASS abandon clears run and returns to lobby without refund":"FAIL exit abandon");
+            reviewTrace("DONE exit confirmation review");phase=7;return;
+        }
+        return;
+    }
+    if(review&&std::getenv("CS_MERGE_ARRIVAL_REVIEW")){arrivalReviewStep(l);return;}
+    if(review&&std::getenv("CS_GRID_CREW_ROTATION_REVIEW")){
+        static int phase=0;if(phase>=3)return;
+        if(phase==0){
+            run=Run();run.roster=&roster;run.choosing=false;run.setShape(castleShape(0));
+            Block b;b.family=0;b.crew=roster.first(0,1);run.tray.push_back(b);run.autoPlace(0);
+            automaticMerge=AutomaticMerge();pendingPass=false;picked=finger=-1;
+            entryElapsed=MergeCastleTransition::Duration;introElapsed=-1;animation=0;spinFlightFrame=-1;
+            phase=1;return;
+        }
+        if(phase==1){reviewCapture("crew-upright");phase=2;return;}
+        if(!run.board[0].rot){
+            reviewTrace(run.rotate(0)&&run.board[0].rot&&Wide(run.board[0])>Tall(run.board[0])?"PASS crew footprint rotates horizontally":"FAIL crew rotate");
+            return;
+        }
+        const Box tile=blockBox(run.board[0],l);char contact[128];
+        std::snprintf(contact,sizeof(contact),"CONTACT_TILE %d %d %d %d",tile.x,tile.y,tile.w,tile.h);reviewTrace(contact);
+        reviewCapture("crew-horizontal");reviewTrace("DONE grid crew rotation review");phase=3;return;
+    }
+    if(review&&std::getenv("CS_SCATTER_SPIN_REVIEW")){
+        static int phase=0,count=0;
+        if(phase>=3)return;
+        if(phase==0){
+            run=Run();run.roster=&roster;run.choosing=false;run.setShape(castleShape(0));
+            run.enemyHp=run.enemyMax=1000000;
+            for(int i=0;i<3;++i)run.families[i]=Sword;
+            for(int i=0;i<Cells;++i){Block b;b.family=Sword;run.tray.push_back(b);if(!run.autoPlace(0)){run.tray.clear();break;}}
+            count=(int)run.board.size();
+            automaticMerge=AutomaticMerge();pendingPass=false;picked=finger=-1;
+            entryElapsed=MergeCastleTransition::Duration;introElapsed=-1;animation=0;spinFlightFrame=-1;
+            reviewCapture("scatter-before");phase=1;return;
+        }
+        if(phase==1){
+            reviewTap(l.spin);
+            reviewTrace(animation>0&&run.battleEnergy==4?"PASS crowded board accepts spin and spends one lightning":"FAIL crowded spin blocked");
+            phase=2;return;
+        }
+        if(animation>0||spinFlying())return;
+        Run restored;restored.roster=&roster;
+        reviewTrace(run.tray.empty()&&(int)run.board.size()==count+3&&!run.boardResolved()&&restored.decode(run.encode())?
+            "PASS all spin rewards scatter onto crowded board and persist for manual cleanup":"FAIL scatter reward loss");
+        reviewCapture("scatter-results");reviewTrace("DONE scatter spin review");phase=3;return;
+    }
+    if(review&&std::getenv("CS_MERGE_GLOW_REVIEW")){
+        static int level=1,phase=0;
+        if(level>=MaxLevel)return;
+        if(phase==0){
+            run=Run();run.choosing=false;run.stage=9;run.setShape(castleShape(9));
+            run.enemyHp=run.enemyMax=1000000;
+            for(int i=0;i<2;++i){Block b;b.family=Sword;b.level=level;run.tray.push_back(b);if(!run.autoPlace(0)){reviewTrace("FAIL glow fixture placement");return;}}
+            automaticMerge=AutomaticMerge();pendingPass=false;picked=finger=-1;
+            entryElapsed=MergeCastleTransition::Duration;introElapsed=-1;animation=0;spinFlightFrame=-1;
+            mergeSeenSeq=run.mergeSeq;
+            if(!run.place(false,1,run.board[0].x,run.board[0].y)){reviewTrace("FAIL glow fixture merge");return;}
+            phase=1;return;
+        }
+        if(mergeFlash>0&&mergeFlash<=mergeFlashDuration-5){
+            if(MonsterBoard::panelBox.w!=0){reviewTrace("FAIL single mode monster grid visible");return;}
+            reviewTrace(mergeShownLevel==level+1&&mergeFlashDuration==20+7*(level+1)?"PASS merge tier increases border glow strength and duration":"FAIL merge glow tier");
+            char name[40];std::snprintf(name,sizeof(name),"merge-glow-tier-%d",level+1);reviewCapture(name);
+            ++level;phase=0;
+            if(level>=MaxLevel){reviewTrace("PASS single mode has no enemy grid panel");reviewTrace("DONE merge glow review");}
+        }
+        return;
+    }
+    if(review&&std::getenv("CS_AUTO_MERGE_REVIEW")){
+        static int scenario=0,phase=0,mask=0;static Roster fixture;
+        if(scenario>=2)return;
+        if(phase==0){
+            run=Run();run.choosing=false;run.setShape(castleShape(0));
+            fixture=Roster();
+            for(int lv=1;lv<=3;++lv)fixture.add(0,lv,MergeTrees::CrewAt(0,lv,0));
+            run.roster=&fixture;run.enemyHp=run.enemyMax=1000000;
+            for(int i=0;i<4;++i){Block b;b.family=scenario?0:Sword;b.level=1;b.crew=scenario?fixture.first(0,1):-1;run.tray.push_back(b);if(!run.autoPlace(0)){reviewTrace("FAIL automatic merge fixture");return;}}
+            automaticMerge=AutomaticMerge();pendingPass=true;picked=finger=-1;
+            entryElapsed=MergeCastleTransition::Duration;introElapsed=-1;animation=0;spinFlightFrame=-1;
+            deckMerge=DeckMergePresentation();deckMergeSeen=run.mergeSeq;
+            for(auto& r:deckReveal)r=MergeCombat::ResidentReveal();
+            phase=1;mask=0;return;
+        }
+        if(automaticMerge.active()){
+            const auto before=run.encode();reviewTap(l.attack);reviewTap(l.spin);
+            if(run.encode()!=before||run.attacking){reviewTrace("FAIL automatic merge input lock");scenario=2;return;}
+            if(run.mergeSeq==0){
+                const int age=automaticMerge.age,bit=age>=2&&age<6?1:age>=10&&age<14?2:age>=20?4:0;
+                if(bit&&!(mask&bit)){char name[64];std::snprintf(name,sizeof(name),"auto-%d-%s",scenario,bit==1?"source-cell":bit==2?"direct-flight": "before-merge");reviewCapture(name);mask|=bit;}
+            }
+            return;
+        }
+        if(run.mergeSeq==3&&!deckArriving()){
+            if(pendingPass)return;
+            if(!run.attacking||!run.passing){reviewTrace("FAIL automatic merges did not defer exactly one monster turn");scenario=2;return;}
+            reviewTrace("PASS monster turn waits for automatic merge chain");
+            if(run.board.size()!=1||run.board[0].level!=3||mask!=7){reviewTrace("FAIL automatic merge chain result");scenario=2;return;}
+            reviewTrace(scenario?"PASS companion chain merges directly from its landing cell":"PASS equipment chain merges directly from its landing cell");
+            reviewTrace(run.battleEnergy==Run::BattleEnergyMax?"PASS automatic merges consume no lightning and lock input":"FAIL automatic merge energy");
+            char name[64];std::snprintf(name,sizeof(name),"auto-%d-result",scenario);reviewCapture(name);
+            ++scenario;phase=0;if(scenario==2)reviewTrace("DONE automatic merge review");
+        }
+        return;
+    }
     if(review&&std::getenv("CS_SNAIL_FLAT_REVIEW")){
         static int phase=0,hold=0;if(phase>=5)return;
         if(phase==0){
@@ -3488,7 +3793,6 @@ void reviewStep(const Layout& l) {
         return;
     }
 
-    if(review&&std::getenv("CS_MERGE_ARRIVAL_REVIEW")){arrivalReviewStep(l);return;}
     if(review&&std::getenv("CS_MERGE_TURN_REVIEW")){turnReviewStep(l);return;}
     if(review&&std::getenv("CS_MERGE_COMBAT_REVIEW")) {
         static int phase=0,expectedCrew=0,previous=-1;
@@ -3830,6 +4134,7 @@ bool MergeRouletteHousePreview(int house,int x,int top,int width,int height) {
     for(int i=0;i<std::min(10,gTotalCastle);++i)if(castleOrder[i]==house){castle=i;break;}
     return MergeRouletteOriginalPreview(castle,x,top,width,height);
 }
+#include "TitleCastleBackdrop.inc"
 static bool DrawOriginalCastlePreview(int castle,int x,int top,int width,int height,bool moving=false){
     const float z=std::min(width/966.f,height/1350.f);
     const int saved=siegeHullStage;siegeHullStage=castle;
@@ -3946,12 +4251,13 @@ void MergeRouletteBegin(bool resume) {
     run.selected=pool.front();run.stage=std::max(0,std::min(9,debugCastle>=0?debugCastle:(int)robin.castle));
     run.enemyHp=run.enemyMax=waveHp(run.stage,0);
 
+    bool restoredRun=false;
     if(resume) {
         Run restored;restored.roster=&roster;
         // v6 전 세이브는 읽지 않는다(계열·동료 체계가 다르다) — 새 런.
         if(robin.mergeRouletteHero==curHero&&restored.decode(robin.mergeRouletteRun)) {
             bool owned=true;for(int f:restored.families)if(std::find(pool.begin(),pool.end(),f)==pool.end())owned=false;
-            if(owned)run=restored;
+            if(owned){run=restored;restoredRun=true;}
         }
         //이어 하는 판의 시작 계열이 전부 장비면(옛 뽑기 - 장비 가중치 4) 릴에서 동료가 영영 안 나온다.
         //검은 두고 다른 장비 자리에 이 히어로의 역할을 채운다. 판 위 블록은 그대로다.
@@ -3970,10 +4276,14 @@ void MergeRouletteBegin(bool resume) {
     if(migrateVitals&&run.attacking){const Effects f=run.forecast(stats);run.effects.protect=f.protect;run.effects.charge=f.charge;run.settleGuard();}
     run.setShape(castleShape(run.stage));
     bool starting=run.choosing&&run.start(pool,treeWeights,review&&std::getenv("CS_MERGE_ARRIVAL_REVIEW"));
-    // Starting selects the reel families, but rewards require a player spin.
-    if(starting){run.board.clear();run.tray.clear();}
-    entryElapsed=0.f;entryCaptures=0;panicSeed=run.rng;
-    introElapsed=-1.f;introCaptures=0;reviewCombatTick=-1;
+    // Keep the three free starters committed while the opening reels present them.
+    automaticMerge=AutomaticMerge();pendingPass=false;
+    quitPromptOpen=false;quitPromptFinger=quitPromptChoice=exitPromptFinger=-1;
+    entryElapsed=restoredRun?MergeCastleTransition::Duration:0.f;entryCaptures=0;panicSeed=run.rng;
+    const bool firstEvent=!restoredRun&&!resume&&gCastleTutorialStep<=CastleTutorial::Depart&&!(gCastleTutorialHints&CastleTutorial::HintStartEvent);
+    startEventElapsed=(!review&&firstEvent)||(review&&!resume&&std::getenv("CS_START_EVENT_REVIEW"))?0.f:-1.f;
+    if(startEventActive())gCastleTutorialHints|=CastleTutorial::HintStartEvent;
+    introElapsed=starting?0.f:-1.f;introCaptures=0;reviewCombatTick=-1;
     if(!starting)updateHeroCostume(false);
     reviewCapturePending=reviewFinalCapture=false;
     simulationRemainder=0;gradeAccents.clear();shownGrades.clear();
@@ -3989,11 +4299,14 @@ void MergeRouletteBegin(bool resume) {
     for(auto& reveal:deckReveal)reveal=MergeCombat::ResidentReveal();
     if(!starting)for(const auto& block:run.board)
         if(block.family<Roles&&block.crew>=0&&block.crew<64)deckReveal[block.crew].age=MergeCombat::ResidentReveal::Duration;
-    if(starting)hasReelSymbols=false;else rememberReelSymbols();
+    rememberReelSymbols();
     if(resume&&!starting&&!run.tray.empty())beginSpinLanding();
     heartDisplay=run.battleEnergy;heartBlink=messageTime=0;spentHeart=-1;
     refillPending=false;refillElapsed=-1.f;refillFrom=heartDisplay;
     active=true;drawHandle=MD_PLAY;keyHandle=MK_PLAY;curMenu=MENU_PLAY;
+    MergeTutorialBeginBattle();
+    RewardPopup::onClose=[](){CastleTutorialEvent(CastleTutorial::RewardClosed);};
+    if(!resume)CastleTutorialEvent(CastleTutorial::Started);
     autoPlay=false;autoFrame=-1;touchDisable=false;mustRefresh=true;
     if(!run.choosing)save();
 }
@@ -4027,6 +4340,7 @@ bool MergeRouletteLobbySceneDraw(bool backdropOnly) {
     LobbyResourceBarsDraw(DY-(int)(2*l.scale));
     GNBDraw(0,DY-(int)(2*l.scale));
     CastleVault::drawFlights();   //걷은 재화가 띠·메뉴로 날아간다. 도착점 위에 그린다
+    MergeTutorialDrawLobbyHints();   //튜토리얼 뒤 처음 쓸 수 있게 된 것에 손가락 한 번
     //원정 보상창은 로비 위에 덮인다. 떠 있는 동안 로비의 터치 영역은 지운다.
     if(RewardPopup::open()){ResetRectPoint();RewardPopup::draw();}
     else if(resumePromptOpen)drawResumePrompt();
@@ -4044,11 +4358,57 @@ bool MergeRouletteLobbySceneDraw(bool backdropOnly) {
 }
 void MergeRouletteLobbyDraw() {}
 #include "OriginalTopbarReview.inc"
+bool drawNativeTitleCastleGridReview(){
+    if(!review||!std::getenv("CS_NATIVE_TITLE_GRID_REVIEW"))return false;
+    cocos2d::Director::getInstance()->setDisplayStats(false);
+    ResetRectPoint();SetColor(0);grayScale=0;SetAlpha(32);MemRect(0,DY,DX,DY,0xFFFFFF);
+    const float scale=DX/640.f;
+    const int logoImg=HYBRID_TITLE_LOGO_IMG;if(!sprite[logoImg])LoadImg(logoImg);
+    int logoHeight=0;
+    if(sprite[logoImg]){
+        const auto size=sprite[logoImg]->getContentSize();
+        const float z=std::min(DX*.90f/size.width,DY*.20f/size.height);
+        logoHeight=(int)(size.height*z);
+        DrawImage((int)size.width,(int)size.height,0,0,(int)((DX-size.width*z)/2),DY-(int)(20*scale),false,0,0,0,0,z,sprite[logoImg],logoImg);
+    }
+    const int gridTop=DY-(int)(42*scale)-logoHeight;
+    const int cellWidth=DX/3,cellHeight=(gridTop-(int)(12*scale))/3;
+    const float zoom=std::min((cellWidth-12*scale)/DX,(cellHeight-4*scale)/DY);
+    static cocos2d::RenderTexture* targets[9]={};
+    for(int c=0;c<9;++c){
+        if(!targets[c]){
+            targets[c]=cocos2d::RenderTexture::create(DX,DY);targets[c]->retain();
+            const Run savedRun=run;const int savedStage=siegeHullStage;
+            const bool savedSiege=siegeActive;const float savedEntry=entryElapsed,savedIntro=introElapsed;
+            run.stage=c;run.attacking=false;run.board.clear();
+            for(int role=0;role<3;++role){const int crew=roster.first(role,1);if(crew<0)continue;
+                Block b;b.family=role;b.crew=crew;run.board.push_back(b);deckReveal[crew].age=MergeCombat::ResidentReveal::Duration;}
+            siegeActive=false;siegeHullStage=c;entryElapsed=MergeCastleTransition::Duration;introElapsed=-1;
+            OriginalCastle::previewScale=0;
+            PushRenderTarget(targets[c],nullptr,true);SetSectionClip(0,DY,DX,DY,true);
+            SetAlpha(32);SetColor(0);grayScale=0;MemRect(0,DY,DX,DY,0xFFFFFF);
+            nativeTitleIsolate=true;drawWorld(layout(),true);nativeTitleIsolate=false;
+            PopRenderTarget();SetSectionClip(0,DY,DX,DY,true);
+            run=savedRun;siegeHullStage=savedStage;siegeActive=savedSiege;entryElapsed=savedEntry;introElapsed=savedIntro;
+        }
+        auto* picture=cocos2d::Sprite::createWithTexture(targets[c]->getSprite()->getTexture());
+        picture->setFlippedY(true);picture->setAnchorPoint({0,1});picture->setScale(zoom);
+        picture->setPosition({(c%3+.5f)*cellWidth-DX*zoom*.5f,(float)(gridTop-(c/3)*cellHeight)});
+        picture->getTexture()->setAliasTexParameters();picture->visit();
+    }
+    static int frames=0;static bool captured=false;
+    if(!captured&&!reviewCapturePending&&++frames>=4){
+        reviewCapture("native-castle-grid-9-world");reviewTrace("PASS nine full combat-renderer castles with original logo");
+        reviewTrace("DONE native castle title grid review");captured=true;
+    }
+    return true;
+}
 void MergeRouletteDraw() {
+    if(drawNativeTitleCastleGridReview())return;
     if(review&&std::getenv("CS_RESUME_PROMPT_REVIEW")){
         const auto fixtureSave=[](){const auto encoded=run.encode();std::memset(robin.mergeRouletteRun,0,sizeof(robin.mergeRouletteRun));std::memcpy(robin.mergeRouletteRun,encoded.data(),encoded.size());robin.mergeRouletteHero=curHero;};
         if(resumeReviewPhase==0){resumeReviewEnergy=robin.heart;resumeReviewSave=run.encode();fixtureSave();resumePromptChecked=false;resumeReviewPhase=1;}
-        if(resumeReviewPhase==2){reviewTrace(run.encode()==resumeReviewSave&&robin.heart==resumeReviewEnergy?"PASS explicit resume restores exact run without energy charge":"FAIL explicit resume");fixtureSave();resumePromptChecked=false;resumeReviewPhase=3;}
+        if(resumeReviewPhase==2){reviewTrace(run.encode()==resumeReviewSave&&robin.heart==resumeReviewEnergy&&!entering()?"PASS explicit resume restores exact run without energy charge":"FAIL explicit resume");fixtureSave();resumePromptChecked=false;resumeReviewPhase=3;}
         active=false;drawHandle=MD_LOBBY;MergeRouletteLobbySceneDraw();active=true;drawHandle=MD_PLAY;return;
     }
     MergeRenderProfile::Frame profile;
@@ -4095,7 +4455,7 @@ void MergeRouletteDraw() {
     std::fill(reelResultDrawn,reelResultDrawn+3,false);
     // Isolated capture reviews hold simulation until asynchronous PNG writing
     // completes. Fixed-tick checks cannot be skipped or captured in a later state.
-    const bool holdReview=review&&reviewCapturePending;
+    const bool holdReview=(review&&reviewCapturePending)||quitPromptOpen;
     const float frameDt=std::min(.1f,std::max(0.f,cocos2d::Director::getInstance()->getDeltaTime()));
     int steps=0;
     if(!holdReview){
@@ -4194,7 +4554,7 @@ void MergeRouletteDraw() {
         entryElapsed=MergeCastleTransition::Duration;
         cocos2d::Director::getInstance()->setDisplayStats(false);
         const float s=DX/640.f;
-        label("GRID COMPANIONS - FIXED ZOOM 1.35",DX/2,DY-(int)(20*s),.65f,0xFFE6AC);
+        label("GRID COMPANIONS - MAX ZOOM 1.215",DX/2,DY-(int)(20*s),.65f,0xFFE6AC);
         for(int slot=0;slot<16;++slot){
             const int crew=page*16+slot,col=slot%4,row=slot/4;
             Block b;b.family=MergeTrees::Role(crew);b.level=MergeTrees::Star(crew);b.crew=crew;
@@ -4204,8 +4564,8 @@ void MergeRouletteDraw() {
             label(text,cell.x+cell.w/2,cell.y+(int)(18*s),.44f,0xFFFFFF);
         }
         if(!reviewCapturePending&&++hold>8){
-            bool equal=true;for(int c=page*16;c<(page+1)*16;++c)equal=equal&&std::abs(gridCrewZoomSeen[c]-1.35f*s)<.00001f;
-            reviewTrace(equal?"PASS sixteen grid companions use identical native zoom":"FAIL grid companion zoom varies");
+            bool equal=true;for(int c=page*16;c<(page+1)*16;++c)equal=equal&&gridCrewZoomSeen[c]>0&&gridCrewZoomSeen[c]<=1.215f*s+.00001f;
+            reviewTrace(equal?"PASS sixteen grid companions stay within reduced maximum zoom":"FAIL grid companion exceeds reduced zoom");
             char name[40];std::snprintf(name,sizeof(name),"grid-crew-scale-%02d",page+1);reviewCapture(name);
             hold=0;if(++page==4)reviewTrace("DONE grid crew scale review");
         }
@@ -4389,6 +4749,23 @@ void MergeRouletteDraw() {
     const Layout fixed=layout();
     updateHeroCostume();
     drawWorld(fixed,true);profile.stamp(1);
+    if(startEventActive()){
+        const int bar=(int)(64*s);
+        SetAlpha(28);MemRect(0,DY,DX,bar,0x101820);MemRect(0,bar*2,DX,bar*2,0x101820);SetAlpha(32);
+        const char* caption=startEventElapsed<1.25f?u8"\uc131\uc744 \uc774\ub04c\uace0 \uc5ec\uc815\uc744 \uc2dc\uc791\ud569\ub2c8\ub2e4.":startEventElapsed<2.3f?u8"\ub9c8\ubb3c\uc774 \uae38\uc744 \uac00\ub85c\ub9c9\uc558\uc2b5\ub2c8\ub2e4!":u8"\ub3d9\ub8cc\ub4e4\uacfc \ud568\uaed8 \uc131\uc744 \uc9c0\ucf1c\ub0b4\uc138\uc694.";
+        label(caption,DX/2,(int)(102*s),.62f,0xFFF1BD);
+        label(u8"\ud654\uba74\uc744 \ub204\ub974\uba74 \uac74\ub108\ub701\ub2c8\ub2e4",DX/2,(int)(47*s),.4f,0xC4CBD2);
+        if(review&&!reviewCapturePending){
+            if(startEventElapsed>.4f&&entryCaptures==0){entryCaptures=1;reviewCapture("start-event-01-travel");}
+            else if(startEventElapsed>.65f&&entryCaptures==1&&!strcmp(std::getenv("CS_START_EVENT_REVIEW")?std::getenv("CS_START_EVENT_REVIEW"):"","skip")){
+                const auto before=run.encode();MergeRouletteTouch(2,0,DX/2,DY/2);
+                reviewTrace(!startEventActive()&&run.encode()==before?"PASS tap skips event without changing rewards":"FAIL event skip");
+            }
+            else if(startEventElapsed>1.85f&&entryCaptures==1){entryCaptures=2;reviewTrace(monsterDrawn?"PASS opening enemy appears":"FAIL opening enemy missing");reviewCapture("start-event-02-enemy");}
+            else if(startEventElapsed>2.65f&&entryCaptures==2){entryCaptures=3;reviewCapture("start-event-03-ready");}
+        }
+        return;
+    }
     if(entering()){
         drawLobbyControls(fixed,MergeCastleTransition::LobbyExit(entryElapsed));
         const int controlDrop=(int)((1-MergeCastleTransition::ControlsEnter(entryElapsed))*300*s);
@@ -4416,7 +4793,7 @@ void MergeRouletteDraw() {
     //가운데로 반 가른 뒤, 왼쪽 절반의 절반을 아군이, 오른쪽 절반의
     //절반을 적이 쓴다 - 둘이 같은 폭으로 마주 본다.
     const int plateW=DX/4,plateH=l.plateH;   //방어 · 체력 · 공격 세 단. 높이·자리는 layout 이 정한다
-    Box allyPlate={DX/4-plateW/2,l.ground-l.plateDrop,plateW,plateH};
+    Box allyPlate={DX/4-plateW/2,l.ground-l.plateDrop,plateW,plateH};MergeTutorialRememberAllyPlate(allyPlate.x,allyPlate.y,allyPlate.w,allyPlate.h);
     Box enemyPlate={DX*3/4-plateW/2,l.ground-l.plateDrop,plateW,plateH};
     //방어는 갑옷 블록이 주는 보호 횟수다. 공격 중이면 남은 몫을, 배치
     //중이면 "지금 공격하면 받을" 몫을 보여 준다.
@@ -4434,8 +4811,8 @@ void MergeRouletteDraw() {
         const float rise=(1.5f-attackGainTime)*18*s;
         SetColor(0xFFE18A);imageNumber(attackGain,allyPlate.x+allyPlate.w/2,allyPlate.y+(int)(20*s+rise),.85f*s,true);SetColor(0);
     }
-    button(l.exit,"나가기",nullptr,0x25304A,!run.attacking);
-    if(siegeActive)Siege::drawHud(l);else MonsterBoard::drawPanel(l);
+    button(l.exit,"나가기",nullptr,0x25304A,true);
+    if(siegeActive)Siege::drawHud(l);
     profile.stamp(2);
     // No backing board: individual fixed 80px tiles cover the rooms themselves.
     for(int row=0;row<run.shape.height;++row)for(int col=0;col<run.shape.width;++col)
@@ -4459,6 +4836,7 @@ void MergeRouletteDraw() {
         }
     long long predicted=run.preview(stats);
     for(int i=0;i<(int)run.board.size();++i) {
+        if(automaticMerge.active()&&((!automaticMerge.fromTray&&i==automaticMerge.source)||(automaticMerge.targetLifted&&i==automaticMerge.target)))continue;
         if(introActive()&&i<3)continue;
         if(picked==i&&!pickedTray)continue;
         drawBlock(run.board[i],blockBox(run.board[i],l));
@@ -4483,6 +4861,8 @@ void MergeRouletteDraw() {
     shownGrades=visibleGrades;
     gradeAccents.erase(std::remove_if(gradeAccents.begin(),gradeAccents.end(),[](const GradeAccent& a){return a.age>=36;}),gradeAccents.end());
     for(const auto& accent:gradeAccents){
+        if(automaticMerge.active()&&((!automaticMerge.fromTray&&sameGrade(accent.block,automaticMerge.moving))||
+            (automaticMerge.targetLifted&&sameGrade(accent.block,run.board[automaticMerge.target]))))continue;
         if(std::find_if(visibleGrades.begin(),visibleGrades.end(),[&](const Block& b){return sameGrade(b,accent.block);})==visibleGrades.end())continue;
         const Box box=blockBox(accent.block,l);
         const float t=accent.age/36.f,pulse=std::sin(std::min(1.f,t*2)*3.14159265f);
@@ -4507,8 +4887,9 @@ void MergeRouletteDraw() {
     //부풀었다 가라앉는다. 피해를 주는 연출이 아니므로 판을 멈추지 않는다.
     if(run.mergeSeq!=mergeSeenSeq) {
         mergeSeenSeq=run.mergeSeq;
-        mergeFlash=MERGE_FLASH_FRAMES;
         mergeShownLevel=run.mergeLevel;
+        mergeFlashDuration=20+7*std::max(1,mergeShownLevel);
+        mergeFlash=mergeFlashDuration;
 
         Block at;at.family=0;at.level=1;at.x=run.mergeX;at.y=run.mergeY;
         mergeBox=blockBox(at,l);
@@ -4516,22 +4897,35 @@ void MergeRouletteDraw() {
         mergeBox.h=run.mergeH*l.cellH;
     }
     if(mergeFlash>0) {
-        const float t=mergeFlash/(float)MERGE_FLASH_FRAMES;   //1 -> 0
-        const int grow=(int)(t*10*s);
-        const int thick=std::max(1,(int)((1+t*3)*s));
-
-        SetAlpha((int)(ALPHA_MAX*t));
-        MemRectFrameThick(mergeBox.x-grow,mergeBox.y+grow,
-            mergeBox.w+grow*2,mergeBox.h+grow*2,0xFFE99E,thick);
-        SetAlpha(ALPHA_MAX);
-
-        //가운데에 ★ 를 하나 띄운다. 몇 단이 됐는지가 숫자 없이 읽힌다.
-        if(mergeShownLevel>0) {
-            const float z=(.6f+t*.5f)*s;
-            DrawIcon(ICON_STAR,mergeBox.x+mergeBox.w/2-(int)(8*z),
-                mergeBox.y-mergeBox.h/2+(int)(8*z),z,false,false,false,true);
+        const int level=std::max(1,std::min((int)MaxLevel,mergeShownLevel));
+        const float t=mergeFlash/(float)mergeFlashDuration,age=1-t;
+        const int color=level>=6?0xFFFFFF:level>=4?0xF1BBFF:0xFFE99E;
+        // Broad soft rings surround a bright core. Higher tiers add width,
+        // reach, duration and more sparks around the result's entire border.
+        const int layers=2+level;
+        for(int ring=layers;ring>=0;--ring){
+            const int grow=(int)((age*(7+level*3)+ring*(1.5f+level*.4f))*s);
+            SetAlpha((int)((ring==0?32:std::max(2,13-ring))*t));
+            MemRectFrameThick(mergeBox.x-grow,mergeBox.y+grow,
+                mergeBox.w+grow*2,mergeBox.h+grow*2,ring==0?0xFFFFFF:color,
+                std::max(1,(int)((ring==0?1.5f+level*.6f:2.f+level*.3f)*s)));
         }
-        --mergeFlash;
+        SetAlpha((int)(32*t));
+        const int sparks=4+level*2;
+        const float reach=(5+age*(8+level*4))*s;
+        for(int i=0;i<sparks;++i){
+            const float perimeter=2.f*(mergeBox.w+mergeBox.h);
+            float d=std::fmod(i*perimeter/sparks+age*36*s,perimeter);
+            float x=mergeBox.x,y=mergeBox.y,nx=0,ny=0;
+            if(d<mergeBox.w){x+=d;ny=1;}
+            else if((d-=mergeBox.w)<mergeBox.h){x+=mergeBox.w;y-=d;nx=1;}
+            else if((d-=mergeBox.h)<mergeBox.w){x+=mergeBox.w-d;y-=mergeBox.h;ny=-1;}
+            else{d-=mergeBox.w;y-=mergeBox.h-d;nx=-1;}
+            const float z=(.18f+level*.055f)*s*(.7f+t*.3f);
+            DrawIcon(ICON_STAR,(int)(x+nx*reach-8*z),(int)(y+ny*reach+8*z),z,false,false,false,true);
+        }
+        SetAlpha(32);
+        if(!quitPromptOpen)--mergeFlash;
     }
     if(run.attacking&&action.index>=0&&action.index<(int)run.shots.size()) {
         const Shot& shot=run.shots[action.index];
@@ -4566,6 +4960,7 @@ void MergeRouletteDraw() {
         bool held=!run.tray.empty()&&i<(int)run.tray.size();
         // Keep the stopped result in its reel while a copy flies to the board.
         const bool pending=!run.tray.empty()&&animation==0&&!spinFlying();
+        if(pending&&automaticMerge.active()&&automaticMerge.fromTray&&i==automaticMerge.source)continue;
         const Block symbol=pending?(held?run.tray[i]:Block()):hasReelSymbols?reelSymbols[i]:Block();
         int f=pending?symbol.family:hasReelSymbols?symbol.family:held?run.tray[i].family:run.families[i];
         int lv=pending?(held?symbol.level:1):hasReelSymbols?symbol.level:held?run.tray[i].level:1,crew=pending?symbol.crew:hasReelSymbols?symbol.crew:held?run.tray[i].crew:-1;
@@ -4577,7 +4972,7 @@ void MergeRouletteDraw() {
             //"바뀌었다" 로만 보이고 슬롯머신으로 안 읽힌다.
             //
             //뒤 릴일수록 바퀴 수가 많다 - 같은 빠르기로 출발해 더 오래 돈다.
-            const int pitch=window.h,turns=5+3*i;
+            const int pitch=window.h,turns=16+5*i;
             const float ease=1.f-std::pow(1.f-phase,3.f);
             const float over=std::sin(phase*3.14159265f)*(1.f-phase)*REEL_OVERSHOOT*s;
             const float distance=turns*pitch*ease+over;
@@ -4643,7 +5038,7 @@ void MergeRouletteDraw() {
     if(run.lost) {
         button(l.spin,"다시 도전","새 런 시작",0x24578D);button(l.attack,"로비로",nullptr,0x975028);
     } else {
-        bool ready=run.battleEnergy>0&&!entering()&&!introActive()&&!spinFlying()&&!deckArriving()&&!waveTransition.active()&&!run.attacking&&animation==0;
+        bool ready=run.battleEnergy>0&&!pendingPass&&!automaticMerge.active()&&!entering()&&!introActive()&&!spinFlying()&&!deckArriving()&&!waveTransition.active()&&!run.attacking&&animation==0;
         choice(l.spin,ChoiceSpin,ready&&run.canSpin());
         choice(l.attack,ChoiceAttack,ready&&!run.board.empty()&&run.boardResolved());
         if(!siegeActive||Siege::swapped)choice(l.cannon,ChoiceCannon,ready&&run.boardResolved());
@@ -4690,16 +5085,20 @@ void MergeRouletteDraw() {
         label(message.c_str(),DX/2,DY-(int)(45*s),0.48f);
     drawSpinLanding(l);
     if(siegeActive){Siege::drawExpanded(l);Siege::drawHand(l);}   //공성전: 펼친 상대 판과 상대의 손은 내 블록 위에
-    else MonsterBoard::drawExpanded(l);   //몬스터의 판도 같은 자리에 펼친다
     if(RewardPopup::open()&&waveTransition.age>=MergeCombat::WaveTransition::DefeatFrames)RewardPopup::draw();
     if(!entering())drawIntro(l);
+    drawAutomaticMerge(l);
     if(flash>0){impactDrawOrder=++objectDrawOrder;drawImpactSequence(impactFirst,impactCount,18-flash,18,enemyBodyKnown?enemyBodyX:ex,enemyBodyKnown?enemyBodyY:ey+(int)(40*s),RIGHT,.65f*s);}
     if(allyFlash>0)drawImpactSequence(HIT_ITEM_SMALL0,5,20-allyFlash,20,allyBodyKnown?allyBodyX:(int)(DX*.66f),allyBodyKnown?allyBodyY:ey+(int)(40*s),LEFT,.65f*s);
     drawCombatNumbers();
-    if(!holdReview)reviewStep(l);
+    if(quitPromptOpen)drawQuitPrompt();
+    if(!holdReview||(review&&std::getenv("CS_EXIT_PROMPT_REVIEW")&&!reviewCapturePending))reviewStep(l);
 }
 
+#include "MergeTutorialRuntime.inc"
+void MergeTutorialStepChanged(){MergeTutorial::onStepEntered();}
 bool MergeRouletteTouch(int phase,int id,float x,float y) {
+    if(active&&startEventActive()){if(phase==2)startEventElapsed=StartEventDuration;return true;}
     if(!active&&RewardPopup::open())return RewardPopup::touch(x,y,phase,id);
     static int debugFinger=-1;
     if(!active) {
@@ -4721,6 +5120,7 @@ bool MergeRouletteTouch(int phase,int id,float x,float y) {
                 if(entryChoiceFinger>=0)return true;
                 entryChoiceFinger=id;entryChoicePressed=-1;
                 for(int part=1;part<=6;++part)if(entryChoiceBox(part).has(x,y))entryChoicePressed=part;
+                if(MergeTutorial::live()&&gCastleTutorialStep==CastleTutorial::Depart&&entryChoicePressed!=1)entryChoicePressed=-1;   //튜토리얼: 전투만
             }else if(id==entryChoiceFinger&&(phase==2||phase==3)){
                 const int selected=entryChoicePressed;entryChoiceFinger=entryChoicePressed=-1;
                 if(phase==2&&selected>0&&entryChoiceBox(selected).has(x,y)){
@@ -4743,6 +5143,10 @@ bool MergeRouletteTouch(int phase,int id,float x,float y) {
             }
             return true;
         }
+        if(MergeTutorial::live()&&gCastleTutorialStep==CastleTutorial::Depart&&drawHandle==MD_LOBBY){   //튜토리얼 출정: 전투 시작만 통과
+            if(phase==0&&popUpCnt==0&&!LoadoutOpen()&&lobbyStart(layout()).has(x,y)){entryChoiceOpen=true;entryChoiceFinger=entryChoicePressed=-1;message.clear();PlayMusic(M_BUTTON);}
+            return true;
+        }
         if(drawHandle==MD_LOBBY&&CastleVault::touch(phase,id,x,y))return true;   //금고 단추
         if(phase!=0&&debugFinger==id){if(phase==2||phase==3)debugFinger=-1;return true;}
         if(phase==0&&drawHandle==MD_LOBBY&&popUpCnt==0&&!LoadoutOpen()) {
@@ -4762,7 +5166,28 @@ bool MergeRouletteTouch(int phase,int id,float x,float y) {
         RewardPopup::touch(x,y,phase,id);
         picked=finger=-1;return true;
     }
-    if(entering()||introActive()||spinFlying()||deckArriving()||waveTransition.active()) {picked=finger=-1;return true;}
+    if(quitPromptOpen){
+        if(phase==0){quitPromptFinger=id;quitPromptChoice=-1;for(int i=0;i<2;++i)if(resumeChoiceBox(i).has(x,y))quitPromptChoice=i;}
+        else if(id==quitPromptFinger&&(phase==2||phase==3)){
+            const int choice=quitPromptChoice;quitPromptFinger=quitPromptChoice=-1;
+            if(phase==2&&choice>=0&&resumeChoiceBox(choice).has(x,y)){
+                PlayMusic(M_BUTTON);
+                if(choice==0)leaveBattle(true);
+                else{quitPromptOpen=false;simulationRemainder=0;}
+            }
+        }
+        return true;
+    }
+    if(phase==0&&layout().exit.has(x,y)){exitPromptFinger=id;return true;}
+    if(id==exitPromptFinger){
+        if(phase==2||phase==3){
+            exitPromptFinger=-1;
+            if(phase==2&&layout().exit.has(x,y)){quitPromptOpen=true;picked=finger=-1;PlayMusic(M_BUTTON);}
+        }
+        return true;
+    }
+    if(MergeTutorial::gate(phase,x,y))return true;   //튜토리얼: 그 단계의 네모 밖 터치는 먹는다
+    if(automaticMerge.active()||entering()||introActive()||spinFlying()||deckArriving()||waveTransition.active()) {picked=finger=-1;return true;}
     if(phase==3) {if(finger==id){picked=-1;finger=-1;}return true;}
     if(phase==0) {
         if(finger>=0)return true;
@@ -4771,7 +5196,6 @@ bool MergeRouletteTouch(int phase,int id,float x,float y) {
             return true;
         }
         if(siegeActive&&Siege::tapPanel(x,y))return true;   //상대 판 터치 = 크게/닫기
-        if(!siegeActive&&MonsterBoard::tapPanel(x,y))return true;   //몬스터 판 터치 = 크게/닫기
         finger=id;downX=pointerX=x;downY=pointerY=y;picked=-1;
         if(!run.choosing&&!run.attacking&&!run.lost&&animation==0) {
             Layout l=layout();
@@ -4792,7 +5216,7 @@ bool MergeRouletteTouch(int phase,int id,float x,float y) {
     Layout l=layout();finger=-1;
     if(picked>=0) {
         bool ok=false;
-        if(nearRouletteTrash(l,x,y)){
+        if(nearRouletteTrash(l,x,y)&&!MergeTutorial::trashLocked()){
             const bool fromTray=pickedTray;
             if(run.discard(fromTray,picked)){
                 picked=-1;trashSwallowTicks=18;message="";save();PlayMusic(M_BUTTON);
@@ -4874,7 +5298,7 @@ bool MergeRouletteTouch(int phase,int id,float x,float y) {
         if(ok&&!run.tray.empty())beginSpinLanding();
         save();return true;
     }
-    if(l.exit.has(x,y)&&l.exit.has(downX,downY)){close();return true;}
+    if(l.exit.has(x,y)&&l.exit.has(downX,downY)){quitPromptOpen=true;picked=finger=-1;return true;}
     if(animation>0||run.attacking)return true;
     if(run.lost) {
         if(l.spin.has(x,y)&&l.spin.has(downX,downY)) {
@@ -4883,13 +5307,14 @@ bool MergeRouletteTouch(int phase,int id,float x,float y) {
         else if(l.attack.has(x,y)&&l.attack.has(downX,downY))close();
         return true;
     }
+    if(pendingPass)return true;
     if(run.battleEnergy<=0&&((l.spin.has(x,y)&&l.spin.has(downX,downY))||(l.attack.has(x,y)&&l.attack.has(downX,downY))||(l.cannon.has(x,y)&&l.cannon.has(downX,downY)))){
         message=u8"\ubc88\uac1c\ub97c \ubaa8\ub450 \uc0ac\uc6a9\ud588\uc2b5\ub2c8\ub2e4.";messageTime=3;PlayMusic(M_ERROR);return true;
     }
     if(l.spin.has(x,y)&&l.spin.has(downX,downY)) {
         if(!run.boardResolved()){message=OverlapMessage;messageTime=3;return true;}
         if(!run.canSpin()){message=u8"\uc774\uc804 \uacb0\uacfc\ub97c \ubc30\uce58\ud558\uac70\ub098 \uc4f0\ub808\uae30\ud1b5\uc5d0 \ubc84\ub824\uc8fc\uc138\uc694.";messageTime=3;return true;}
-        {if(!run.spendBattleEnergy())return true;spentHeart=run.battleEnergy;heartBlink=.36f;run.spin();rollOwnedGearResults(run);rememberReelSymbols();gearStartAngle=gearAngle;animation=REEL_SPIN_FRAMES;message="";save();}
+        {if(!run.spendBattleEnergy())return true;spentHeart=run.battleEnergy;heartBlink=.36f;run.spin();rollOwnedGearResults(run);MergeTutorial::afterSpin();rememberReelSymbols();gearStartAngle=gearAngle;animation=REEL_SPIN_FRAMES;message="";save();CastleTutorialEvent(CastleTutorial::Spun);}
     } else if(l.attack.has(x,y)&&l.attack.has(downX,downY)) {
         //"지금 공격" 은 막지 않는다. 아직 못 놓은 결과가 있으면 들어가는 것은 앉히고,
         //자리 없는 것은 두고 나간다. 칸이 비어 있어도 모양이 안 맞으면 못 놓는 일이 있다.
@@ -4900,11 +5325,11 @@ bool MergeRouletteTouch(int phase,int id,float x,float y) {
         }
         if(run.board.empty()){message="인벤토리가 비어 있습니다.";return true;}
         if(!run.boardResolved()){message=OverlapMessage;messageTime=3;return true;}
-        {if(!run.attack(stats))return true;run.spendBattleEnergy();spentHeart=run.battleEnergy;heartBlink=.36f;action=CombatAction();enemyTurn=EnemyTurn();animation=0;message="출격!";save();}
+        {MergeTutorial::beforeAttack();if(!run.attack(stats))return true;run.spendBattleEnergy();spentHeart=run.battleEnergy;heartBlink=.36f;action=CombatAction();enemyTurn=EnemyTurn();animation=0;message="출격!";save();CastleTutorialEvent(CastleTutorial::Attacked);}
     } else if(!siegeActive&&l.cannon.has(x,y)&&l.cannon.has(downX,downY)) {
         //성의 대포. 판이 비어 있어도 쏜다 - 블록이 없을 때의 마지막 수단이기도 하다.
         if(!run.boardResolved()){message=OverlapMessage;messageTime=3;return true;}
-        {if(!run.fireCannon(stats,cannonShell()))return true;run.spendBattleEnergy();spentHeart=run.battleEnergy;heartBlink=.36f;action=CombatAction();enemyTurn=EnemyTurn();animation=0;message="포격!";save();}
+        {if(!run.fireCannon(stats,cannonShell()))return true;run.spendBattleEnergy();spentHeart=run.battleEnergy;heartBlink=.36f;action=CombatAction();enemyTurn=EnemyTurn();animation=0;message="포격!";save();CastleTutorialEvent(CastleTutorial::CannonFired);}
     }
     return true;
 }

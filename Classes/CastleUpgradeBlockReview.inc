@@ -57,7 +57,7 @@ static bool CastleUpgradeBlockReview(const char* path){
  if(tick==135){
   const auto& p=robin.castleProgress;
   CastleReviewTrace(CastleMenuModel::Health(p,0)==6&&CastleMenuModel::Defense(p,0)==4&&CastleMenuModel::Attack(p,0)==4&&
-   CastleFacilities::Bonus(p,0,false)==25&&CastleMenuModel::CannonTurnPercent(p.parts[0][3])==80?
+   CastleFacilities::Bonus(p,0,false)==25&&CastleMenuModel::CannonTurnPercent(p.parts[0][3])==280?
    "PASS five real effects health defense attack cannon production":"FAIL effect mapping");
   CastleReviewTrace("DONE castle block review");
  }

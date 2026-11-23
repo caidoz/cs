@@ -11,6 +11,9 @@ float battleRailLift(){
  return 8*s+std::max(0.f,(DY-850*s)*.5f)-(1445-contact)*CastleArtGeometry::scale(DX,c)-34*s;
 }
 float entryElapsed=-1.f;
+constexpr float StartEventDuration=3.2f;
+float startEventElapsed=-1.f;
+bool startEventActive(){return startEventElapsed>=0.f&&startEventElapsed<StartEventDuration;}
 unsigned panicSeed=0;
 int drawnFrontCover=-1;
 Box drawnFrontCoverBounds={0,0,0,0};

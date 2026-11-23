@@ -44,6 +44,7 @@ void TitleLoginStart(int provider);
 void TitleLoginReset(void);
 void TitleLoginStep(bool dataReady);
 extern int gCastleTutorialStep;
+extern int gCastleTutorialHints;
 void CastleTutorialNewGame(void);
 void CastleTutorialLoad(int step);
 void CastleTutorialUpdate(void);
@@ -51,6 +52,13 @@ void CastleTutorialDraw(void);
 bool CastleTutorialCommand(int command);
 void CastleTutorialEvent(int event);
 bool CastleTutorialReviewAction(int action);
+int CastleTutorialPacked(void);          //저장용: 단계 | 힌트<<8
+bool CastleTutorialLive(void);           //안내가 살아 있는가(리뷰 중이면 꺼진다)
+bool CastleTutorialHintSeen(int bit);    //CastleTutorial::Hint
+void CastleTutorialHintMark(int bit);
+int MergeTutorialFocus(int rects[2][4]); //전투판·로비가 밝힐 네모를 준다(Func_MergeRoulette.cpp)
+void MergeTutorialUnlock(void);          //건너뛰기: 픽스처 해제
+void MergeTutorialStepChanged(void);     //단계가 바뀐 직후(픽스처가 첫 몬스터 체력을 맞춘다)
 #ifdef GAMEDEBUG
 bool TitleCastleDebugDraw(void);
 bool TitleCastleDebugActive(void);

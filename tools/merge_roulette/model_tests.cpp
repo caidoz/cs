@@ -253,8 +253,8 @@ int main(int argc,char**) {
         d.crew[2].power=100;d.crew[2].trait=Inspire;  // 지원 ★1 약초 할머니
         Run r;r.roster=&roster;r.choosing=false;r.enemyHp=r.enemyMax=100000;r.families[0]=0;r.families[1]=2;r.families[2]=Sword;
         r.board={block(0,1,2,0,3),block(2,2,1,0,2),block(Sword,3,0,0)};   // 표식(x=2) → 고무(x=1) → 검(x=0)
-        assert(r.preview(d)==100+240+1080);   // 검 Lv3 = 50×9(장비 ×3) ×1.2 ×2
-        MergeBoard::Lineage lineages[3]={{LINEAGE_CREW,0,TRAIT_EXPOSE,100,0},{LINEAGE_CREW,2,TRAIT_INSPIRE,100,0},{LINEAGE_SWORD,-1,TRAIT_NONE,50,0}};
+        assert(r.preview(d)==100+240+3240);   // 검 Lv3 = 50×300%(HeroGearPct)×9(장비 ×3) ×1.2 ×2
+        MergeBoard::Lineage lineages[3]={{LINEAGE_CREW,0,TRAIT_EXPOSE,100,0},{LINEAGE_CREW,2,TRAIT_INSPIRE,100,0},{LINEAGE_SWORD,-1,TRAIT_NONE,50*Run::HeroGearPct/100,0}};   // BoardModel 은 히어로 배율을 모르니 기준값에 미리 곱한다
         MergeBoard::Board source;MergeBoard::Reset(source,lineages,5);
         MergeBoard::Place(source,0,1,0,0);MergeBoard::Place(source,1,2,1,0);MergeBoard::Place(source,2,3,2,0);
         MergeBoard::AttackPlan plan;MergeBoard::PlanAttack(source,plan);

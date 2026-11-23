@@ -25,7 +25,8 @@ void crop(int img,float sx,float sy,float sw,float sh,const Box& b,bool mirror=f
  sp->setTextureRect(cocos2d::Rect(sourceX,sourceY,(right-left)/z,(top-bottom)/z));
  sp->setAnchorPoint({0,1});sp->setPosition({left,top});
  sp->setScale(z);sp->setRotation(0);sp->setFlippedX(mirror);sp->setFlippedY(false);
- sp->setColor(cocos2d::Color3B::WHITE);sp->setOpacity(m_lgrpAlpha*255/32);
+ const bool front=img>=CASTLE_MIST_FIRST_IMG&&img<=CASTLE_MIST_LAST_IMG&&(img-CASTLE_MIST_FIRST_IMG)%9==8;
+ sp->setColor(front?cocos2d::Color3B(216,216,216):cocos2d::Color3B::WHITE);sp->setOpacity(m_lgrpAlpha*255/32);
  sp->setGLProgram(cocos2d::GLProgramCache::getInstance()->getGLProgram(cocos2d::GLProgram::SHADER_NAME_POSITION_TEXTURE_COLOR_NO_MVP));AfterSpriting(sp);
 }
 // The blank plaques are baked into each hull, not text labels. Exclude the

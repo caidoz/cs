@@ -4390,54 +4390,31 @@ void AlertDraw(void)
 	SetRectPoint(DX / 2 + *ucPtr / 2, DY / 2 + *(ucPtr + 1) / 2, (DX - *ucPtr) / 2, *(ucPtr + 1), TOUCH_ALERT_NO);//오른쪽
 	SetRectPoint(0, DY / 2 - *(ucPtr + 1) / 2, DX, (DY - *(ucPtr + 1)) / 2, TOUCH_ALERT_NO);//아래쪽
 
-	if (winAniFrame < 7)
-		DrawFrame(DX / 2, DY / 2, *ucPtr, *(ucPtr + 1), FRAME_ANIINFO);
-	else {
-		DrawCmfPopUp(*(ucPtr + 4), pText, DX / 2 - *ucPtr / 2, DY / 2 + *(ucPtr + 1) / 2, *ucPtr, *(ucPtr + 1), DX - 120 * _2X, 5, 6, 1.0f);
-		switch (alert) {
-		default:
-			if (winAniFrame > 7) {
-				switch (pText) {
-				case -5:
-					break;
-				case -4:
-					pStr = "착용중인 아이템으로 퀘스트를 완료할 수 없습니다.";
-					break;
-				case -3:
-					pStr = skillStr;
-					break;
-				case -2:
-					pStr = infoStr;
-					break;
-				case -1:
-					pStr = tempStr;
-					break;
-				default:
-					break;
-				case 0:
-					switch (alert) {
-					case ALERT_NOTICE:
-						break;
-					}
-				}
-
-
-				if (pText) {
-
-					if (*(ucPtr + 3) == 0)
-						DrawTouchButton(DX / 2 - (StringWidth(textId[TEXT_CONFIRM], 1.0f) + 4) / 2, (DY - *(ucPtr + 1)) / 2 + 28 * _2X, textId[TEXT_CONFIRM], TOUCH_FUNC_CLOSEALERT);
-					else
-						YesNoDraw(DX / 2, (DY - *(ucPtr + 1)) / 2 + 40 * _2X);
-
-					if (touch)
-						touchModeOld = null;
-				}
-
-			}
-			break;
+	//---- 공용 단순 팝업 ----
+	//
+	//전에는 알림마다 틀 그림(DrawFrame)과 NPC 말풍선(DrawCmfPopUp), 옛 예/아니오 단추를 따로 그렸다.
+	//이제 게임의 단순 팝업은 전부 DrawUiDialog 한 모양이다(2026-11-23). 글은 alertText 가 정한 대로
+	//(-1 tempStr · -2 infoStr · -3 skillStr · -4 고정문 · 0 없음 · 그 밖은 textId) 본문에 선다.
+	{
+		const char* message = "";
+		switch (pText) {
+		case -5: case 0: message = ""; break;
+		case -4: message = "착용중인 아이템으로 퀘스트를 완료할 수 없습니다."; break;
+		case -3: message = skillStr; break;
+		case -2: message = infoStr; break;
+		case -1: message = tempStr; break;
+		default: message = textId[pText]; break;
 		}
+		const bool yesNo = *(ucPtr + 3) != 0;
+		//예 단추가 하는 일은 알림마다 다르다. 옛 YesNoDraw 가 잡던 터치 번호 그대로다.
+		const int yesFunc = alert == ALERT_SELL ? TOUCH_ALERT_ITEMSELL : TOUCH_ALERT_INVENTORYFULL_YES;
+		const char* labels[2] = { yesNo ? textId[TEXT_YES] : textId[TEXT_CONFIRM], textId[TEXT_NO] };
+		const int funcs[2] = { yesNo ? yesFunc : TOUCH_FUNC_CLOSEALERT, TOUCH_ALERT_NO };
+		const int fills[2] = { yesNo ? 0x196345 : 0x17444A, 0x344553 };
+		DrawUiDialog(u8"알림", message, nullptr, yesNo ? 2 : 1, labels, funcs, fills, nullptr);
+		if (touch)
+			touchModeOld = null;
 	}
-
 	winAniFrame++;
 }
 

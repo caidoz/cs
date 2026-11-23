@@ -15,6 +15,37 @@ int main() {
         MergeBoard::SetGearShape(gear,lv,widths[lv],heights[lv]);
     Stats stats;
     {
+        Run r=armed();r.board.clear();r.shape=Shape();r.shape.width=2;r.shape.height=2;
+        for(int y=0;y<Height;++y)r.shape.rows[y]=y<2?3:0;
+        for(int y=0;y<2;++y)for(int x=0;x<2;++x){Block b;b.family=Sword;b.x=x;b.y=y;r.board.push_back(b);}
+        assert(r.freeCells()==0&&r.canSpin());
+        assert(r.spin()&&r.tray.size()==3);
+        while(!r.tray.empty())assert(r.scatterPlace(0));
+        assert(r.board.size()==7&&!r.boardResolved());
+        Run loaded;assert(loaded.decode(r.encode())&&loaded.encode()==r.encode());
+        std::cout<<"PASS full board spin scatters all rewards without loss and preserves overlaps across resume\n";
+    }
+
+    {
+        Run r=armed();r.board.clear();
+        for(int i=0;i<4;++i){Block b;b.family=Sword;r.tray.push_back(b);assert(r.autoPlace(0));}
+        Run plan;bool tray=false;int source=-1,target=-1,merges=0;
+        while(true){
+            const auto before=r.encode();const unsigned rng=r.rng;
+            if(!r.automaticMergePlan(plan,tray,source,target))break;
+            assert(r.encode()==before&&r.rng==rng&&!tray&&source!=target);
+            assert(plan.board.size()+1==r.board.size());r=plan;++merges;
+        }
+        assert(merges==3&&r.board.size()==1&&r.board[0].level==3);
+        Run t=armed();t.tray.push_back(t.board[0]);
+        assert(t.automaticMergePlan(plan,tray,source,target)&&tray&&plan.tray.empty()&&plan.board[0].level==2);
+        t.attacking=true;assert(!t.automaticMergePlan(plan,tray,source,target));
+        t.attacking=false;t.board[0].level=MaxLevel;t.tray[0].level=MaxLevel;
+        assert(!t.automaticMergePlan(plan,tray,source,target));
+        std::cout<<"PASS automatic merge plans preserve live state and RNG, chain, consume tray duplicates, and stop at max level\n";
+    }
+
+    {
         Run r=armed();r.enemyHp=r.enemyMax=1;
         Block b=r.board[0];b.x=2;r.board.push_back(b);b.x=4;r.board.push_back(b);
         assert(r.attack(stats)&&r.shots.size()==3);
@@ -156,6 +187,19 @@ int main() {
             assert(rowFor(Table[i].power).gold==Table[i].gold&&rowFor(Table[i].power-1).gold==Table[i-1].gold);
         }
         std::cout<<"PASS expedition fixed table by combat power\n";
+    }
+    // 룰렛 세 칸에는 장비와 동료가 하나씩은 선다(역할이 하나라도 있을 때). 역할이 없으면 셋 다 장비.
+    {
+        Roster roster;roster.add(0,1,3);
+        int mixed=0;
+        for(unsigned seed=1;seed<=400;++seed){
+            Run s;s.roster=&roster;s.choosing=false;s.families[0]=0;s.families[1]=Sword;s.families[2]=Armor;s.rng=seed;
+            assert(s.spin()&&s.tray.size()==3);
+            int gears=0;for(const Block& b:s.tray)gears+=b.family>=Sword?1:0;
+            assert(gears>=1&&gears<=2);mixed+=gears==2?1:0;
+        }
+        assert(mixed>100&&mixed<400);   //70:30 동전이라 장비 둘·동료 하나가 흔하되 전부는 아니다
+        std::cout<<"PASS every spin mixes gear and crew when a role is available\n";
     }
     std::cout<<"PASS 15 waves, bosses 5/10/15, counterattack after allies, one hit across resume, block/stun/death and v8 migration\n";
 }
