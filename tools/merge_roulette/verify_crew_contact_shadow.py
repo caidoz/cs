@@ -41,10 +41,13 @@ for height in (850,1408):
     body = np.max(np.abs(images['no-shadow']-images['tile-only']),axis=2)>5
     shadow_bounds,body_bounds=bounds(visible_shadow),bounds(body)
     assert visible_shadow.sum()>=30, ('Shadow hidden behind body',visible_shadow.sum())
-    assert shadow_bounds[0]<w*.25 and shadow_bounds[2]<w*.5, shadow_bounds
-    assert shadow_bounds[3]>=h-5, ('Shadow not on tile floor',shadow_bounds,h)
-    assert body_bounds[0]<=10 and h-body_bounds[3]<=8, ('Body not bottom-left',body_bounds,h)
-    assert shadow_bounds[2]>body_bounds[0] and shadow_bounds[1]<=body_bounds[3]+3, 'Shadow detached from feet'
+    # 2026-11-23: a turned (2x1) companion stands upright, smaller, centred; the shadow sits on the floor under its feet.
+    body_cx=(body_bounds[0]+body_bounds[2])*.5; shadow_cx=(shadow_bounds[0]+shadow_bounds[2])*.5
+    assert abs(body_cx-w*.5)<w*.2, ('Body not centred',body_bounds,w)
+    assert shadow_bounds[3]>=h-6, ('Shadow not on tile floor',shadow_bounds,h)
+    assert h-body_bounds[3]<=12, ('Body not standing on the floor',body_bounds,h)
+    assert body_bounds[3]-body_bounds[1]>(body_bounds[2]-body_bounds[0])*.8, ('Body not upright',body_bounds)
+    assert abs(shadow_cx-body_cx)<w*.25 and shadow_bounds[1]<=body_bounds[3]+4, 'Shadow detached from feet'
     metrics={'visible_shadow_pixels':int(visible_shadow.sum()),'shadow_bounds':shadow_bounds,'body_bounds':body_bounds,'tile_size':[w,h]}
     (folder/'contact-pixels.json').write_text(json.dumps(metrics,indent=2))
-    print(f'PASS {height}: visible shadow and bottom-left foot contact {metrics}',flush=True)
+    print(f'PASS {height}: upright turned companion with floor shadow {metrics}',flush=True)

@@ -25,6 +25,37 @@ static void CastleMenuReviewStep()
 {
     const char* path = getenv("CS_CASTLE_REVIEW_PATH");
     if (!path) return;
+    if(getenv("CS_CASTLE_DEBUG_SELECTION_REVIEW")){
+        static int tick=0;static bool pending=false;if(pending)return;++tick;
+        static CastleMenuModel::Progress saved;
+        if(tick==1){NewGame();robin.demoSeen[DEMO_TUTORIAL_END]=true;CastleTutorialLoad(CastleTutorial::Done);GotoLobby();while(popUpCnt>0)ClosePopUp();LoadoutSetOpen(false);robin.castleProgress.version=2;robin.castleProgress.owned=3;robin.castle=gMobileCastleVisual=1;saved=robin.castleProgress;}
+        if(tick==15){DebugControlsToggle();LobbyCastleDebugCommand(TOUCH_FUNC_LOBBY_CASTLE_PREV);LobbyCastleDebugCycle(0,-1);char diag[180];snprintf(diag,sizeof(diag),"DETAIL chosen=%d visual=%d saved=%d owned=%u inventory=%d capacity=%d loadoutcap=%d",LobbyCastleDebugCastle(),gMobileCastleVisual,robin.castle,robin.castleProgress.owned,InventoryUsed(),CastleInventoryCapacity(0),CastleEquipmentCapacity(0));CastleReviewTrace(diag);}
+        if(tick==20){DebugControlsToggle();char diag[220];snprintf(diag,sizeof(diag),"DETAIL debug=%d preview=%d departure=%d visual=%d same=%d used=%d cells=%d slots=%d",DebugControlsOpen(),LobbyCastleDebugActive(),robin.castle,gMobileCastleVisual,!memcmp(&saved,&robin.castleProgress,sizeof(saved)),LoadoutUsed(),LoadoutCellUsed(),CastleEquippedCells());CastleReviewTrace(diag);CastleReviewTrace(!DebugControlsOpen()&&!LobbyCastleDebugActive()&&robin.castle==0&&gMobileCastleVisual==0&&!memcmp(&saved,&robin.castleProgress,sizeof(saved))?"PASS closing debug keeps first departure castle without saving preview upgrades":"FAIL debug selection reverted or saved upgrades");}
+        if(tick==30){pending=true;cocos2d::utils::captureScreen([](bool ok,const std::string&){pending=false;CastleReviewTrace(ok?"PASS first castle after debug close capture":"FAIL capture");},std::string(path)+"first-castle.png");}
+        if(tick==40){DebugControlsToggle();CastleReviewTrace(LobbyCastleDebugCastle()==0?"PASS reopening debug starts at retained first castle":"FAIL reopen selection");LobbyCastleDebugCommand(TOUCH_FUNC_LOBBY_CASTLE_NEXT);DebugControlsToggle();CastleReviewTrace(robin.castle==1&&gMobileCastleVisual==1?"PASS closing debug also retains another owned castle":"FAIL second castle selection");}
+        if(tick==50){DebugControlsToggle();gMobileCastleVisual=9;DebugControlsToggle();CastleReviewTrace(robin.castle==1&&!CastleMenuModel::Owned(robin.castleProgress,9)&&!memcmp(&saved,&robin.castleProgress,sizeof(saved))?"PASS debug selection cannot grant unowned castles or upgrades":"FAIL debug grants ownership");}
+        if(tick==60){DebugControlsToggle();gMobileCastleVisual=0;DebugControlsToggle();CastleReviewTrace(robin.castle==0&&gMobileCastleVisual==0?"PASS first castle remains selectable after repeated debug close":"FAIL repeated close");CastleReviewTrace("DONE debug selection review");}
+        return;
+    }
+    if(getenv("CS_CENTERED_LOBBY_NAV_REVIEW")){
+        static int tick=0;static bool pending=false;if(pending)return;++tick;
+        if(tick==1){NewGame();robin.demoSeen[DEMO_TUTORIAL_END]=true;CastleTutorialLoad(CastleTutorial::Done);GotoLobby();while(popUpCnt>0)ClosePopUp();LoadoutSetOpen(false);}
+        const int actions[5]={TOUCH_FUNC_SHOP,TOUCH_FUNC_COLLECTIONS,TOUCH_FUNC_POPUP_CREWLIST,TOUCH_FUNC_POPUP_CASTLEMENU,TOUCH_FUNC_LOBBY_ADVENTURE};
+        for(int page=0;page<5;++page){
+            if(tick==30+page*30){CastleReviewClick(actions[page]);PlayKey(PLAYER);systemKey=0;}
+            if(tick==45+page*30){
+                const int commands[5]={TOUCH_FUNC_SHOP,TOUCH_FUNC_COLLECTIONS,TOUCH_FUNC_LOBBY_ADVENTURE,TOUCH_FUNC_POPUP_CREWLIST,TOUCH_FUNC_POPUP_CASTLEMENU};
+                bool valid=true;for(int tab=0;tab<5;++tab){int count=0;for(int i=0;i<touchIndex;++i)count+=touchRect[i][4]==commands[tab]&&touchRect[i][1]==MergeRouletteBottomNavHeight();valid=valid&&count==1;}
+                const int types[4]={POPUPTYPE_SHOPINFO,POPUPTYPE_COLLECTIONS,POPUPTYPE_CREWLIST,POPUPTYPE_CASTLEMENU};
+                valid=valid&&(page==4?popUpCnt==0:popUpCnt==1&&popUp[0].type==types[page]);
+                CastleReviewTrace(valid?"PASS five dock actions remain reachable on selected page":"FAIL dock page or duplicate actions");
+                char name[40];snprintf(name,sizeof(name),"dock-page-%d.png",page);pending=true;
+                cocos2d::utils::captureScreen([](bool ok,const std::string&){pending=false;CastleReviewTrace(ok?"PASS dock capture":"FAIL dock capture");},std::string(path)+name);
+            }
+        }
+        if(tick==180)CastleReviewTrace("DONE centered lobby navigation review");
+        return;
+    }
     if(getenv("CS_UI_TYPE_REVIEW")){
         static int tick=0;static bool pending=false;if(pending)return;++tick;
         const auto click=[](int command){CastleReviewClick(command);PlayKey(PLAYER);systemKey=0;};
@@ -360,6 +391,7 @@ static void CastleMenuReviewStep()
         static int tick=0;static bool pending=false;if(pending)return;++tick;
         const bool reset=!strcmp(mode,"reset");
         if(tick==30){
+            CastleReviewTrace(MergeRouletteTitleCastlesLayoutReview()?"PASS title castle grid (18 castles, 3 per row, tiled scroll) fills the screen":"FAIL title castle grid");
             bool guest=false,start=false,resetButton=false;
             for(int i=0;i<touchIndex;++i){guest|=touchRect[i][4]==TOUCH_FUNC_TITLE_LOGIN_GUEST;start|=touchRect[i][4]==TOUCH_FUNC_GOTOPLAY;resetButton|=touchRect[i][4]==TOUCH_FUNC_TITLE_RESET_SAVE;}
             CastleReviewTrace(drawHandle==MD_TITLE&&guest&&!start&&resetButton&&!TitleLoginBusy()?"PASS manual guest gate with reset button":"FAIL title manual gate");
@@ -501,8 +533,10 @@ static void CastleMenuReviewStep()
             }
         }
         if(tick==345){
+            const int selected=gMobileCastleVisual;
+            const int expected=CastleMenuModel::Owned(saved,selected)?selected:(int)robin.castle;
             CastleReviewClick(TOUCH_FUNC_LOBBY_CASTLE_DEBUG);
-            CastleReviewTrace(gMobileCastleVisual==previous && LobbyCastleDebugLevel(previous,0)==-1 && !memcmp(&saved,&robin.castleProgress,sizeof(saved))?"PASS castle debug restored":"FAIL restore");
+            CastleReviewTrace(gMobileCastleVisual==expected && robin.castle==expected && LobbyCastleDebugLevel(expected,0)==-1 && !memcmp(&saved,&robin.castleProgress,sizeof(saved))?"PASS castle debug restored":"FAIL restore");
             CastleReviewTrace("PASS lobby castle debug complete");
         }
         return;
@@ -1040,14 +1074,15 @@ static void CastleMenuReviewStep()
 
     if(getenv("CS_CURRENT_CANNON_ICON_REVIEW")) {
         static int tick=0;++tick;
-        const int img=INVENTORY_CANNON_ATLAS_IMG;
-        bool ok=sprite[img] && texture[img];
+        const int img=CANNON_UPGRADE_ATLAS_IMG;
+        if(!sprite[img])LoadImg(img);
+        bool ok=sprite[img]!=nullptr;
         MemRect(16,DY-70,608,730,0x16263B);
         SetFontColor(COLOR_WHITE);
         CenterTextStrSolid("CURRENT CANNONS / 10 CASTLES x 6 GRADES",DX/2,DY-91,.7f);
         for(int castle=0;castle<10;++castle) for(int level=0;level<6;++level) {
-            const auto& f=InventoryCannons::Get(castle,level);
-            ok=ok && f.bw>0 && f.bh>0 && f.x+f.w<=576 && f.y+f.h<=640;
+            const auto& f=MountedCannons::Get(castle,level);
+            ok=ok && f.w>0 && f.h>0 && f.x+f.w<=2304 && f.y+f.h<=2560;
             const int x=30+level*96,y=DY-114-castle*66;
             MemRectFrame(x,y,92,62,0x6F849A);
             DrawInventoryCannonIcon(castle,level,x+3,y-3,86,56);

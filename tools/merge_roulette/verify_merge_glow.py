@@ -1,4 +1,4 @@
-"""Capture real merges at tiers 2 through 6 and check single mode hides enemy grids."""
+"""Capture real merges at tiers 2 through 6 and check the enemy parts panel is visible."""
 import argparse
 from pathlib import Path
 import sys
@@ -16,4 +16,4 @@ for height in (850, 1408):
                 'DONE merge glow review', 5)
     checks = (runtime.ROOT / 'output/item-series/runtime' / folder / 'checks.log').read_text()
     assert checks.count('PASS merge tier increases border glow strength and duration') == 5
-    assert 'PASS single mode has no enemy grid panel' in checks
+    assert 'PASS enemy parts panel visible at top right' in checks

@@ -1,10 +1,12 @@
 // Semantic CMF parts, roles and one authored monster action per player turn.
 // Included inside Func_MergeRoulette.cpp's private presentation namespace.
+// Monster parts are an explicit inspection view, never an attack overlay.
 namespace MonsterBoard {
 static_assert(MonsterParts::AtlasCount==MONSTER_PARTS_LAST_IMG-MONSTER_PARTS_FIRST_IMG+1,"Register every monster part atlas");
 struct Part {int slot=0,local=0,cx=0,cy=0,cw=1,ch=1,level=1;};
 std::vector<Part> parts;Shape shape;
 bool expanded=false;Box panelBox={0,0,0,0};
+void closeInspection(){expanded=false;}
 int builtStage=-1,builtWave=-1,builtNpc=-1,selected=-1;
 int boardX=0,boardY=0,boardCell=0;
 int partCount(){return (int)parts.size();}
@@ -47,6 +49,7 @@ void ensure(){
 }
 int hitCount(){ensure();return run.monsterLoadout().weaponCount;}
 bool attacking(){return !siegeActive&&enemyTurn.started&&!enemyTurn.complete;}
+bool expandedVisible(){return !siegeActive&&expanded&&!attacking();}
 int activeWeapon(){
     if(!attacking())return 0;const int phase=enemyTurn.time.elapsed-enemyTurn.phases.approach;
     for(int i=(int)enemyTurn.weaponStarts.size()-1;i>=0;--i)if(phase>=enemyTurn.weaponStarts[i])return i;
@@ -67,7 +70,7 @@ void drawPartBlock(const Part& p,const Box& box){
     const auto* enemy=MonsterParts::enemy(builtNpc);if(!enemy)return;
     const auto& art=MonsterParts::Art[enemy->firstArt+p.local];const auto role=effectiveRole(p);
     const int image=MONSTER_PARTS_FIRST_IMG+art.page;if(!sprite[image])LoadImg(image);
-    padArt(std::max(1,std::min((int)MaxLevel,p.level))+1,box);
+    gradePad(std::max(1,std::min((int)MaxLevel,p.level)),box);
     MemRectFrameThick(box.x,box.y,box.w,box.h,roleColor(role),std::max(1,(int)(DX/640.f)));
     if(!sprite[image])return;
     const int pad=std::max(1,(int)(4*DX/640.f));
@@ -81,12 +84,22 @@ void drawBoardAt(int bx,int by,int cell){
     for(int row=0;row<shape.height;++row)for(int col=0;col<shape.width;++col)
         if(shape.contains(col,row))padArt((row+col)%2,{bx+col*cell,by-row*cell,cell,cell});
     for(int i=0;i<(int)parts.size();++i){
-        const Part& p=parts[i];const bool lit=false;
+        const Part& p=parts[i];const bool lit=attacking()&&contributes(p);
+        if(attacking()&&!lit)SetAlpha(22);
         const Box box={bx+p.cx*cell,by-p.cy*cell,p.cw*cell,p.ch*cell};drawPartBlock(p,box);SetAlpha(32);
-        if(lit)MemRectFrameThick(box.x,box.y,box.w,box.h,lit?0xFFE066:0xFFFFFF,std::max(2,cell/18));
+        if(lit||selected==i)MemRectFrameThick(box.x,box.y,box.w,box.h,lit?0xFFE066:0xFFFFFF,std::max(2,cell/18));
     }
 }
-bool tapPanel(float,float){return false;}
+bool tapPanel(float x,float y){
+    if(siegeActive||attacking())return false;
+    if(expanded){
+        for(int i=0;i<(int)parts.size();++i){const auto& p=parts[i];
+            if(Box{boardX+p.cx*boardCell,boardY-p.cy*boardCell,p.cw*boardCell,p.ch*boardCell}.has(x,y)){selected=i;return true;}
+        }
+    }
+    if(expanded){expanded=false;selected=-1;return true;}
+    if(panelBox.has(x,y)){expanded=true;return true;}return false;
+}
 long long counterPreview(){return attacking()?enemyTurn.rawDamage:run.counterHit();}
 void summary(char* text,size_t size){
     const auto& a=shownAction();const auto l=run.monsterLoadout();
@@ -110,21 +123,24 @@ void detail(char* text,size_t size){
         const long long damage=attacking()&&weapon<(int)enemyTurn.rawShares.size()?enemyTurn.rawShares[weapon]:run.monsterWeaponDamage(weapon);
         std::snprintf(text,size,u8"%s · 1회 공격 · 피해 %lld",d.name,damage);}
 }
+//---- 몬스터 부위 판 (오른쪽 위, 작은 판) ----
+//
+//두 화면 높이 모두 같은 자리다: 머리글 오른쪽, 「나가기」 반대편, 화면 안쪽으로 여백 8. 긴 화면에서 머리글 밑에
+//크게 깔던 판(topBoardPanel)은 성 지붕과 글이 겹쳐서 뺐다 - 크게 보려면 판을 누른다(drawExpanded).
+//글(행동 이름)은 판 폭에 맞춰 줄여 오른쪽 가장자리에서 잘리지 않게 한다.
 void drawPanel(const Layout& l){
     if(siegeActive)return;ensure();const float s=l.scale;
-    if(topBoardPanel()){
-        const int cell=topPanelCell(),bw=cell*shape.width,bh=cell*shape.height;
-        const int bx=(DX-bw)/2,by=topPanelTop();
-        panelBox={bx-(int)(8*s),by+(int)(8*s),bw+(int)(16*s),bh+(int)(49*s)};
-        SetAlpha(28);panel(panelBox,0x2A1E24,0x8C6170);SetAlpha(32);drawBoardAt(bx,by,cell);
-        char text[192];summary(text,sizeof(text));label(text,DX/2,by-bh-(int)(4*s),.40f,0xFFD6C0);
-        detail(text,sizeof(text));label(text,DX/2,by-bh-(int)(21*s),.31f,0xC9D3E8);return;
-    }
-    const int cell=std::max(5,(int)(l.cell*.22f)),bw=cell*shape.width,bh=cell*shape.height;
-    const int bx=DX-bw-(int)(12*s),by=DY-(int)(12*s);
-    panelBox={bx-(int)(5*s),by+(int)(5*s),bw+(int)(10*s),bh+(int)(26*s)};
-    SetAlpha(26);panel(panelBox,0x2A1E24,0x8C6170);SetAlpha(32);drawBoardAt(bx,by,cell);
-    label(shownAction().name,bx+bw/2,by-bh-(int)(3*s),.36f,0xFFD6C0);
+    panelBox={(int)(10*s),DY-(int)(8*s),(int)(42*s),(int)(40*s)};
+    portraitSkin(2,panelBox);portraitGlyph(4,inset(panelBox,(int)(4*s)));
 }
-void drawExpanded(const Layout&){}
+void drawExpanded(const Layout& l){
+    if(!expandedVisible())return;const bool live=false;
+    ensure();const float s=l.scale;const int cell=l.cell,gw=cell*shape.width,gh=cell*shape.height;
+    const int gx=(DX-gw)/2,gy=l.board.y-(l.board.h-gh)/2;
+    SetAlpha(live?14:30);MemRect(0,0,DX,DY,0x000000);SetAlpha(32);
+    panel({gx-(int)(10*s),gy+(int)(10*s),gw+(int)(20*s),gh+(int)(66*s)},0x2A1E24,0xFFB08A);
+    char text[192];summary(text,sizeof(text));label(text,DX/2,gy-gh-(int)(8*s),.43f,0xFFE6C0);
+    detail(text,sizeof(text));label(text,DX/2,gy-gh-(int)(29*s),.33f,0xC9D3E8);
+    drawBoardAt(gx,gy,cell);if(!live)label(u8"부위 터치: 역할 확인 · 바깥 터치: 닫기",DX/2,gy+(int)(28*s),.36f,0xC9D3E8);
+}
 }

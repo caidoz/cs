@@ -1,4 +1,4 @@
-﻿#include "Data/CastleRoomAtlas.h"
+#include "Data/CastleRoomAtlas.h"
 // Single scrolling body. Part indices retain the existing save/model ordering.
 #include <chrono>
 #include "Data/CastleRoomUpgrades.h"
@@ -22,7 +22,7 @@ static void GoldPair(long long needed,long long owned,int left,int top,int width
 }
 static int HeaderTop(){return DY-(GNBHEIGHT-GNB_INIT_HEIGHT)-LOBBY_BAR_H-6;}
 static int BodyTop(){return HeaderTop()-54;}
-static int BodyBottom(){return 16;}
+static int BodyBottom(){return drawHandle==MD_LOBBY?MergeRouletteBottomNavHeight()+10:16;}
 static int PreviewHeight(){return CastleUpgradeBlocks::PreviewHeight(DY);}
 static int ContentHeight(){return CastleUpgradeBlocks::ContentHeight(DY);}
 static int ScrollMax(){return Max(0,ContentHeight()-(BodyTop()-BodyBottom()));}
@@ -30,6 +30,7 @@ static int panelDrawSlot=0;
 // The rounded panel shader is expensive on large overlapping menu surfaces.
 // Rasterize each static style once; scrolling changes only its clipped quad.
 static void Panel(int x,int top,int w,int h,int fill,int edge){
+ MergeRouletteUiFrame(x,top,w,h,6);return;
  if(w<2||h<2||x+w<=clipX||x>=clipX2||top<=clipY2||top-h>=clipY)return;
  if(getenv("CS_CASTLE_PREVIEW_UNCACHED")){DrawPixelPanel(x,top,w,h,fill,edge);return;}
  struct Cached {int w=0,h=0,fill=0,edge=0;cocos2d::RenderTexture* target=nullptr;};
@@ -60,23 +61,11 @@ static void Button(const char* text,int x,int y,int w,int h,int command,bool ena
  DrawUiButton(x,y,w,h,text,command,selected,enabled,style);
 }
 static void FacilityIcon(int c,int room,int lv,int x,int top,int size){
- const int img=MERGE_REBUILD_ROOMS_IMG+c;
- if(!sprite[img])LoadImg(img);if(!sprite[img])return;
- const auto tex=sprite[img]->getTexture()->getContentSizeInPixels();
- const auto f=MergeCastleTransition::RoomFrame(room,lv,(int)tex.width,(int)tex.height);
- const float z=Min(size/(float)f.w,size/(float)f.h);
- DrawImageScale(f.w,f.h,f.x,f.y,x+(size-f.w*z)/2,top-(size-f.h*z)/2,false,0,0,0,0,z,z,sprite[img],img);
+ (void)c;(void)lv;const int glyphs[4]={6,4,5,9};MergeRouletteUiGlyph(glyphs[std::max(0,std::min(3,room))],x,top,size,size);
 }
 static void FacilityPreview(int c,int room,int lv,int x,int top,int width,int height){
- const int img=MERGE_REBUILD_ROOMS_IMG+c;
- if(!sprite[img])LoadImg(img);if(!sprite[img])return;
- const auto tex=sprite[img]->getTexture()->getContentSizeInPixels();
- const auto f=MergeCastleTransition::RoomFrame(room,lv,(int)tex.width,(int)tex.height);
- const float z=Max(width/(float)f.w,height/(float)f.h);
- const int sw=Min(f.w,(int)(width/z)),sh=Min(f.h,(int)(height/z));
- DrawImageScale(sw,sh,f.x+(f.w-sw)/2,f.y+(f.h-sh)/2,x,top,false,0,0,0,0,width/(float)sw,height/(float)sh,sprite[img],img);
+ MergeRouletteUiFrame(x,top,width,height,6);FacilityIcon(c,room,lv,x+width/2-32,top-height/2+32,64);
 }
-
 }
 
 namespace CastleFinal {

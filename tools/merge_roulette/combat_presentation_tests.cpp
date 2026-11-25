@@ -15,6 +15,13 @@ int main() {
         travel.advance();
     }
     assert(!travel.active()&&lastX==544&&distance>3&&travel.speed()==0);
+    travel.begin();float lastDistance=0;
+    for(int age=0;age<=MergeCombat::WaveTransition::Duration;++age){
+        const float position=travel.distance();assert(position>=lastDistance&&position<=480);
+        if(age<=MergeCombat::WaveTransition::DefeatFrames)assert(position==0);
+        if(age>=MergeCombat::WaveTransition::EnterStart)assert(position==480);
+        lastDistance=position;travel.advance();
+    }
     MergeCombat::WeaponSwap swap;swap.begin();
     int attachments=0;
     for(int t=1;t<=MergeCombat::WeaponSwap::Duration;++t){

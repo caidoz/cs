@@ -18,7 +18,12 @@ int main(int argc,char**) {
         Run r;assert(r.battleEnergy==5);
         for(int n=4;n>=0;--n){assert(r.spendBattleEnergy()&&r.battleEnergy==n);Run copy;assert(copy.decode(r.encode())&&copy.battleEnergy==n);}
         assert(!r.spendBattleEnergy()&&r.battleEnergy==0);
+        assert(r.finishSupplies()&&r.lost&&r.lives>0);
+        Run exhausted;assert(exhausted.decode(r.encode())&&exhausted.lost&&exhausted.battleEnergy==0);
+        r.lost=false;r.attacking=true;assert(!r.finishSupplies()&&!r.lost);
+        r.attacking=false;
         r.refillBattleEnergy();assert(r.battleEnergy==5);
+        assert(!r.finishSupplies()&&!r.lost);
         std::string old=r.encode();old.erase(old.find_last_of(' '));old.replace(4,2,"14");
         Run migrated;assert(migrated.decode(old)&&migrated.battleEnergy==5);
         std::string invalid=r.encode();invalid.replace(invalid.find_last_of(' ')+1,std::string::npos,"6");
@@ -49,16 +54,17 @@ int main(int argc,char**) {
             cells+=shape.contains(x,y);
             if(stage&&previous.contains(x,y))assert(shape.contains(x+prevOff-off,y+shape.height-previous.height));
         }
-        assert(cells==16+2*stage&&shape.width<=8&&shape.height==(stage==9?5:4));
+        const int expected[10]={16,20,24,28,32,36,40,44,46,48};
+        assert(cells==expected[stage]&&shape.width<=8&&shape.height<=6&&shape.width>shape.height);
         previous=shape;
     }
     {
         const Shape last=BattleShape(9);
-        assert(last.width==8&&last.height==5&&last.rows[0]==0x18);
+        assert(last.width==8&&last.height==6&&last.rows[0]==0xFF);
         Run moved;moved.shape=BattleShape(8);
         moved.board={block(Sword,1,0,0),block(Sword,1,7,3)};
         assert(moved.setShape(last));
-        assert(moved.board[0].x==0&&moved.board[0].y==1&&moved.board[1].y==4);
+        assert(moved.board[0].x==0&&moved.board[0].y==0&&moved.board[1].y==3);
         // Legacy 10-wide saves migrate without dropping any of their 34 blocks.
         Run legacy;legacy.shape.width=10;legacy.shape.height=4;
         for(auto& row:legacy.shape.rows)row=0;
@@ -67,7 +73,18 @@ int main(int argc,char**) {
         for(int y=0;y<4;++y)for(int x=0;x<10;++x)if(legacy.shape.contains(x,y))legacy.board.push_back(block(Sword,1,x,y));
         assert(legacy.board.size()==34&&legacy.setShape(last)&&legacy.board.size()==34);
         for(int i=0;i<34;++i)assert(legacy.fits(legacy.board[i],i));
-        Run restored;assert(restored.decode(legacy.encode()));assert(restored.shape.rows[0]==0x18&&restored.board.size()==34);
+        Run restored;assert(restored.decode(legacy.encode()));assert(restored.shape.rows[0]==0xFF&&restored.board.size()==34);
+    }
+    {
+        Run legacy;legacy.choosing=false;legacy.shape.width=4;legacy.shape.height=5;
+        for(int y=0;y<Height;++y)legacy.shape.rows[y]=y<5?15:0;
+        for(int x=0;x<4;++x){Block item=block(Sword,3,x,0);item.ownedId=700+x;item.ownedPower=900+x;item.ownedDetail=12;item.ownedGrade=3;item.ownedW=1;item.ownedH=5;legacy.board.push_back(item);}
+        assert(legacy.setShape(BattleShape(1))&&legacy.shape.width==5&&legacy.shape.height==4&&legacy.board.size()==4);
+        for(int i=0;i<4;++i)assert(legacy.fits(legacy.board[i],i)&&legacy.board[i].ownedId==700+i&&legacy.board[i].ownedPower==900+i&&legacy.board[i].rot);
+        Run saved;assert(saved.decode(legacy.encode())&&saved.encode()==legacy.encode());
+        legacy.board.push_back(legacy.board[0]);const auto before=legacy.encode();
+        assert(!legacy.boardResolved()&&legacy.setShape(legacy.shape)&&legacy.encode()==before&&!legacy.boardResolved());
+        std::cout<<"PASS legacy 4x5 to 5x4 keeps every owned item; no-op shape refresh preserves overlaps\n";
     }
     //---- 장비 칸 모양은 게임이 그림에서 재서 넣는다. 여기는 그림이 없으니 옛
     //표(★1 1×1 · ★2 2×1 · ★3 3×1 · ★4 2×2 · ★5 5×1 · ★6 3×2)를 손으로 넣어
@@ -78,7 +95,8 @@ int main(int argc,char**) {
     {
         Run full;full.roster=&roster;full.choosing=false;full.shape=BattleShape(0);
         full.families[0]=0;full.families[1]=Sword;full.families[2]=Armor;
-        for(int y=0;y<4;++y)for(int x=0;x<4;++x)full.board.push_back(block(Armor,1,x,y));
+        for(int y=0;y<full.shape.height;++y)for(int x=0;x<full.shape.width;++x)
+            if(full.shape.contains(x,y))full.board.push_back(block(Armor,1,x,y));
         assert(full.freeCells()==0&&full.canSpin()&&full.spin()&&full.tray.size()==3);
         const auto pending=full.encode();assert(!full.spin()&&full.encode()==pending);
         assert(full.discard(true,0)&&full.tray.size()==2&&!full.canSpin());

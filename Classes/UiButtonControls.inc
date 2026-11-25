@@ -131,6 +131,10 @@ void DrawUiDialog(const char* title,const char* message,const char* note,int but
 }
 float UiMinimumTextZoom(){return DX/640.f;}
 float UiTextLineHeight(float zoom){return (FONT_HEIGHT+6*_2X)*std::max(zoom,UiMinimumTextZoom());}
+int UiWrappedTextHeight(const char* text,int width,float zoom){
+ zoom=std::max(zoom,UiMinimumTextZoom());
+ return (int)std::ceil(UiControls::lines(text,width,zoom).size()*UiTextLineHeight(zoom));
+}
 void DrawUiTextBox(const char* text,int x,int top,int w,int h,int color,float zoom){
  zoom=std::max(zoom,UiMinimumTextZoom());
  const auto lines=UiControls::lines(text,w,zoom);if(lines.empty())return;

@@ -94,7 +94,7 @@ inline float enemyAttackPosition(float home,float target,int range,float zoom,bo
 }
 // Defeat, travel with an empty deck, incoming monster, then a short ready hold.
 struct WaveTransition {
-    enum { DefeatFrames=24, TravelFrames=96, EnterFrames=48, SettleFrames=18,
+    enum { DefeatFrames=24, TravelFrames=120, TravelDistance=480, EnterFrames=48, SettleFrames=18,
            EnterStart=DefeatFrames+TravelFrames, SettleStart=EnterStart+EnterFrames,
            Duration=SettleStart+SettleFrames };
     int age=-1;
@@ -104,6 +104,10 @@ struct WaveTransition {
     bool defeatedVisible() const{return active()&&age<DefeatFrames;}
     bool incomingVisible() const{return !active()||age>=EnterStart;}
     bool travelling() const{return active()&&age>=DefeatFrames&&age<EnterStart;}
+    float distance() const{
+        const float t=std::max(0.f,std::min(1.f,(age-DefeatFrames)/(float)TravelFrames));
+        return TravelDistance*t*t*(3-2*t);
+    }
     float arrival() const{return std::max(0.f,std::min(1.f,(age-EnterStart)/(float)EnterFrames));}
     float defeatAlpha() const{return std::max(0.f,1.f-age/(float)DefeatFrames);}
     float speed() const{

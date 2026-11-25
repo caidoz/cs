@@ -1,15 +1,25 @@
-// Lobby-only cosmetic preview. No upgrades, currency or save data are changed.
+// Preview upgrades stay temporary. Explicitly closing keeps a valid departure selection.
 #include "Data/CastleFacilities.h"
 namespace LobbyCastleDebug {
 static bool open=false;
 static bool compact=false;
 static bool facilities=false;
 static int population=0,rooms[10][5]={},drawn=0;
-static int levels[10][5]={},previousCastle=0;
+static int levels[PortraitCastleArt::Count][5]={},previousCastle=0;
+static int keptPreview=-1;
 static bool interiors[10]={};
-static void Close(){
+static void Close(bool keepSelection=false){
+ const int selected=gMobileCastleVisual;
  open=false;gMobileCastleVisual=previousCastle;
  for(int c=0;c<10;++c)CastleParts::roomInteriorOpen[c]=interiors[c];
+ if(keepSelection&&selected>=10){keptPreview=selected;gMobileCastleVisual=selected;return;}
+ if(keepSelection){
+  keptPreview=-1;
+  const bool kept=CastleSelectDeparture(selected);gMobileCastleVisual=robin.castle;
+  if(const char* path=getenv("CS_CASTLE_REVIEW_PATH"))if(getenv("CS_CASTLE_DEBUG_SELECTION_REVIEW")){
+   FILE* f=fopen((std::string(path)+"phases.log").c_str(),"a");if(f){fprintf(f,"DETAIL close selected=%d kept=%d actual=%d\n",selected,kept,robin.castle);fclose(f);}
+  }
+ }
 }
 }
 //디버그로 고른 성은 로비에서만이 아니라 합성 전투에도 그대로 들고 간다.
@@ -26,14 +36,14 @@ bool LobbyCastleDebugActive(){
 }
 int LobbyCastleDebugLevel(int castle,int part){
 #ifdef GAMEDEBUG
- if(LobbyCastleDebugScreen() && LobbyCastleDebug::open && castle>=0&&castle<10&&part>=0&&part<5)
+ if(LobbyCastleDebugScreen() && LobbyCastleDebug::open && castle>=0&&castle<PortraitCastleArt::Count&&part>=0&&part<5)
   return LobbyCastleDebug::levels[castle][part];
 #endif
  return -1;
 }
-int LobbyCastleDebugCastle(){return LobbyCastleDebugActive()?Max(0,Min(9,gMobileCastleVisual)):-1;}
+int LobbyCastleDebugCastle(){return LobbyCastleDebugActive()?Max(0,Min(PortraitCastleArt::Count-1,gMobileCastleVisual)):LobbyCastleDebug::keptPreview;}
 bool LobbyCastleDebugInterior(){
- const int c=LobbyCastleDebugCastle();return c<0 || CastleParts::roomInteriorOpen[c];
+ const int c=LobbyCastleDebugCastle();return c<0 || c>=10 || CastleParts::roomInteriorOpen[c];
 }
 int LobbyCastleDebugFacilityLevel(int castle,int room){
 #ifdef GAMEDEBUG
@@ -60,14 +70,14 @@ bool LobbyCastleDebugCycle(int castle,int room){
  return false;
 #endif
 }
-void LobbyCastleDebugEnd(){if(LobbyCastleDebug::open)LobbyCastleDebug::Close();}
+void LobbyCastleDebugEnd(){if(LobbyCastleDebug::open)LobbyCastleDebug::Close(true);}
 bool LobbyCastleDebugCommand(int command){
 #ifdef GAMEDEBUG
  using namespace LobbyCastleDebug;
  if(drawHandle!=MD_LOBBY || (command!=TOUCH_FUNC_LOBBY_CASTLE_HIDE && (command<TOUCH_FUNC_LOBBY_CASTLE_DEBUG || command>TOUCH_FUNC_LOBBY_CASTLE_ROOM_END)))return false;
  if(command==TOUCH_FUNC_LOBBY_CASTLE_DEBUG){
-  if(open){if(compact)compact=false;else Close();return true;}
-  CastleProgressEnsure();previousCastle=gMobileCastleVisual;
+  if(open){if(compact)compact=false;else Close(true);return true;}
+  CastleProgressEnsure();previousCastle=robin.castle;gMobileCastleVisual=keptPreview>=0?keptPreview:robin.castle;
   for(int c=0;c<10;++c){
    interiors[c]=CastleParts::roomInteriorOpen[c];
    for(int p=0;p<5;++p){levels[c][p]=robin.castleProgress.parts[c][p];rooms[c][p]=robin.castleProgress.rooms[c][p];}
@@ -76,7 +86,15 @@ bool LobbyCastleDebugCommand(int command){
  }
  if(!open)return true;
  if(command==TOUCH_FUNC_LOBBY_CASTLE_HIDE){compact=true;return true;}
- int c=Max(0,Min(9,gMobileCastleVisual));
+ int c=Max(0,Min(PortraitCastleArt::Count-1,gMobileCastleVisual));
+ if(command==TOUCH_FUNC_LOBBY_CASTLE_PREV){gMobileCastleVisual=(c+PortraitCastleArt::Count-1)%PortraitCastleArt::Count;return true;}
+ if(command==TOUCH_FUNC_LOBBY_CASTLE_NEXT){gMobileCastleVisual=(c+1)%PortraitCastleArt::Count;return true;}
+ if(c>=10){
+  if(command>=TOUCH_FUNC_LOBBY_CASTLE_PART&&command<=TOUCH_FUNC_LOBBY_CASTLE_PART_END){const int p=command-TOUCH_FUNC_LOBBY_CASTLE_PART;levels[c][p]=(levels[c][p]+1)%6;}
+  else if(command==TOUCH_FUNC_LOBBY_CASTLE_ALL){int lv=0;for(int p=0;p<5;++p)lv=Max(lv,levels[c][p]);for(int p=0;p<5;++p)levels[c][p]=(lv+1)%6;}
+  else if(command==TOUCH_FUNC_LOBBY_CASTLE_RESET)for(int p=0;p<5;++p)levels[c][p]=0;
+  return true;
+ }
  if(command==TOUCH_FUNC_LOBBY_CASTLE_FIRE){LobbyArtilleryDebugFire();return true;}
  if(command==TOUCH_FUNC_LOBBY_CASTLE_CROWD){population=population==0?8:population==8?16:population==16?32:0;CastleParts::roomInteriorOpen[c]=true;return true;}
  if(command==TOUCH_FUNC_LOBBY_CASTLE_FACILITIES){facilities=!facilities;return true;}
@@ -106,35 +124,36 @@ bool LobbyCastleDebugCommand(int command){
 void LobbyCastleDebugDraw(){
 #ifdef GAMEDEBUG
  using namespace LobbyCastleDebug;
- if(drawHandle!=MD_LOBBY){if(open)Close();return;}
+ if(drawHandle!=MD_LOBBY)return;
  LobbyArtilleryDebugDraw();
  //손가락 크기 - 상단 디버그 줄(StageBgDebugDrawButton)과 같은 높이 24단위.
  const int u=Max(1,(int)_2X),h=24*u,gap=3*u;
  DrawUiButton(214*u,DY-30*u,74*u,h,open?(compact?"테스트 펼치기":"성 테스트 닫기"):"성 테스트",TOUCH_FUNC_LOBBY_CASTLE_DEBUG,open);
  if(!open||compact)return;
- const int c=Max(0,Min(9,gMobileCastleVisual)),w=150*u,x=DX-w-4*u;
+ const int c=Max(0,Min(PortraitCastleArt::Count-1,gMobileCastleVisual)),w=150*u,x=DX-w-4*u;
+ const bool legacy=c<10,showFacilities=facilities&&legacy;
  int y=DY-70*u;const int panelH=13*(h+gap)+14*u;
  SetAlpha(29);MemRect(x-3*u,y+4*u,w+6*u,panelH,0x102333);SetAlpha(32);
  MemRectFrame(x-3*u,y+4*u,w+6*u,panelH,0xB99343);
- char label[100];sprintf(label,"성 %d / 10 · 실내 %d구역",c+1,SoftCastle::Enabled()?SoftCastle::Counts[c]:c+1);
+ char label[100];sprintf(label,u8"\uC131 %d / %d",c+1,PortraitCastleArt::Count);
  SetFontColor(COLOR_WHITE);CenterTextStrSolid(label,x+w/2,y,Min(.65f*u,(w-8.0f*u)/Max(1.0f,StringWidth(label,1.0f))));y-=h+gap;
  const int half=(w-gap)/2;
  DrawUiButton(x,y,half,h,"이전 성",TOUCH_FUNC_LOBBY_CASTLE_PREV);
  DrawUiButton(x+half+gap,y,half,h,"다음 성",TOUCH_FUNC_LOBBY_CASTLE_NEXT);y-=h+gap;
  const char* names[]={"첨탑","외부장갑","실내","대포","바퀴"};
  for(int p=0;p<5;++p){
-  if(facilities){
+  if(showFacilities){
    if(p<CastleFacilities::Counts[c])sprintf(label,"%s Lv.%d · +%d%%",CastleFacilities::Rooms[c][p].name,rooms[c][p],CastleFacilities::Output(c,p,rooms[c][p]));
    else sprintf(label,"빈 시설");
   }else sprintf(label,"%s  +%d  → 다음 단계",names[p],levels[c][p]);
-  DrawUiButton(x,y,w,h,label,facilities?(p<CastleFacilities::Counts[c]?TOUCH_FUNC_LOBBY_CASTLE_ROOM+p:0):TOUCH_FUNC_LOBBY_CASTLE_PART+p);y-=h+gap;
+  DrawUiButton(x,y,w,h,label,showFacilities?(p<CastleFacilities::Counts[c]?TOUCH_FUNC_LOBBY_CASTLE_ROOM+p:0):TOUCH_FUNC_LOBBY_CASTLE_PART+p);y-=h+gap;
  }
  DrawUiButton(x,y,half,h,facilities?"모든 방 단계 +":"전체 단계 +",TOUCH_FUNC_LOBBY_CASTLE_ALL);
- DrawUiButton(x+half+gap,y,half,h,CastleParts::roomInteriorOpen[c]?"실내 닫기":"실내 열기",TOUCH_FUNC_LOBBY_CASTLE_INTERIOR);y-=h+gap;
+ DrawUiButton(x+half+gap,y,half,h,legacy?(CastleParts::roomInteriorOpen[c]?u8"\uC2E4\uB0B4 \uB2EB\uAE30":u8"\uC2E4\uB0B4 \uC5F4\uAE30"):u8"\uD1B5\uC9DC \uC678\uD615",legacy?TOUCH_FUNC_LOBBY_CASTLE_INTERIOR:0);y-=h+gap;
  DrawUiButton(x,y,w,h,"저장된 강화 단계로 복원",TOUCH_FUNC_LOBBY_CASTLE_RESET);y-=h+gap;
- DrawUiButton(x,y,w,h,facilities?"외형 파츠 보기":"생산 시설·단계 보기",TOUCH_FUNC_LOBBY_CASTLE_FACILITIES);y-=h+gap;
- sprintf(label,"NPC %d명 (표시 %d) · 밀도 +",population,drawn);DrawUiButton(x,y,w,h,label,TOUCH_FUNC_LOBBY_CASTLE_CROWD);y-=h+gap;
- DrawUiButton(x,y,w,h,"대포 시험 발사",TOUCH_FUNC_LOBBY_CASTLE_FIRE);y-=h+gap;
+ DrawUiButton(x,y,w,h,facilities?"외형 파츠 보기":"생산 시설·단계 보기",legacy?TOUCH_FUNC_LOBBY_CASTLE_FACILITIES:0);y-=h+gap;
+ sprintf(label,"NPC %d명 (표시 %d) · 밀도 +",population,drawn);DrawUiButton(x,y,w,h,label,legacy?TOUCH_FUNC_LOBBY_CASTLE_CROWD:0);y-=h+gap;
+ DrawUiButton(x,y,w,h,"대포 시험 발사",legacy?TOUCH_FUNC_LOBBY_CASTLE_FIRE:0);y-=h+gap;
  DrawUiButton(x,y,w,h,"패널 접기 · NPC/발사 유지",TOUCH_FUNC_LOBBY_CASTLE_HIDE);
 #endif
 }

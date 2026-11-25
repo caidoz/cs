@@ -48,20 +48,31 @@ void nineSlice(int img,const MergeCastleArt::Rect& f,const Box& b,int edge){
   DrawImageScale(w,h,sx[c],sy[r],x0,y0,false,0,0,0,0,dw/(float)w,dh/(float)h,sprite[img],img);
  }
 }
+void portraitTile(const Box& b,float angle);
 void padArt(int index,const Box& b,float angle=0){
- const int img=MERGE_REBUILD_UI_IMG+MergeCastleArt::Footpads;
- const auto& f=MergeCastleArt::Pads[std::max(0,std::min(7,index))];
+ (void)index;(void)angle;const int img=PORTRAIT_UI_FIRST_IMG+1;
  if(!sprite[img])LoadImg(img);if(!sprite[img])return;
- //정사각이 아닌 칸(1×2 장비 등)은 9조각으로. 돌아가는 중(angle)인 타일은 정사각이라 그대로.
- if(angle==0&&std::abs(b.w-b.h)>1){nineSlice(img,f,b,(int)(f.w*.25f));return;}
- const float a=angle*3.14159265f/180.f;
- const int x=(int)(b.x+b.w*.5f-b.w*.5f*std::cos(a)+b.h*.5f*std::sin(a));
- const int y=(int)(b.y-b.h*.5f+b.w*.5f*std::sin(a)+b.h*.5f*std::cos(a));
- DrawImageScale(f.w,f.h,f.x,f.y,x,y,false,0,angle,0,0,b.w/(float)f.w,b.h/(float)f.h,sprite[img],img);
+ const auto sz=sprite[img]->getTexture()->getContentSizeInPixels();
+ nineSlice(img,{0,0,(int)sz.width,(int)sz.height},b,30);
 }
+
+//---- 등급 발판 ----
+//
+//블록 밑판은 등급 색을 **테두리에만** 둔다(2026-11-23). 판 전체가 금·보라·파랑이면 그림이 색에 묻히고
+//빈 칸(크림·청록 바둑판)과도 구분이 흐려졌다. 등급 테두리 안쪽은 네이비 한 색이다.
+void gradePad(int level,const Box& b){
+ const int img=PORTRAIT_UI_FIRST_IMG+1;if(!sprite[img])LoadImg(img);if(!sprite[img])return;
+ const auto size=sprite[img]->getTexture()->getContentSizeInPixels();
+ portraitTile(b,0);
+ SetAlpha(14);MemRectFrameThick(b.x-1,b.y+1,b.w+2,b.h+2,0x5AE6B7,2);SetAlpha(32);
+ MemRectFrameThick(b.x+1,b.y-1,b.w-2,b.h-2,0x7BF6CC,2);
+ (void)level;
+}
+
 Box slotWindow(const Box& b,int i){
-    // Safe interior rectangles follow the actual rounded windows of the new housing.
-    const int xs[3]={500,925,1355},ws[3]={330,330,325};
-    const auto& f=MergeCastleArt::UiFrames[MergeCastleArt::Slot];
-    return {b.x+(xs[i]-f.x)*b.w/f.w,b.y-(170-f.y)*b.h/f.h,ws[i]*b.w/f.w,380*b.h/f.h};
+ const int xs[3]={500,925,1355},ws[3]={330,330,325};
+ const int at=std::max(0,std::min(2,i));
+ const auto& f=MergeCastleArt::UiFrames[MergeCastleArt::Slot];
+ return {b.x+(xs[at]-f.x)*b.w/f.w,b.y-(170-f.y)*b.h/f.h,ws[at]*b.w/f.w,380*b.h/f.h};
+
 }

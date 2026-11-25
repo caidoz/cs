@@ -35,7 +35,7 @@ static long long lastGold=0; static int lastGear=0,lastCrew=0;
 //가운데에 있어 이 구석은 하늘이다. 왼쪽 위는 로비 디버그 단추가 쓴다.
 //자원 띠(y >= DY-LOBBY_BAR_H) 안에는 두지 않는다 - 원본 상단 띠 검증이 그 줄에
 //수거 단추가 없기를 본다.
-inline Box box(){const float s=DX/640.f;const int w=(int)(116*s),h=(int)(92*s);return {DX-(int)(10*s)-w,DY-GNB_GEAR_TOUCHH-(int)(6*s),w,h};}
+inline Box box(){const float s=DX/640.f;return {DX-(int)(72*s),DY-(int)(68*s),(int)(56*s),(int)(56*s)};}
 inline int barTop(){return DY-(int)(2*DX/640.f);}   //MergeRouletteLobbySceneDraw 가 자원 띠를 그리는 y
 inline bool busy(){return age>=0;}
 inline float ease(float t){t=std::max(0.f,std::min(1.f,t));return t<.5f?4*t*t*t:1-std::pow(-2*t+2,3.f)/2;}
@@ -116,7 +116,7 @@ inline void drawButton(){
  UiButtonStyle style;style.fill=0x7A4E18;style.frame=mergeButtonFrame;style.stacked=true;
  char amount[32];std::snprintf(amount,sizeof(amount),"%lld",p.gold);
  grayScale=ready?0:32;
- DrawUiButtonIcon(d.x,d.y,d.w,d.h,ICON_GOLDBAG,amount,0,false,ready,style);grayScale=0;
+ portraitSkin(4,d);portraitGlyph(11,{d.x+8,d.y-4,d.w-16,d.h-22});label(amount,d.x+d.w/2,d.y-d.h+16,.4f);grayScale=0;
  const int gw=std::max(3,(int)(6*s)),gh=d.h-(int)(16*s),gx=d.x+(int)(7*s),gy=d.y-(int)(8*s);
  MemRect(gx,gy,gw,gh,0x1A1410);
  const int fill=gh*p.percent/100;

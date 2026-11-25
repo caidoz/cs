@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 #pragma pack(push, 8)
 // TURNRPG run state. No engine globals, persistent equipment or ACTIONRPG data.
 //
@@ -32,25 +32,22 @@ struct Shape {
     bool contains(int x,int y) const {return x>=0&&y>=0&&x<width&&y<height&&(rows[y]&(1u<<x));}
 };
 enum Trait { Expose, Inspire, Strike, Volley, Chill, Burn };
-// Fixed 80-unit tiles. Stages 1-9 grow from 4x4 to 8x4.
-// Stage 10 adds two centered cells ABOVE the 8x4 board (34 total), never a 10-wide row.
+// Inventory grows monotonically to the full 8 x 6 equipment board.
 inline Shape BattleShape(int stage) {
-    Shape out;
-    for(auto& row:out.rows)row=0;
+    Shape out;for(auto& row:out.rows)row=0;
     const int st=std::max(0,std::min(9,stage));
-    if(st==9){out.width=8;out.height=5;out.rows[0]=0x18;for(int y=1;y<5;++y)out.rows[y]=0xFF;return out;}
-    int widths[4];
-    for(int y=0;y<4;++y){
-        const int fromBottom=3-y;                       //아랫줄이 0
-        const int count=st>fromBottom?(st-fromBottom+3)/4:0;   //이 줄이 넓어진 횟수
-        widths[y]=4+2*count;
-    }
-    const int width=widths[3];
-    out.width=width;out.height=4;
-    for(int y=0;y<4;++y){
-        const int left=(width-widths[y])/2;
-        out.rows[y]=((1u<<widths[y])-1u)<<left;
-    }
+    static const int widths[10]={5,5,6,7,8,8,8,8,8,8};
+    static const int heights[10]={4,4,4,4,4,5,5,6,6,6};
+    // The centered four-row core grows sideways first, then upward. Never
+    // shrink a row when a castle changes; saved multi-cell items must fit.
+    static const unsigned masks[10][6]={
+      {31,31,14,14,0,0},{31,31,31,31,0,0},
+      {63,63,63,63,0,0},{127,127,127,127,0,0},
+      {255,255,255,255,0,0},{60,255,255,255,255,0},
+      {255,255,255,255,255,0},{60,255,255,255,255,255},
+      {126,255,255,255,255,255},{255,255,255,255,255,255}};
+    out.width=widths[st];out.height=heights[st];
+    for(int y=0;y<6;++y)out.rows[y]=masks[st][y];
     return out;
 }
 struct Block {
@@ -119,6 +116,8 @@ struct Run {
     int battleEnergy=BattleEnergyMax;
     bool spendBattleEnergy(){if(battleEnergy<=0)return false;--battleEnergy;return true;}
     void refillBattleEnergy(){battleEnergy=BattleEnergyMax;}
+    // Settle the last action first: a kill or equipment can still refill supply.
+    bool finishSupplies(){if(attacking||battleEnergy>0||lost)return false;lost=true;return true;}
     long long lives=5, maxLives=5;
     bool realVitals=false;
     long long baseArmor=0,enemyAttack=1;
@@ -250,6 +249,10 @@ struct Run {
     // Repack legacy rectangular saves without losing or combining any blocks.
     bool setShape(const Shape& wanted) {
         if(!wanted.valid()||attacking)return false;
+        bool same=wanted.width==shape.width&&wanted.height==shape.height;
+        for(int y=0;y<Height;++y)same=same&&wanted.rows[y]==shape.rows[y];
+        if(same)return true; // Intentional overlaps must survive a no-op configuration refresh.
+        const bool keepOverlap=!boardResolved();
         Run next=*this;next.shape=wanted;
         //판은 가운데서 좌우로 자란다(BattleShape). 폭이 바뀌면 블록을 그 차이의
         //반만큼 옮겨야 같은 자리에 남는다. 다 들어가면 그대로 쓰고, 아니면 아래의
@@ -259,11 +262,11 @@ struct Run {
             Run shifted=next;
             for(Block& b:shifted.board){b.x+=dx;b.y+=dy;}
             bool ok=true;
-            for(int i=0;i<(int)shifted.board.size()&&ok;++i)if(!shifted.fits(shifted.board[i],i))ok=false;
+            for(int i=0;i<(int)shifted.board.size()&&ok;++i)if(!shifted.fits(shifted.board[i],i,-1,keepOverlap))ok=false;
             if(ok){*this=shifted;return true;}
         }
         bool fitsAll=true;
-        for(int i=0;i<(int)board.size();++i)if(!next.fits(board[i],i))fitsAll=false;
+        for(int i=0;i<(int)board.size();++i)if(!next.fits(board[i],i,-1,keepOverlap))fitsAll=false;
         if(!fitsAll) {
             next.board.clear();
             for(Block b:board) {
@@ -271,7 +274,22 @@ struct Run {
                 for(int y=0;y<wanted.height&&!placed;++y)for(int x=0;x<wanted.width&&!placed;++x) {
                     b.x=x;b.y=y;if(next.fits(b)){next.board.push_back(b);placed=true;}
                 }
-                if(!placed)return false;
+                if(!placed){
+                    b.rot=!b.rot;
+                    for(int y=0;y<wanted.height&&!placed;++y)for(int x=0;x<wanted.width&&!placed;++x){
+                        b.x=x;b.y=y;if(next.fits(b)){next.board.push_back(b);placed=true;}
+                    }
+                }
+                if(!placed){
+                    // A full legacy 4x5 board can always transpose into 5x4,
+                    // including saved overlaps and multi-cell item identities.
+                    Run turned=*this;turned.shape=wanted;
+                    for(Block& item:turned.board){std::swap(item.x,item.y);item.rot=!item.rot;}
+                    bool valid=true;
+                    for(int i=0;i<(int)turned.board.size();++i)valid=valid&&turned.fits(turned.board[i],i,-1,keepOverlap);
+                    if(valid){*this=turned;return true;}
+                    return false; // Keep the original state intact if no lossless arrangement fits.
+                }
             }
         }
         *this=next;return true;
@@ -940,7 +958,8 @@ struct Run {
         if(r.counterResolved&&(!r.attacking||r.nextShot!=count||r.enemyHp<=0))return false;
         if(version>=15&&(!(in>>r.battleEnergy)||r.battleEnergy<0||r.battleEnergy>BattleEnergyMax))return false;
         in>>std::ws;if(!in.eof()) return false;
-        if((r.lives==0)!=r.lost&&!(r.attacking&&r.counterResolved&&r.lives==0&&!r.lost)) return false;
+        if(r.lost&&r.lives>0&&r.battleEnergy>0)return false;
+        if(r.lives==0&&!r.lost&&!(r.attacking&&r.counterResolved))return false;
         int passiveBefore=0;
         for(int i=0;i<r.nextShot;++i)if(r.shots[i].block.family==Gloves)++passiveBefore;
         r.shots.erase(std::remove_if(r.shots.begin(),r.shots.end(),[](const Shot& shot){return shot.block.family==Gloves;}),r.shots.end());

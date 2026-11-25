@@ -1,4 +1,4 @@
-"""Exercise all ten artillery themes using real rendering and damage timelines."""
+"""Exercise artillery themes using real rendering and damage timelines."""
 import os
 import argparse
 from pathlib import Path
@@ -10,6 +10,7 @@ ROOT = Path(__file__).resolve().parents[2]
 parser=argparse.ArgumentParser()
 parser.add_argument('--exe',default='cs_bars.exe')
 parser.add_argument('--level',type=int,choices=range(6))
+parser.add_argument('--count',type=int,choices=range(1,20),default=10)
 options=parser.parse_args()
 for height in (850, 1408):
     dest = ROOT / ('output/turret-attack-review' if options.level is None else f'output/turret-upgrade-fx/lv-{options.level}') / str(height)
@@ -20,6 +21,7 @@ for height in (850, 1408):
     env.update(CS_MERGE_REVIEW='1', CS_MERGE_TURRET_REVIEW='1',
                CS_MERGE_REVIEW_HEIGHT=str(height), CS_MERGE_REVIEW_PATH=dest.as_posix() + '/')
     if options.level is not None:env['CS_TURRET_REVIEW_LEVEL']=str(options.level)
+    env['CS_TURRET_REVIEW_COUNT']=str(options.count)
     startup = subprocess.STARTUPINFO()
     startup.dwFlags |= subprocess.STARTF_USESHOWWINDOW
     startup.wShowWindow = 0
@@ -34,14 +36,14 @@ for height in (850, 1408):
                 if 'FAIL' in text:
                     raise RuntimeError(text)
                 if 'DONE turret attack review' in text:
-                    assert text.count('PASS turret native type muzzle and burst') == 10
-                    assert text.count('PASS turret damage commits exactly once') == 10
-                    assert text.count('PASS capture ') == 40
-                    for castle in range(1, 11):
+                    assert text.count('PASS turret native type muzzle and burst') == options.count
+                    assert text.count('PASS turret damage commits exactly once') == options.count
+                    assert text.count('PASS capture ') == options.count*4
+                    for castle in range(1, options.count+1):
                         for phase in ('prepare', 'launch', 'flight', 'impact'):
                             with Image.open(dest / f'turret-{castle:02}-{phase}.png') as image:
                                 image.verify()
-                    print(f'PASS 640x{height}: all ten turret types, burst timing, damage, and 40 captures', flush=True)
+                    print(f'PASS 640x{height}: {options.count} turret types, burst timing, damage, and {options.count*4} captures', flush=True)
                     break
                 if process.poll() is not None:
                     raise RuntimeError('preview exited')

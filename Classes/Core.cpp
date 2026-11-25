@@ -14,6 +14,7 @@
 #include "json/document.h"
 #include <vector>
 #include <cstdlib>
+#include "Data/MountedCannonSprites.h"
 #ifdef SDKBOX_ENABLED
 //#include "PluginAdMob/PluginAdMob.h"
 #endif
@@ -880,22 +881,23 @@ bool Core::init()
 	// Artillery is outside the legacy loading range; register both caches.
 	LoadImg(CASTLE_ARTILLERY_IMG);
 	LoadTexture(CASTLE_ARTILLERY_IMG);
-	LoadImg(INVENTORY_CANNON_ATLAS_IMG);
-	LoadTexture(INVENTORY_CANNON_ATLAS_IMG);
 	// Map icons are beyond the legacy boot-loading range. Populate both caches.
 	//상점 배너는 렌더용 BUFFER_* 이미지 뒤에 정의되어 있어 위 로딩 화면의
 	//일괄 범위(BUFFER_CARDFRAME_IMG 미만)에 포함되지 않는다. ShopIapDraw가
 	//처음 열릴 때 유효한 스프라이트를 쓰도록 실제 리소스인 배너만 여기서 읽는다.
 	for (i = SHOP_BANNER_GOLD_IMG; i <= GACHA_PAID_BG_IMG; i++) {
+		if(!RuntimeImageAvailable(i))continue;
 		LoadImg(i);
 		LoadTexture(i);
 	}
 	//로비 성. 로비가 첫 화면이라 처음부터 읽어 둔다.
 	for (i = LOBBY_LANDSCAPE_IMG; i <= LOBBY_FOOTHILLS_IMG; i++) {
+		if(!RuntimeImageAvailable(i))continue;
 		LoadImg(i);
 		LoadTexture(i);
 	}
 	for (i = LOBBY_NAV_SHOP_IMG; i <= LOBBY_NIGHT_IMG; i++) {
+		if(!RuntimeImageAvailable(i))continue;
 		LoadImg(i);
 		LoadTexture(i);
 	}

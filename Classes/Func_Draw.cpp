@@ -486,12 +486,12 @@ void LogoDraw(void)
 	switch (frame) {
 	case 1:
 		for (i = 0; i < BUFFER_CARDFRAME_IMG; i++) {
-			LoadImg(i);
+			if(RuntimeImageAvailable(i))LoadImg(i);
 		}
 		break;
 	case 2:
 		for (i = 0; i < BUFFER_CARDFRAME_IMG; i++) {
-			LoadTexture(i);
+			if(RuntimeImageAvailable(i))LoadTexture(i);
 		}
 		break;
 	case 3://BUFFER_PLAY
@@ -10116,7 +10116,7 @@ static int LobbyCastleLevel(void)
 		//원래는 robin.castle 을 따랐는데, 제목 화면의 이어하기가
 		//디버그 최대치라 늘 열 층짜리로 들어왔다. 실제 진행을 따르게
 		//하려면 아래 줄을 robin.castle 로 되돌리면 된다.
-		gMobileCastleVisual = CastleMenuModel::Clamp(robin.castle);
+		if(!LobbyCastleDebugActive())gMobileCastleVisual = CastleMenuModel::Clamp(robin.castle);
 		gLobbyVisualReady = true;
 	}
 
@@ -10727,7 +10727,7 @@ static void LobbyBottomNavDraw(void)
 	if (popUpCnt > 0) {
 		const int topType = popUp[popUpCnt - 1].type;
 		// The shop covers the dock, including its touch rectangles.
-		if(topType==POPUPTYPE_SHOPINFO || topType==POPUPTYPE_EVENTSHOP || topType==POPUPTYPE_COLLECTIONS || topType==POPUPTYPE_CASTLEMENU || topType==POPUPTYPE_CREWLIST || topType==POPUPTYPE_CREWUPGRADE) return;
+		if(popUpCnt>1||menuDepth>0)return;
 		const bool isLobbySection = (topType == POPUPTYPE_SHOPINFO
 			|| topType == POPUPTYPE_EVENTSHOP
 			|| topType == POPUPTYPE_COLLECTIONS
@@ -10738,6 +10738,8 @@ static void LobbyBottomNavDraw(void)
 			return;
 	}
 
+	UnSectionClip(false);
+	MemRect(0,MergeRouletteBottomNavHeight()+4,DX,MergeRouletteBottomNavHeight()+4,0x030A13);
 	MergeRouletteBottomNavDraw();
 }
 
@@ -12346,8 +12348,7 @@ void LobbyDraw(void)
 			if(p>0||gRenewDungeon){ScreenDarken(SCREENDARKEN);ResetRectPoint();}
 			DrawPopUp(p);
 		}
-		LobbyResourceBarsDraw(DY-(GNBHEIGHT-GNB_INIT_HEIGHT));
-		GNBDraw(0,DY-(GNBHEIGHT-GNB_INIT_HEIGHT));
+		MergeRouletteLobbyTopbarDraw();
 		LobbyBottomNavDraw();++frame;return;
 	}
 	// Settings and secondary popups share the current castle world. Do not

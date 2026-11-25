@@ -29,7 +29,8 @@ static void ApplyRasterFilter(cocos2d::Sprite* s,int index) {
  const bool regional=index>=STAGEBG_FIRST_IMG && index<STAGEBG_FIRST_IMG+STAGEBG_PER_REGION*STAGEBG_REGION_CNT && (index-STAGEBG_FIRST_IMG)%STAGEBG_PER_REGION<3;
  const bool smooth=index==MENU_RENEWAL_ROOM_IMG||index==MENU_RENEWAL_DUNGEON_IMG||regional||IsAuthoredCastleImage(index)||(index>=HYBRID_PARTS_IMG && index<=HYBRID_FLEET_LAST_IMG) || index==TITLE_IMG ||
    (index>=LOBBY_NAV_SHOP_IMG && index<=LOBBY_NAV_DUNGEON_IMG);
- if(smooth || index==TURRET_IRONBALL_IMG || (index>=ITEM_SERIES_FIRST_IMG&&index<=GRID_ITEM_LAST_IMG))s->getTexture()->setAntiAliasTexParameters();else s->getTexture()->setAliasTexParameters();
+ // Retouched grid equipment and held swords use the character sprite filter.
+ if(smooth || index==TURRET_IRONBALL_IMG || (index>=ITEM_SERIES_FIRST_IMG&&index<=ITEM_SERIES_LAST_IMG))s->getTexture()->setAntiAliasTexParameters();else s->getTexture()->setAliasTexParameters();
 }
 
 static_assert(sizeof(textId) / sizeof(textId[0]) == TEXT_LENGTH,
@@ -68,10 +69,11 @@ void DrawFortressStatusCard(int x,int y,int width,long long hp,long long maxHp,l
 void DrawInventoryCannonIcon(int castle,int level,int x,int y,int width,int height)
 {
  if(castle<0||castle>=10||width<=0||height<=0)return;
- const auto& f=MountedCannons::Get(castle,level);const int img=CANNON_UPGRADE_ATLAS_IMG;
+ (void)level;const int img=PORTRAIT_TURRET_FIRST_IMG+castle;
  if(!sprite[img])LoadImg(img);if(!sprite[img])return;
- const float z=Min(width/(float)f.w,height/(float)f.h);
- DrawImage(f.w,f.h,f.x,f.y,x+(width-f.w*z)/2,y-(height-f.h*z)/2,false,0,0,0,0,z,sprite[img],img);
+ const auto f=sprite[img]->getTexture()->getContentSizeInPixels();
+ const float z=Min(width/f.width,height/f.height);
+ DrawImage((int)f.width,(int)f.height,0,0,x+(width-f.width*z)/2,y-(height-f.height*z)/2,false,0,0,0,0,z,sprite[img],img);
 }
 void DrawInventoryCannonThumbnail(int castle,int level,int x,int y,int width,int height)
 {
@@ -853,6 +855,7 @@ static void AuditRuntimeImage(const std::string& name, bool loaded)
 	}
 }
 
+bool RuntimeImageAvailable(int index){return index>=0&&index<TOTALIMG&&RuntimeImageApproved(GetResourceName(RES_IMG,index));}
 void LoadImg(int index)
 {
 	std::string fileName;
@@ -862,7 +865,7 @@ void LoadImg(int index)
 	//�̹����� �׳� �о �ε��ϴ� ���?
 	if (index < TOTALIMG) {
 		fileName = GetResourceName(RES_IMG, index);
-		if (!RuntimeImageApproved(fileName)) return;
+		if (!RuntimeImageApproved(fileName)) {AuditRuntimeImage(fileName,false);return;}
 		sprite[index] = Sprite::create(fileName);
 		if(sprite[index])RegisterAuditTexture(fileName,sprite[index]->getTexture());
 		AuditRuntimeImage(fileName, sprite[index] != nullptr);
@@ -1012,6 +1015,16 @@ std::string  GetResourceName(int type, int idx)
 		break;
 	case RES_IMG:
 	{
+		if(idx>=PORTRAIT_UI_FIRST_IMG&&idx<=PORTRAIT_UI_LAST_IMG){char n[64];snprintf(n,sizeof(n),"res/portrait-ui-%02d.png",idx-PORTRAIT_UI_FIRST_IMG);return n;}
+		if(idx>=PORTRAIT_CASTLE_FIRST_IMG&&idx<=PORTRAIT_CASTLE_LAST_IMG){char n[64];snprintf(n,sizeof(n),"res/portrait-castle-%02d.png",idx-PORTRAIT_CASTLE_FIRST_IMG+1);return n;}
+		if(idx>=PORTRAIT_WHEEL_FIRST_IMG&&idx<=PORTRAIT_WHEEL_LAST_IMG){char n[64];snprintf(n,sizeof(n),"res/portrait-wheel-%02d.png",idx-PORTRAIT_WHEEL_FIRST_IMG+1);return n;}
+		if(idx>=PORTRAIT_TURRET_FIRST_IMG&&idx<=PORTRAIT_TURRET_LAST_IMG){char n[64];snprintf(n,sizeof(n),"res/portrait-turret-%02d.png",idx-PORTRAIT_TURRET_FIRST_IMG+1);return n;}
+		if(idx==PORTRAIT_STARTER_INTERIOR_IMG)return "res/portrait-starter-interior.png";
+		if(idx==PORTRAIT_NIGHT_IMG)return "res/portrait-night.png";
+		if(idx==PORTRAIT_RAIL_IMG)return "res/portrait-rail-stone.png";
+		if(idx==PORTRAIT_ICONS_IMG)return "res/portrait-icons.png";
+		if(idx==PORTRAIT_ROULETTE_GEAR_IMG)return "res/portrait-roulette-gear.png";
+		if(idx==LEGACY_LOBBY_ICONS_IMG)return "res/legacy-lobby-icons.png";
 		if(idx>=MONSTER_PARTS_FIRST_IMG&&idx<=MONSTER_PARTS_LAST_IMG)return "res/monster_parts-atlas-"+std::to_string(idx-MONSTER_PARTS_FIRST_IMG)+".png";
 		if(idx>=GRID_ITEM_FIRST_IMG && idx<=GRID_ITEM_LAST_IMG) return "res/grid_items-grid"+std::to_string(idx-GRID_ITEM_FIRST_IMG)+".png";
 		if(idx>=ITEM_SERIES_FIRST_IMG && idx<=ITEM_SERIES_LAST_IMG) return "res/items-item"+std::to_string(idx-ITEM_SERIES_FIRST_IMG)+".png";

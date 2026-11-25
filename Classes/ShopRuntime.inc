@@ -97,7 +97,7 @@ void Draw(float x,float y,float w,float h,float zoom) {
  currencyCardsDrawn=0;
  const int top=(int)y,head=58,tabH=46,pad=18;
  //장비 탭만 히어로 줄을 따로 고른다. 그만큼 본문이 내려온다.
- const int bodyTop=top-head-tabH-12,bottom=12;
+ const int bodyTop=top-head-tabH-12,bottom=drawHandle==MD_LOBBY?MergeRouletteBottomNavHeight()+10:12;
  const char* tabs[]={"보물상자","패키지","재화"};
  for(int i=0;i<ShopCatalog::TabCount;++i)Button(tabs[i],(int)x+pad+i*((int)w-2*pad)/ShopCatalog::TabCount,top-head,
   ((int)w-2*pad)/ShopCatalog::TabCount-4,tabH,TOUCH_FUNC_SHOP_MAIN_TAB+i,true,tab==i);

@@ -3,18 +3,19 @@ bool reviewOriginalTopbar(){
   static int sample=0,hold=0;static bool done=false;
   if(done||reviewCapturePending)return true;
   robin.castle=sample;gMobileCastleVisual=sample;run.stage=sample;
-  const int handle=drawHandle;drawHandle=MD_LOBBY;
+  const int handle=drawHandle;const bool savedActive=active;drawHandle=MD_LOBBY;active=false;
   const Layout l=layout();drawWorld(l,false);drawLobbyControls(l,0,true);
-  LobbyResourceBarsDraw(DY-(int)(2*l.scale));GNBDraw(0,DY-(int)(2*l.scale));drawHandle=handle;
+  LobbyResourceBarsDraw(DY-(int)(2*l.scale));GNBDraw(0,DY-(int)(2*l.scale));
   cocos2d::Director::getInstance()->setDisplayStats(false);
-  if(++hold<12)return true;
-  bool valid=std::abs(CastleArtGeometry::width(sample)*OriginalCastle::zoom()-DX*600.f/640.f)<.01f;
+  if(++hold<12){drawHandle=handle;active=savedActive;return true;}
+  bool valid=std::abs(OriginalCastle::zoom()-castleDisplayScale(sample))<.00001f;
+  for(int c=0;c<10;++c)valid=valid&&std::abs(CastleArtGeometry::width(c)*castleDisplayScale(c)-CastleArtGeometry::width(sample)*OriginalCastle::zoom())<.01f;
   const Box roof=OriginalCastle::box(380,0,CastleArtGeometry::DeckRight[sample]-380,0);
   const Box support=OriginalCastle::box(CastleArtGeometry::DeckRight[sample],0,0,0);
   valid=valid&&roof.x+roof.w==support.x;
   const int img=MistCastle::image(sample,0);
   for(int i=0;i<curRenderCnt;++i){auto* sp=renderSprite[curRenderSpriteArr[i]];
-   for(int artwork:{img,(int)BATTLE_DECK_SURFACE_IMG,(int)CANNON_UPGRADE_ATLAS_IMG,CASTLE_MIST_TURRET_FIRST_IMG+sample})
+   for(int artwork:{img,(int)CANNON_UPGRADE_ATLAS_IMG,CASTLE_MIST_TURRET_FIRST_IMG+sample})
     if(sp&&sprite[artwork]&&sp->getTexture()==sprite[artwork]->getTexture()){
      const bool uniform=std::abs(std::abs(sp->getScaleX())-std::abs(sp->getScaleY()))<.00001f;
      if(!uniform){char detail[128];snprintf(detail,sizeof(detail),"DETAIL aspect image=%d sx=%.5f sy=%.5f",artwork,sp->getScaleX(),sp->getScaleY());reviewTrace(detail);}
@@ -24,7 +25,7 @@ bool reviewOriginalTopbar(){
   reviewTrace(valid?"PASS castle equal visible width and uniform hull scale":"FAIL castle dimensions");
   char name[64];snprintf(name,sizeof(name),"castle-proportions-%02d",sample+1);reviewCapture(name);
   if(++sample==10){done=true;reviewTrace("DONE castle proportions review");}
-  hold=0;return true;
+  hold=0;drawHandle=handle;active=savedActive;return true;
  }
  if(!review||!std::getenv("CS_ORIGINAL_TOPBAR_REVIEW"))return false;
  static int sample=0,hold=0;static bool captured=false,done=false;

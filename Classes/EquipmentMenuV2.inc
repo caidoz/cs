@@ -1,6 +1,7 @@
 ﻿// Equipment view uses the existing inventory IDs and detail/equip handlers.
 namespace EquipmentV2 {
 static int heroOffset=0;
+static int Bottom(){return drawHandle==MD_LOBBY?MergeRouletteBottomNavHeight()+10:16;}
 static int Top(){return DY-(GNBHEIGHT-GNB_INIT_HEIGHT)-LOBBY_BAR_H-6;}
 static int PreviewHeight(){return Min(420,Max(250,(Top()-16)/2));}
 static int ListTop(){return Top()-PreviewHeight()-124;}
@@ -52,7 +53,7 @@ bool EquipmentMenuV2Drag(int startX,int startY,int x,int y,int previousX,int pre
  if(startY<=EquipmentV2::HeroY() && startY>=EquipmentV2::HeroY()-76){
   EquipmentV2::heroOffset=Min(EquipmentV2::HeroMax(EquipmentV2::HeroShownCnt()),Max(0,EquipmentV2::heroOffset+previousX-x));
   scDir=SCROLL_HORIZONTAL; scAccelY=0;
- } else if(startY<=(curEquipTab==EQUIPTAB_STAT?EquipmentV2::Top()-344:EquipmentV2::ListTop()) && startY>=16){
+ } else if(startY<=(curEquipTab==EQUIPTAB_STAT?EquipmentV2::Top()-344:EquipmentV2::ListTop()) && startY>=EquipmentV2::Bottom()){
   const int target=curEquipTab==EQUIPTAB_CREW?MENU_CREW:MENU_COLLECTIONS;
   scY[target]=Min(Max(0,scT[target]),Max(0,scY[target]+previousY-y));
   scDir=SCROLL_VERTICAL; scAccelY=0;
@@ -128,8 +129,8 @@ static void EquipmentMenuV2Draw()
  CenterTextStrSolid(line,center,top-preview-38,1.f);
  sprintf(line,"치명타 %lld%%   치명타 피해 +%lld%%",DEFAULTCRITICAL+hero->ps[PS_CRITICAL],hero->ps[PS_CRITDMG]);
  CenterTextStrSolid(line,center,top-preview-68,1.f);
- MenuButton(24,72,(DX-60)/2,56,"일괄 합성",BUTTON_COLOR_BLUE,true,TOUCH_FUNC_EQUIPTAB_MERGE,0.95f);
- MenuButton(DX/2+6,72,(DX-60)/2,56,"판매",BUTTON_COLOR_BROWN,true,TOUCH_FUNC_EQUIPTAB_SELL,0.95f);
+ MenuButton(24,Bottom()+56,(DX-60)/2,56,"일괄 합성",BUTTON_COLOR_BLUE,true,TOUCH_FUNC_EQUIPTAB_MERGE,0.95f);
+ MenuButton(DX/2+6,Bottom()+56,(DX-60)/2,56,"판매",BUTTON_COLOR_BROWN,true,TOUCH_FUNC_EQUIPTAB_SELL,0.95f);
  std::vector<int> items(GetMaxInven());int count=0;
  for(int i=0;i<GetMaxInven();++i)
   if(robin.inven[i].type>=ITEM_SWORD && robin.inven[i].type<ITEM_NECK) items[count++]=i;
@@ -140,7 +141,7 @@ static void EquipmentMenuV2Draw()
   items[j+1]=key;
  }
  const int cols=6, gap=8, cell=(DX-32-(cols-1)*gap)/cols, pitch=cell+gap,
-  cardHeight=(int)(332.f*cell/240),rowPitch=cardHeight+12,listBottom=90,height=Max(1,listTop-listBottom);
+  cardHeight=(int)(332.f*cell/240),rowPitch=cardHeight+12,listBottom=Bottom()+74,height=Max(1,listTop-listBottom);
  scT[MENU_COLLECTIONS]=Max(0,((count+cols-1)/cols)*rowPitch-height);
  scY[MENU_COLLECTIONS]=Min(scT[MENU_COLLECTIONS],Max(0,scY[MENU_COLLECTIONS]));
  SetSectionClip(16,listTop,DX-32,height,false);

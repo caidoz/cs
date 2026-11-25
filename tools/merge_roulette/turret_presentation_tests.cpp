@@ -12,10 +12,10 @@ int main() {
         UpgradeVisual look(lv);
         assert(look.motes>=0&&look.motes<=3&&look.beamScale>=1&&look.beamScale<=1.061f);
         if(lv)assert(look.motes>=UpgradeVisual(lv-1).motes&&look.beamScale>UpgradeVisual(lv-1).beamScale);
-        for(int c=0;c<10;++c){Sequence base,up;base.begin(c,0);up.begin(c,lv);
+        for(int c=0;c<19;++c){Sequence base,up;base.begin(c,0);up.begin(c,lv);
             assert(base.count==up.count&&base.release==up.release&&base.impact()==up.impact()&&base.end()==up.end());}
     }
-    for(int castle=0;castle<10;++castle) {
+    for(int castle=0;castle<19;++castle) {
         Sequence shot;shot.begin(castle,5);
         MergeCombat::Timeline time;
         time.begin(shot.end()-14,shot.release,shot.impact()-shot.release,14);
@@ -25,7 +25,7 @@ int main() {
             assert(time.applied==(time.elapsed>=shot.impact()));
         }
         assert(hits==1 && time.end==shot.end());
-        assert(shot.count==(castle==2?3:castle==3?12:1));
+        assert(shot.count==(castle==2?3:kind(castle)==Rapid?12:1));
         for(int i=0;i<shot.count;++i)assert(shot.launch(i)+shot.flight<=time.impact);
     }
     Sequence rapid;rapid.begin(3,0);

@@ -45,11 +45,11 @@ static void RenewalCrewDraw(){
  Tabs(top-preview-86);
  std::vector<int> items(GetMaxInven());int count=0;
  for(int i=0;i<GetMaxInven();++i)if(robin.inven[i].type==ITEM_CREW)items[count++]=i;
- const int cols=4,pitchX=(DX-32)/cols,cell=pitchX-8,rowH=120,height=listTop-20;
+ const int cols=4,pitchX=(DX-32)/cols,cell=pitchX-8,rowH=120,height=Max(1,listTop-EquipmentV2::Bottom());
  scT[MENU_CREW]=Max(0,((count+cols-1)/cols)*rowH-height);scY[MENU_CREW]=Min(scT[MENU_CREW],Max(0,scY[MENU_CREW]));
  SetSectionClip(16,listTop,DX-32,height,false);
  for(int i=0;i<count;++i){
-  const int x=16+(i%cols)*pitchX,y=listTop-(i/cols)*rowH+scY[MENU_CREW];if(y<20||y-rowH>listTop)continue;
+  const int x=16+(i%cols)*pitchX,y=listTop-(i/cols)*rowH+scY[MENU_CREW];if(y<EquipmentV2::Bottom()||y-rowH>listTop)continue;
   const auto& it=robin.inven[items[i]];
   bool equipped=false;for(int n=0;n<MAXCREW;++n)equipped|=robin.slotCrew[n]>=0&&GetCrewInventoryIdx(robin.slotCrew[n])==items[i];
   DrawPixelPanel(x,y,cell,rowH-8,0x152D37,equipped?0xC5A269:0x65827F);
@@ -77,7 +77,7 @@ static void RenewalStatsDraw(){
  const int start=body-214,width=(DX-44)/2,row=Max(60,Min(86,(start-24)/6));
  const int optionRows=(TOTALMENUOPTION+1)/2;
  const int content=6*row+48+3*66+48+optionRows*60;
- const int height=Max(1,start-20);
+ const int height=Max(1,start-EquipmentV2::Bottom());
  scT[MENU_COLLECTIONS]=Max(0,content-height);
  scY[MENU_COLLECTIONS]=Min(scT[MENU_COLLECTIONS],Max(0,scY[MENU_COLLECTIONS]));
  SetSectionClip(16,start,DX-32,height,false);

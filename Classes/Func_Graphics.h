@@ -17,6 +17,7 @@ void ClearFocusZoomRequest(void);
 
 // Image Handling & Drawing
 void LoadImg(int);
+bool RuntimeImageAvailable(int);
 void LoadTexture(int);
 void LoadSpriteFromTexture(int);
 void LoadFontLabelFromString(std::string);
@@ -164,6 +165,7 @@ static_assert(sizeof(UiButtonStyle)==24+2*sizeof(void*),"UI button style must ha
 float UiMinimumTextZoom();
 float UiTextLineHeight(float zoom);
 void DrawUiTextBox(const char* text,int x,int top,int w,int h,int color,float zoom=1.f);
+int UiWrappedTextHeight(const char* text,int width,float zoom);
 //금테 단추 틀(모든 DrawUiButton 의 기본 틀), 팝업 판, 단순 팝업. UiButtonControls.inc.
 void DrawUiGoldFrame(int x,int top,int w,int h,bool enabled,int fill);
 void DrawUiPanel(int x,int top,int w,int h,int fill,int edge);

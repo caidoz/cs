@@ -1,0 +1,698 @@
+{
+  "reason": "Replaced closed castle library and portrait UI; interiors deferred",
+  "assets": [
+    {
+      "source": "asset_library/production/runtime-df8b34c4e0f5d3905840fb17dc2ea0df9a968313b4e67bacfa38752aa01d75d6.webp",
+      "target": "res/castle_four_rooms_v5-rooms-01.png",
+      "original_source": "asset_library/reference/Resources/res/castle_four_rooms_v5/rooms-01.png",
+      "encoding": "webp-lossless",
+      "rgba_sha256": "a295ee39e1fca5d1161c48a823d840fc20e6145d1af7fbb242fb3ac647b37279",
+      "original_sha256": "2ad0b33b441ff721c7098c07c9374751e04ca263c315d8d9ac127c401f5b8703",
+      "encoded_sha256": "1cee57c568495f51cc6aecb6aebd78d6747bec0c161ec3d62bb06455d126d457"
+    },
+    {
+      "source": "asset_library/production/runtime-7b0d4b834cbcd0d50e56760d17ca33e0ed24e71cdf26cadd47db2fb37542d959.webp",
+      "target": "res/castle_four_rooms_v5-rooms-02.png",
+      "original_source": "asset_library/reference/Resources/res/castle_four_rooms_v5/rooms-02.png",
+      "encoding": "webp-lossless",
+      "rgba_sha256": "38956179f9c6fdd6e5e54a7f8262ec9a68d0eb1cf166d74411558df2926c50dc",
+      "original_sha256": "ea04dacdb231dc5aa033195ad86bae0858f5db72b8973e45689b3118a270e4bd",
+      "encoded_sha256": "8aaeca73cb68e56725713aba16510d1b80087cba047eda84b01d05be0a7f8130"
+    },
+    {
+      "source": "asset_library/production/runtime-bbebbb27cd440cbcc3ef8d406db3fb4366943ba377293ac14d9c445768382bf5.webp",
+      "target": "res/castle_four_rooms_v5-rooms-03.png",
+      "original_source": "asset_library/reference/Resources/res/castle_four_rooms_v5/rooms-03.png",
+      "encoding": "webp-lossless",
+      "rgba_sha256": "bc965c3bfc85160a055f89cb47a2f9f7bebb7c4ff8283649a5899d228025320e",
+      "original_sha256": "994d2c9f01ebc956d2e38b2e2f3c2714094668de4cd7d1abb4d682069469b8c8",
+      "encoded_sha256": "0d76a68a60e3c1afee17250765c68798d448e62bfe9df44111c9240db38eb735"
+    },
+    {
+      "source": "asset_library/production/runtime-b0dfd5f11b62dc4e1cf2494f7dc53d6e9199a9a4298f1e04e2ab4e079895d9f8.webp",
+      "target": "res/castle_four_rooms_v5-rooms-04.png",
+      "original_source": "asset_library/reference/Resources/res/castle_four_rooms_v5/rooms-04.png",
+      "encoding": "webp-lossless",
+      "rgba_sha256": "529ad16607dd1e15617be024d8a73c3bbb5f70328686350cf81dc9948ba632bd",
+      "original_sha256": "a96dc4ba476be913618c77a7bf998bf27ae3b7ec9e0633b497d5ce94f27ebef3",
+      "encoded_sha256": "4ccdda5164825e31d38f2a5832a4fb33f5172317eb7ab1b4f5d8b34545e52041"
+    },
+    {
+      "source": "asset_library/production/runtime-adaa2e7067cf22a76d99a480f4c139efd25cfe49fa2d7e90459359ace1d70606.webp",
+      "target": "res/castle_four_rooms_v5-rooms-05.png",
+      "original_source": "asset_library/reference/Resources/res/castle_four_rooms_v5/rooms-05.png",
+      "encoding": "webp-lossless",
+      "rgba_sha256": "159d0baf17e1fef4f262c1626a0f498b3a41995e7f92c1915cdb8287ff99e169",
+      "original_sha256": "5d75ca2cd0d3c23836e489e59b62b2bbab18e412000df0f266b8bed569422d02",
+      "encoded_sha256": "5a9afa365717ca18cd397285863a9256a475f4d0ea94055558ce7a2ea0e7e56c"
+    },
+    {
+      "source": "asset_library/production/runtime-bb61764756b50d782fb2e094be9e7605e49175c581ece22457e41850ae016321.webp",
+      "target": "res/castle_four_rooms_v5-rooms-06.png",
+      "original_source": "asset_library/reference/Resources/res/castle_four_rooms_v5/rooms-06.png",
+      "encoding": "webp-lossless",
+      "rgba_sha256": "e726390fca2c8d091e6e160d7a09d900140e5d49d3f8fc14f6d93aa1e71aebcf",
+      "original_sha256": "b743a082b8e59954a4a8f37c58205c6a778b592354107d4dc95ac34b7e66177d",
+      "encoded_sha256": "24771fd000680d697e5ca413ee09eb11cce5597bd361097a49f63d4b761d5551"
+    },
+    {
+      "source": "asset_library/production/runtime-66518924f92974f0973014d70ef25f4b33c3c5af21684ee3066bcdc96b98a9c0.webp",
+      "target": "res/castle_four_rooms_v5-rooms-07.png",
+      "original_source": "asset_library/reference/Resources/res/castle_four_rooms_v5/rooms-07.png",
+      "encoding": "webp-lossless",
+      "rgba_sha256": "290d815ad5f12547209f8f888e629e6668d6ae0ac14471368a827f1262cc025f",
+      "original_sha256": "9655f4cf8ce393e3ceae227b31b2c18bdb882a3a2165bc445103063397c5c054",
+      "encoded_sha256": "c7dcf3ec0373cfd9c4326a274a9559262df868163a68bc01e595ef6f9357ef30"
+    },
+    {
+      "source": "asset_library/production/runtime-1dd921b5c5a41b47d36f292497a7f2b032cdeb11c3755df17d6b94dcb351d711.webp",
+      "target": "res/castle_four_rooms_v5-rooms-08.png",
+      "original_source": "asset_library/reference/Resources/res/castle_four_rooms_v5/rooms-08.png",
+      "encoding": "webp-lossless",
+      "rgba_sha256": "38c17879b34cc721a8efe9e90bd6e5020fa5aa8969e655dbc775b4dbbfb1284d",
+      "original_sha256": "4eab59b9f0d5088fee33ef69e51cbb10417393765078f7c989f9f0559c307e8a",
+      "encoded_sha256": "b0bd4591608d3751128920f01c3f44f4c52e0473228f272ca58036bfde3ceb15"
+    },
+    {
+      "source": "asset_library/production/runtime-8af59385f3e8c3659e0ee7daaf63d4b9f39fa2493ef81b588a785601d20693e7.webp",
+      "target": "res/castle_four_rooms_v5-rooms-09.png",
+      "original_source": "asset_library/reference/Resources/res/castle_four_rooms_v5/rooms-09.png",
+      "encoding": "webp-lossless",
+      "rgba_sha256": "00c3b8a440abc8cbb9ea19bdf9c2e8db16009e3fe93a5d8702561d7dc040f8f6",
+      "original_sha256": "54bd1194b4bce917fdb940e696a42162b1b90502a884d12ca4fc87b54e62ce6e",
+      "encoded_sha256": "7177a3dcc1307f7d7eb1acbb7ce0aaaee5cb6e30302a0a4d99d1a11e7f4f4b14"
+    },
+    {
+      "source": "asset_library/production/runtime-8fb4b89dfcabb09ef80cd238040c36dcf34ac9cff9b1070cae7d9446c056966a.webp",
+      "target": "res/castle_four_rooms_v5-rooms-10.png",
+      "original_source": "asset_library/reference/Resources/res/castle_four_rooms_v5/rooms-10.png",
+      "encoding": "webp-lossless",
+      "rgba_sha256": "68e2b084c0872e6e563aa02ade70fd80496913a1170284d0397d3ded28f03d23",
+      "original_sha256": "ad92ab367387cb43af72ff2c964c906c5a48a3058f2428b2c1a8534ff07cf276",
+      "encoded_sha256": "7d5a37c8adb81a7bfbb2a258e058b23731ba3ad0e53e12b4fe038e67323df6a5"
+    },
+    {
+      "source": "asset_library/production/runtime-cfa8bdb54133ae84ddb7c6d99211888693140049ab8f544dc3c7aff703793199.webp",
+      "target": "res/castle_mist_v2-01-cover.png",
+      "original_source": "asset_library/reference/Resources/res/castle_mist_v2/01/cover.png",
+      "encoding": "webp-lossless",
+      "rgba_sha256": "a7449d1df05128d3424ae547585e58908ce5ecda234cd1232472058d54be4cc2",
+      "original_sha256": "99ab762f2c40f765a78bf8010eb8223ae6f96144db62644e438c8be2504629dc",
+      "encoded_sha256": "782dc9d76f6e036fb4cdab8abcb634a7e0a79b6fa5cbb064779a21d230767ac9"
+    },
+    {
+      "source": "asset_library/production/runtime-6eeba56ff84ef979cdb8ae0741e5bb2c722076b2cae22ede22b1069048299b0a.webp",
+      "target": "res/castle_mist_v2-01-hull.png",
+      "original_source": "asset_library/reference/Resources/res/castle_mist_v2/01/hull.png",
+      "encoding": "webp-lossless",
+      "rgba_sha256": "03838d79667e3b27ec453842abe2009e7f4304717bf38220af049e676d53ab8a",
+      "original_sha256": "b90fca5e00947f6ad0749ab2ba70ddeb3985c0f55727a54fad2eeb8e63ed5349",
+      "encoded_sha256": "5ca74b16daf281ab113ef6e4086603d98288edfda41f7f4685d81c8aa7c08831"
+    },
+    {
+      "source": "asset_library/production/runtime-5cd43d743b9b9bbda6cf6eb29e0adce97e7397f97540c9435c0354c2c5638b4c.webp",
+      "target": "res/castle_mist_v2-01-room-5.png",
+      "original_source": "asset_library/production/castle_mist_v2-01-room-5.png",
+      "encoding": "webp-lossless",
+      "rgba_sha256": "c69b0b074eb54d1a0b2499f908cb3707d17806279b2dcf923732741e2eda5d00",
+      "original_sha256": "d690cefaac224b64a15fe053d95a9ee8178916959268d6c7759fe039159f9f38",
+      "encoded_sha256": "580826e3a723476b43fe1e6c16bdb4e37ecd5336e1440b4eb1fe8efc8077d5f3"
+    },
+    {
+      "source": "asset_library/production/runtime-5e9b0590a406bceded6990f28b11f4104d10f6d34571d1089ccfb25e033a69db.webp",
+      "target": "res/castle_mist_v2-01-turret-empty.png",
+      "original_source": "asset_library/reference/Resources/res/castle_mist_v2/01/turret-empty.png",
+      "encoding": "webp-lossless",
+      "rgba_sha256": "b44a4af4ec6d7c1342168c4e2f0686350c3dbceef6e3e53f19cc08c981675eae",
+      "original_sha256": "2bf273be6ef4e5319606a90014f5dfcf64158847ba45e5b003a45e2ece808ee3",
+      "encoded_sha256": "623e5d8c6355b17a8be03ec4a3dcc9ef52253e38d143aa98b0a12468f56af3e9"
+    },
+    {
+      "source": "asset_library/production/runtime-22a9bb95cd4ec3e4bd3d227d99ea801d25ee3b16e6c647a9b9c5e2663966c61a.webp",
+      "target": "res/castle_mist_v2-01-turret.png",
+      "original_source": "asset_library/reference/Resources/res/castle_mist_v2/01/turret.png",
+      "encoding": "webp-lossless",
+      "rgba_sha256": "0a63f6b8559815fb49cc6aaa7d079a6a5161eca42581c42a3c46174c17c91c22",
+      "original_sha256": "0ba7498c92d8aa49d4f33a7e18f17367b7a557503536aadc57f6da23f12042b7",
+      "encoded_sha256": "60520afe31750dc38091ad4d7b958fe66c7c10c49f343978e87d8fb175aae63c"
+    },
+    {
+      "source": "asset_library/production/runtime-8ae081143f08b9b11e64281eada7c1f1971f4bd3d3ef961f4775da578e952722.webp",
+      "target": "res/castle_mist_v2-01-wheel-1.png",
+      "original_source": "asset_library/reference/Resources/res/castle_mist_v2/01/wheel-1.png",
+      "encoding": "webp-lossless",
+      "rgba_sha256": "42db627a69a05479db2d7eba9f054a725bdc15e3f44f7d827fccfd7982799570",
+      "original_sha256": "005bbe0019012e4fa726239af85b986aed06372778da6f1406426d6da4c1e20c",
+      "encoded_sha256": "38a9b0100a8b5184293b7f7711a2c51924a7ea8a7c521217a13a091dba0a6ca4"
+    },
+    {
+      "source": "asset_library/production/runtime-860d3ca5a6749299e7c8a243a97a429be3f8bfab0a36eefc8b3eee9301467c8e.webp",
+      "target": "res/castle_mist_v2-01-wheel-2.png",
+      "original_source": "asset_library/reference/Resources/res/castle_mist_v2/01/wheel-2.png",
+      "encoding": "webp-lossless",
+      "rgba_sha256": "a8f94357731437c636d684218f1b33326949a2451dfbd061583236d014277e08",
+      "original_sha256": "3c46763422648f8e0f7b176b106aec52d64dc3cd91e42fd3d9d7e4d6f60d8eb4",
+      "encoded_sha256": "bff7feff915b52d333547730ebd7d3d6ad2b2a3a807a718a617abff67c326ade"
+    },
+    {
+      "source": "asset_library/production/runtime-fb5f97fc84e45b5547d5b4def6573179e7fb8ac1847f99dc8241559e81905330.webp",
+      "target": "res/castle_mist_v2-02-cover.png",
+      "original_source": "asset_library/reference/Resources/res/castle_mist_v2/02/cover.png",
+      "encoding": "webp-lossless",
+      "rgba_sha256": "0f255f3b000b37db9a1d616507107dda4d88ec709264c94d2646653a02ed3fd2",
+      "original_sha256": "4ffff348baf2075b1a8a2c16d98f1b961110ac19d382a4b7017638c0dac6ae2e",
+      "encoded_sha256": "80468c82178c2c4157cc34c9f3df0271a726762d5b2f37f5416accf245504679"
+    },
+    {
+      "source": "asset_library/production/runtime-c48d6b163ee28510539b0302542e807ebe962811210b6ef6e0bf2268071a1e18.webp",
+      "target": "res/castle_mist_v2-02-hull.png",
+      "original_source": "asset_library/reference/Resources/res/castle_mist_v2/02/hull.png",
+      "encoding": "webp-lossless",
+      "rgba_sha256": "5f6a5938392b6bc493de93fa88d29148780a85875f0a4101d2ca8f6c13905312",
+      "original_sha256": "a899930d95791fd012453f9bde9c3e0cd6de6634a4d7b46c533a4f417b62e66e",
+      "encoded_sha256": "15fa3db16e4412cd728d76e0bd2be10eee78b7fb1c014c936faae1b395d3577f"
+    },
+    {
+      "source": "asset_library/production/runtime-9a48679c4f377a64da2ab64ebd202ce42faae2732c59ff9f03f63a57378858fa.webp",
+      "target": "res/castle_mist_v2-02-room-5.png",
+      "original_source": "asset_library/production/castle_mist_v2-02-room-5.png",
+      "encoding": "webp-lossless",
+      "rgba_sha256": "097c767894ca090ec880c7de1bcbb3fc69131dad30a528244c96d2a667a8a28e",
+      "original_sha256": "cca7f536493e2854c43d08b95763dc348abb70e154c2b01fc4822bb132619ae8",
+      "encoded_sha256": "fbb557b23f6e5302553c2d2db0e19b5222cdda8531081adb61c58c9840a42909"
+    },
+    {
+      "source": "asset_library/production/runtime-803809859384a3b5d855c62dafa94e26092574007726612d2db49cc99c02ef94.webp",
+      "target": "res/castle_mist_v2-02-turret.png",
+      "original_source": "asset_library/reference/Resources/res/castle_mist_v2/02/turret.png",
+      "encoding": "webp-lossless",
+      "rgba_sha256": "e8cbd1eeb9fa67a50cf699f0308e5c4ddf8fae5a7d5a65693fb30c56fffa43f3",
+      "original_sha256": "125cc877f85d7fe18cbd39cc201560e3244916ccca671a243a99174a81b778f3",
+      "encoded_sha256": "0190b6b74b9eb38adde71897355571078ba7603f4bbd911fa0471b3716bfee85"
+    },
+    {
+      "source": "asset_library/production/runtime-3fcfea9bb8b41f0b84477fdf7a015ab2b9d3225b378d260a78b61c29fe798730.webp",
+      "target": "res/castle_mist_v2-02-wheel-1.png",
+      "original_source": "asset_library/reference/Resources/res/castle_mist_v2/02/wheel-1.png",
+      "encoding": "webp-lossless",
+      "rgba_sha256": "9569ab5c4997e99f70a58f9cf270369f9eb64aa0247ed0d28037cc648463e4ef",
+      "original_sha256": "bcf072a552861f56d12dbbe55848045a689698123f0fa31b86a916cc0f304e13",
+      "encoded_sha256": "627d1ff3052ba8e7fb55c7b8aed5c105cbe8d42292a1fa55f9fc6d64530cd4a7"
+    },
+    {
+      "source": "asset_library/production/runtime-68cf26fa29eba78d7ff28ead1a62b9e401a66b77fbc491aed535fd963e40f7bb.webp",
+      "target": "res/castle_mist_v2-02-wheel-2.png",
+      "original_source": "asset_library/reference/Resources/res/castle_mist_v2/02/wheel-2.png",
+      "encoding": "webp-lossless",
+      "rgba_sha256": "9fcf1cca0242ce51ca08eadbd3f24dca67556ebb7a76a266c5e312c10293e391",
+      "original_sha256": "12b8a8d72473bc2d0e19bba593f641ff584bf5826b214283a5cc1c5f343d7c4f",
+      "encoded_sha256": "0379d70ae737f3307766ea4dccd6f5a0fa3f84f186663dd86423f790694bb3c8"
+    },
+    {
+      "source": "asset_library/production/runtime-ecf6cf2e0715a3727ea60a19163f22c0004c3c65ff6352011b288c351f6a19a3.webp",
+      "target": "res/castle_mist_v2-03-cover.png",
+      "original_source": "asset_library/reference/Resources/res/castle_mist_v2/03/cover.png",
+      "encoding": "webp-lossless",
+      "rgba_sha256": "75c0aff5a91c3a7d84114237048d9e7ad148a480c4545b96f096217dc66bf399",
+      "original_sha256": "8e79a0d22203fbf72d8043190d7b0826401932f32e4da80af85e2d64d1eece5c",
+      "encoded_sha256": "8f74ba44069de42782bd5fecb41cbc9fa47956b90dae9f466bbb6b32c86f9906"
+    },
+    {
+      "source": "asset_library/production/runtime-cec4f7bd667ef2149a8719365d13a918638a0f1454462f99e5a0ae7c7bec524f.webp",
+      "target": "res/castle_mist_v2-03-hull.png",
+      "original_source": "asset_library/reference/Resources/res/castle_mist_v2/03/hull.png",
+      "encoding": "webp-lossless",
+      "rgba_sha256": "3823f29160b4f5aaaf339b852f8fca5453addbe561e4642d3a361b07612cbf62",
+      "original_sha256": "da17e5a9dfa94ccf34fe4892b4d9ad142d45c1050804c9da9dcc9581f0a4e54b",
+      "encoded_sha256": "996a32ab11908eee8d099088b70a9458c94e39d053def7fadc262a59cd37491e"
+    },
+    {
+      "source": "asset_library/production/runtime-46d2f56319b3ced9cf751e352ba913323566e7d8400ef2d8706613e3dbeb834e.webp",
+      "target": "res/castle_mist_v2-03-room-5.png",
+      "original_source": "asset_library/production/castle_mist_v2-03-room-5.png",
+      "encoding": "webp-lossless",
+      "rgba_sha256": "0e24d27633678574be78578580b758b8f84664bee86d4ea1331745d4ba446960",
+      "original_sha256": "d5f546ce5a79926215ee7d797fe61b3a8a453c2e9c70736e2a593aae1fa48066",
+      "encoded_sha256": "77a0116285c924ee365f934a7dd5ed1a15494e11d5556002444f7226c13598de"
+    },
+    {
+      "source": "asset_library/production/runtime-f36cc8b8aee152e35176d41cb75c6db3c957cad413657119f4c7b4680dae4629.webp",
+      "target": "res/castle_mist_v2-03-turret.png",
+      "original_source": "asset_library/reference/Resources/res/castle_mist_v2/03/turret.png",
+      "encoding": "webp-lossless",
+      "rgba_sha256": "baa4752042f9c1580aa0514b16099937c9604fa74a47951fe31d2bbaf5709916",
+      "original_sha256": "55a28c0a82c68d4410441aa2e49a9aa2406643070f1a662b568d5da70954760e",
+      "encoded_sha256": "9f771d7d185bdb6cfc5d901cecf66ac324086475b709a4559a7f9da32ddcb81e"
+    },
+    {
+      "source": "asset_library/production/runtime-be5a6910b25bcf133af6ee69c0af026c7036a0f6da4b8320c637d9fbeb865516.webp",
+      "target": "res/castle_mist_v2-03-wheel-1.png",
+      "original_source": "asset_library/reference/Resources/res/castle_mist_v2/03/wheel-1.png",
+      "encoding": "webp-lossless",
+      "rgba_sha256": "697e16f38c17c5b1b3d2d218b8068a50737245711edbc0b35dcf569b20341e48",
+      "original_sha256": "2fc752eb31b4867f6d3e2ab0f2ba35794fc1e90e2318ab39fe59d881c452f615",
+      "encoded_sha256": "dc03f4684c6625911073a3fd0d08aad2ba5af7d9094225221da4bdb8d7834093"
+    },
+    {
+      "source": "asset_library/production/runtime-3ded8b1f55f0b70e64333ff9ccbd8e9730a70d1e55da5f3524e659231426f950.webp",
+      "target": "res/castle_mist_v2-03-wheel-2.png",
+      "original_source": "asset_library/reference/Resources/res/castle_mist_v2/03/wheel-2.png",
+      "encoding": "webp-lossless",
+      "rgba_sha256": "0e7cd3a060a6777f81402d5acb82d842e95f598a0a72e5dd3418e92cef347153",
+      "original_sha256": "cb7001e657e4ae7e474c3f27c08d2d5e7261a0c8c375bc3e61228e915887d62d",
+      "encoded_sha256": "bb8010c17637d52de81a9f09f9e96b009fe53dbaeb66673b56b05e793e3ea13b"
+    },
+    {
+      "source": "asset_library/production/runtime-7abe5102a7d71e0ff8897c1aaaaef40d9230d8e574b5d81cd5ad5fa0eb42df00.webp",
+      "target": "res/castle_mist_v2-04-cover.png",
+      "original_source": "asset_library/reference/Resources/res/castle_mist_v2/04/cover.png",
+      "encoding": "webp-lossless",
+      "rgba_sha256": "842613e72445a65b4a82abedddbd47ee444779ee3a8d0a809c3859b87beedf49",
+      "original_sha256": "af8b2371e0a70d65717a79c7373e4fbf578da3cd95e045dd86629146d06386d8",
+      "encoded_sha256": "01c17e2687d0d6702f3ea96fae21cd2818af7aa2e20635a4124b5be88e07a7cf"
+    },
+    {
+      "source": "asset_library/production/runtime-612830a1d8c9380402e10021c2878f920d0549acf30e1f570021de4c665dfa96.webp",
+      "target": "res/castle_mist_v2-04-hull.png",
+      "original_source": "asset_library/reference/Resources/res/castle_mist_v2/04/hull.png",
+      "encoding": "webp-lossless",
+      "rgba_sha256": "02b70633b501a28bc0c9e5999688d95c5f1a21bc57fd4bbdcaf0623988dadee1",
+      "original_sha256": "2219493b2a5c1665c04d7d603efa3634bb60c35e921abe22ce7f05e268b78d9b",
+      "encoded_sha256": "d816c49853b4726f0ab0dc2b0c847129c755b073816e7be1efc750333f5946d1"
+    },
+    {
+      "source": "asset_library/production/runtime-2dd8b8dffaa735c75db401c03504c0643558c35914a3982dfcb1bbb541dd683a.webp",
+      "target": "res/castle_mist_v2-04-room-5.png",
+      "original_source": "asset_library/production/castle_mist_v2-04-room-5.png",
+      "encoding": "webp-lossless",
+      "rgba_sha256": "995c68aa877955a2c311100ea500133e4f2c63f8b7c1194ea99cacf59d9e5983",
+      "original_sha256": "7807488ec461c7d4ed0a5dafc949fe2e2f086b11f959f76b55dc75e1093d70c0",
+      "encoded_sha256": "8d43d51e4355c007c543511d1fceb2a3a0f2630735a96f51f13bba4ad2475028"
+    },
+    {
+      "source": "asset_library/production/runtime-9c5814b8d0ee9e741f6e45f70cfb7b55a9928c07f7a79813259b603728edf88e.webp",
+      "target": "res/castle_mist_v2-04-turret.png",
+      "original_source": "asset_library/reference/Resources/res/castle_mist_v2/04/turret.png",
+      "encoding": "webp-lossless",
+      "rgba_sha256": "cb5ee104705e1d7054a93d8576186683ac0a17a50d66ab5602fb08447a1ada60",
+      "original_sha256": "40656724f5543cb0d2c66827a125bb28930554eecbdcb4c9457a55be01f9a086",
+      "encoded_sha256": "71e81b6fc962b21f429fcbdc669cc32bc26daa70bff3c3e7b8f64c43d2c51c68"
+    },
+    {
+      "source": "asset_library/production/runtime-80d89aceb20c33dec3a54b78a899aa8347f00ebd8a0fb0e06256474ff682c572.webp",
+      "target": "res/castle_mist_v2-04-wheel-1.png",
+      "original_source": "asset_library/reference/Resources/res/castle_mist_v2/04/wheel-1.png",
+      "encoding": "webp-lossless",
+      "rgba_sha256": "c96911dc8c0cfea7ed22189200857c554b58df3870909f59dfdbdc83153320dc",
+      "original_sha256": "9159a87753443327d9b94a93778e50d1634dfc25ee8615109bae98d871ed064d",
+      "encoded_sha256": "5c8d72c5a68fb3e32e11633ca0035375c0914d7bb408c27ebfe4c18ce027b248"
+    },
+    {
+      "source": "asset_library/production/runtime-fbc4ece84e93f7264ac16478497ecac8c214517dab5a3086ecc3fd86ed42dadd.webp",
+      "target": "res/castle_mist_v2-04-wheel-2.png",
+      "original_source": "asset_library/reference/Resources/res/castle_mist_v2/04/wheel-2.png",
+      "encoding": "webp-lossless",
+      "rgba_sha256": "d27327480c5c8f21e9b4194faa05047f345e96a6eb446ed66ff033003445825f",
+      "original_sha256": "9df693cc2ed2136201790d02ac880df69a74ba114584e874e3c18a29341b0068",
+      "encoded_sha256": "77e49ec0578958575ba41773c512d4d6926204ffd5d794a157c21834b389214a"
+    },
+    {
+      "source": "asset_library/production/runtime-673d411e0f79737ac671a936b58ca9ca3db4d00ef4201e58a048bec7f0a37b5c.webp",
+      "target": "res/castle_mist_v2-05-cover.png",
+      "original_source": "asset_library/reference/Resources/res/castle_mist_v2/05/cover.png",
+      "encoding": "webp-lossless",
+      "rgba_sha256": "6acef48fb5199448b8abfa1573bc97c0162bd8242fa6f831b462b3193a8c5ce4",
+      "original_sha256": "f2f0f7721916a327101f6044b801629913104ff72681837620bd077d8a298d00",
+      "encoded_sha256": "0be5efdb7d7d0122294077e5459005f24543de1418eb14d080b2287e82370b4c"
+    },
+    {
+      "source": "asset_library/production/runtime-b50e8c58201b7eb411f7e7fba67cf29cba2629351add50a9650015318bb8c622.webp",
+      "target": "res/castle_mist_v2-05-hull.png",
+      "original_source": "asset_library/reference/Resources/res/castle_mist_v2/05/hull.png",
+      "encoding": "webp-lossless",
+      "rgba_sha256": "461f0bc7d74206bbc4134badcea88cbefb0728ec70e928ad114b1e5f5d133b23",
+      "original_sha256": "8d3698b8a3b329231292015e3264b610eb58554b5e70b8972d36b37c40481cd7",
+      "encoded_sha256": "72a39ccac0e21427954bce1c1f15556dde152c8435035ac5ee3bda940569a527"
+    },
+    {
+      "source": "asset_library/production/runtime-1190ff5683ead7c7045c03bc0dc768ccc4f72213bae0cebe84b10ee99cad0307.webp",
+      "target": "res/castle_mist_v2-05-room-5.png",
+      "original_source": "asset_library/production/castle_mist_v2-05-room-5.png",
+      "encoding": "webp-lossless",
+      "rgba_sha256": "7558b576e2e208f63a440f887796f54aa210f3a38847dc9457f82d2d64eb0b2c",
+      "original_sha256": "d0efc7ee105be82fa2f168f21e996286ffc251f6576aee136ae756ee5fd27dc1",
+      "encoded_sha256": "19b6f6b79641e34087138240e8f55f039a30fbcbc13b34baee999600983e2ae3"
+    },
+    {
+      "source": "asset_library/production/runtime-452cb14781244826da6af5d1337d1cdb96b4a3a2785cfd8dd09711100c241060.webp",
+      "target": "res/castle_mist_v2-05-turret.png",
+      "original_source": "asset_library/reference/Resources/res/castle_mist_v2/05/turret.png",
+      "encoding": "webp-lossless",
+      "rgba_sha256": "e53eb97c974711bcc89f837675c492254f4a7c9063b1f90cea358125a6b97780",
+      "original_sha256": "6d1a9859e3a4bb90301080c6f4ecd6abc889ff4daa90bb8728d1c1272849b826",
+      "encoded_sha256": "c1127e851138bc6ca9beae44fd687fdbdfcc48a3b8e844d11ffb5108e0fa062f"
+    },
+    {
+      "source": "asset_library/production/runtime-c3c46e2b628e8de90bd208d5dd04cb1905e1554b9a364cc72982e9a3d1e8463d.webp",
+      "target": "res/castle_mist_v2-05-wheel-1.png",
+      "original_source": "asset_library/reference/Resources/res/castle_mist_v2/05/wheel-1.png",
+      "encoding": "webp-lossless",
+      "rgba_sha256": "6a206984ed7d56ac31f06a39639ad652dbcc04189fdf4ff6de6ba3a6f7dba45d",
+      "original_sha256": "9ccaa0128b431735242fca08af06d8e163e7ccb4d4fa98c8911dafe0f985da13",
+      "encoded_sha256": "14562ed95bdd8f77b23dbfe533b3ac98459d3c8d56a7ebde2fabd51456832b57"
+    },
+    {
+      "source": "asset_library/production/runtime-caa4d27ad8220b24e6dfbbcef815691a36d32a10418a841234b47bbec9ca054f.webp",
+      "target": "res/castle_mist_v2-05-wheel-2.png",
+      "original_source": "asset_library/reference/Resources/res/castle_mist_v2/05/wheel-2.png",
+      "encoding": "webp-lossless",
+      "rgba_sha256": "f50566e2d602f117f8e112841013b6ced0df95943d36ed72e616139eac6c9d56",
+      "original_sha256": "6b633326fe9bc413e6d113aa0667dc856c829550c54d6a95f55bf759aef52aa8",
+      "encoded_sha256": "0bcab41ed73eae8e6326af49e44584d74417656410997504631d1ffc829d45aa"
+    },
+    {
+      "source": "asset_library/production/runtime-849d9f5b06158b592aac728c1bba86b7093268245a957f47fcca0c16385c2364.webp",
+      "target": "res/castle_mist_v2-06-cover.png",
+      "original_source": "asset_library/reference/Resources/res/castle_mist_v2/06/cover.png",
+      "encoding": "webp-lossless",
+      "rgba_sha256": "cfa418e071dc72a5f6fce1c243df86939c2d6490461a99306344241f6e82d69b",
+      "original_sha256": "fd0812b947bd7a7cfad59aaf6691d49e35c796918a27dec05f327700bb8d3035",
+      "encoded_sha256": "e5d13b32a044fe48c0860a8637a71e51f4e0ca6987ad6f8d5cd4cf2075ec0d83"
+    },
+    {
+      "source": "asset_library/production/runtime-a2fb65db2c01a060c40e009282500ac3bb0efcee3a5a0c8451100565ca9f6a95.webp",
+      "target": "res/castle_mist_v2-06-hull.png",
+      "original_source": "asset_library/reference/Resources/res/castle_mist_v2/06/hull.png",
+      "encoding": "webp-lossless",
+      "rgba_sha256": "34f687e2835d5db37906285c3af6a1984da0e5ec01ed6222a6c6092714d33087",
+      "original_sha256": "ecbe07163451e652ca0dc876be256dbac74d35f7dbc72885c7ecf59bd10c9d47",
+      "encoded_sha256": "fe54bc8b69bac83c64045bff751acddd196a5e00d2af335d1d722947744e4c1b"
+    },
+    {
+      "source": "asset_library/production/runtime-08702d775d8d7022a310227e62b7c1dbb3ce34fe4ce24e5e28662a53f4d43846.webp",
+      "target": "res/castle_mist_v2-06-room-5.png",
+      "original_source": "asset_library/production/castle_mist_v2-06-room-5.png",
+      "encoding": "webp-lossless",
+      "rgba_sha256": "5422534adb4daecf33f2675d75f4c4fa863dfab2af36519fa894553719e94428",
+      "original_sha256": "6b6f0594c22492e45d97b505bcc34ec7280758317879a9068390972975be5d30",
+      "encoded_sha256": "681385272dbed280be1f6c2f8d25444d49752a7ee1360ab5d38f40564f226471"
+    },
+    {
+      "source": "asset_library/production/runtime-479ad34203f74df9f6fbb45f6f1b437ced3dc2430ba388f29a42a603a124a4e6.webp",
+      "target": "res/castle_mist_v2-06-turret.png",
+      "original_source": "asset_library/reference/Resources/res/castle_mist_v2/06/turret.png",
+      "encoding": "webp-lossless",
+      "rgba_sha256": "ace2f3e7704bca6591feb5aa18863dc57ee6539cca3364146deec2d6c40c9692",
+      "original_sha256": "07dc290f1dcca4e7e69a64d611761ace0138dd6caf6aa9e979413c171da8015c",
+      "encoded_sha256": "3f6e315378a0b7d51fc5a634f25ed84b4e300fceff89d4ea345359bc09ae6e43"
+    },
+    {
+      "source": "asset_library/production/runtime-a41b8c537224ffc31c81a81b2fefa374ab60dcbc6e5b3a8e5b698a28512ce56a.webp",
+      "target": "res/castle_mist_v2-06-wheel-1.png",
+      "original_source": "asset_library/reference/Resources/res/castle_mist_v2/06/wheel-1.png",
+      "encoding": "webp-lossless",
+      "rgba_sha256": "05bdf9709b7526931ec8875972f3b4d45eff99590015c60917c3dacbb2c5903a",
+      "original_sha256": "a40b447305594a03e472cf3c0b4d82175788fd9333f0548571b15aee647894e3",
+      "encoded_sha256": "c626f2bf2171f97f0667a34a90396789e6d5a02f09a45d14b2589336c88a2de9"
+    },
+    {
+      "source": "asset_library/production/runtime-c6dc589bc054388ada445d6f8ed30e7e20074c8de7672ebaba15a63f5587abc8.webp",
+      "target": "res/castle_mist_v2-06-wheel-2.png",
+      "original_source": "asset_library/reference/Resources/res/castle_mist_v2/06/wheel-2.png",
+      "encoding": "webp-lossless",
+      "rgba_sha256": "8d778414f1ee31b1ff24c5d81ca56a3841240781a29ad9c8898457b4fbad8626",
+      "original_sha256": "1bb396237cafc010e37fc5440d18a411d3eadcfc6478cc5f56d96c17a5182723",
+      "encoded_sha256": "dd8bb138e73eca4bc1dd0d25dea9210de50e3ffd2daf4e054314b8a15f009330"
+    },
+    {
+      "source": "asset_library/production/runtime-5e654d9a406635c14781a4525789a263deba2fe027ebbfbc90adffc59c62b2b7.webp",
+      "target": "res/castle_mist_v2-07-cover.png",
+      "original_source": "asset_library/reference/Resources/res/castle_mist_v2/07/cover.png",
+      "encoding": "webp-lossless",
+      "rgba_sha256": "bc7816a44eb5f4aff6cdd38d608469daf2fa7f4627f0ca4fb9930540d45e5fe2",
+      "original_sha256": "b2a67473a3dc4a051a812e4e8950392bb92852f38c95109bcd9de70fe31c77a4",
+      "encoded_sha256": "174aca24c5b75ea5df02924568bb52296136315e2c58423fa1e3eb25b7138a67"
+    },
+    {
+      "source": "asset_library/production/runtime-40de539d7c05cb479c897db528e8c3f7cde08e6ea20e3fb42ef5d01bbdb662b9.webp",
+      "target": "res/castle_mist_v2-07-hull.png",
+      "original_source": "asset_library/reference/Resources/res/castle_mist_v2/07/hull.png",
+      "encoding": "webp-lossless",
+      "rgba_sha256": "4b53dc709e807962dbc33112909a4382b07ae8b103f9917e02681eb6edf18b1d",
+      "original_sha256": "6cf3175c29208ad2f1c48c8e769b2be3ad0676d40a377fc8ef615580f9d1f7dc",
+      "encoded_sha256": "780765a734db1957feb4a792309c0d35a255912adce70d37efb0cf5427dd2fca"
+    },
+    {
+      "source": "asset_library/production/runtime-74f69219e87777e29f64b7daa7fe087cf025248176c03a4e8a05ab7b1e4f5499.webp",
+      "target": "res/castle_mist_v2-07-room-5.png",
+      "original_source": "asset_library/production/castle_mist_v2-07-room-5.png",
+      "encoding": "webp-lossless",
+      "rgba_sha256": "a593b7c515c257d35b93da401b6c12cee6232f67f826fd9d69bf63a857055f49",
+      "original_sha256": "fe0265f9a5b70b11385687c8c43a8902cd8fe7112f62660750e17d5d46a96342",
+      "encoded_sha256": "71026783a91f087f99acd11722503d974385669f66a823281d3fa1510a98d064"
+    },
+    {
+      "source": "asset_library/production/runtime-3175d4ad7844fa820f48e2ab92888adbb69d4c0c3c45fb9a2078aeaa4a19f580.webp",
+      "target": "res/castle_mist_v2-07-turret.png",
+      "original_source": "asset_library/reference/Resources/res/castle_mist_v2/07/turret.png",
+      "encoding": "webp-lossless",
+      "rgba_sha256": "abaf7664436df961a82e6080cf8fa1ae77940327d26a79abd9a1942b50e45184",
+      "original_sha256": "d4feab53d8ec324f191cae8f266976b6ca1c7a4652fff150e69cf3fb114e9515",
+      "encoded_sha256": "981148005ef2fffee469b1b1cbcd4f0cb7aad1a3a326c7dbf2ece61c3926ccee"
+    },
+    {
+      "source": "asset_library/production/runtime-3a4bb61d8d9a34c3ce1b7f795e35dcf8b609a965e200743e205f013787a23a20.webp",
+      "target": "res/castle_mist_v2-07-wheel-1.png",
+      "original_source": "asset_library/reference/Resources/res/castle_mist_v2/07/wheel-1.png",
+      "encoding": "webp-lossless",
+      "rgba_sha256": "700a32ba55b488b586451d55a32e620203cfb29574df3d5104059392a8c8a243",
+      "original_sha256": "cc5f5ee49e2700cd9b9de0b63bffd75355062192dbdcbcf8811bb10c88ec7617",
+      "encoded_sha256": "96251214b65579f87111f916f11b7c47e8263acaa89c947f1cb1330581a19222"
+    },
+    {
+      "source": "asset_library/production/runtime-3797195280ac812303cbf54148733f42eb49b6b96d97f20d75076b9b3fc70535.webp",
+      "target": "res/castle_mist_v2-07-wheel-2.png",
+      "original_source": "asset_library/reference/Resources/res/castle_mist_v2/07/wheel-2.png",
+      "encoding": "webp-lossless",
+      "rgba_sha256": "9e0d622512e08a7db22f71edf28188bc696f35c49f6c0c6cfd43781aa9ba564e",
+      "original_sha256": "1bdfd19de4b089ba3ee72c0f3e8d7f71e5fabf1d1070a6080277760df285209f",
+      "encoded_sha256": "51f0feb9979ef5a9bae29cbc8705b800959935d981acc3225c56b7179b0a9e96"
+    },
+    {
+      "source": "asset_library/production/runtime-3a77649387ca7dc468536a0bce0a69fe455f492e6a689e557bba5b5322020526.webp",
+      "target": "res/castle_mist_v2-08-cover.png",
+      "original_source": "asset_library/reference/Resources/res/castle_mist_v2/08/cover.png",
+      "encoding": "webp-lossless",
+      "rgba_sha256": "c6fddfb01182e748ca84fe731b4bde7f9079fdcad893788bf0e5155ed3c19ad3",
+      "original_sha256": "cb2ce23ebb6b3cb0b40ea19ebdae238d4b90037fdf756c6b8dd63835ea372ca5",
+      "encoded_sha256": "fff5a8914a8f775fd9da2a258c6990b4c142577bdddaf76a58d72686f7acaf74"
+    },
+    {
+      "source": "asset_library/production/runtime-72ffdffc65d6da8fcfe65803d38ddb98243f196f7097e7a2fa999aaf38edbabf.webp",
+      "target": "res/castle_mist_v2-08-hull.png",
+      "original_source": "asset_library/reference/Resources/res/castle_mist_v2/08/hull.png",
+      "encoding": "webp-lossless",
+      "rgba_sha256": "85bdd803ef89aec1d302e2dd4938ba7dcb6463ce01981b6769a9eba2f8499935",
+      "original_sha256": "ff7fc0c604eb9396304aed0a479c0a5082a5f5130ee093ffdfd1c1c388eb9899",
+      "encoded_sha256": "d9b197b264c66d971965bc95eb33f2676d05385d388d6755a34702ac3b6e476a"
+    },
+    {
+      "source": "asset_library/production/runtime-e8bcf653b49b04eecad74ec9c5928f642f5c4412c2f88f498824a6865235393f.webp",
+      "target": "res/castle_mist_v2-08-room-5.png",
+      "original_source": "asset_library/production/castle_mist_v2-08-room-5.png",
+      "encoding": "webp-lossless",
+      "rgba_sha256": "cc1f72eccdb6c6f2fd60ab6a7f3fbcc6df56e15173f6211b47c8474b60aca120",
+      "original_sha256": "fc295e08578e7939b80059f28e9a9063adb90c5cc95e1247f55e74255c0f8006",
+      "encoded_sha256": "f60e7b33a5d33b99d2b53b81a9fbcfe1f2927aa6eb5cf6c524c40a7c31c28989"
+    },
+    {
+      "source": "asset_library/production/runtime-93f3d0b304dccc68b45262c8f753bce1bf393aecb13a7c38ab0a00a252abfb4b.webp",
+      "target": "res/castle_mist_v2-08-turret.png",
+      "original_source": "asset_library/reference/Resources/res/castle_mist_v2/08/turret.png",
+      "encoding": "webp-lossless",
+      "rgba_sha256": "fcd7c4e4927012793466a8dac29b90675457305dc9a49a71741be9f8d67ea9a7",
+      "original_sha256": "49e763c77ad4ea03b86b9f4a51d065c6ed6500cfa2e9073eb2bb9f7902e24442",
+      "encoded_sha256": "1f52cfd46af1796bb64734621ba72dbcaffaeb96c134b7e177ab61d3d0ef1b85"
+    },
+    {
+      "source": "asset_library/production/runtime-4d938754df8ab0615b87f8b1d59276b32fc8efc2f9e822d57b899c9900e8e251.webp",
+      "target": "res/castle_mist_v2-08-wheel-1.png",
+      "original_source": "asset_library/reference/Resources/res/castle_mist_v2/08/wheel-1.png",
+      "encoding": "webp-lossless",
+      "rgba_sha256": "c9a49931cbd93a676581e7584d8c3e561d7e717df09ce93ef738eef3ff75167a",
+      "original_sha256": "54773577fb6f2e8ec0275fb22078d727764dd7d99828011f589dc0f8bec77561",
+      "encoded_sha256": "e813a5d2ce46275303e518687e1e6532f1b4167dd15ebd772a17ec047fe68a98"
+    },
+    {
+      "source": "asset_library/production/runtime-03014a3d5645a9551df85b8d09f032ef15d424802c08b6da57e2cfda92134eb3.webp",
+      "target": "res/castle_mist_v2-08-wheel-2.png",
+      "original_source": "asset_library/reference/Resources/res/castle_mist_v2/08/wheel-2.png",
+      "encoding": "webp-lossless",
+      "rgba_sha256": "2f1e0f6632d425309175c6b477e9d0bdc47b4ba80949e168fcab9cac0082c115",
+      "original_sha256": "6abaef480a5cc4fb0a18501d86f3f122fb5bd5e9b1fb7a794320d8642b41e8f0",
+      "encoded_sha256": "c4b26676a30bd649dd8ca47e9afd2564daa02d2a3b80b7d810afb7801a392871"
+    },
+    {
+      "source": "asset_library/production/runtime-37f82d5dc3e2ef40b0c58b216a4fa77eeec7aa81287f3e4d2bb64ba537af5509.webp",
+      "target": "res/castle_mist_v2-09-cover.png",
+      "original_source": "asset_library/reference/Resources/res/castle_mist_v2/09/cover.png",
+      "encoding": "webp-lossless",
+      "rgba_sha256": "bc38598c17d71a7749b96b435f4bd3f5ddb5596a065405dd1fbf55f1df9cfcf9",
+      "original_sha256": "bceab19802957f887da540ab22584c322ed4bbb1a158a10d8ea305f27551c983",
+      "encoded_sha256": "e1d5ea56563cf6b89043782437b1eab7bc1850f1de7553da3a3bb5e72f882fc1"
+    },
+    {
+      "source": "asset_library/production/runtime-78b583b658ed8c8437228d6d0deb6a4d507a96f928572ccf5ac7794b7a6e4cf6.webp",
+      "target": "res/castle_mist_v2-09-hull.png",
+      "original_source": "asset_library/reference/Resources/res/castle_mist_v2/09/hull.png",
+      "encoding": "webp-lossless",
+      "rgba_sha256": "07cad8c0fd8a6bcb8468e0d8ee34abb6ef034463ee75fddb1607279ab85f20fa",
+      "original_sha256": "ffc45270404d63c8dfcd7efaa4dc114a42adc82520eec1e18aabf8fd050f135e",
+      "encoded_sha256": "1375eb05ad3571bc3a91427b986f8726c30ebf35171579fe3b5ed73f8707d6b5"
+    },
+    {
+      "source": "asset_library/production/runtime-9c7a09522f9cf580db4230aeae2ebddd43a10d9c2da126208b865f2899a4767e.webp",
+      "target": "res/castle_mist_v2-09-room-5.png",
+      "original_source": "asset_library/production/castle_mist_v2-09-room-5.png",
+      "encoding": "webp-lossless",
+      "rgba_sha256": "50d4e120762218f9964606840e6ef9ddacfefe275f848009d6e1a6688cd5137a",
+      "original_sha256": "f151d2f4fdd7932c8c1ba7a7c65c3c39748d48656737e5ae63a117bcccba1414",
+      "encoded_sha256": "8db548ea6d015af3a05d47ac0625f7b90b26a8efc6e49c14ba3c032856515828"
+    },
+    {
+      "source": "asset_library/production/runtime-5ebff42319b8004be8dcde792e8a4a43ed2e6fcb71c017aad7bb37086634c26a.webp",
+      "target": "res/castle_mist_v2-09-turret.png",
+      "original_source": "asset_library/reference/Resources/res/castle_mist_v2/09/turret.png",
+      "encoding": "webp-lossless",
+      "rgba_sha256": "8247042f0a8b14df4d89f3c230fcbe5f4505fbc28b3e26cde2864dae409cf208",
+      "original_sha256": "b92ec664a5b1888afdd3ca7f6c74ec5f310a97be8bdd463246a8a6ba21465528",
+      "encoded_sha256": "eeb7427b9a64320eb2f18dd46fd0ac5af4b876c0457cb5bcda68a27341d79174"
+    },
+    {
+      "source": "asset_library/production/runtime-2a08f501b678beb3103c04d59d16004c5a7e1cc41751b369d7fce6ccb465f39d.webp",
+      "target": "res/castle_mist_v2-09-wheel-1.png",
+      "original_source": "asset_library/reference/Resources/res/castle_mist_v2/09/wheel-1.png",
+      "encoding": "webp-lossless",
+      "rgba_sha256": "e05a24289bb9b696ce43edd865d7bd21059b5dc884833b27345506dcfb3fc337",
+      "original_sha256": "9e81c5ceb3103ba4ce6291fbd2766b6f0fc9a96d9f5d1a162c7b069e3f621cc1",
+      "encoded_sha256": "44d806db80342826fdb15dd5f7aa7120abe3e1d56044a4a9b35947cb77b10bde"
+    },
+    {
+      "source": "asset_library/production/runtime-7f5a796f65fcbf19e7edd9bd9f9cca311e3b04b473fe9b648e050448fdeeebbe.webp",
+      "target": "res/castle_mist_v2-09-wheel-2.png",
+      "original_source": "asset_library/reference/Resources/res/castle_mist_v2/09/wheel-2.png",
+      "encoding": "webp-lossless",
+      "rgba_sha256": "c59741a9b79f604d95c74a49abe557ab415fc7ab6eff28902dca3de14baeeb85",
+      "original_sha256": "74a2d3ddd1451a3e58d16f7acf9ac7af30b7cc748e49c578a9c69c7d73c35041",
+      "encoded_sha256": "c2ccaff37af43cb9cca9922a10d7b72617c6a62f014bb773a4a2143fae78c18c"
+    },
+    {
+      "source": "asset_library/production/runtime-787544cf5d9d1503e86393a58c3c3972c0e62d8f696adb912a24fc77bf1ad40f.webp",
+      "target": "res/castle_mist_v2-10-cover.png",
+      "original_source": "asset_library/reference/Resources/res/castle_mist_v2/10/cover.png",
+      "encoding": "webp-lossless",
+      "rgba_sha256": "027e53f3390abceced78bfcd9322bbfb6fc6835c516bdf2ea6fffd65f7b934a3",
+      "original_sha256": "f24b40345208d4fddff38c61548abbbf402655e804a3635a71c6cc94d00645ec",
+      "encoded_sha256": "5ec6f23bc330fb0c4521307416a19c475996ec79dc7edfade7066b72a7841be7"
+    },
+    {
+      "source": "asset_library/production/runtime-827f50c9ce6733b8c155a47e701404449d3376ceef48c7888df77aac9889ae8b.webp",
+      "target": "res/castle_mist_v2-10-hull.png",
+      "original_source": "asset_library/reference/Resources/res/castle_mist_v2/10/hull.png",
+      "encoding": "webp-lossless",
+      "rgba_sha256": "a04da4e891b21954e9ddbe2c0b2e6a9b470465c72ccd287f9e5f2482ed1365a9",
+      "original_sha256": "6386caa5b0c6fa5d74cd3ac196af9b30c1153c0cfd64b5ff971abc6ba863cc3c",
+      "encoded_sha256": "e71196b3af94095800d902c1dd69851de9ae3ab7335edc6d3b2883deea626cd3"
+    },
+    {
+      "source": "asset_library/production/runtime-244d866b513d49d70c3e2c12087e568b395b55878286e6d3d4d773ffb0c37fd8.webp",
+      "target": "res/castle_mist_v2-10-room-5.png",
+      "original_source": "asset_library/production/castle_mist_v2-10-room-5.png",
+      "encoding": "webp-lossless",
+      "rgba_sha256": "4d5d7cf708134a7a98c64b421d969f5d605d38eecd86c7cff0ce1d3aac0068ff",
+      "original_sha256": "cacb85085bd06f532457fa27557aa476537b0f331730e64f0ed4abc8606e2df1",
+      "encoded_sha256": "d35b3fe3ed633b64e3cad61043ec892aa55286576bb7a5be4fbd40eaba47818b"
+    },
+    {
+      "source": "asset_library/production/runtime-dc77dfc1731535ac2c0e20609f2ea6deb2750b153bbf72b9401b4292adf4aa35.webp",
+      "target": "res/castle_mist_v2-10-turret.png",
+      "original_source": "asset_library/reference/Resources/res/castle_mist_v2/10/turret.png",
+      "encoding": "webp-lossless",
+      "rgba_sha256": "60ed5aead675fd9b00b26df640302978f110b36382dc95bb0d266a485d748824",
+      "original_sha256": "6fd3b970ff12757dd0568721aff6402e59dc25352d4cb340b6516778ecf1261a",
+      "encoded_sha256": "c6a958c9ddf81e31e3a3deb78a8b3a4405d8cd6a288c92a96ecde155616eacb5"
+    },
+    {
+      "source": "asset_library/production/runtime-059a1c1abac9c1f4581ce418ab3b479fb8f14451785d2155d1c8c727df3eef82.webp",
+      "target": "res/castle_mist_v2-10-wheel-1.png",
+      "original_source": "asset_library/reference/Resources/res/castle_mist_v2/10/wheel-1.png",
+      "encoding": "webp-lossless",
+      "rgba_sha256": "8a042b9d4508f790fdbffe23c02327652fd54c7d39bf0ec20d6ce4db22c221b2",
+      "original_sha256": "5dec8eb1f42cbbf6d645653172323c98146ee0fe1ae570a92fee931c758b605a",
+      "encoded_sha256": "11519ec1264f6e6b4be7cd4faae5d976ef84d474ff69e143f95bd8722f9433ed"
+    },
+    {
+      "source": "asset_library/production/runtime-ce9d775c3775bbd1b0d6272ccbdec4e499c95aed62f8731d52890c461d2b79fc.webp",
+      "target": "res/castle_mist_v2-10-wheel-2.png",
+      "original_source": "asset_library/reference/Resources/res/castle_mist_v2/10/wheel-2.png",
+      "encoding": "webp-lossless",
+      "rgba_sha256": "1ada096e576e35ff70e7c6a90b5f5d9510b6b8b771f98db225a9349e0730389e",
+      "original_sha256": "b3ee85c1075668659838d7071952e6a195e8882315c50471d73ab5caef07070b",
+      "encoded_sha256": "9f5121bd06f208ea95c6982c198f2182db145baa4e84235eb567da229b150c7d"
+    },
+    {
+      "source": "asset_library/production/runtime-72b0803eb7cc52996d4d684ce7a57ed39ef25f62842a2eda0c6612e67535dc48.webp",
+      "target": "res/merge_castle_original-reference.png",
+      "original_source": "asset_library/reference/Resources/res/merge_castle_original/reference.png",
+      "encoding": "webp-lossless",
+      "rgba_sha256": "11e165dda7c4c9ebe6174e7629d57317d667bc964c94624d6f5b5e8a17b387aa",
+      "original_sha256": "285655867321aa0a623d615a04ec30f3b9390ddf4dee8ed148162a43107e6285",
+      "encoded_sha256": "3e43eb196e7bc29c87e6813399d5e26ac3496b12d69ad9883fe5bcfaae3f7d0a"
+    },
+    {
+      "source": "asset_library/production/runtime-8a733dcdcd7a1bf2bb8d093fa3b40acb96bb675c10d2019fa9e246d11728e1e8.webp",
+      "target": "res/merge_castle_rebuild-ui-footpads.png",
+      "original_source": "asset_library/reference/Resources/res/merge_castle_rebuild/ui-footpads.png",
+      "encoding": "webp-lossless",
+      "rgba_sha256": "06c70ad3438a45431b1be1bc050d9d79b779176433e8c0ec51cff7bb09fa3708",
+      "original_sha256": "1586cbd9ab73e509cd3c99ff7118906ccd1097cdc96454c3cd7492641a6eea29",
+      "encoded_sha256": "efed56dab94f638bf7a7ee7ad0016e2bf325866080963d2a682f167ede373213"
+    },
+    {
+      "source": "asset_library/production/runtime-c04a090bd6d37bcb144f6f71d9d6cee51ffea44942a83596861cba2241239366.webp",
+      "target": "res/merge_castle_rebuild-ui-gear.png",
+      "original_source": "asset_library/reference/Resources/res/merge_castle_rebuild/ui-gear.png",
+      "encoding": "webp-lossless",
+      "rgba_sha256": "83873013640ea9ddbd1f04c90dc2566faf9783d0703bc601b11066da5414fdd7",
+      "original_sha256": "81c99eb135140f3313927131844a1e24da0ea1ef68a55da57e81447720486a88",
+      "encoded_sha256": "b04806b47125a75b8c5bf4c0188f9020e50ed7a00ff1bff3a90f857921ed110c"
+    },
+    {
+      "source": "asset_library/production/runtime-bfb17ceafb1cc43566da6d1d5bf6ee7ba66563b099d28f147aa560f315f0596e.webp",
+      "target": "res/merge_castle_rebuild-ui-slot.png",
+      "original_source": "asset_library/reference/Resources/res/merge_castle_rebuild/ui-slot.png",
+      "encoding": "webp-lossless",
+      "rgba_sha256": "b4f96938b6949fc1cd3feafe9f760812052ec742bd82e754f770ce4a6a6c71e3",
+      "original_sha256": "7c2b2f27aafbcd9d8a4877d5f4a9810ca0445e93c304ff5305894dd87688e087",
+      "encoded_sha256": "3d14f376dd5ab801a7810c616503a385491d14af736de52b56dc3513de3addb4"
+    },
+    {
+      "source": "asset_library/production/runtime-8b6d71e0f1a594aaff26c5375fdda02aff048b590486f135ead26cc766107b41.webp",
+      "target": "res/merge_castle_rebuild-ui-unit-plate.png",
+      "original_source": "asset_library/reference/Resources/res/merge_castle_rebuild/ui-unit-plate.png",
+      "encoding": "webp-lossless",
+      "rgba_sha256": "15d8cbf21fd552aa769031644914777e9510ad672f00c13b35111cd69f487b1d",
+      "original_sha256": "69ab4aaf992b7b515f145fe19236761e298aa8544224ecddefe01315ab63b2ec",
+      "encoded_sha256": "2abefbe70d38f808af5cf4723315c7cf788842cc463fb9d890ddcfe1e5d884a1"
+    },
+    {
+      "source": "asset_library/production/runtime-cb2a8fe0d68a95ddf5f618d2593b7ca56a86fa313f4215025fe2f76e1bba0d2a.webp",
+      "target": "res/roulette-mimic-discard-v1.png",
+      "original_source": "asset_library/reference/Resources/res/roulette/mimic-discard-v1.png",
+      "encoding": "webp-lossless",
+      "rgba_sha256": "990f55c9cb6e89f5cbc14e69cac05ce919ccaf2c048df1d5d629d7989f9d330d",
+      "original_sha256": "69c107b68d1f8e221a71a44f68c9cb463072ada4492c05331a354151f7eff089",
+      "encoded_sha256": "65c1f5185c509c571629dab64fb07368ab202892335a9d495159622de4e7fc06"
+    }
+  ]
+}

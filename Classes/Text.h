@@ -4088,6 +4088,7 @@ const char* const textId[] = {
 	"roulette-mimic-discard-v1",
 	"monster_parts-atlas-0",
 	"monster_parts-atlas-1",
+#include "PortraitAssetNames.inc"
 
 
 	"인벤토리",//TEXT_GAMEMENU_SINGLEINVEN

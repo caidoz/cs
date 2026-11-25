@@ -1,4 +1,4 @@
-﻿// Original reference pixels, clipped by native geometry. No recoloring,
+// Original reference pixels, clipped by native geometry. No recoloring,
 // regenerated silhouettes, or independent horizontal/vertical image scaling.
 namespace OriginalCastle {
 using Poly=std::vector<cocos2d::Vec2>;
@@ -6,8 +6,8 @@ struct Span {float a,b;};
 constexpr float W=1089.f,H=1445.f;
 float previewScale=0,previewLeft=0,previewLift=0;
 int widthStage(){return siegeHullStage>=0?siegeHullStage:std::max(0,std::min(9,run.stage));}
-float zoom(){return previewScale>0?previewScale*966.f/CastleArtGeometry::width(widthStage()):CastleArtGeometry::scale(DX,widthStage());}
-float left(){const float center=previewScale>0?previewLeft+W*previewScale*.5f:DX*.5f;return center-CastleArtGeometry::center(widthStage())*zoom();}
+float zoom(){return previewScale>0?previewScale*966.f/CastleArtGeometry::width(widthStage()):castleDisplayScale(widthStage());}
+float left(){const float center=previewScale>0?previewLeft+W*previewScale*.5f:DX*.19f;return center-CastleArtGeometry::center(widthStage())*zoom();}
 float lift(){return previewScale>0?previewLift:34*DX/640.f+castleSceneLift()+castleArtOffset(widthStage());}
 // Coordinates, rooms, wheels and hull share one uniform transform.
 float nativeX(float x){return x;}
@@ -27,7 +27,14 @@ std::vector<Poly> outline(){return {
  {{63,430},{1030,430},{1030,947},{1044,970},{1044,1027},{1029,1027},{1029,1105},{1041,1120},{1041,1166},{1027,1178},{1027,1335},{65,1335},{65,1178},{54,1165},{54,1118},{65,1106},{65,1027},{52,1025},{52,972},{64,958}}
  ,{{245,83},{250,83},{257,96},{261,102},{269,106},{276,113},{279,122},{276,131},{269,137},{264,143},{262,151},{235,151},{232,143},{222,138},{217,131},{216,120},{220,112},{230,106},{235,99},{239,91}}
  };}
-std::vector<Poly> rooms(){return {rect(196,795,319,180),rect(196,548,319,181),rect(550,795,352,180),rect(550,548,352,181)};}
+std::vector<Poly> visualRooms(){
+ std::vector<Poly> result;
+ for(const auto& r:CastleFiveFloors::Rooms[widthStage()])result.push_back(rect(r.x,r.y,r.w,r.h));
+ return result;
+}
+std::vector<Poly> rooms(){
+ auto result=visualRooms();result.erase(result.begin());return result;
+}
 std::vector<Poly> patches(){return {rect(337,244,124,133),rect(485,238,100,134),rect(608,231,125,143)};}
 std::vector<Poly> oldCannon(){return {{{348,281},{406,255},{436,252},{449,259},{452,286},{437,298},{382,307},{354,300}},{{345,296},{401,296},{417,310},{414,341},{451,344},{453,370},{340,370},{340,350},{359,341},{368,323},{349,316}}};}
 Poly start(){return {{294,1090},{315,1063},{516,1063},{514,1047},{539,1057},{548,1037},{558,1057},{583,1047},{577,1063},{779,1063},{800,1085},{800,1165},{778,1187},{316,1187},{294,1165}};}
@@ -75,12 +82,13 @@ void build(int kind){
  m.info.setTriangles(t);m.info.setRect(cocos2d::Rect(0,0,W,H));
 }
 // Recolor only the dark inset of the existing dock; retain its artwork and gold trim.
-cocos2d::GLProgram* navProgram(int selected){
- static cocos2d::GLProgram* programs[5]={};
+cocos2d::GLProgram* navProgram(int selected,bool cropped=false){
+ static cocos2d::GLProgram* cache[2][5]={};auto& programs=cache[cropped?1:0];
  selected=std::max(0,std::min(4,selected));
  if(programs[selected])return programs[selected];
  const std::string fragment=std::string("#ifdef GL_ES\nprecision mediump float;\n#endif\nvarying vec4 v_fragmentColor;\nvarying vec2 v_texCoord;\n")+
- "void main(){vec4 p=texture2D(CC_Texture0,v_texCoord);vec3 c=p.rgb;float x=v_texCoord.x*1089.0;float y=v_texCoord.y*1445.0;"+
+ "void main(){vec4 p=texture2D(CC_Texture0,v_texCoord);vec3 c=p.rgb;"+
+ (cropped?std::string("float x=v_texCoord.x*942.0+76.0;float y=v_texCoord.y*164.0+1275.0;"):std::string("float x=v_texCoord.x*1089.0;float y=v_texCoord.y*1445.0;"))+
  "float tab=floor(clamp((x-76.0)/188.2,0.0,4.0));float selected="+std::to_string(selected)+".0;"+
  "if(y>1298.0&&y<1428.0){"+
  "if(abs(tab-selected)<0.5&&c.r>c.g*1.45&&c.g>c.b*1.3&&c.r<0.58){float l=max(c.r,0.15);c=vec3(l*.23,l*.68,min(1.0,l*1.65));}"+
@@ -111,11 +119,6 @@ void draw(int kind,float drop=0,float angle=0,float overrideZoom=0,float originX
 }
 void cut(int x,int y,int w,int h,int dx,int dy){int img=MERGE_ORIGINAL_REFERENCE_IMG;if(!sprite[img])LoadImg(img);float z=zoom();DrawImageScale(w,h,x,y,(int)(dx*z),(int)((H-dy)*z+lift()),false,0,0,0,0,z,z,sprite[img],img);}
 void wood(int x,int y,int w,int h){for(int n=0;n<h;n+=28)cut(300,1252,w,std::min(28,h-n),x,y+n);}
-void wheel(int side,float angle){
- const int img=MERGE_ORIGINAL_WHEEL_IMG;if(!sprite[img])LoadImg(img);if(!sprite[img])return;
- const auto size=sprite[img]->getTexture()->getContentSizeInPixels();const float z=zoom();
- RotateImage((int)size.width,(int)size.height,0,0,(int)((side?966:126)*z),(int)(96*DX/640.f+99*z+castleSceneLift()),false,angle,0,0,198*z/1140.f,cocos2d::Vec2(.5f,.5f),sprite[img],img);
-}
 // Pixel castle parts share the existing castle coordinate system; UI remains original.
 void pixelPart(int part,int x,int y,int w,int h,float drop=0){
  const int img=CASTLE_PIXEL_FIRST_IMG+part;if(!sprite[img])LoadImg(img);if(!sprite[img])return;
@@ -124,7 +127,7 @@ void pixelPart(int part,int x,int y,int w,int h,float drop=0){
  DrawImageScale((int)size.width,(int)size.height,0,0,b.x,b.y,false,0,0,0,0,b.w/size.width,b.h/size.height,sprite[img],img);
 }
 void pixelHull(bool closed,float angle){
- if(!closed){const auto rr=rooms();for(int i=0;i<5;++i){const auto& p=rr[i];pixelPart(i+1,(int)p[0].x,(int)p[0].y,(int)(p[1].x-p[0].x),(int)(p[2].y-p[0].y));}}
+ if(!closed){const auto rr=visualRooms();for(int i=0;i<5;++i){const auto& p=rr[i];pixelPart(i+1,(int)p[0].x,(int)p[0].y,(int)(p[1].x-p[0].x),(int)(p[2].y-p[0].y));}}
  pixelPart(0,0,0,1089,1445);
  for(int side=0;side<2;++side){const int img=CASTLE_PIXEL_FIRST_IMG+6+side;if(!sprite[img])LoadImg(img);if(!sprite[img])continue;
   sprite[img]->getTexture()->setAliasTexParameters();const auto sz=sprite[img]->getTexture()->getContentSizeInPixels();const float z=zoom();

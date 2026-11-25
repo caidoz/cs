@@ -10,8 +10,8 @@ struct UpgradeVisual {
     explicit UpgradeVisual(int grade):level(std::max(0,std::min(5,grade))),motes(level?1+(level-1)/2:0),beamScale(1.f+level*.012f){}
 };
 inline Kind kind(int castle) {
-    static const Kind types[10]={Stone,Shell,Missiles,Rapid,Shell,Shell,Laser,Magnetic,Laser,Laser};
-    return types[std::max(0,std::min(9,castle))];
+    static const Kind types[19]={Stone,Shell,Missiles,Rapid,Shell,Shell,Laser,Magnetic,Laser,Laser,Laser,Shell,Shell,Missiles,Magnetic,Rapid,Laser,Shell,Shell};
+    return types[std::max(0,std::min(18,castle))];
 }
 struct Sequence {
     Kind type=Stone;

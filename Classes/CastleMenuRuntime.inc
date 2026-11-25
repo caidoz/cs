@@ -79,6 +79,21 @@ void CastleMenuOpen() { CastleProgressEnsure();
         gCastleFacilityTab=true;scY[MENU_CASTLE]=CastleUpgradeBlocks::PreviewHeight(DY)+72+row*(CastleUpgradeBlocks::CardHeight(DY)+CastleUpgradeBlocks::Gap);castlePendingFacility=-1;
     }
 }
+bool CastleSelectDeparture(int c){
+ if(c<0||c>=CastleMenuModel::Count)return false;
+ CastleProgressEnsure();auto& p=robin.castleProgress;
+ if(!CastleMenuModel::Owned(p,c))return false;
+ if(robin.castle==c){gMobileCastleVisual=c;return true;}
+        if(CastleInventoryUsed()>CastleInventoryCapacity(c)||CastleEquippedCells()>CastleEquipmentCapacity(c)||LoadoutCellUsed()>CastleEquipmentCapacity(c)||LoadoutUsed()>LOADOUT_BASE+c+p.rooms[c][1]) {
+            castleMessage="용량 초과: 적재 아이템과 배치 장비를 먼저 정리해주세요."; return false;
+        }
+ const long long oldGoldPerHour=CastleIncomePerHour(),oldGoldCap=CastleIncomeCap();
+ const int oldEnergySeconds=CastleEnergyRecoverySeconds();
+ robin.castle=c;gMobileCastleVisual=c;
+ CastleProductionRebase(oldGoldPerHour,oldEnergySeconds,oldGoldCap);CastleSaveChanges();
+ castleMessage=u8"\ucd9c\uc815 \uc131\uc73c\ub85c \uc120\ud0dd\ud588\uc2b5\ub2c8\ub2e4.";
+ return true;
+}
 bool CastleMenuCommand(int func) {
     if(DebugControlsOpen() && LobbyCastleDebugActive()){
         const bool room=func>=TOUCH_FUNC_CASTLE_FACILITY_UPGRADE&&func<TOUCH_FUNC_CASTLE_FACILITY_UPGRADE+4;
@@ -118,11 +133,7 @@ bool CastleMenuCommand(int func) {
     case TOUCH_FUNC_CASTLE_NEW_ROOMS: break;
     case TOUCH_FUNC_CASTLE_NEW_PARTS: castleCategory=1; break;
     case TOUCH_FUNC_CASTLE_NEW_SELECT:
-        if(!CastleMenuModel::Owned(p,c)) break;
-        if(CastleInventoryUsed()>CastleInventoryCapacity(c)||CastleEquippedCells()>CastleEquipmentCapacity(c)||LoadoutCellUsed()>CastleEquipmentCapacity(c)||LoadoutUsed()>LOADOUT_BASE+c+p.rooms[c][1]) {
-            castleMessage="용량 초과: 적재 아이템과 배치 장비를 먼저 정리해주세요."; break;
-        }
-        robin.castle=c; gMobileCastleVisual=c; CastleProductionRebase(oldGoldPerHour,oldEnergySeconds,oldGoldCap);CastleSaveChanges(); castleMessage="출정 성으로 선택했습니다."; break;
+        CastleSelectDeparture(c);break;
     case TOUCH_FUNC_CASTLE_NEW_BUY:
         if(!CastleMenuModel::Owned(p,c)) {
             if(CastleMenuModel::Unlocked(p,c)) castleModal=3;

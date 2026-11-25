@@ -5562,7 +5562,8 @@ void CrewMenuDraw(int x, int y, float zoom)
  if(drawHandle==MD_LOBBY)y=DY-(GNBHEIGHT-GNB_INIT_HEIGHT)-LOBBY_BAR_H-3*_2X;
  int i,j;
  const float WINX=DX*zoom;
- const float WINY=Max(1.f,(float)y-12);
+ const int bottom=drawHandle==MD_LOBBY?MergeRouletteBottomNavHeight()+10:12;
+ const float WINY=Max(1.f,(float)y-bottom);
  int itemType,itemDetail,itemGrade,itemLv,itemStar;long itemCnt;
  MemRect(x,y,(int)WINX,y,0x16313B);
  DrawMenuReferencePanel(x,y,(int)WINX,(int)WINY,0,0x16313B,0x49777A);
@@ -5576,7 +5577,6 @@ void CrewMenuDraw(int x, int y, float zoom)
  }
  SetSectionClip(0,y-72*zoom,DX,WINY-92*zoom,false);
 
-	curHero = ROBIN;
 
 	std::vector<int> itemInvenIdxList(GetMaxInven());
 
@@ -5655,6 +5655,8 @@ void CrewMenuDraw(int x, int y, float zoom)
 	}
 
 	int scrollH = WINY - (float)92 * zoom;
+ scT[MENU_CREW]=Max(0,((j+3)/4)*CREW_GAP_Y*zoom-scrollH);
+ scY[MENU_CREW]=Min(scT[MENU_CREW],Max(0,scY[MENU_CREW]));
 
 	DrawScroll(
 		x + (float)612 * zoom,

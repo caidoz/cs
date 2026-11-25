@@ -1,7 +1,10 @@
 ﻿#pragma once
 bool MergeRouletteActive();
+void MergeRouletteUiFrame(int x,int top,int width,int height,int style=4);
+void MergeRouletteUiGlyph(int icon,int x,int top,int width,int height);
 bool MergeTutorialReviewDrive(void (*trace)(const char*),void (*capture)(const char*));   //CS_TUTORIAL_REVIEW 운전(MergeTutorialRuntime.inc)
 bool MergeRouletteTitleCastlesDraw();
+bool MergeRouletteTitleCastlesLayoutReview();
 void SharedRewardShow(const ITEM* items,int count);
 bool SharedRewardOpen();
 void SharedRewardDraw();
@@ -29,3 +32,5 @@ bool MergeRouletteTouch(int phase,int id,float x,float y);
 bool MergeRouletteEntryChoiceReview(int step);
 bool MergeRouletteVaultReview(int step);          // 로비 금고 수거 단추·날아가기 검증(CS_VAULT_COLLECT_REVIEW)
 bool MergeRouletteDebugTouchReview();
+
+void MergeRouletteLobbyTopbarDraw();

@@ -85,6 +85,11 @@ bool AppDelegate::applicationDidFinishLaunching() {
 	//내려받은 콘텐츠보다 앞에 끼워야 하므로 ContentBoot 뒤가 맞다. 앞에서
 	//넣으면 ContentBoot 이 자기 폴더를 다시 맨 앞에 꽂아 뒤로 밀려난다.
 	ContentOverrideBoot();
+	// External artwork is available only to the isolated native review process.
+	if (std::getenv("CS_MERGE_REVIEW") && std::getenv("CS_PORTRAIT_REVIEW")) {
+		if (const char* sample = std::getenv("CS_PORTRAIT_SAMPLE_ASSETS"))
+			FileUtils::getInstance()->addSearchPath(sample, true);
+	}
 
 #ifdef SDKBOX_ENABLED
 	sdkbox::PluginAdMob::init();
@@ -97,6 +102,7 @@ bool AppDelegate::applicationDidFinishLaunching() {
 		glview = GLViewImpl::createWithRect("Castle Survivor", cocos2d::Rect(0, 0, designResolutionSize.width, designResolutionSize.height));
 		// Set the design resolution
 		glview->setFrameSize(640, 640 * 134 / 100);//WINDOWS
+		if(const char* height=getenv("CS_WINDOW_HEIGHT"))glview->setFrameSize(640,Max(850,Min(1600,atoi(height))));
 		if(getenv("CS_MERGE_REVIEW")) {
 			const char* height=getenv("CS_MERGE_REVIEW_HEIGHT");
 			glview->setFrameSize(640,height?Max(850,Min(1600,atoi(height))):850);

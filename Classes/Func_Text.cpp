@@ -7,6 +7,7 @@
 namespace {
 std::unordered_map<std::string,int> firstFontLabel;
 int indexedFontLabels=0;
+bool pixelUiText=false;
 std::vector<std::vector<int>> lastGlyphColors;
 }
 
@@ -303,6 +304,9 @@ void LoadFontLabelFromText(const char* str)
 		curFontLabelCnt++;
 	}
 
+	const char* wantedFont=pixelUiText?"fonts/neodgm.ttf":"fonts/Pretendard-Bold.otf";
+	auto fontConfig=fontLabel[getFontLabelIdx]->getTTFConfig();
+	if(fontConfig.fontFilePath!=wantedFont){fontConfig.fontFilePath=wantedFont;fontLabel[getFontLabelIdx]->setTTFConfig(fontConfig);}
 	const int opacity=(int)(m_lgrpAlpha * EMPTY / 32);
 	if(fontLabel[getFontLabelIdx]->getOpacity()!=opacity)fontLabel[getFontLabelIdx]->setOpacity(opacity);
 	fontLabel[getFontLabelIdx]->setRotation(0);
@@ -543,6 +547,10 @@ float CenterTextStr(const char* str, int x, int y, float zoom)
 	return rtn;
 }
 
+float CenterPixelTextStrSolid(const char* str,int x,int y,float zoom){
+ const bool previous=pixelUiText;pixelUiText=true;
+ const float result=CenterTextStrSolid(str,x,y,zoom);pixelUiText=previous;return result;
+}
 float CenterTextStrSolid(const char* str, int x, int y, float zoom)
 {
 	float rtn = StringWidth(str, zoom);

@@ -1,0 +1,53 @@
+{
+  "visualStages": 19,
+  "starter": {
+    "hull": "res/portrait-castle-01.png",
+    "optionalDebugInterior": "res/portrait-starter-interior.png",
+    "nativeSize": [
+      256,
+      294
+    ],
+    "gunCellSize": [
+      112,
+      96
+    ],
+    "gunOrigin": [
+      144,
+      151
+    ],
+    "fixedBodyBottomSourceY": 84,
+    "stoneTerraceY": 235,
+    "frontWheelAnchor": 0.8,
+    "footOffsetX": 61,
+    "baseFromFloor": 47,
+    "art": "approved original hull, wheel and articulated crane preserved"
+  },
+  "royal": {
+    "hull": "res/portrait-castle-19.png",
+    "nativeSize": [
+      323,
+      829
+    ],
+    "art": "ornate royal architecture; starter matte palette/shading; coherent front/right/top volume",
+    "gun": "res/portrait-turret-19.png",
+    "gunSize": [
+      276,
+      169
+    ],
+    "gunOrigin": [
+      202,
+      702
+    ],
+    "footOffsetX": 69,
+    "baseFromFloor": -42,
+    "frontWallOcclusion": [
+      182,
+      716,
+      44,
+      98
+    ],
+    "cannonArt": "original barrel and wheel assets; separate lower pedestal hidden by draw segmentation, no new connector"
+  },
+  "runtimeImageBudgetMiB": 200,
+  "excluded": "concept sheets, alternative royal hulls, backgrounds samples and full-redraw interiors are not bundled"
+}

@@ -29,6 +29,7 @@ float CenterText(int, int, int, float zoom);
 float CenterTextSolid(int, int, int, float zoom);
 float CenterTextStr(const char*, int, int, float zoom);
 float CenterTextStrSolid(const char*, int, int, float zoom);
+float CenterPixelTextStrSolid(const char*, int, int, float zoom);
 void FrameText(const char* str, int x, int y, int dx, int line, int page, float zoom);
 int ParseText(char);
 int LineText(int, int, int, int, float zoom);

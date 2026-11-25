@@ -2094,6 +2094,7 @@ void PlayKey(int obj)
 				false, false, false, false, false);
 			break;
 		case AVK_POPUP_CREWLIST:
+			if(drawHandle==MD_LOBBY)while(popUpCnt>0){menuDepth=0;ClosePopUp();}
 			curMenuBack = curMenu;
 			curMenu = MENU_CREW;
 			menuDepth = 0;
