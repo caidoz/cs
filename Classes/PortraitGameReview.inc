@@ -58,7 +58,9 @@ bool portraitReviewLobby(){
    reviewTrace(valid?"PASS camp renders the three highest owned grades without duplicates":"FAIL camp owned grade order");
    firstFire=campFireFrame;reviewCapture("starter-camp-three");++phase;
   }else if(phase==6&&firstFire!=campFireFrame){reviewTrace("PASS actual campfire animation advances frames");reviewCapture("starter-fire-next");++phase;
-  }else if(phase==7){
+  }else if(phase==7&&std::getenv("CS_PORTRAIT_CAMP_ANIMATION")){
+   static int frame=0,lastTick=-100;if(ticks-lastTick>=6){lastTick=ticks;char name[48];std::snprintf(name,sizeof(name),"camp-life-%02d",frame++);reviewCapture(name);if(frame>=16)++phase;}
+  }else if(phase==7||phase==8){
    portraitStarterInteriorTouch(0,991,x,y);portraitStarterInteriorTouch(2,991,x,y);bool valid=starterInteriorReveal==0;
    portraitStarterInteriorTouch(0,991,x,y);portraitStarterInteriorTouch(1,991,x-40*q.scale,y);portraitStarterInteriorTouch(3,991,x-40*q.scale,y);valid=valid&&starterInteriorReveal==0;
    active=true;const bool battle=portraitStarterInteriorTouch(0,991,x,y);active=false;

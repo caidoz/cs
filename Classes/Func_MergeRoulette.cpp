@@ -47,6 +47,8 @@ void MergeTutorialBeginBattle();void MergeTutorialRememberAllyPlate(int x,int y,
 #include <memory>
 #include <ctime>
 
+void SetLobbyCampLight(bool enabled,float x,float y,float radius,float time);
+void ApplyLobbyFireEffect(cocos2d::Sprite* target,float time,bool foreground);
 namespace {
 using namespace MergeRoulette;
 Run run;

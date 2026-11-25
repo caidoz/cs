@@ -107,7 +107,7 @@ Box portraitCastleBox(const Layout& l){
   const float gunWidth=c==0?StarterCastleRig::W*z:sprite[gun]?sprite[gun]->getTexture()->getContentSizeInPixels().width*z:100*z;
   const float left=std::min(0.f,b.w*.15f-wheel*.5f);
   const float right=std::max((float)b.w,b.w*PortraitCastleArt::FrontWheelAt(c)+gunWidth-portraitCannonFootX(c)*z);
-  b.x=(int)((DX-(right-left))*.5f-left);
+  b.x=(int)(28*l.scale-left);
  }
  if(siegeActive)b.x=DX-b.x-b.w;return b;
 }

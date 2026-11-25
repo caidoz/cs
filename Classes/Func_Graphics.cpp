@@ -25,6 +25,7 @@
 #include "StageBackgroundSeam.inc"
 #include "CastleRoomUpgradeBlend.inc"
 #include "CastleFacilityTone.inc"
+#include "LobbyCampLighting.inc"
 static void ApplyRasterFilter(cocos2d::Sprite* s,int index) {
  const bool regional=index>=STAGEBG_FIRST_IMG && index<STAGEBG_FIRST_IMG+STAGEBG_PER_REGION*STAGEBG_REGION_CNT && (index-STAGEBG_FIRST_IMG)%STAGEBG_PER_REGION<3;
  const bool smooth=index==MENU_RENEWAL_ROOM_IMG||index==MENU_RENEWAL_DUNGEON_IMG||regional||IsAuthoredCastleImage(index)||(index>=HYBRID_PARTS_IMG && index<=HYBRID_FLEET_LAST_IMG) || index==TITLE_IMG ||
@@ -942,6 +943,7 @@ void LoadSpriteFromTexture(int textureIdx)
 //드로우 콜마다 렌더타겟을 바인딩하거나 renderer->render() 로 플러시하지 않는다.
 //gRenderTarget �� nullptr �̸� ��������Ʈ�� ���� ���̴� ���Ž� ��θ�?����.
 void AfterSpriting(cocos2d::Sprite* src) {
+ ApplyLobbyCampLight(src);
 	AuditDrawnTexture(src->getTexture());
 
 	if (gRenderTarget)
