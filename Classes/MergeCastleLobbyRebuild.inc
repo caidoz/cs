@@ -445,10 +445,12 @@ void drawLobbyBottomNav(float drop=0.f,bool interactive=true){
  const int actions[5]={TOUCH_FUNC_SHOP,TOUCH_FUNC_COLLECTIONS,TOUCH_FUNC_LOBBY_ADVENTURE,TOUCH_FUNC_POPUP_CREWLIST,TOUCH_FUNC_POPUP_CASTLEMENU};
  int selected=2;if(popUpCnt>0){const int t=popUp[0].type;if(t==POPUPTYPE_CREWLIST||t==POPUPTYPE_CREWUPGRADE)selected=3;else if(t==POPUPTYPE_COLLECTIONS)selected=1;else if(t==POPUPTYPE_SHOPINFO||t==POPUPTYPE_EVENTSHOP)selected=0;else if(t==POPUPTYPE_CASTLEMENU)selected=4;}else if(curMenu==MENU_SHOP)selected=0;
  for(int i=0;i<5;++i){
-  const Box b={nav.x+i*nav.w/5,nav.y,nav.w*(i+1)/5-nav.w*i/5-std::max(1,(int)(2*s)),nav.h};
+  const Box base={nav.x+i*nav.w/5,nav.y,nav.w*(i+1)/5-nav.w*i/5-std::max(1,(int)(2*s)),nav.h};
+  const float pop=LobbyNavPop(i);if(pop<=.001f)continue;
+  const Box b={base.x+(int)(base.w*(1-pop)*.5f),base.y-(int)(base.h*(1-pop)*.5f),(int)(base.w*pop),(int)(base.h*pop)};
   portraitSkin(i==selected?3:2,b);
-  const int iconWidth=nav.w*(i+1)/5-nav.w*i/5-(int)(22*s);
-  legacyLobbyIcon(i,{b.x+(b.w-iconWidth)/2,b.y-(int)(6*s),iconWidth,b.h-(int)(12*s)});
+  const int iconWidth=(int)((nav.w*(i+1)/5-nav.w*i/5-22*s)*pop);
+  legacyLobbyIcon(i,{b.x+(b.w-iconWidth)/2,b.y-(int)(6*s*pop),iconWidth,b.h-(int)(12*s*pop)});
   if(interactive)SetRectPoint(b.x,b.y,b.w,b.h,actions[i]);
  }
 }

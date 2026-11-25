@@ -6,7 +6,9 @@ static int ticks=0;
 static bool ready=false;
 static void Button(int x,int y,int w,int h,const char* label,int command,bool enabled){
  UiButtonStyle style;style.fill=0x29483E;
- DrawUiButton(x,y,w,h,label,command,false,enabled,style);
+ const float oldX=uiSceneMotionX;
+ if(drawHandle==MD_TITLE&&titleLobbyClock<0){const int slot=command==TOUCH_FUNC_TITLE_LOGIN_GOOGLE?0:command==TOUCH_FUNC_TITLE_LOGIN_APPLE?1:2;uiSceneMotionX=DX*(1.f-TitleEntranceEase(.80f+slot*.13f,1.65f+slot*.13f));}
+ DrawUiButton(x,y,w,h,label,command,false,enabled,style);uiSceneMotionX=oldX;
 }
 static void Draw(){
  ResetRectPoint();
@@ -29,6 +31,7 @@ static void Draw(){
 #endif
  Button(x,guestY,w,h,"게스트 로그인",TOUCH_FUNC_TITLE_LOGIN_GUEST,true);
  Button(DX-110,DY-14,96,36,"Reset",TOUCH_FUNC_TITLE_RESET_SAVE,true);
+ if(titleEntranceClock<1.95f&&titleLobbyClock<0)ResetRectPoint();
 }
 }
 bool TitleLoginBusy(){return drawHandle==MD_TITLE&&(TitleLogin::requested||TitleLogin::resetPending);}

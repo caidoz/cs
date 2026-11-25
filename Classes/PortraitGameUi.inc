@@ -59,15 +59,19 @@ void drawPortraitLobby(const Layout& l){
  MemRect(0,p.statsTop+(int)(6*s),DX,p.statsTop+(int)(6*s),0x030A13);
  const int stage=std::max(0,std::min(18,run.stage));
  char line[96];std::snprintf(line,sizeof(line),u8"%s \u00b7 %d\ub2e8\uacc4",PortraitCastleArt::Names[stage],stage+1);
+ uiSceneMotionY=titleLobbyClock>=0?-160*s*(1.f-TitleLobbyEase(.64f,1.1f)):0;
  const Box castleTag={DX/2-(int)(150*s),p.statsTop+(int)(36*s),(int)(300*s),(int)(28*s)};portraitSkin(4,castleTag);
  label(line,DX/2,castleTag.y-(int)(3*s),.48f,0xF3E4A5);
+ uiSceneMotionY=titleLobbyClock>=0?-260*s*(1.f-TitleLobbyEase(.76f,1.24f)):0;
  const Box destination={(int)(24*s),p.stageTop,DX-(int)(48*s),(int)(88*s)};portraitSkin(4,destination);
  portraitImage(PORTRAIT_NIGHT_IMG,{destination.x+(int)(16*s),destination.y-(int)(16*s),(int)(100*s),(int)(56*s)});
  const int textCenter=destination.x+(destination.w+(int)(120*s))/2;
  label(StageBg::RegionName(stage/10),textCenter,destination.y-(int)(14*s),.62f);
  std::snprintf(line,sizeof(line),"STAGE %02d \u00b7 WAVE %02d / 15",stage+1,std::max(1,std::min(15,(int)robin.curWaveIdx+1)));
  label(line,textCenter,destination.y-(int)(48*s),.52f,0xEFE5BF);
+ uiSceneMotionY=titleLobbyClock>=0?-240*s*(1.f-TitleLobbyEase(.88f,1.36f)):0;
  const Box start=lobbyStart(l);drawLobbyStartButton(start);
+ uiSceneMotionY=0;
  drawLobbyBottomNav(0,true);
  // Existing expeditions/PVP remain reachable; upgrades keep their existing UI.
  Box pvp=lobbyPvp(l);

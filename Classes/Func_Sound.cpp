@@ -1,8 +1,24 @@
 ﻿#include "Func.h"
+#include "TitleLobbyMotion.h"
+#include <cstdio>
+#include <cstdlib>
+
+namespace { int campMusicId=-1; }
+static void StopCampMusic(){if(campMusicId>=0){AudioEngine::stop(campMusicId);campMusicId=-1;}}
+void PlayCampMusic(){
+ if(!option.bgm){StopCampMusic();return;}
+ if(campMusicId>=0){
+  static bool logged=false;if(!logged&&std::getenv("CS_CAMP_AUDIO_REVIEW")&&AudioEngine::getState(campMusicId)==AudioEngine::AudioState::PLAYING&&AudioEngine::getDuration(campMusicId)>47){logged=true;std::printf("PASS original 48-second camp loop decoded and playing in native audio engine\n");std::fflush(stdout);}return;
+ }
+ if(curID>=0){AudioEngine::stop(audioID[curID]);curID=-1;}
+ campMusicId=AudioEngine::play2d("res/lobby-embers-at-rest.ogg",true,VOLUME_BGM,nullptr);
+}
+
 
 // Sound 관련
 void PlayMusic(int idx)
 {
+ if(idx>=0&&idx<M_ROULETTEUP)StopCampMusic();
 	if (idx < 0)
 		return;
 
@@ -45,6 +61,7 @@ void PlayMusic(int idx)
 
 void Stop()
 {
+ StopCampMusic();
 	if (curID != -1)
 		AudioEngine::stop(audioID[curID]);
 

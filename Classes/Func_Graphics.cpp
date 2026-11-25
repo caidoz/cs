@@ -943,12 +943,22 @@ void LoadSpriteFromTexture(int textureIdx)
 //���?visit() ���� �׸���. Ÿ���� ������/���� ������ �� ���� begin/end �ϹǷ�
 //드로우 콜마다 렌더타겟을 바인딩하거나 renderer->render() 로 플러시하지 않는다.
 //gRenderTarget �� nullptr �̸� ��������Ʈ�� ���� ���̴� ���Ž� ��θ�?����.
-float titleLobbyClock=-1.f,uiSceneMotionY=0.f;
+float titleLobbyClock=-1.f,uiSceneMotionY=0.f,uiSceneMotionX=0.f,titleEntranceClock=0.f;
 void BeginTitleLobbyMotion(){titleLobbyClock=0.f;}
-void AdvanceTitleLobbyMotion(float dt){if(titleLobbyClock>=0){titleLobbyClock+=std::max(0.f,std::min(.1f,dt));if(titleLobbyClock>=1.15f)titleLobbyClock=-1.f;}}
+void AdvanceTitleLobbyMotion(float dt){if(titleLobbyClock>=0){titleLobbyClock+=std::max(0.f,std::min(.1f,dt));if(titleLobbyClock>=2.10f)titleLobbyClock=-1.f;}}
 float TitleLobbyEase(float begin,float end){if(titleLobbyClock<0)return 1.f;float t=std::max(0.f,std::min(1.f,(titleLobbyClock-begin)/(end-begin)));return 1.f-(1.f-t)*(1.f-t)*(1.f-t);}
+float TitleEntranceEase(float begin,float end){float t=std::max(0.f,std::min(1.f,(titleEntranceClock-begin)/(end-begin)));return t*t*(3.f-2.f*t);}
+float LobbyTopbarDrop(){
+ if(titleLobbyClock<0)return 0;float t=titleLobbyClock-.36f;
+ if(t<.48f){float q=std::max(0.f,t/.48f);return (DY+120*DX/640.f)*(1-q)*(1-q)*(1-q);}
+ float q=t-.48f;return -14*DX/640.f*std::exp(-7*q)*std::sin(22*q);
+}
+float LobbyNavPop(int i){
+ if(titleLobbyClock<0)return 1;float t=std::max(0.f,std::min(1.f,(titleLobbyClock-.98f-i*.13f)/.42f));
+ if(t<=0)return 0;float q=t-1;return 1+2.70158f*q*q*q+1.70158f*q*q;
+}
 void AfterSpriting(cocos2d::Sprite* src) {
- const auto scenePosition=src->getPosition();if(uiSceneMotionY!=0)src->setPositionY(scenePosition.y+uiSceneMotionY);
+ const auto scenePosition=src->getPosition();if(uiSceneMotionY!=0||uiSceneMotionX!=0)src->setPosition(scenePosition+cocos2d::Vec2(uiSceneMotionX,uiSceneMotionY));
  ApplyLobbyCampLight(src);
 	AuditDrawnTexture(src->getTexture());
 
@@ -962,7 +972,7 @@ void AfterSpriting(cocos2d::Sprite* src) {
 
 	//���?��ε�?�̹� �����ӿ� �� Ǯ ��������Ʈ�� �����?�д�.
 	//Core::Run �� ������ �������� ��������Ʈ ���¸� �ǵ����� �� ���δ�.
-	if(uiSceneMotionY!=0)src->setPosition(scenePosition);
+	if(uiSceneMotionY!=0||uiSceneMotionX!=0)src->setPosition(scenePosition);
 	curRenderSpriteArr[curRenderCnt] = getSpriteIdx;
 	curRenderCnt++;
 

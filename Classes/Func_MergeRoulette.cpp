@@ -2011,7 +2011,9 @@ void drawWorld(const Layout& l,bool combat) {
      portraitNight(l.ground,portraitCastleZoom(l));}
     const int viewportTop=DY-(int)(72*s),viewportBottom=l.arenaBottom+(int)(8*s);
     SetSectionClip(0,viewportTop,DX,std::max(1,viewportTop-viewportBottom),false);
-    drawCastleHull(l,combat);
+    const float savedMotionX=uiSceneMotionX;
+    if(titleCampOnly){const Box approach=portraitCastleBox(l);uiSceneMotionX=-(approach.x+approach.w+20*l.scale)*(1.f-TitleEntranceEase(0.f,2.4f));}
+    drawCastleHull(l,combat);uiSceneMotionX=savedMotionX;
     if(nativeTitleBodyOnly)return;
     if(!combat){drawPortraitLobbyCamp(l);UnSectionClip(false);return;}
     //---- 데크의 줄 ----
@@ -4276,6 +4278,7 @@ void MergeRouletteUiFrame(int x,int top,int width,int height,int style){portrait
 void MergeRouletteUiGlyph(int icon,int x,int top,int width,int height){portraitGlyph(std::max(0,std::min(11,icon)),{x,top,width,height});}
 int MergeRouletteBottomNavHeight(){return lobbyBottomNav().y;}
 bool MergeRouletteLobbySceneDraw(bool backdropOnly) {
+    if(!review)PlayCampMusic();
     cocos2d::Director::getInstance()->setDisplayStats(false);
     static bool needsConfigure=true;
     if(!backdropOnly&&(popUpCnt>0||LoadoutOpen())){needsConfigure=true;return false;}
@@ -4301,9 +4304,9 @@ bool MergeRouletteLobbySceneDraw(bool backdropOnly) {
     }
     const bool arriving=titleLobbyClock>=0;
     if(arriving){AdvanceTitleLobbyMotion(cocos2d::Director::getInstance()->getDeltaTime());DrawTitleLobbyDeparture();}
-    uiSceneMotionY=arriving?-(DY+120*l.scale)*(1.f-TitleLobbyEase(.30f,1.15f)):0.f;
+    uiSceneMotionY=0;
     drawPortraitLobby(l);
-    uiSceneMotionY=arriving?(DY+120*l.scale)*(1.f-TitleLobbyEase(.30f,1.15f)):0.f;
+    uiSceneMotionY=arriving?LobbyTopbarDrop():0.f;
     CastleVault::drawButton();
     // Original resource strip: level, gold, diamonds and lightning energy.
     drawPortraitTopbar();

@@ -1489,6 +1489,7 @@ void TitleTermsCommand(int command)
 }
 
 static void DrawCastleSurvivorTitleLogo(bool animated){
+ const float savedX=uiSceneMotionX;if(drawHandle==MD_TITLE&&titleLobbyClock<0)uiSceneMotionX=DX*(1.f-TitleEntranceEase(.45f,1.75f));
 		// A separate logo stays legible on both squat and tall devices.
 		if(!sprite[HYBRID_TITLE_LOGO_IMG])LoadImg(HYBRID_TITLE_LOGO_IMG);
 		if(sprite[HYBRID_TITLE_LOGO_IMG]){
@@ -1497,6 +1498,7 @@ static void DrawCastleSurvivorTitleLogo(bool animated){
 		 sprite[HYBRID_TITLE_LOGO_IMG]->getTexture()->setAntiAliasTexParameters();
 		 DrawImage((int)sz.width,(int)sz.height,0,0,(int)((DX-sz.width*z)/2),DY-(animated?(int)(16*DX/640.f):24*_2X),false,0,0,0,0,z,sprite[HYBRID_TITLE_LOGO_IMG],HYBRID_TITLE_LOGO_IMG);
 		}
+ uiSceneMotionX=savedX;
 }
 static void DrawCastleSurvivorTitleArt(void)
 {
@@ -1532,7 +1534,7 @@ static void DrawCastleSurvivorTitleArt(void)
 
 #include "TitleLoginFlow.inc"
 void DrawTitleCampOverlay(){
- DrawCastleSurvivorTitleLogo(true);const int previous=drawHandle;drawHandle=MD_TITLE;VersionDraw();drawHandle=previous;TitleLogin::Draw();
+ const int previous=drawHandle;drawHandle=MD_TITLE;DrawCastleSurvivorTitleLogo(true);VersionDraw();TitleLogin::Draw();drawHandle=previous;
 }
 void DrawTitleLobbyDeparture(){
  const float exit=TitleLobbyEase(0.f,.60f);if(exit>=1.f)return;

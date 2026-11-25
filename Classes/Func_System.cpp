@@ -1,4 +1,5 @@
 ﻿#include "Core.h"
+#include "TitleLobbyMotion.h"
 #include "Data.h"
 #include "Func.h"
 #include "Text.h"
@@ -2452,6 +2453,7 @@ void NewGame(void)
 
 void GotoTitle(void)
 {
+ titleEntranceClock=0;
 	StageRunEquipmentEnd();
 	drawHandle = MD_TITLE;
 	keyHandle = MK_TITLE;

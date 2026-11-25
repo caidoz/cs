@@ -11844,6 +11844,10 @@
       "encoded_sha256": "3cbef7dbe98e25b0d0fda9bd8d7514e7daf2c3088060e6b3eaaf4eb8ced6bc13"
     },
     {
+      "source": "asset_library/production/lobby-embers-at-rest.ogg",
+      "target": "res/lobby-embers-at-rest.ogg"
+    },
+    {
       "source": "asset_library/production/runtime-cddbf9737f43a834851a0eed75ce5f4c6cb93c402239c1906fb9d6fba2cb6990.webp",
       "target": "res/lobby_energy.png",
       "original_source": "asset_library/reference/Resources/res/lobby_energy.png",

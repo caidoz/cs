@@ -33,14 +33,31 @@ void portraitReviewFixture(){
 }
 bool portraitReviewLobby(){
  if(!portraitReviewEnabled()||!std::getenv("CS_PORTRAIT_LOBBY"))return false;
+ if(std::getenv("CS_TITLE_ENTRANCE_REVIEW")){
+  static int frame=0;static bool done=false;if(reviewCapturePending)return true;if(done){static bool logged=false;if(!logged){logged=true;reviewTrace("DONE portrait review");}return true;}
+  active=false;drawHandle=MD_LOBBY;
+  titleEntranceClock=frame*.12f;MergeRouletteTitleCastlesDraw();DrawTitleCampOverlay();
+  char name[48];std::snprintf(name,sizeof(name),"title-entrance-%02d",frame);reviewCapture(name);
+  if(frame++>=24){reviewTrace("PASS title castle and login controls enter on independent delayed tracks");done=true;}
+  active=true;drawHandle=MD_PLAY;return true;
+ }
  if(std::getenv("CS_TITLE_CAMP_REVIEW")){
   static int phase=0;static float still=-1;static bool done=false;if(done||reviewCapturePending)return true;
   active=false;drawHandle=MD_LOBBY;
-  if(phase==0){MergeRouletteTitleCastlesDraw();DrawTitleCampOverlay();still=castleScrollSeconds;reviewTrace(campDrawnCrewCount==0?"PASS title uses castle, hero and fire without owned companions":"FAIL title companions");reviewCapture("title-camp");BeginTitleLobbyMotion();++phase;}
+  if(phase==0){titleEntranceClock=3.f;MergeRouletteTitleCastlesDraw();DrawTitleCampOverlay();still=castleScrollSeconds;reviewTrace(campDrawnCrewCount==0?"PASS title uses castle, hero and fire without owned companions":"FAIL title companions");reviewCapture("title-camp");BeginTitleLobbyMotion();
+   titleLobbyClock=1.08f;const bool order=LobbyNavPop(0)>0&&LobbyNavPop(2)==0&&LobbyNavPop(4)==0;
+   titleLobbyClock=.91f;const bool impact=LobbyTopbarDrop()<0;
+   titleLobbyClock=1.24f;const bool pop=LobbyNavPop(0)>1.f;
+   reviewTrace(order&&impact&&pop?"PASS topbar impact and left-to-right overshoot timings":"FAIL staggered lobby curves");
+   titleLobbyClock=0;++phase;}
   else{
    MergeRouletteLobbySceneDraw();
+   if(std::getenv("CS_LOBBY_ARRIVAL_FRAMES")&&titleLobbyClock>=0){
+    static int shot=0;static float last=-1;if(titleLobbyClock-last>=.09f){last=titleLobbyClock;char n[48];std::snprintf(n,sizeof(n),"lobby-entry-%02d",shot++);reviewCapture(n);}
+   }
+   if(reviewCapturePending){active=true;drawHandle=MD_PLAY;return true;}
    if(phase==1&&titleLobbyClock>=.18f){reviewTrace(MergeRouletteTouch(0,998,DX/2,DY/2)?"PASS scene transition blocks accidental input":"FAIL transition input");reviewCapture("title-departure");++phase;}
-   else if(phase==2&&titleLobbyClock>=.78f){reviewCapture("lobby-arriving");++phase;}
+   else if(phase==2&&titleLobbyClock>=1.26f){reviewCapture("lobby-arriving");++phase;}
    else if(phase==3&&titleLobbyClock<0){reviewCapture("lobby");reviewTrace(std::abs(still-castleScrollSeconds)<.001f?"PASS title and lobby keep castle, rails and backdrop stationary":"FAIL camp world movement");reviewTrace(uiSceneMotionY==0?"PASS UI motion scope resets after transition":"FAIL leaked UI motion");++phase;}
    else if(phase==4){reviewTrace("DONE portrait review");done=true;}
   }
