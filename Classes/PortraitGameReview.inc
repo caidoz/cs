@@ -33,6 +33,19 @@ void portraitReviewFixture(){
 }
 bool portraitReviewLobby(){
  if(!portraitReviewEnabled()||!std::getenv("CS_PORTRAIT_LOBBY"))return false;
+ if(std::getenv("CS_TITLE_CAMP_REVIEW")){
+  static int phase=0;static float still=-1;static bool done=false;if(done||reviewCapturePending)return true;
+  active=false;drawHandle=MD_LOBBY;
+  if(phase==0){MergeRouletteTitleCastlesDraw();DrawTitleCampOverlay();still=castleScrollSeconds;reviewTrace(campDrawnCrewCount==0?"PASS title uses castle, hero and fire without owned companions":"FAIL title companions");reviewCapture("title-camp");BeginTitleLobbyMotion();++phase;}
+  else{
+   MergeRouletteLobbySceneDraw();
+   if(phase==1&&titleLobbyClock>=.18f){reviewTrace(MergeRouletteTouch(0,998,DX/2,DY/2)?"PASS scene transition blocks accidental input":"FAIL transition input");reviewCapture("title-departure");++phase;}
+   else if(phase==2&&titleLobbyClock>=.78f){reviewCapture("lobby-arriving");++phase;}
+   else if(phase==3&&titleLobbyClock<0){reviewCapture("lobby");reviewTrace(std::abs(still-castleScrollSeconds)<.001f?"PASS title and lobby keep castle, rails and backdrop stationary":"FAIL camp world movement");reviewTrace(uiSceneMotionY==0?"PASS UI motion scope resets after transition":"FAIL leaked UI motion");++phase;}
+   else if(phase==4){reviewTrace("DONE portrait review");done=true;}
+  }
+  active=true;drawHandle=MD_PLAY;return true;
+ }
  static int hold=0;static float firstWheel=-1.f;if(firstWheel<0)firstWheel=castleWheelTravel;active=false;drawHandle=MD_LOBBY;MergeRouletteLobbySceneDraw();active=true;drawHandle=MD_PLAY;
  if(std::getenv("CS_PORTRAIT_CAMP_REVIEW")){
   static int phase=0,firstFire=-1;static bool done=false;if(done||reviewCapturePending)return true;
@@ -120,7 +133,7 @@ bool portraitReviewLobby(){
   const bool aspect=std::abs(start.w-360*layout().scale)<2&&std::abs(start.h-64*layout().scale)<2&&std::abs(hull.w*size.h-hull.h*size.w)<=size.h;
   reviewTrace(tabs==5&&aspect&&start.y-start.h>dock.y?"PASS legacy icons in current frames, five live tabs and separate hit areas":"FAIL revised lobby composition");
   active=true;drawHandle=MD_PLAY;
-  reviewTrace(castleWheelTravel>firstWheel?"PASS scrolling lobby advances wheel rotation":"FAIL stationary lobby wheels");
+  reviewTrace(std::abs(castleWheelTravel-firstWheel)<.01f?"PASS parked lobby keeps wheel rotation fixed":"FAIL moving lobby wheels");
   for(int i=0;i<touchIndex;++i){const int command=touchRect[i][4];
    crew=crew||command==TOUCH_FUNC_POPUP_CREWLIST;equipment=equipment||command==TOUCH_FUNC_COLLECTIONS;
    upgrade=upgrade||command==TOUCH_FUNC_POPUP_CASTLEMENU;shop=shop||command==TOUCH_FUNC_SHOP;

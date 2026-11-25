@@ -1,4 +1,5 @@
 ﻿#include "Core.h"
+#include "TitleLobbyMotion.h"
 #include "Func.h"
 #include "Data.h"
 #include "Text.h"
@@ -419,7 +420,8 @@ float DrawTextStrSystem(const char* str, int x, int y, float zoom, int align, bo
 	if (gRenderTarget) {
 		//Label �� 3���� visit �����ε尡 0���� Node::visit() �� �����Ƿ� Node* �� �޾� ȣ���Ѵ�.
 		cocos2d::Node* node = src;
-		node->visit();
+		const auto scenePosition=node->getPosition();node->setPositionY(scenePosition.y+uiSceneMotionY);
+		node->visit();node->setPosition(scenePosition);
 	}
 	else
 		curScene->addChild(src);

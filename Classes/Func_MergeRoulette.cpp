@@ -1,4 +1,5 @@
 ﻿#include "Core.h"
+#include "TitleLobbyMotion.h"
 #pragma pack(push, 8)
 #include "Data.h"
 #include "Func.h"
@@ -95,6 +96,7 @@ int resumeReviewPhase=0;long long resumeReviewEnergy=0;std::string resumeReviewS
 int entryChoiceFinger=-1,entryChoicePressed=-1;
 const ITEM* gearTableOverride=nullptr;   //MergeSiege.inc 가 상대 판을 그릴 때 끼운다
 bool nativeTitleIsolate=false;
+bool titleCampOnly=false;
 bool defeatedRailBoss=false;
 bool nativeTitleBodyOnly=false;
 bool siegeActive=false;   //공성전(PVP 디버그) 중. MergeSiege.inc
@@ -2004,7 +2006,7 @@ void drawWorld(const Layout& l,bool combat) {
     deckResidentCount=0;
     deckMergeGhostsDrawn=0;
     SetAlpha(32);SetColor(0);grayScale=0;
-    if(!combat)castleScrollSeconds+=std::min(.1f,std::max(0.f,cocos2d::Director::getInstance()->getDeltaTime()))*.25f;
+    // Lobby and title are a parked campsite; only battle travel moves wheels and rails.
     if(!nativeTitleIsolate){const int c=std::max(0,std::min(18,siegeHullStage>=0?siegeHullStage:run.stage));
      portraitNight(l.ground,portraitCastleZoom(l));}
     const int viewportTop=DY-(int)(72*s),viewportBottom=l.arenaBottom+(int)(8*s);
@@ -4291,16 +4293,22 @@ bool MergeRouletteLobbySceneDraw(bool backdropOnly) {
     }
     ResetRectPoint();SetAlpha(32);SetColor(0);grayScale=0;
     Layout l=layout();drawWorld(l,false);
-    if(backdropOnly)return true;
+    if(backdropOnly){needsConfigure=true;return true;}
     if((!review||std::getenv("CS_RESUME_PROMPT_REVIEW"))&&!resumePromptChecked){
         Run saved;saved.roster=&roster;
         resumePromptOpen=saved.decode(robin.mergeRouletteRun)&&!saved.lost&&!saved.choosing&&(review||IsGetHero(robin.mergeRouletteHero));
         resumePromptChecked=true;
     }
+    const bool arriving=titleLobbyClock>=0;
+    if(arriving){AdvanceTitleLobbyMotion(cocos2d::Director::getInstance()->getDeltaTime());DrawTitleLobbyDeparture();}
+    uiSceneMotionY=arriving?-(DY+120*l.scale)*(1.f-TitleLobbyEase(.30f,1.15f)):0.f;
     drawPortraitLobby(l);
+    uiSceneMotionY=arriving?(DY+120*l.scale)*(1.f-TitleLobbyEase(.30f,1.15f)):0.f;
     CastleVault::drawButton();
     // Original resource strip: level, gold, diamonds and lightning energy.
     drawPortraitTopbar();
+    uiSceneMotionY=0;
+    if(arriving){ResetRectPoint();mustRefresh=true;++frame;return true;}
     CastleVault::drawFlights();   //걷은 재화가 띠·메뉴로 날아간다. 도착점 위에 그린다
     MergeTutorialDrawLobbyHints();   //튜토리얼 뒤 처음 쓸 수 있게 된 것에 손가락 한 번
     //원정 보상창은 로비 위에 덮인다. 떠 있는 동안 로비의 터치 영역은 지운다.
@@ -5080,6 +5088,7 @@ void writePlacementDiagnostic(const Layout& l,const Block& source,bool fromTray,
  out<<"---\r\n";
 }
 bool MergeRouletteTouch(int phase,int id,float x,float y) {
+    if(!active&&titleLobbyClock>=0)return true;
     if(portraitStarterInteriorTouch(phase,id,x,y))return true;
     if(portraitCameraTouch(phase,id,x,y))return true;
     if(active&&phase==0&&(layout().attack.has(x,y)||layout().cannon.has(x,y)))portraitCameraY=0;

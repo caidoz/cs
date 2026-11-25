@@ -55,6 +55,6 @@ void TitleLoginStep(bool dataReady){
  curMenu=MENU_LOADING;++TitleLogin::ticks;
  if(dataReady && TitleLogin::ticks>=36){
   NetRememberGuestLogin();TitleLogin::requested=false;TitleLogin::ticks=0;
-  GotoLobby();
+  BeginTitleLobbyMotion();GotoLobby();
  }
 }

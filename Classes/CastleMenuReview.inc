@@ -391,7 +391,7 @@ static void CastleMenuReviewStep()
         static int tick=0;static bool pending=false;if(pending)return;++tick;
         const bool reset=!strcmp(mode,"reset");
         if(tick==30){
-            CastleReviewTrace(MergeRouletteTitleCastlesLayoutReview()?"PASS title castle grid (18 castles, 3 per row, tiled scroll) fills the screen":"FAIL title castle grid");
+            CastleReviewTrace(MergeRouletteTitleCastlesLayoutReview()?"PASS title shares the parked castle campsite without lobby UI or companions":"FAIL title campsite");
             bool guest=false,start=false,resetButton=false;
             for(int i=0;i<touchIndex;++i){guest|=touchRect[i][4]==TOUCH_FUNC_TITLE_LOGIN_GUEST;start|=touchRect[i][4]==TOUCH_FUNC_GOTOPLAY;resetButton|=touchRect[i][4]==TOUCH_FUNC_TITLE_RESET_SAVE;}
             CastleReviewTrace(drawHandle==MD_TITLE&&guest&&!start&&resetButton&&!TitleLoginBusy()?"PASS manual guest gate with reset button":"FAIL title manual gate");

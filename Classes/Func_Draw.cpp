@@ -1,4 +1,5 @@
 ﻿#include "Core.h"
+#include "TitleLobbyMotion.h"
 #include "Data.h"
 #include "Data/CmfData.h"
 #include "Data/CmfBlob.h"
@@ -1487,6 +1488,16 @@ void TitleTermsCommand(int command)
 	}
 }
 
+static void DrawCastleSurvivorTitleLogo(bool animated){
+		// A separate logo stays legible on both squat and tall devices.
+		if(!sprite[HYBRID_TITLE_LOGO_IMG])LoadImg(HYBRID_TITLE_LOGO_IMG);
+		if(sprite[HYBRID_TITLE_LOGO_IMG]){
+		 const auto sz=sprite[HYBRID_TITLE_LOGO_IMG]->getContentSize();
+		 const float z=Min(DX*.90f/sz.width,DY*(animated?.18f:.28f)/sz.height);
+		 sprite[HYBRID_TITLE_LOGO_IMG]->getTexture()->setAntiAliasTexParameters();
+		 DrawImage((int)sz.width,(int)sz.height,0,0,(int)((DX-sz.width*z)/2),DY-(animated?(int)(16*DX/640.f):24*_2X),false,0,0,0,0,z,sprite[HYBRID_TITLE_LOGO_IMG],HYBRID_TITLE_LOGO_IMG);
+		}
+}
 static void DrawCastleSurvivorTitleArt(void)
 {
         const bool animated=MergeRouletteTitleCastlesDraw();
@@ -1516,17 +1527,21 @@ static void DrawCastleSurvivorTitleArt(void)
 			}
 		}
         }
-		// A separate logo stays legible on both squat and tall devices.
-		if(!sprite[HYBRID_TITLE_LOGO_IMG])LoadImg(HYBRID_TITLE_LOGO_IMG);
-		if(sprite[HYBRID_TITLE_LOGO_IMG]){
-		 const auto sz=sprite[HYBRID_TITLE_LOGO_IMG]->getContentSize();
-		 const float z=Min(DX*.90f/sz.width,DY*(animated?.18f:.28f)/sz.height);
-		 sprite[HYBRID_TITLE_LOGO_IMG]->getTexture()->setAntiAliasTexParameters();
-		 DrawImage((int)sz.width,(int)sz.height,0,0,(int)((DX-sz.width*z)/2),DY-(animated?(int)(16*DX/640.f):24*_2X),false,0,0,0,0,z,sprite[HYBRID_TITLE_LOGO_IMG],HYBRID_TITLE_LOGO_IMG);
-		}
+ DrawCastleSurvivorTitleLogo(animated);
 }
 
 #include "TitleLoginFlow.inc"
+void DrawTitleCampOverlay(){
+ DrawCastleSurvivorTitleLogo(true);const int previous=drawHandle;drawHandle=MD_TITLE;VersionDraw();drawHandle=previous;TitleLogin::Draw();
+}
+void DrawTitleLobbyDeparture(){
+ const float exit=TitleLobbyEase(0.f,.60f);if(exit>=1.f)return;
+ uiSceneMotionY=(DY+120*DX/640.f)*exit;
+ DrawCastleSurvivorTitleLogo(true);
+ const int previous=drawHandle;drawHandle=MD_TITLE;VersionDraw();drawHandle=previous;
+ uiSceneMotionY=-(DY+120*DX/640.f)*exit;
+ TitleLogin::Draw();uiSceneMotionY=0;ResetRectPoint();
+}
 void TitleDraw(void)
 {
 #ifdef GAMEDEBUG

@@ -1,4 +1,5 @@
 ﻿#include "Core.h"
+#include "TitleLobbyMotion.h"
 #include "Func_MergeRoulette.h"
 #include "Func.h"
 #include "Text.h"
@@ -942,7 +943,12 @@ void LoadSpriteFromTexture(int textureIdx)
 //���?visit() ���� �׸���. Ÿ���� ������/���� ������ �� ���� begin/end �ϹǷ�
 //드로우 콜마다 렌더타겟을 바인딩하거나 renderer->render() 로 플러시하지 않는다.
 //gRenderTarget �� nullptr �̸� ��������Ʈ�� ���� ���̴� ���Ž� ��θ�?����.
+float titleLobbyClock=-1.f,uiSceneMotionY=0.f;
+void BeginTitleLobbyMotion(){titleLobbyClock=0.f;}
+void AdvanceTitleLobbyMotion(float dt){if(titleLobbyClock>=0){titleLobbyClock+=std::max(0.f,std::min(.1f,dt));if(titleLobbyClock>=1.15f)titleLobbyClock=-1.f;}}
+float TitleLobbyEase(float begin,float end){if(titleLobbyClock<0)return 1.f;float t=std::max(0.f,std::min(1.f,(titleLobbyClock-begin)/(end-begin)));return 1.f-(1.f-t)*(1.f-t)*(1.f-t);}
 void AfterSpriting(cocos2d::Sprite* src) {
+ const auto scenePosition=src->getPosition();if(uiSceneMotionY!=0)src->setPositionY(scenePosition.y+uiSceneMotionY);
  ApplyLobbyCampLight(src);
 	AuditDrawnTexture(src->getTexture());
 
@@ -956,6 +962,7 @@ void AfterSpriting(cocos2d::Sprite* src) {
 
 	//���?��ε�?�̹� �����ӿ� �� Ǯ ��������Ʈ�� �����?�д�.
 	//Core::Run �� ������ �������� ��������Ʈ ���¸� �ǵ����� �� ���δ�.
+	if(uiSceneMotionY!=0)src->setPosition(scenePosition);
 	curRenderSpriteArr[curRenderCnt] = getSpriteIdx;
 	curRenderCnt++;
 

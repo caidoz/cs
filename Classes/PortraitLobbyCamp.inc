@@ -3,6 +3,7 @@ int campDrawnCrew[3]={-1,-1,-1},campDrawnCrewCount=0,campFireFrame=0;
 int campReviewScenario=-1;
 std::vector<LobbyCamp::Owned> portraitCampOwned(){
  std::vector<LobbyCamp::Owned> owned;
+ if(titleCampOnly)return owned;
  if(review&&std::getenv("CS_PORTRAIT_CAMP_REVIEW")&&campReviewScenario>=0){
   if(campReviewScenario==1)owned.push_back({0,MergeTrees::Star(0),1});
   if(campReviewScenario>=2)for(int id:{0,5,17,38,63})owned.push_back({id,MergeTrees::Star(id),1});
@@ -35,8 +36,8 @@ void drawPortraitLobbyCamp(const Layout& l){
  const int center=std::max((int)(390*s),std::min(DX-(int)(155*s),hull.x+hull.w+(int)(130*s)));
  const int foot=l.ground+(int)(20*s);
  const float fireTime=ticks/60.f;
- DrawLobbyCampFire(center,foot,s,fireTime,false);
- SetLobbyCampLight(true,center,foot+27*s,150*s,fireTime);
+ DrawLobbyCampFire(center,foot-10*s,s,fireTime,false);
+ SetLobbyCampLight(true,center,foot+17*s,150*s,fireTime);
  // Draw original neutral character sprites; everyone faces the fire.
  const int heroX=center-(int)(90*s);
  if(hero.cmf>=0&&hero.cmf<MAXCMF){
@@ -58,6 +59,6 @@ void drawPortraitLobbyCamp(const Layout& l){
  SetLobbyCampLight(false,0,0,0,0);
  const int img=PORTRAIT_CAMPFIRE_IMG;if(!sprite[img])LoadImg(img);campFireFrame=(ticks/9)%4;
  // Static hearth only: the original painted flames are replaced by the live effect.
- const float z=63*s/64.f;turretPart(img,0,41,64,23,{center-(int)(32*z),foot+(int)(23*z),(int)(64*z),(int)(23*z)});
- DrawLobbyCampFire(center,foot,s,fireTime,true);
+ const float z=63*s/64.f;turretPart(img,0,41,64,23,{center-(int)(32*z),foot-(int)(10*s)+(int)(23*z),(int)(64*z),(int)(23*z)});
+ DrawLobbyCampFire(center,foot-10*s,s,fireTime,true);
 }
