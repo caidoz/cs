@@ -12,4 +12,4 @@ extern float uiSceneMotionX;
 float TitleEntranceEase(float begin,float end);
 float LobbyTopbarDrop();
 float LobbyNavPop(int index);
-void PlayCampMusic();
+void PlayCampMusic(bool lobby=false);

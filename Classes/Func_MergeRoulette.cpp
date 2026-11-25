@@ -4278,7 +4278,7 @@ void MergeRouletteUiFrame(int x,int top,int width,int height,int style){portrait
 void MergeRouletteUiGlyph(int icon,int x,int top,int width,int height){portraitGlyph(std::max(0,std::min(11,icon)),{x,top,width,height});}
 int MergeRouletteBottomNavHeight(){return lobbyBottomNav().y;}
 bool MergeRouletteLobbySceneDraw(bool backdropOnly) {
-    if(!review)PlayCampMusic();
+    if(!review||std::getenv("CS_CAMP_AUDIO_REVIEW"))PlayCampMusic(!titleCampOnly);
     cocos2d::Director::getInstance()->setDisplayStats(false);
     static bool needsConfigure=true;
     if(!backdropOnly&&(popUpCnt>0||LoadoutOpen())){needsConfigure=true;return false;}

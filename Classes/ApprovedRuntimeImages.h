@@ -1318,6 +1318,7 @@ inline bool RuntimeImageApproved(const std::string& name) {
   "res/l2_8.png",
   "res/legacy-lobby-icons.png",
   "res/lobby-embers-at-rest.ogg",
+  "res/lobby-embers-techno-trot.ogg",
   "res/lobby_energy.png",
   "res/logo.png",
   "res/menu.png",

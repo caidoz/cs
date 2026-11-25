@@ -3,17 +3,29 @@
 #include <cstdio>
 #include <cstdlib>
 
-namespace { int campMusicId=-1; }
-static void StopCampMusic(){if(campMusicId>=0){AudioEngine::stop(campMusicId);campMusicId=-1;}}
-void PlayCampMusic(){
- if(!option.bgm){StopCampMusic();return;}
- if(campMusicId>=0){
-  static bool logged=false;if(!logged&&std::getenv("CS_CAMP_AUDIO_REVIEW")&&AudioEngine::getState(campMusicId)==AudioEngine::AudioState::PLAYING&&AudioEngine::getDuration(campMusicId)>47){logged=true;std::printf("PASS original 48-second camp loop decoded and playing in native audio engine\n");std::fflush(stdout);}return;
- }
- if(curID>=0){AudioEngine::stop(audioID[curID]);curID=-1;}
- campMusicId=AudioEngine::play2d("res/lobby-embers-at-rest.ogg",true,VOLUME_BGM,nullptr);
+namespace { int campMusicId=-1,campFadeId=-1;bool campLobbyTrack=false;float campFadeAge=.75f; }
+static void StopCampMusic(){
+ if(campMusicId>=0)AudioEngine::stop(campMusicId);
+ if(campFadeId>=0)AudioEngine::stop(campFadeId);
+ campMusicId=campFadeId=-1;campFadeAge=.75f;
 }
-
+void PlayCampMusic(bool lobby){
+ if(!option.bgm){StopCampMusic();return;}
+ if(campMusicId<0||campLobbyTrack!=lobby){
+  if(campFadeId>=0)AudioEngine::stop(campFadeId);
+  campFadeId=campMusicId;campLobbyTrack=lobby;campFadeAge=0;
+  if(curID>=0){AudioEngine::stop(audioID[curID]);curID=-1;}
+  campMusicId=AudioEngine::play2d(lobby?"res/lobby-embers-techno-trot.ogg":"res/lobby-embers-at-rest.ogg",true,0,nullptr);
+ }
+ campFadeAge+=std::max(0.f,std::min(.1f,cocos2d::Director::getInstance()->getDeltaTime()));
+ const float fade=std::min(1.f,campFadeAge/.75f);
+ if(campMusicId>=0)AudioEngine::setVolume(campMusicId,VOLUME_BGM*fade);
+ if(campFadeId>=0){AudioEngine::setVolume(campFadeId,VOLUME_BGM*(1-fade));if(fade>=1){AudioEngine::stop(campFadeId);campFadeId=-1;}}
+ static bool logged[2]={false,false};
+ if(!logged[lobby]&&std::getenv("CS_CAMP_AUDIO_REVIEW")&&campMusicId>=0&&AudioEngine::getState(campMusicId)==AudioEngine::AudioState::PLAYING&&AudioEngine::getDuration(campMusicId)>(lobby?59:47)){
+  logged[lobby]=true;std::printf("PASS native %s loop decoded and playing\n",lobby?"60-second lobby techno trot":"48-second original title");std::fflush(stdout);
+ }
+}
 
 // Sound 관련
 void PlayMusic(int idx)

@@ -2,6 +2,7 @@ bool portraitReviewEnabled(){return review&&std::getenv("CS_PORTRAIT_REVIEW");}
 void portraitReviewFixture(){
  if(!portraitReviewEnabled())return;static bool initialized=false;if(initialized)return;initialized=true;
  cocos2d::Director::getInstance()->setDisplayStats(false);
+ if(std::getenv("CS_CAMP_AUDIO_REVIEW"))option.bgm=true;
  robin.gold=1250;robin.coin=120;
  const char* stage=std::getenv("CS_PORTRAIT_STAGE");run=Run();run.roster=&roster;
  run.stage=std::max(0,std::min(18,stage?std::atoi(stage):9));run.shape=BattleShape(run.stage);

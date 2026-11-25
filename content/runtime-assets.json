@@ -11848,6 +11848,10 @@
       "target": "res/lobby-embers-at-rest.ogg"
     },
     {
+      "source": "asset_library/production/lobby-embers-techno-trot.ogg",
+      "target": "res/lobby-embers-techno-trot.ogg"
+    },
+    {
       "source": "asset_library/production/runtime-cddbf9737f43a834851a0eed75ce5f4c6cb93c402239c1906fb9d6fba2cb6990.webp",
       "target": "res/lobby_energy.png",
       "original_source": "asset_library/reference/Resources/res/lobby_energy.png",
