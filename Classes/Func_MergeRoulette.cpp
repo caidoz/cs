@@ -1,5 +1,6 @@
 ﻿#include "Core.h"
 #include "TitleLobbyMotion.h"
+#include "GameSfx.h"
 #pragma pack(push, 8)
 #include "Data.h"
 #include "Func.h"
@@ -1652,6 +1653,7 @@ void beginCombatAction() {
     if(block.family<0) {
         const int c=siegeHullStage>=0?siegeHullStage:std::max(0,std::min(18,run.stage));
         turretFire.begin(c,CastleVisualPartLevel(c,3));
+        if(turretFire.type==TurretAttack::Laser||turretFire.type==TurretAttack::Magnetic)PlayMusic(M_LASER2);
         const auto muzzle=cannonMuzzle(layout(),c,siegeActive&&Siege::swapped,turretFire.release);
         action.emitterX=(int)muzzle.x;action.emitterY=(int)muzzle.y;
         action.emitterReady=true;
@@ -2416,6 +2418,7 @@ void finishCombatTurn() {
     if(!killed&&!siegeActive)run.finishSupplies();
     if(siegeActive){if(refillPending){refillPending=false;refillElapsed=0.f;}Siege::afterAttack(killed);return;}   //공성전: 웨이브가 아니라 상대 턴
     if(killed) {
+        PlayMusic(M_ENEMYDEAD);
         long long gold=run.reward;run.reward=0;
         GetItem(ITEM_GOLD,false,false,false,gold,false);
         message=overkill>0?"오버킬! 다음 웨이브":"처치! 다음 웨이브";
@@ -2424,6 +2427,7 @@ void finishCombatTurn() {
         {RewardPopup::Entry g;g.type=ITEM_GOLD;g.count=gold;rewards.push_back(g);}
         const bool stageClear=run.wave==0;
         if(stageClear) {
+            PlayMusic(M_CHEER);
             message="성 클리어! 장비 획득 · 다음 성으로";
             if(!review) {
                 int type=ITEM_SWORD+hero.type,lv=std::max(1,std::min(GetEquipMaxLevel(),run.stage+1));
@@ -2461,7 +2465,7 @@ void tick(float dt) {
     weaponSwap.advance();damagePause.advance();
     if(weaponSwap.attachNow()){
         hero.equip[EQUIP_WEAPON]=incomingWeapon;
-        refreshHeroVitals();PlayMusic(M_POWERUP);
+        refreshHeroVitals();PlayMusic(M_RELOAD);
     }
     ++ticks;++frame;if(flash>0)--flash;if(allyFlash>0)--allyFlash;
     for(auto& number:combatNumbers)++number.age;
@@ -2472,7 +2476,7 @@ void tick(float dt) {
         const int before=heartDisplay;
         refillElapsed+=dt;
         heartDisplay=std::min(run.battleEnergy,refillFrom+1+(int)(refillElapsed/.14f));
-        if(heartDisplay>before)PlayMusic(M_ROULETTEUP);
+        if(heartDisplay>before)PlayMusic(M_ITEM);
         if(refillElapsed>=(run.battleEnergy-refillFrom)*.14f+.32f)refillElapsed=-1.f;
     }else if(!refillPending)heartDisplay=run.battleEnergy;
     if(entering()) {
@@ -2480,7 +2484,7 @@ void tick(float dt) {
         entryElapsed=std::min(MergeCastleTransition::Duration,entryElapsed+dt);
         const int count=portraitGridCapacity();
         for(int i=0;i<count;++i){const float land=MergeCastleTransition::TileLand(i,count);
-            if(before<land&&entryElapsed>=land)PlayMusic(M_BUTTON);}
+            if(before<land&&entryElapsed>=land)PlayMusic(M_DOWN);}
         return;
     }
     if(introActive()) {
@@ -2490,8 +2494,8 @@ void tick(float dt) {
         gearAngle=1350.f*(1.f-std::pow(1.f-phase,3.f));
         for(int i=0;i<3;++i) {
             float stop=2.f+i*.24f,land=flightStart(i)+.7f;
-            if(before<stop&&introElapsed>=stop)PlayMusic(M_ROULETTEUP);
-            if(before<land&&introElapsed>=land)PlayMusic(M_POWERUP);
+            if(before<stop&&introElapsed>=stop)PlayMusic(M_RELOAD);
+            if(before<land&&introElapsed>=land)PlayMusic(M_DOWN);
         }
         return;
     }
@@ -2511,7 +2515,7 @@ void tick(float dt) {
         castleScrollSeconds+=(waveTransition.distance()-previousDistance)/110.f;
         //심장이 뜨는 순간의 소환음(옛 RegenMove 와 같은 소리).
         if(waveTransition.age==MergeCombat::WaveTransition::EnterStart){
-            EffectSound(M_ENEMYDEAD);
+            EffectSound(M_WARP);
             if(refillPending){refillPending=false;refillElapsed=0.f;}
         }
         if(!waveTransition.active()){message.clear();enemyBodyKnown=false;}
@@ -2519,7 +2523,7 @@ void tick(float dt) {
     }
     if(spinFlying()){
         ++spinFlightFrame;
-        for(int i=0;i<(int)spinDrops.size();++i)if(spinFlightFrame==36+i*4)PlayMusic(M_POWERUP);
+        for(int i=0;i<(int)spinDrops.size();++i)if(spinFlightFrame==36+i*4)PlayMusic(M_DOWN);
         if(spinFlightFrame>=48){run=spinLandingPlan;spinFlightFrame=-1;pendingPass=true;if(!run.boardResolved()){message=OverlapMessage;messageTime=4;}save();endSpinTurn();}   //돌리기 한 번 = 턴 하나. 결과가 앉으면 적이 때린다
         return;
     }
@@ -2543,7 +2547,7 @@ void tick(float dt) {
         gearAngle=gearStartAngle+1350.f*(1.f-std::pow(1.f-phase,3.f));
         //릴이 설 때마다 한 번. 시작 뽑기(intro)와 같은 소리다.
         for(int i=0;i<3;++i)if(REEL_SPIN_FRAMES-animation==reelStopFrame(i)){
-            PlayMusic(i<(int)run.tray.size()&&run.tray[i].ownedId&&run.tray[i].level>=4?M_ITEM:M_ROULETTEUP);
+            PlayMusic(i<(int)run.tray.size()&&run.tray[i].ownedId&&run.tray[i].level>=4?M_ITEM:M_RELOAD);
         }
     }
     if(!run.attacking) {
@@ -2560,6 +2564,10 @@ void tick(float dt) {
             action.bulletX=action.emitterReady?action.emitterX:shotFromX;
             action.bulletY=action.emitterReady?action.emitterY:shotFromY;
         }
+        if(run.shots[action.index].block.family<0){
+            for(int i=0;i<turretFire.count;++i)if(before<turretFire.launch(i)&&action.time.elapsed>=turretFire.launch(i))
+                PlayMusic(turretFire.type==TurretAttack::Stone?M_SWORDSTRONG:turretFire.type==TurretAttack::Laser||turretFire.type==TurretAttack::Magnetic?M_LASER:turretFire.type==TurretAttack::Rapid?M_GUN:M_GUNSTRONG);
+        }else if(before<action.time.release&&action.time.elapsed>=action.time.release&&action.heroSounds.empty())PlayMusic(M_SWORD);
         const int hf=action.time.elapsed-action.heroStart;
         if(hf>=0&&hf%MOTIONDIV==0&&!action.heroSounds.empty()) {
             const int f=hf/MOTIONDIV;
@@ -2578,7 +2586,7 @@ void tick(float dt) {
                 }
                 flash=18;
             }
-            PlayMusic(M_SWORDHIT);
+            PlayMusic(run.shots[action.index].block.family<0?(turretFire.type==TurretAttack::Stone?M_KUNG:turretFire.type==TurretAttack::Laser||turretFire.type==TurretAttack::Magnetic?M_GUNHIT:M_BANG):M_SWORDHIT);
             if(run.enemyHp<=0){finishCombatTurn();return;}
             save();
         }
@@ -2616,14 +2624,14 @@ void tick(float dt) {
             }
             enemyTurn.shares[0]+=remaining;enemyTurn.absorbedShares[0]+=blockedRemaining;
             if(enemyTurn.hits>1)heroHpHold=beforeHp-enemyTurn.shares[0];
-            floatingAbsorbed(enemyTurn.absorbedShares[0]);floatingDamage(enemyTurn.shares[0],false);allyFlash=20;PlayMusic(M_SWORDHIT);
+            floatingAbsorbed(enemyTurn.absorbedShares[0]);floatingDamage(enemyTurn.shares[0],false);allyFlash=20;PlayMusic(M_KUNG);
             enemyTurn.hitsShown=1;save();
         }else if(enemyTurn.hitsShown>0&&enemyTurn.hitsShown<enemyTurn.hits&&enemyTurn.time.elapsed>=enemyTurn.impacts[enemyTurn.hitsShown]){
             const int k=enemyTurn.hitsShown++;
             long long shown=0;for(int i=0;i<=k;++i)shown+=enemyTurn.shares[i];
             heroHpHold=k+1<enemyTurn.hits?enemyTurn.hpBefore-shown:-1;
             if(k<(int)enemyTurn.absorbedShares.size())floatingAbsorbed(enemyTurn.absorbedShares[k]);
-            floatingDamage(enemyTurn.shares[k],false);allyFlash=20;PlayMusic(M_SWORDHIT);
+            floatingDamage(enemyTurn.shares[k],false);allyFlash=20;PlayMusic(M_KUNG);
         }
         if(enemyTurn.time.finished()){
             enemyTurn.complete=true;heroHpHold=-1;
@@ -4193,6 +4201,7 @@ void MergeRouletteBegin(bool resume) {
     entryChoiceOpen=false;entryChoiceFinger=entryChoicePressed=-1;
     siegeActive=false;siegeHullStage=-1;waveTransition=MergeCombat::WaveTransition();
     review=std::getenv("CS_MERGE_REVIEW")!=nullptr;
+    if(review&&std::getenv("CS_SFX_TRACE"))option.se=true;
     oldMode=option.gameMode;option.gameMode=TURNRPG;
     configure();
     //---- 전투에 들어가면 장비를 벗는다 ----
@@ -4243,6 +4252,7 @@ void MergeRouletteBegin(bool resume) {
     startEventElapsed=(!review&&firstEvent)||(review&&!resume&&std::getenv("CS_START_EVENT_REVIEW"))?0.f:-1.f;
     if(startEventActive())gCastleTutorialHints|=CastleTutorial::HintStartEvent;
     introElapsed=starting?0.f:-1.f;introCaptures=0;reviewCombatTick=-1;
+    if(!restoredRun&&!siegeActive)PlayMusic(M_WARP);
     if(!starting)updateHeroCostume(false);
     reviewCapturePending=reviewFinalCapture=false;
     simulationRemainder=0;gradeAccents.clear();shownGrades.clear();
@@ -5207,6 +5217,7 @@ bool MergeRouletteTouch(int phase,int id,float x,float y) {
                 if(picked>=(int)run.tray.size())picked=-1;
             }
         }
+        if(picked>=0)PlayMusic(M_JOYSTICK);
         return true;
     }
     if(finger!=id)return true;
@@ -5216,12 +5227,12 @@ bool MergeRouletteTouch(int phase,int id,float x,float y) {
     if(picked>=0) {
         const auto& chosen=pickedTray?run.tray:run.board;
         if(picked>=(int)chosen.size()){picked=-1;return true;}
-        const Block attempted=chosen[picked];const bool fromTray=pickedTray;
+        const Block attempted=chosen[picked];const bool fromTray=pickedTray;const auto mergeBefore=run.mergeSeq;
         bool ok=false;
         if(nearRouletteTrash(l,x,y)&&!MergeTutorial::trashLocked()){
             const bool fromTray=pickedTray;
             if(run.discard(fromTray,picked)){
-                picked=-1;trashSwallowTicks=18;message="";save();PlayMusic(M_BUTTON);
+                picked=-1;trashSwallowTicks=18;message="";save();PlayMusic(M_SHAKIN);
                 if(fromTray)endSpinTurn();
                 return true;
             }
@@ -5264,7 +5275,7 @@ bool MergeRouletteTouch(int phase,int id,float x,float y) {
         }
         if(!ok||overlapped)writePlacementDiagnostic(l,attempted,fromTray,!fromTray&&tap,ok,x,y);
         if(!ok||overlapped)messageTime=3;
-        if(ok)PlayMusic(rotated?M_BUTTON:M_POWERUP);
+        if(ok&&!overlapped)PlayMusic(rotated?M_BUTTON:run.mergeSeq>mergeBefore?M_POWERUP:M_DOWN);else PlayMusic(M_ERROR);
         picked=-1;
         if(ok&&!run.tray.empty())beginSpinLanding();
         save();return true;
@@ -5284,9 +5295,9 @@ bool MergeRouletteTouch(int phase,int id,float x,float y) {
         message=u8"\ubc88\uac1c\ub97c \ubaa8\ub450 \uc0ac\uc6a9\ud588\uc2b5\ub2c8\ub2e4.";messageTime=3;PlayMusic(M_ERROR);return true;
     }
     if(spinAction) {
-        if(!run.boardResolved()){message=OverlapMessage;messageTime=3;return true;}
+        if(!run.boardResolved()){message=OverlapMessage;messageTime=3;PlayMusic(M_ERROR);return true;}
         if(!run.canSpin()){message=u8"\uc774\uc804 \uacb0\uacfc\ub97c \ubc30\uce58\ud558\uac70\ub098 \uc4f0\ub808\uae30\ud1b5\uc5d0 \ubc84\ub824\uc8fc\uc138\uc694.";messageTime=3;return true;}
-        {if(!run.spendBattleEnergy())return true;spentHeart=run.battleEnergy;heartBlink=.36f;run.spin();rollOwnedGearResults(run);MergeTutorial::afterSpin();rememberReelSymbols();gearStartAngle=gearAngle;animation=REEL_SPIN_FRAMES;message="";save();CastleTutorialEvent(CastleTutorial::Spun);}
+        {if(!run.spendBattleEnergy())return true;spentHeart=run.battleEnergy;heartBlink=.36f;run.spin();rollOwnedGearResults(run);MergeTutorial::afterSpin();rememberReelSymbols();gearStartAngle=gearAngle;PlayMusic(M_ROULETTEUP);animation=REEL_SPIN_FRAMES;message="";save();CastleTutorialEvent(CastleTutorial::Spun);}
     } else if(l.attack.has(x,y)&&l.attack.has(downX,downY)) {
         //"지금 공격" 은 막지 않는다. 아직 못 놓은 결과가 있으면 들어가는 것은 앉히고,
         //자리 없는 것은 두고 나간다. 칸이 비어 있어도 모양이 안 맞으면 못 놓는 일이 있다.
@@ -5296,11 +5307,11 @@ bool MergeRouletteTouch(int phase,int id,float x,float y) {
             picked=-1;pickedTray=false;
         }
         if(run.board.empty()){message="인벤토리가 비어 있습니다.";return true;}
-        if(!run.boardResolved()){message=OverlapMessage;messageTime=3;return true;}
+        if(!run.boardResolved()){message=OverlapMessage;messageTime=3;PlayMusic(M_ERROR);return true;}
         {MergeTutorial::beforeAttack();if(!run.attack(stats))return true;run.spendBattleEnergy();spentHeart=run.battleEnergy;heartBlink=.36f;action=CombatAction();enemyTurn=EnemyTurn();animation=0;message="출격!";save();CastleTutorialEvent(CastleTutorial::Attacked);}
     } else if(!siegeActive&&l.cannon.has(x,y)&&l.cannon.has(downX,downY)) {
         //성의 대포. 판이 비어 있어도 쏜다 - 블록이 없을 때의 마지막 수단이기도 하다.
-        if(!run.boardResolved()){message=OverlapMessage;messageTime=3;return true;}
+        if(!run.boardResolved()){message=OverlapMessage;messageTime=3;PlayMusic(M_ERROR);return true;}
         {if(!run.fireCannon(stats,cannonShell()))return true;run.spendBattleEnergy();spentHeart=run.battleEnergy;heartBlink=.36f;action=CombatAction();enemyTurn=EnemyTurn();animation=0;message="포격!";save();CastleTutorialEvent(CastleTutorial::CannonFired);}
     }
     return true;

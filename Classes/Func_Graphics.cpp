@@ -1,5 +1,6 @@
 ﻿#include "Core.h"
 #include "TitleLobbyMotion.h"
+#include "GameSfx.h"
 #include "Func_MergeRoulette.h"
 #include "Func.h"
 #include "Text.h"
@@ -945,7 +946,12 @@ void LoadSpriteFromTexture(int textureIdx)
 //gRenderTarget �� nullptr �̸� ��������Ʈ�� ���� ���̴� ���Ž� ��θ�?����.
 float titleLobbyClock=-1.f,uiSceneMotionY=0.f,uiSceneMotionX=0.f,titleEntranceClock=0.f;
 void BeginTitleLobbyMotion(){titleLobbyClock=0.f;}
-void AdvanceTitleLobbyMotion(float dt){if(titleLobbyClock>=0){titleLobbyClock+=std::max(0.f,std::min(.1f,dt));if(titleLobbyClock>=2.10f)titleLobbyClock=-1.f;}}
+void AdvanceTitleLobbyMotion(float dt){if(titleLobbyClock>=0){
+ const float before=titleLobbyClock;titleLobbyClock+=std::max(0.f,std::min(.1f,dt));
+ if(before<.84f&&titleLobbyClock>=.84f)PlayMusic(M_DOWN);
+ for(int i=0;i<5;++i){const float pop=.98f+i*.13f;if(before<pop&&titleLobbyClock>=pop)PlayMusic(M_BUTTON);}
+ if(titleLobbyClock>=2.10f)titleLobbyClock=-1.f;
+}}
 float TitleLobbyEase(float begin,float end){if(titleLobbyClock<0)return 1.f;float t=std::max(0.f,std::min(1.f,(titleLobbyClock-begin)/(end-begin)));return 1.f-(1.f-t)*(1.f-t)*(1.f-t);}
 float TitleEntranceEase(float begin,float end){float t=std::max(0.f,std::min(1.f,(titleEntranceClock-begin)/(end-begin)));return t*t*(3.f-2.f*t);}
 float LobbyTopbarDrop(){
@@ -1098,7 +1104,7 @@ std::string  GetResourceName(int type, int idx)
 	}
 	break;
 	case RES_SOUND:
-		fileName = "sounds/" + std::to_string(idx) + ".mp3";
+		fileName = idx>=M_ROULETTEUP?GameSfxPath(idx):"sounds/" + std::to_string(idx) + ".mp3";
 		break;
 	}
 

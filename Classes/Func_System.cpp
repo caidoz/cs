@@ -2465,7 +2465,7 @@ void GotoTitle(void)
 
 	//TEXT_LOGIN_100
 
-	PlayMusic(M_HEART);
+	PlayMusic(M_OPENWINDOW);
 
 	printCoords();
 	printBoxCoords();

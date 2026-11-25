@@ -96,7 +96,7 @@ inline void draw(){
  int active=-1,visible=0;
  for(int i=0;i<(int)entries.size();++i){
   if(age>=starts[i])active=i;
-  if(age>=cardFlipEnd(i)){++visible;if(!revealed[i]){revealed[i]=true;const int star=tier(entries[i]);PlayMusic(star>=5?M_POWERUP:star?M_CARDSPLIT:M_ITEM);}}
+  if(age>=cardFlipEnd(i)){++visible;if(!revealed[i]){revealed[i]=true;const int star=tier(entries[i]);PlayMusic(entries[i].type==ITEM_GOLD?M_COIN:star>=5?M_POWERUP:star?M_CARDSPLIT:M_ITEM);}}
  }
  if(!manualScroll&&active>=0&&l.maximum>0){
   const float target=std::min(l.maximum,std::max(0.f,(active/l.columns+1)*(l.h+l.gap)-l.gap-l.view));

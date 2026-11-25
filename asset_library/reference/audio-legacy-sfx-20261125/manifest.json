@@ -1,0 +1,247 @@
+[
+  {
+    "target": "sounds/23.mp3",
+    "backup": "asset_library/reference/audio-legacy-sfx-20261125/23.mp3",
+    "sha256": "109fdf20a1fc1b6f82e8e04a1498d45209a3796359dc7633dd7e208ba1c2f21b"
+  },
+  {
+    "target": "sounds/24.mp3",
+    "backup": "asset_library/reference/audio-legacy-sfx-20261125/24.mp3",
+    "sha256": "12194b1ba6026b37d3ae49e68255f2a4a46fe6a95879837fd4c0c1b2d52af132"
+  },
+  {
+    "target": "sounds/25.mp3",
+    "backup": "asset_library/reference/audio-legacy-sfx-20261125/25.mp3",
+    "sha256": "c160df877899ab1ccf9b19c0a16c65f13e56f4aed0cbf2fbb62f2a7c18c2d81d"
+  },
+  {
+    "target": "sounds/26.mp3",
+    "backup": "asset_library/reference/audio-legacy-sfx-20261125/26.mp3",
+    "sha256": "86d41163719580243d10f5ffd2cb146dcfc117c109023adf164bf0c30f7d45ed"
+  },
+  {
+    "target": "sounds/27.mp3",
+    "backup": "asset_library/reference/audio-legacy-sfx-20261125/27.mp3",
+    "sha256": "fffdbc08a350b47c066c55ed940bcd5c4bb6fe9b555c37d280b091f5f6c4bc51"
+  },
+  {
+    "target": "sounds/28.mp3",
+    "backup": "asset_library/reference/audio-legacy-sfx-20261125/28.mp3",
+    "sha256": "71910e082fed3fcd5f0aee0a4a66dbae69681ed539fc61dd38aaef632f0e4cb3"
+  },
+  {
+    "target": "sounds/29.mp3",
+    "backup": "asset_library/reference/audio-legacy-sfx-20261125/29.mp3",
+    "sha256": "a51b3b8930d583676f1f4e2983e1ecb85a905e530bea318b4bd88765d1f04067"
+  },
+  {
+    "target": "sounds/30.mp3",
+    "backup": "asset_library/reference/audio-legacy-sfx-20261125/30.mp3",
+    "sha256": "b3e7df220dda404c8d4b67d2c172d50d4be3135e847c264ae0ce6924462a6ef5"
+  },
+  {
+    "target": "sounds/31.mp3",
+    "backup": "asset_library/reference/audio-legacy-sfx-20261125/31.mp3",
+    "sha256": "9eed2b8e2a98cc16c8d9719be739ae12cb016f8a30b8b999d8230d550e063757"
+  },
+  {
+    "target": "sounds/32.mp3",
+    "backup": "asset_library/reference/audio-legacy-sfx-20261125/32.mp3",
+    "sha256": "90fbf1f1e1638dc05580cf964200f56794562473323d58bc52dac0ca2ebe4150"
+  },
+  {
+    "target": "sounds/33.mp3",
+    "backup": "asset_library/reference/audio-legacy-sfx-20261125/33.mp3",
+    "sha256": "f09564108d62cdae89aa513652986b6079415a2db62973c729ace0a56d60f476"
+  },
+  {
+    "target": "sounds/34.mp3",
+    "backup": "asset_library/reference/audio-legacy-sfx-20261125/34.mp3",
+    "sha256": "65f653d9927d0572ed0cda0b8c4aac1a4a8bb5c21255fe38d3de99c094a40dde"
+  },
+  {
+    "target": "sounds/35.mp3",
+    "backup": "asset_library/reference/audio-legacy-sfx-20261125/35.mp3",
+    "sha256": "20d8ab75bf3816fe5a75c6cbf1e7b8a34d9cb64a5c614e8fd7444d7104a2ca03"
+  },
+  {
+    "target": "sounds/36.mp3",
+    "backup": "asset_library/reference/audio-legacy-sfx-20261125/36.mp3",
+    "sha256": "cae1d744aa5b37b106ab0c057bf454699e53f55fc325a66093cae5dc3901d3d8"
+  },
+  {
+    "target": "sounds/37.mp3",
+    "backup": "asset_library/reference/audio-legacy-sfx-20261125/37.mp3",
+    "sha256": "342d4ee0251f5654a50364b61a8e5e57acadc5e8aac7acf58f128d31b942ce8f"
+  },
+  {
+    "target": "sounds/38.mp3",
+    "backup": "asset_library/reference/audio-legacy-sfx-20261125/38.mp3",
+    "sha256": "ce05b02096051f06f056cec703b7eb79254773d13a2058f0385dc31a464c32f6"
+  },
+  {
+    "target": "sounds/39.mp3",
+    "backup": "asset_library/reference/audio-legacy-sfx-20261125/39.mp3",
+    "sha256": "8b162dd798aff9077a1d1494b4c81b07fc313d6f2484e2a310652a34f57d8990"
+  },
+  {
+    "target": "sounds/40.mp3",
+    "backup": "asset_library/reference/audio-legacy-sfx-20261125/40.mp3",
+    "sha256": "b1744f827b5526fe671819ae80547b8efc60f4622b5ab9762af15f900e5da755"
+  },
+  {
+    "target": "sounds/41.mp3",
+    "backup": "asset_library/reference/audio-legacy-sfx-20261125/41.mp3",
+    "sha256": "b2d0bdc77e691c75415324b4c281768d4ebe55d0fd6f9bc12a9fb77efaa4c5c3"
+  },
+  {
+    "target": "sounds/42.mp3",
+    "backup": "asset_library/reference/audio-legacy-sfx-20261125/42.mp3",
+    "sha256": "4e67b55393d17e278cb4968601f88c722678f6be1a9656f3eb888bd210fe5386"
+  },
+  {
+    "target": "sounds/43.mp3",
+    "backup": "asset_library/reference/audio-legacy-sfx-20261125/43.mp3",
+    "sha256": "2c6e099abb64eb2b8d658baa58f95c468435203ebe728a724c0e575c1243fc37"
+  },
+  {
+    "target": "sounds/44.mp3",
+    "backup": "asset_library/reference/audio-legacy-sfx-20261125/44.mp3",
+    "sha256": "ad998e6db42e0c6f6eda7c2ee5c7e8ddeb72f1e4baf50f15ddc9846709ef13af"
+  },
+  {
+    "target": "sounds/45.mp3",
+    "backup": "asset_library/reference/audio-legacy-sfx-20261125/45.mp3",
+    "sha256": "b44c3028bc599695e015480a0a8970d22e4da22151dbd45fcf7be03fbdfdaf65"
+  },
+  {
+    "target": "sounds/46.mp3",
+    "backup": "asset_library/reference/audio-legacy-sfx-20261125/46.mp3",
+    "sha256": "2be988f2b41313b9b90a4accec56e9b9765b977d92e3e520f8632a46a0b8df97"
+  },
+  {
+    "target": "sounds/47.mp3",
+    "backup": "asset_library/reference/audio-legacy-sfx-20261125/47.mp3",
+    "sha256": "cce1e9be62889266a3edc1a631cc7b41a788e5592d287fb2722afcb7e77f860c"
+  },
+  {
+    "target": "sounds/48.mp3",
+    "backup": "asset_library/reference/audio-legacy-sfx-20261125/48.mp3",
+    "sha256": "89facd35de53d39a172a215aa6823e6b4cad08cfab68b60ac5717264fe710cfb"
+  },
+  {
+    "target": "sounds/49.mp3",
+    "backup": "asset_library/reference/audio-legacy-sfx-20261125/49.mp3",
+    "sha256": "d0af29c01b442940929c8802380f77ef27bd63ba30ca2f9f20ab365689a6b48f"
+  },
+  {
+    "target": "sounds/50.mp3",
+    "backup": "asset_library/reference/audio-legacy-sfx-20261125/50.mp3",
+    "sha256": "2a7215ff0ce59d2a36e7c6b2980b42dc184b915950ddfbfc5bce5e947487fb73"
+  },
+  {
+    "target": "sounds/51.mp3",
+    "backup": "asset_library/reference/audio-legacy-sfx-20261125/51.mp3",
+    "sha256": "fbd3603d41ed9c06e235a29e65bf0087ae6b5ccd7122620d7521f96f4d1d268e"
+  },
+  {
+    "target": "sounds/52.mp3",
+    "backup": "asset_library/reference/audio-legacy-sfx-20261125/52.mp3",
+    "sha256": "cce1e9be62889266a3edc1a631cc7b41a788e5592d287fb2722afcb7e77f860c"
+  },
+  {
+    "target": "sounds/53.mp3",
+    "backup": "asset_library/reference/audio-legacy-sfx-20261125/53.mp3",
+    "sha256": "eda6d9f45f3241caa2ef562ac637e6ba08e5d4b1881684ffd231c8ddb0b19a3b"
+  },
+  {
+    "target": "sounds/54.mp3",
+    "backup": "asset_library/reference/audio-legacy-sfx-20261125/54.mp3",
+    "sha256": "a6facd2f059a3d043be833d9159875b3767f876174949db6c8962155294227a2"
+  },
+  {
+    "target": "sounds/55.mp3",
+    "backup": "asset_library/reference/audio-legacy-sfx-20261125/55.mp3",
+    "sha256": "447c5c06cbffd28ad2be77d2ead2f0c800e0699a81077192ca7c5db3bd35cf3d"
+  },
+  {
+    "target": "sounds/56.mp3",
+    "backup": "asset_library/reference/audio-legacy-sfx-20261125/56.mp3",
+    "sha256": "d8d1696373b70f6a9a0c6759341426e9ecf199dbb09eab2776fec81bdbc17f9a"
+  },
+  {
+    "target": "sounds/57.mp3",
+    "backup": "asset_library/reference/audio-legacy-sfx-20261125/57.mp3",
+    "sha256": "68ce8e7eb6abda0714572c937aba068a5612ca9c7877a4bfa813f0736169ee33"
+  },
+  {
+    "target": "sounds/58.mp3",
+    "backup": "asset_library/reference/audio-legacy-sfx-20261125/58.mp3",
+    "sha256": "8164697961535a8008a6848ad007005f06cc7e25c69a594b751fcdee35e990c1"
+  },
+  {
+    "target": "sounds/59.mp3",
+    "backup": "asset_library/reference/audio-legacy-sfx-20261125/59.mp3",
+    "sha256": "e78c1995dabe6fa3f9b13046a0b5d307de0bb65e0d7e3360669f0f2e4cc070d9"
+  },
+  {
+    "target": "sounds/60.mp3",
+    "backup": "asset_library/reference/audio-legacy-sfx-20261125/60.mp3",
+    "sha256": "d5cbbd82952cc9dbd9effae7ac25c2b2a63c6f6dd34c023e7a7f4155ff0c9af4"
+  },
+  {
+    "target": "sounds/61.mp3",
+    "backup": "asset_library/reference/audio-legacy-sfx-20261125/61.mp3",
+    "sha256": "3a187deab2b92184bcd54dcdda98c710a632f1abada10d00b0957ba9fb4ccd84"
+  },
+  {
+    "target": "sounds/62.mp3",
+    "backup": "asset_library/reference/audio-legacy-sfx-20261125/62.mp3",
+    "sha256": "352c003814e5f4d3ba01623b4029d9ac2ac1488d1b9aba29c436596b9b486f77"
+  },
+  {
+    "target": "sounds/63.mp3",
+    "backup": "asset_library/reference/audio-legacy-sfx-20261125/63.mp3",
+    "sha256": "483d5aad210c1575e7b5d9ce8e88112460f7908ad489b4f57207723c1755d194"
+  },
+  {
+    "target": "sounds/64.mp3",
+    "backup": "asset_library/reference/audio-legacy-sfx-20261125/64.mp3",
+    "sha256": "4d41e548ccd82e0f231394c1bf9f8b68e868a98ab0477fb4f4997f66bc43e101"
+  },
+  {
+    "target": "sounds/65.mp3",
+    "backup": "asset_library/reference/audio-legacy-sfx-20261125/65.mp3",
+    "sha256": "eaf9225d33b27b91d80fd37244bca95a73fbffc04940a1faf0355de6eb83e2fc"
+  },
+  {
+    "target": "sounds/66.mp3",
+    "backup": "asset_library/reference/audio-legacy-sfx-20261125/66.mp3",
+    "sha256": "54b96e3ed3231de159f86541fc75b89f26bdaa8097fa8776846a21c3f6aa050b"
+  },
+  {
+    "target": "sounds/67.mp3",
+    "backup": "asset_library/reference/audio-legacy-sfx-20261125/67.mp3",
+    "sha256": "0e3b01c8ec275ec163bea8b6190962eebff6026634b2db25c4741cd42a3f5a49"
+  },
+  {
+    "target": "sounds/68.mp3",
+    "backup": "asset_library/reference/audio-legacy-sfx-20261125/68.mp3",
+    "sha256": "901a208613a2de7a6964d653eff7ac289871a57ed9f9391f5e34d8e6e06c3083"
+  },
+  {
+    "target": "sounds/69.mp3",
+    "backup": "asset_library/reference/audio-legacy-sfx-20261125/69.mp3",
+    "sha256": "212781032dfdece127cf8f3cd2c8fdb2021c6b8cdf0592eb0b234b0d780ab616"
+  },
+  {
+    "target": "sounds/70.mp3",
+    "backup": "asset_library/reference/audio-legacy-sfx-20261125/70.mp3",
+    "sha256": "bbf77f44caf329fd03687050f8a432fbf98e79b2195b788c832b845b854c3043"
+  },
+  {
+    "target": "sounds/71.mp3",
+    "backup": "asset_library/reference/audio-legacy-sfx-20261125/71.mp3",
+    "sha256": "38c5fc1f919ae5e54447e3b610967c5fab72adea49856e508a1c1ba933249c11"
+  }
+]

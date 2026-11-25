@@ -13662,6 +13662,7 @@ void GameOverDraw(int x, int y, float zoom)
 
 void ClosePopUp(void)
 {
+ if(popUpCnt>0)PlayMusic(M_CLOSEWINDOW);
 	//it = &ao[PLAYER].equip[EQUIP_WEAPON];
 			//collectionIdx = GetCollectionIdx(it->type, it->detail, it->grade);
 			//���� �˾��� �������ε� PVP����Ʈ�� �Ϲ�����Ʈ�� ������ ���̽�ƽ ����Ʈ�� ����� �ش�. 
@@ -13710,6 +13711,7 @@ void SetPopUp(int type, int x, int y, int w, int h,
 	int rewardType2, int rewardDetail2, int rewardGrade2, long long rewardStartCnt2, long long rewardEndCnt2,
 	int rewardType3, int rewardDetail3, int rewardGrade3, long long rewardStartCnt3, long long rewardEndCnt3)
 {
+	PlayMusic(M_OPENWINDOW);
 	//return;
 
 	popUp[popUpCnt].active = true;

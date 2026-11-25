@@ -1,4 +1,5 @@
 ﻿#include "Core.h"
+#include "GameSfx.h"
 #include "Func_MergeRoulette.h"
 #include "Func.h"
 #include "Data.h"
@@ -125,6 +126,7 @@ void TitleKey(void)
 		return;
 	case AVK_OPTION_SE:
 		option.se = !option.se;
+        if(!option.se)StopGameSfx();
 		SaveOption();
 		if (option.se) PlayMusic(M_COIN);
 		return;
@@ -1150,6 +1152,7 @@ void PlayKey(int obj)
 			break;
 		case AVK_OPTION_SE:
 			option.se = (option.se + 1) % 2;
+            if(!option.se)StopGameSfx();
 			SaveOption();
 			if (option.se == true)
 				PlayMusic(M_COIN);
@@ -2997,6 +3000,7 @@ void SetRectPoint(int rx, int ry, int width, int height, int func)
 
 void touchFunc(int func)
 {
+ if(!touchDisable&&func>=0)PlayMusic(M_BUTTON);
 	if(CastleTutorialCommand(func)||MenuRenewalCommand(func)){systemKey=0;return;}
 	// Retired menu commands must not bypass per-castle upgrades or paid ownership.
 	if ((func >= TOUCH_FUNC_CASTLE_PARTUP && func < TOUCH_FUNC_CASTLE_PARTUP + 4) ||
@@ -3310,12 +3314,14 @@ void touchFunc(int func)
 			systemKey = AVK_PLAY;
 			break;
 		case TOUCH_FUNC_COLLECTIONS://����
+            PlayMusic(M_SELECT);
 			systemKey = AVK_COLLECTIONS;
 			break;
 		case TOUCH_FUNC_STAGE_POPUP:
 			systemKey = AVK_STAGE_POPUP;
 			break;
 		case TOUCH_FUNC_SHOP://상점
+            PlayMusic(M_SELECT);
 			ShopCatalogTouch(TOUCH_FUNC_SHOP_MAIN_TAB);
 			systemKey = AVK_SHOP;
 			break;
@@ -3335,6 +3341,7 @@ void touchFunc(int func)
 			systemKey = 0;
 			break;
 		case TOUCH_FUNC_LOBBY_ADVENTURE://로비 하단 가운데. 지금 보고 있는 화면이다.
+            PlayMusic(M_SELECT);
 			systemKey = AVK_LOBBY_ADVENTURE;
 			break;
 		case TOUCH_FUNC_LOBBY_DUNGEON:
@@ -4157,6 +4164,7 @@ void touchFunc(int func)
 			systemKey = AVK_POPUP_CREWUPGRADE;
 			break;
 		case TOUCH_FUNC_POPUP_CREWLIST:
+            PlayMusic(M_SELECT);
 			LobbyCastleMenuCommand(func);
 			systemKey = AVK_POPUP_CREWLIST;
 			break;
@@ -4171,6 +4179,7 @@ void touchFunc(int func)
 			break;
 
 		case TOUCH_FUNC_POPUP_CASTLEMENU:
+            PlayMusic(M_SELECT);
 			LobbyCastleMenuCommand(func);
 			systemKey = AVK_POPUP_CASTLEMENU;
 			break;

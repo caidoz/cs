@@ -43,7 +43,7 @@ void TitleLoginReset(){
 void TitleLoginStart(int provider){
  if(drawHandle!=MD_TITLE||TitleLoginBusy()||!NetLoginProviderAvailable(provider))return;
  if(NetBootstrapPoll()==NETRESULT_NONE && !NetChooseLogin(provider))return;
- TitleLogin::requested=true;TitleLogin::ticks=0;curMenu=MENU_LOADING;touchDisable=false;
+ TitleLogin::requested=true;TitleLogin::ticks=0;curMenu=MENU_LOADING;touchDisable=false;PlayMusic(M_SELECT);
 }
 void TitleLoginStep(bool dataReady){
  TitleLogin::ready=dataReady;

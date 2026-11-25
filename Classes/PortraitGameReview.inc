@@ -3,6 +3,7 @@ void portraitReviewFixture(){
  if(!portraitReviewEnabled())return;static bool initialized=false;if(initialized)return;initialized=true;
  cocos2d::Director::getInstance()->setDisplayStats(false);
  if(std::getenv("CS_CAMP_AUDIO_REVIEW"))option.bgm=true;
+ if(std::getenv("CS_SFX_REVIEW")||std::getenv("CS_SFX_TRACE"))option.se=true;
  robin.gold=1250;robin.coin=120;
  const char* stage=std::getenv("CS_PORTRAIT_STAGE");run=Run();run.roster=&roster;
  run.stage=std::max(0,std::min(18,stage?std::atoi(stage):9));run.shape=BattleShape(run.stage);
@@ -34,6 +35,30 @@ void portraitReviewFixture(){
 }
 bool portraitReviewLobby(){
  if(!portraitReviewEnabled()||!std::getenv("CS_PORTRAIT_LOBBY"))return false;
+ if(std::getenv("CS_SFX_REVIEW")){
+  static int phase=0,cue=M_ROULETTEUP,age=0;static bool done=false;
+  if(reviewCapturePending)return true;if(done)return true;
+  active=false;drawHandle=MD_LOBBY;MergeRouletteLobbySceneDraw();
+  if(phase==0){
+   const int before=GameSfxPlayedCount(),music=curID;option.se=false;PlayMusic(M_BUTTON);EffectSound(M_SWORDHIT);option.se=true;
+   reviewTrace(GameSfxPlayedCount()==before&&curID==music?"PASS both effect routes honor mute without changing BGM state":"FAIL effect mute policy");phase=1;
+  }else if(phase==1){
+   const auto path=GameSfxPath(cue);const bool file=path.find("res/sfx-")==0&&GetResourceName(RES_SOUND,cue)==path&&cocos2d::FileUtils::getInstance()->isFileExist(path);
+   reviewTrace(file?"PASS effect resolves to used flat replacement asset":"FAIL effect resource mapping");
+   const int before=GameSfxPlayedCount(),dropped=GameSfxSuppressedCount();PlayMusic(cue);EffectSound(cue);
+   reviewTrace(GameSfxPlayedCount()==before+1&&GameSfxSuppressedCount()==dropped+1?"PASS duplicate play/effect routes coalesce once":"FAIL effect rate policy");age=0;phase=2;
+  }else if(phase==2){
+   const int id=audioID[cue];const auto state=AudioEngine::getState(id);
+   if(state==AudioEngine::AudioState::PLAYING&&AudioEngine::getDuration(id)>0){
+    char line[160];std::snprintf(line,sizeof(line),"PASS decoded native cue %d %s",cue,GameSfxPath(cue).c_str());reviewTrace(line);AudioEngine::stop(id);phase=++cue<TOTALMUSIC?1:3;
+   }else if(++age>180){reviewTrace("FAIL native effect decode timeout");done=true;}
+  }else if(phase==3){
+   for(int id=M_SWORD;id<=M_OPENDOOR;++id)PlayMusic(id);
+   const int live=GameSfxActiveCount();reviewTrace(live>0&&live<=12?"PASS dense effect burst is capped at twelve voices":"FAIL effect voice budget");
+   StopGameSfx();reviewCapture("sfx-bank");phase=4;
+  }else {reviewTrace("DONE portrait review");done=true;}
+  active=true;drawHandle=MD_PLAY;return true;
+ }
  if(std::getenv("CS_TITLE_ENTRANCE_REVIEW")){
   static int frame=0;static bool done=false;if(reviewCapturePending)return true;if(done){static bool logged=false;if(!logged){logged=true;reviewTrace("DONE portrait review");}return true;}
   active=false;drawHandle=MD_LOBBY;

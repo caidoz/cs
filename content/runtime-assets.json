@@ -12986,6 +12986,202 @@
       "encoded_sha256": "90797ab412ffdcd6e4db08a7dfc85a9ef598add9c335761621d926da96e5efb2"
     },
     {
+      "source": "asset_library/production/sfx-alarm.ogg",
+      "target": "res/sfx-alarm.ogg"
+    },
+    {
+      "source": "asset_library/production/sfx-blade-heavy.ogg",
+      "target": "res/sfx-blade-heavy.ogg"
+    },
+    {
+      "source": "asset_library/production/sfx-blade-hit.ogg",
+      "target": "res/sfx-blade-hit.ogg"
+    },
+    {
+      "source": "asset_library/production/sfx-blade-swing.ogg",
+      "target": "res/sfx-blade-swing.ogg"
+    },
+    {
+      "source": "asset_library/production/sfx-boomerang-hit.ogg",
+      "target": "res/sfx-boomerang-hit.ogg"
+    },
+    {
+      "source": "asset_library/production/sfx-boomerang-spin.ogg",
+      "target": "res/sfx-boomerang-spin.ogg"
+    },
+    {
+      "source": "asset_library/production/sfx-boomerang-throw.ogg",
+      "target": "res/sfx-boomerang-throw.ogg"
+    },
+    {
+      "source": "asset_library/production/sfx-buff-haste.ogg",
+      "target": "res/sfx-buff-haste.ogg"
+    },
+    {
+      "source": "asset_library/production/sfx-buff-heal.ogg",
+      "target": "res/sfx-buff-heal.ogg"
+    },
+    {
+      "source": "asset_library/production/sfx-buff-mana.ogg",
+      "target": "res/sfx-buff-mana.ogg"
+    },
+    {
+      "source": "asset_library/production/sfx-buff-power.ogg",
+      "target": "res/sfx-buff-power.ogg"
+    },
+    {
+      "source": "asset_library/production/sfx-cannon-blast.ogg",
+      "target": "res/sfx-cannon-blast.ogg"
+    },
+    {
+      "source": "asset_library/production/sfx-card-reveal.ogg",
+      "target": "res/sfx-card-reveal.ogg"
+    },
+    {
+      "source": "asset_library/production/sfx-coin-drop.ogg",
+      "target": "res/sfx-coin-drop.ogg"
+    },
+    {
+      "source": "asset_library/production/sfx-door-open.ogg",
+      "target": "res/sfx-door-open.ogg"
+    },
+    {
+      "source": "asset_library/production/sfx-explosion.ogg",
+      "target": "res/sfx-explosion.ogg"
+    },
+    {
+      "source": "asset_library/production/sfx-fire-burst.ogg",
+      "target": "res/sfx-fire-burst.ogg"
+    },
+    {
+      "source": "asset_library/production/sfx-footstep.ogg",
+      "target": "res/sfx-footstep.ogg"
+    },
+    {
+      "source": "asset_library/production/sfx-ground-impact.ogg",
+      "target": "res/sfx-ground-impact.ogg"
+    },
+    {
+      "source": "asset_library/production/sfx-gun-shot.ogg",
+      "target": "res/sfx-gun-shot.ogg"
+    },
+    {
+      "source": "asset_library/production/sfx-heartbeat.ogg",
+      "target": "res/sfx-heartbeat.ogg"
+    },
+    {
+      "source": "asset_library/production/sfx-item-pickup.ogg",
+      "target": "res/sfx-item-pickup.ogg"
+    },
+    {
+      "source": "asset_library/production/sfx-item-unlock.ogg",
+      "target": "res/sfx-item-unlock.ogg"
+    },
+    {
+      "source": "asset_library/production/sfx-jump.ogg",
+      "target": "res/sfx-jump.ogg"
+    },
+    {
+      "source": "asset_library/production/sfx-laser-beam.ogg",
+      "target": "res/sfx-laser-beam.ogg"
+    },
+    {
+      "source": "asset_library/production/sfx-laser-charge.ogg",
+      "target": "res/sfx-laser-charge.ogg"
+    },
+    {
+      "source": "asset_library/production/sfx-level-up.ogg",
+      "target": "res/sfx-level-up.ogg"
+    },
+    {
+      "source": "asset_library/production/sfx-machine-gear.ogg",
+      "target": "res/sfx-machine-gear.ogg"
+    },
+    {
+      "source": "asset_library/production/sfx-menu-navigate.ogg",
+      "target": "res/sfx-menu-navigate.ogg"
+    },
+    {
+      "source": "asset_library/production/sfx-metal-clang.ogg",
+      "target": "res/sfx-metal-clang.ogg"
+    },
+    {
+      "source": "asset_library/production/sfx-monster-death.ogg",
+      "target": "res/sfx-monster-death.ogg"
+    },
+    {
+      "source": "asset_library/production/sfx-monster-summon.ogg",
+      "target": "res/sfx-monster-summon.ogg"
+    },
+    {
+      "source": "asset_library/production/sfx-panel-close.ogg",
+      "target": "res/sfx-panel-close.ogg"
+    },
+    {
+      "source": "asset_library/production/sfx-panel-open.ogg",
+      "target": "res/sfx-panel-open.ogg"
+    },
+    {
+      "source": "asset_library/production/sfx-projectile-hit.ogg",
+      "target": "res/sfx-projectile-hit.ogg"
+    },
+    {
+      "source": "asset_library/production/sfx-purchase.ogg",
+      "target": "res/sfx-purchase.ogg"
+    },
+    {
+      "source": "asset_library/production/sfx-reload.ogg",
+      "target": "res/sfx-reload.ogg"
+    },
+    {
+      "source": "asset_library/production/sfx-rest-confirm.ogg",
+      "target": "res/sfx-rest-confirm.ogg"
+    },
+    {
+      "source": "asset_library/production/sfx-reward-good.ogg",
+      "target": "res/sfx-reward-good.ogg"
+    },
+    {
+      "source": "asset_library/production/sfx-reward-perfect.ogg",
+      "target": "res/sfx-reward-perfect.ogg"
+    },
+    {
+      "source": "asset_library/production/sfx-roulette-spin.ogg",
+      "target": "res/sfx-roulette-spin.ogg"
+    },
+    {
+      "source": "asset_library/production/sfx-text-tick.ogg",
+      "target": "res/sfx-text-tick.ogg"
+    },
+    {
+      "source": "asset_library/production/sfx-tile-land.ogg",
+      "target": "res/sfx-tile-land.ogg"
+    },
+    {
+      "source": "asset_library/production/sfx-ui-click.ogg",
+      "target": "res/sfx-ui-click.ogg"
+    },
+    {
+      "source": "asset_library/production/sfx-ui-denied.ogg",
+      "target": "res/sfx-ui-denied.ogg"
+    },
+    {
+      "source": "asset_library/production/sfx-ui-drag.ogg",
+      "target": "res/sfx-ui-drag.ogg"
+    },
+    {
+      "source": "asset_library/production/sfx-ui-shake.ogg",
+      "target": "res/sfx-ui-shake.ogg"
+    },
+    {
+      "source": "asset_library/production/sfx-upgrade.ogg",
+      "target": "res/sfx-upgrade.ogg"
+    },
+    {
+      "source": "asset_library/production/sfx-victory.ogg",
+      "target": "res/sfx-victory.ogg"
+    },
+    {
       "source": "asset_library/production/runtime-49a1a7ec7d8a9ea153f5ac92937b6bf9d5b22df6d0172afbe91b1011c25a48ee.webp",
       "target": "res/shadow.png",
       "original_source": "asset_library/reference/Resources/res/shadow.png",
@@ -14823,220 +15019,24 @@
       "target": "sounds/22.mp3"
     },
     {
-      "source": "Resources/sounds/23.mp3",
-      "target": "sounds/23.mp3"
-    },
-    {
-      "source": "Resources/sounds/24.mp3",
-      "target": "sounds/24.mp3"
-    },
-    {
-      "source": "Resources/sounds/25.mp3",
-      "target": "sounds/25.mp3"
-    },
-    {
-      "source": "Resources/sounds/26.mp3",
-      "target": "sounds/26.mp3"
-    },
-    {
-      "source": "Resources/sounds/27.mp3",
-      "target": "sounds/27.mp3"
-    },
-    {
-      "source": "Resources/sounds/28.mp3",
-      "target": "sounds/28.mp3"
-    },
-    {
-      "source": "Resources/sounds/29.mp3",
-      "target": "sounds/29.mp3"
-    },
-    {
       "source": "Resources/sounds/3.mp3",
       "target": "sounds/3.mp3"
-    },
-    {
-      "source": "Resources/sounds/30.mp3",
-      "target": "sounds/30.mp3"
-    },
-    {
-      "source": "Resources/sounds/31.mp3",
-      "target": "sounds/31.mp3"
-    },
-    {
-      "source": "Resources/sounds/32.mp3",
-      "target": "sounds/32.mp3"
-    },
-    {
-      "source": "Resources/sounds/33.mp3",
-      "target": "sounds/33.mp3"
-    },
-    {
-      "source": "Resources/sounds/34.mp3",
-      "target": "sounds/34.mp3"
-    },
-    {
-      "source": "Resources/sounds/35.mp3",
-      "target": "sounds/35.mp3"
-    },
-    {
-      "source": "Resources/sounds/36.mp3",
-      "target": "sounds/36.mp3"
-    },
-    {
-      "source": "Resources/sounds/37.mp3",
-      "target": "sounds/37.mp3"
-    },
-    {
-      "source": "Resources/sounds/38.mp3",
-      "target": "sounds/38.mp3"
-    },
-    {
-      "source": "Resources/sounds/39.mp3",
-      "target": "sounds/39.mp3"
     },
     {
       "source": "Resources/sounds/4.mp3",
       "target": "sounds/4.mp3"
     },
     {
-      "source": "Resources/sounds/40.mp3",
-      "target": "sounds/40.mp3"
-    },
-    {
-      "source": "Resources/sounds/41.mp3",
-      "target": "sounds/41.mp3"
-    },
-    {
-      "source": "Resources/sounds/42.mp3",
-      "target": "sounds/42.mp3"
-    },
-    {
-      "source": "Resources/sounds/43.mp3",
-      "target": "sounds/43.mp3"
-    },
-    {
-      "source": "Resources/sounds/44.mp3",
-      "target": "sounds/44.mp3"
-    },
-    {
-      "source": "Resources/sounds/45.mp3",
-      "target": "sounds/45.mp3"
-    },
-    {
-      "source": "Resources/sounds/46.mp3",
-      "target": "sounds/46.mp3"
-    },
-    {
-      "source": "Resources/sounds/47.mp3",
-      "target": "sounds/47.mp3"
-    },
-    {
-      "source": "Resources/sounds/48.mp3",
-      "target": "sounds/48.mp3"
-    },
-    {
-      "source": "Resources/sounds/49.mp3",
-      "target": "sounds/49.mp3"
-    },
-    {
       "source": "Resources/sounds/5.mp3",
       "target": "sounds/5.mp3"
-    },
-    {
-      "source": "Resources/sounds/50.mp3",
-      "target": "sounds/50.mp3"
-    },
-    {
-      "source": "Resources/sounds/51.mp3",
-      "target": "sounds/51.mp3"
-    },
-    {
-      "source": "Resources/sounds/52.mp3",
-      "target": "sounds/52.mp3"
-    },
-    {
-      "source": "Resources/sounds/53.mp3",
-      "target": "sounds/53.mp3"
-    },
-    {
-      "source": "Resources/sounds/54.mp3",
-      "target": "sounds/54.mp3"
-    },
-    {
-      "source": "Resources/sounds/55.mp3",
-      "target": "sounds/55.mp3"
-    },
-    {
-      "source": "Resources/sounds/56.mp3",
-      "target": "sounds/56.mp3"
-    },
-    {
-      "source": "Resources/sounds/57.mp3",
-      "target": "sounds/57.mp3"
-    },
-    {
-      "source": "Resources/sounds/58.mp3",
-      "target": "sounds/58.mp3"
-    },
-    {
-      "source": "Resources/sounds/59.mp3",
-      "target": "sounds/59.mp3"
     },
     {
       "source": "Resources/sounds/6.mp3",
       "target": "sounds/6.mp3"
     },
     {
-      "source": "Resources/sounds/60.mp3",
-      "target": "sounds/60.mp3"
-    },
-    {
-      "source": "Resources/sounds/61.mp3",
-      "target": "sounds/61.mp3"
-    },
-    {
-      "source": "Resources/sounds/62.mp3",
-      "target": "sounds/62.mp3"
-    },
-    {
-      "source": "Resources/sounds/63.mp3",
-      "target": "sounds/63.mp3"
-    },
-    {
-      "source": "Resources/sounds/64.mp3",
-      "target": "sounds/64.mp3"
-    },
-    {
-      "source": "Resources/sounds/65.mp3",
-      "target": "sounds/65.mp3"
-    },
-    {
-      "source": "Resources/sounds/66.mp3",
-      "target": "sounds/66.mp3"
-    },
-    {
-      "source": "Resources/sounds/67.mp3",
-      "target": "sounds/67.mp3"
-    },
-    {
-      "source": "Resources/sounds/68.mp3",
-      "target": "sounds/68.mp3"
-    },
-    {
-      "source": "Resources/sounds/69.mp3",
-      "target": "sounds/69.mp3"
-    },
-    {
       "source": "Resources/sounds/7.mp3",
       "target": "sounds/7.mp3"
-    },
-    {
-      "source": "Resources/sounds/70.mp3",
-      "target": "sounds/70.mp3"
-    },
-    {
-      "source": "Resources/sounds/71.mp3",
-      "target": "sounds/71.mp3"
     },
     {
       "source": "Resources/sounds/8.mp3",

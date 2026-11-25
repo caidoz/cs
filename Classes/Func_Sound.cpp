@@ -1,5 +1,9 @@
 ﻿#include "Func.h"
 #include "TitleLobbyMotion.h"
+#include "GameSfx.h"
+#include <chrono>
+#include <vector>
+#include <algorithm>
 #include <cstdio>
 #include <cstdlib>
 
@@ -27,48 +31,49 @@ void PlayCampMusic(bool lobby){
  }
 }
 
+namespace NewSfx {
+struct Voice{int audio,cue,priority;};
+static std::vector<Voice> voices;
+static double last[49];static bool initialized=false;
+static int played=0,suppressed=0;
+static int priority(int cue){return cue==M_BUTTON||cue==M_SELECT||cue==M_ERROR?8:cue==M_GUNSTRONG||cue==M_LEVELUP||cue==M_CHEER?9:cue==M_RUN||cue==M_TALK?1:5;}
+static void prune(){voices.erase(std::remove_if(voices.begin(),voices.end(),[](const Voice& v){return AudioEngine::getState(v.audio)==AudioEngine::AudioState::ERROR;}),voices.end());}
+}
+int GameSfxPlayedCount(){return NewSfx::played;}
+int GameSfxSuppressedCount(){return NewSfx::suppressed;}
+int GameSfxActiveCount(){NewSfx::prune();return (int)NewSfx::voices.size();}
+void StopGameSfx(){for(const auto& v:NewSfx::voices)AudioEngine::stop(v.audio);NewSfx::voices.clear();}
+bool DispatchGameSfx(int cue){
+ if(cue<M_ROULETTEUP)return false;if(cue>=TOTALMUSIC)return true;
+ static_assert(TOTALMUSIC-M_ROULETTEUP==49,"Update the complete SFX bank when adding IDs");
+ using namespace NewSfx;
+ if(!option.se){StopGameSfx();return true;}
+ if(!initialized){std::fill(last,last+49,-1.e9);initialized=true;}
+ const double now=std::chrono::duration<double>(std::chrono::steady_clock::now().time_since_epoch()).count();
+ const int slot=cue-M_ROULETTEUP;const double gap=cue==M_ERROR?.22:cue==M_COIN?.075:cue==M_RUN?.09:cue==M_TALK?.065:cue==M_BUTTON||cue==M_SELECT?.075:.035;
+ if(now-last[slot]<gap){++suppressed;return true;}prune();
+ const int rank=priority(cue);
+ if(voices.size()>=12){auto old=std::min_element(voices.begin(),voices.end(),[](const Voice& a,const Voice& b){return a.priority<b.priority;});if(old->priority>rank){++suppressed;return true;}AudioEngine::stop(old->audio);voices.erase(old);}
+ int same=0;for(const auto& v:voices)if(v.cue==cue)++same;
+ if(same>=3){auto old=std::find_if(voices.begin(),voices.end(),[&](const Voice& v){return v.cue==cue;});AudioEngine::stop(old->audio);voices.erase(old);}
+ const float gain=cue==M_TALK||cue==M_RUN?.28f:cue==M_COIN?.52f:cue==M_BUTTON?.58f:.76f;
+ const int id=AudioEngine::play2d(GameSfxPath(cue),false,std::getenv("CS_SFX_REVIEW")?0.f:VOLUME_SE*gain,nullptr);
+ if(id>=0){audioID[cue]=id;voices.push_back({id,cue,rank});last[slot]=now;++played;if(std::getenv("CS_SFX_TRACE")){std::printf("SFX PLAY %d %s\n",cue,GameSfxPath(cue).c_str());std::fflush(stdout);}}
+ return true;
+}
+
 // Sound 관련
-void PlayMusic(int idx)
-{
- if(idx>=0&&idx<M_ROULETTEUP)StopCampMusic();
-	if (idx < 0)
-		return;
-
-	//if (idx < M_ROULETTEUP)
-	//	idx = M_TITLE;
-
-	if (option.bgm == false)
-		if (idx < M_ROULETTEUP) {
-			curID = -1;
-			return;
-		}
-
-	if (option.se == false)
-		if (idx >= M_ROULETTEUP) {
-			curID = -1;
-			return;
-		}
-
-	if (idx < M_ROULETTEUP) {
-		if (drawHandle == MD_PLAY && idx >= M_TOLEAVIL && idx <= M_DEVIL)
-			idx = M_TITLE;
-		if (idx == curID)
-			return;
-
-		if (curID != -1)
-			AudioEngine::stop(audioID[curID]);
-		audioID[idx] = AudioEngine::play2d(GetResourceName(RES_SOUND, idx).c_str(), true, VOLUME_BGM, nullptr);
-		//AudioEngine::setVolume(audioID[idx], VOLUME_BGM);
-
-	}
-	else {
-		audioID[idx] = AudioEngine::play2d(GetResourceName(RES_SOUND, idx).c_str(), false, idx == M_COIN || idx == M_DOWN ? VOLUME_BGM_MUTE : VOLUME_SE, nullptr);
-
-	}
-
-	if (idx < M_ROULETTEUP)
-		curID = idx;
-	effect.sound = -1;
+void PlayMusic(int idx){
+ if(idx<0||idx>=TOTALMUSIC)return;
+ if(DispatchGameSfx(idx)){effect.sound=-1;return;}
+ // Music and one-shots share enum IDs, but never share mute or playback state.
+ if(!option.bgm){Stop();return;}
+ StopCampMusic();
+ if(drawHandle==MD_PLAY&&idx>=M_TOLEAVIL&&idx<=M_DEVIL)idx=M_TITLE;
+ if(idx==curID)return;
+ if(curID>=0)AudioEngine::stop(audioID[curID]);
+ audioID[idx]=AudioEngine::play2d(GetResourceName(RES_SOUND,idx),true,VOLUME_BGM,nullptr);
+ curID=idx;effect.sound=-1;
 }
 
 void Stop()
@@ -102,44 +107,9 @@ void TimerMusic()
 	}
 }
 
-void EffectSound(int music)
-{
-	if (curID == -1)
-		effect.sound = music;
-	else if (music > M_ENDING)
-		effect.sound = music;
-
-	switch (music) {
-	case M_SWORDHIT://칼맞음			//32
-	case M_GUNHIT://총맞음			//33
-	case M_BOOMERANGHIT://부메랑맞음		//34
-		music = M_SWORDHIT;
-		break;
-	}
-
-	switch (music) {
-	case M_SWORDHIT://칼맞음			//32
-	case M_GUNHIT://총맞음			//33
-	case M_BOOMERANGHIT://부메랑맞음		//34
-	case M_LASER://레이저		//36
-	case M_BUFF_PINK://핑크색버프	//38
-	case M_BUFF_YELLOW://노란색버프	//39
-	case M_BUFF_BLUE://파란색버프	//40
-	case M_BUFF_RED://빨간색버프	//41
-	case M_BANG://터지는소리	//42
-	case M_KUNG:	//거대몬스터가 점프했다가 떨어지거나~(쿵)	//44
-	case M_OPENDOOR:	//문열때 나는 소리	//45
-		//Vibration();
-		break;
-	}
-
-	audioID[music] = AudioEngine::play2d(GetResourceName(RES_SOUND, music).c_str(), false, 1.0f, nullptr);
-
-	if (music == M_ERROR)
-		AudioEngine::setVolume(audioID[music], VOLUME_BGM);
-	else
-		AudioEngine::setVolume(audioID[music], VOLUME_SE);
-
+void EffectSound(int music){
+ if(music>=M_ROULETTEUP){effect.sound=music;DispatchGameSfx(music);}
+ else if(music>=0)PlayMusic(music);
 }
 
 void Vibration(void)
