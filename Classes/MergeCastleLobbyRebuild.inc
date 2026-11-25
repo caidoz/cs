@@ -64,7 +64,7 @@ float portraitCannonFootX(int c){
 int portraitHullImage(int c){
  // Keep the approved exterior; the starter cutaway is a separate debug view.
  const bool interior=c==0&&((LobbyCastleDebugActive()&&LobbyCastleDebugInterior())||(review&&std::getenv("CS_PORTRAIT_INTERIOR")));
- return interior?PORTRAIT_STARTER_INTERIOR_IMG:PORTRAIT_CASTLE_FIRST_IMG+c;
+ return (interior||(c==0&&portraitLobbyWorld()&&starterInteriorReveal>=.999f))?PORTRAIT_STARTER_INTERIOR_IMG:PORTRAIT_CASTLE_FIRST_IMG+c;
 }
 PortraitCastleArt::Size portraitHullSize(int c){
  if(review&&c==0&&std::getenv("CS_PORTRAIT_SAMPLE_ASSETS")){
@@ -216,7 +216,7 @@ Box lobbyContinue(const Layout& l){return OriginalCastle::box(411,1196,274,52);}
 Box lobbyManage(const Layout& l){return OriginalCastle::box(404,1005,276,49);}
 //원정 단추: 옛 "이어서" 줄의 오른쪽. 왼쪽은 행동력 게이지다.
 //PVP 디버그(공성전) 버튼. 오른쪽 위, 나가기 자리 아래.
-Box lobbyPvp(const Layout& l){const float s=l.scale;return {DX-(int)(80*s),l.ground+(int)(38*s),(int)(64*s),(int)(28*s)};}
+Box lobbyPvp(const Layout& l){const float s=l.scale;return {DX-(int)(80*s),l.ground+(int)(84*s),(int)(64*s),(int)(28*s)};}
 struct CastleMap {
  float sx[4],sy[4],dx[4],dy[4];
  float x(float p) const {int k=p<sx[1]?0:p<sx[2]?1:2;return dx[k]+(p-sx[k])*(dx[k+1]-dx[k])/(sx[k+1]-sx[k]);}
@@ -397,12 +397,25 @@ void drawBattleCover(const Layout& l){
  MistCastle::part(c,8,moving,siegeActive);
  UnSectionClip(false);measureFrontInner(l,c);
 }
+void drawPortraitStarterHull(const Box& hull,bool mirror){
+ const bool forced=portraitHullImage(0)==PORTRAIT_STARTER_INTERIOR_IMG;
+ const float reveal=forced?1.f:std::max(0.f,std::min(1.f,starterInteriorReveal));
+ if(reveal<=0||reveal>=1){portraitImage(reveal>=1?PORTRAIT_STARTER_INTERIOR_IMG:PORTRAIT_CASTLE_FIRST_IMG,hull,mirror);return;}
+ const float z=hull.w/256.f;const int shown=(int)(90*reveal);
+ auto piece=[&](int img,int x,int y,int w,int h){if(w<=0||h<=0)return;
+  turretPart(img,x,y,w,h,{hull.x+(int)((mirror?256-x-w:x)*z),hull.y-(int)(y*z),(int)(w*z),(int)(h*z)},0,.5f,.5f,mirror);
+ };
+ piece(PORTRAIT_CASTLE_FIRST_IMG,0,0,256,145);piece(PORTRAIT_CASTLE_FIRST_IMG,0,235,256,59);
+ piece(PORTRAIT_CASTLE_FIRST_IMG,0,145,27,90);piece(PORTRAIT_CASTLE_FIRST_IMG,178,145,78,90);
+ piece(PORTRAIT_CASTLE_FIRST_IMG,27,145,151,90-shown);
+ piece(PORTRAIT_STARTER_INTERIOR_IMG,27,235-shown,151,shown);
+}
 void drawCastleHull(const Layout& l,bool combat){
  (void)combat;const int c=std::max(0,std::min(18,siegeHullStage>=0?siegeHullStage:run.stage));
  castleWheelTravel=castleScrollSeconds*110.f*l.scale;
  const Box hull=portraitCastleBox(l);
  if(!nativeTitleBodyOnly&&!portraitAssembledSample())drawPortraitFarWheels(c,hull,portraitCastleZoom(l),castleWheelTravel,siegeActive);
- portraitImage(portraitHullImage(c),hull,siegeActive);
+ if(c==0&&portraitLobbyWorld())drawPortraitStarterHull(hull,siegeActive);else portraitImage(portraitHullImage(c),hull,siegeActive);
  if(portraitAssembledSample())return;
  if(!nativeTitleBodyOnly){
   const int img=PORTRAIT_WHEEL_FIRST_IMG+c;if(!sprite[img])LoadImg(img);

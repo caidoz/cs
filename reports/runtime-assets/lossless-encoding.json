@@ -1,8 +1,8 @@
 {
-  "original_bytes": 239528380,
-  "optimized_bytes": 179307672,
-  "saved_bytes": 60220708,
-  "converted_files": 1635,
+  "original_bytes": 239550308,
+  "optimized_bytes": 179325212,
+  "saved_bytes": 60225096,
+  "converted_files": 1636,
   "all_rgba_exact": true,
   "images": [
     {
@@ -21875,6 +21875,22 @@
       "rgba_exact": true,
       "alpha_semantics_preserved": true,
       "target": "res/playButton.png",
+      "selected_webp": true
+    },
+    {
+      "source_sha256": "46ee3edfa3f2af85cd059821861afc03d8e9c596ac930c1aa8d1699233f2aa89",
+      "encoded_sha256": "73f8d34f66fac27ec3827a8a78cfba2215026d98f8f8c5ee9dae9f0b012229c7",
+      "rgba_sha256": "ff63c51fe8ad6c2c8034c91e67f4df2aaf8244a7128c5ec6b18a4112349d58e4",
+      "size": [
+        256,
+        64
+      ],
+      "source_bytes": 21928,
+      "encoded_bytes": 17540,
+      "encoding": "webp-lossless-exact-v2-alpha-compatible-method4",
+      "rgba_exact": true,
+      "alpha_semantics_preserved": true,
+      "target": "res/portrait-campfire.png",
       "selected_webp": true
     },
     {

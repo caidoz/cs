@@ -34,6 +34,39 @@ void portraitReviewFixture(){
 bool portraitReviewLobby(){
  if(!portraitReviewEnabled()||!std::getenv("CS_PORTRAIT_LOBBY"))return false;
  static int hold=0;static float firstWheel=-1.f;if(firstWheel<0)firstWheel=castleWheelTravel;active=false;drawHandle=MD_LOBBY;MergeRouletteLobbySceneDraw();active=true;drawHandle=MD_PLAY;
+ if(std::getenv("CS_PORTRAIT_CAMP_REVIEW")){
+  static int phase=0,firstFire=-1;static bool done=false;if(done||reviewCapturePending)return true;
+  active=false;drawHandle=MD_LOBBY;const Layout q=layout();const Box body=portraitCastleBox(q);const float z=portraitCastleZoom(q);
+  const float x=body.x+100*z,y=body.y-180*z;
+  if(phase==0){starterInteriorReveal=0;campReviewScenario=0;++phase;}
+  else if(phase==1){
+   reviewTrace(campDrawnCrewCount==0?"PASS empty owned inventory shows no invented companions":"FAIL camp invents companions");
+   const bool down=portraitStarterInteriorTouch(0,991,x,y);portraitStarterInteriorTouch(1,991,x,y+100*q.scale);portraitStarterInteriorTouch(2,991,x,y+100*q.scale);
+   reviewTrace(down&&starterInteriorReveal==1?"PASS actual castle drag opens starter interior":"FAIL starter interior open gesture");++phase;
+  }else if(phase==2){
+   reviewTrace(portraitHullImage(0)==PORTRAIT_STARTER_INTERIOR_IMG?"PASS opening selects actual starter interior resource":"FAIL interior resource");
+   const int stage=run.stage;run.stage=1;const bool other=portraitStarterInteriorTouch(0,992,x,y);run.stage=stage;
+   reviewTrace(!other?"PASS interior gesture is limited to the first castle":"FAIL interior leaks to other castles");
+   reviewCapture("starter-interior-open");++phase;
+  }else if(phase==3){
+   portraitStarterInteriorTouch(0,991,x,y);portraitStarterInteriorTouch(1,991,x,y-100*q.scale);portraitStarterInteriorTouch(2,991,x,y-100*q.scale);
+   reviewTrace(starterInteriorReveal==0?"PASS reverse drag restores original exterior":"FAIL starter interior close gesture");campReviewScenario=1;++phase;
+  }else if(phase==4){reviewTrace(campDrawnCrewCount==1&&campDrawnCrew[0]==0?"PASS only one owned companion renders once":"FAIL camp single companion");reviewCapture("starter-camp-one");campReviewScenario=2;++phase;
+  }else if(phase==5){
+   const auto chosen=LobbyCamp::highestOwned(portraitCampOwned());bool valid=campDrawnCrewCount==(int)chosen.size()&&campDrawnCrewCount==3;
+   for(int i=0;i<campDrawnCrewCount;++i)valid=valid&&campDrawnCrew[i]==chosen[i].id;
+   reviewTrace(valid?"PASS camp renders the three highest owned grades without duplicates":"FAIL camp owned grade order");
+   firstFire=campFireFrame;reviewCapture("starter-camp-three");++phase;
+  }else if(phase==6&&firstFire!=campFireFrame){reviewTrace("PASS actual campfire animation advances frames");reviewCapture("starter-fire-next");++phase;
+  }else if(phase==7){
+   portraitStarterInteriorTouch(0,991,x,y);portraitStarterInteriorTouch(2,991,x,y);bool valid=starterInteriorReveal==0;
+   portraitStarterInteriorTouch(0,991,x,y);portraitStarterInteriorTouch(1,991,x-40*q.scale,y);portraitStarterInteriorTouch(3,991,x-40*q.scale,y);valid=valid&&starterInteriorReveal==0;
+   active=true;const bool battle=portraitStarterInteriorTouch(0,991,x,y);active=false;
+   reviewTrace(valid&&!battle?"PASS taps, cancelled drags and battle input do not open interior":"FAIL starter gesture isolation");
+   reviewTrace("DONE portrait review");done=true;
+  }
+  active=true;drawHandle=MD_PLAY;return true;
+ }
  if(std::getenv("CS_PORTRAIT_DEBUG19")){
   static int phase=0;static bool done=false;if(done)return true;if(reviewCapturePending)return true;
   active=false;drawHandle=MD_LOBBY;

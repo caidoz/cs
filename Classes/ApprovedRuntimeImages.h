@@ -1371,6 +1371,7 @@ inline bool RuntimeImageApproved(const std::string& name) {
   "res/p2_7.png",
   "res/p2_8.png",
   "res/playButton.png",
+  "res/portrait-campfire.png",
   "res/portrait-castle-01.png",
   "res/portrait-castle-02.png",
   "res/portrait-castle-03.png",

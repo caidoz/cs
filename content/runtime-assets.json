@@ -12330,6 +12330,15 @@
       "encoded_sha256": "28cdc3c09cb50c0aeae4f18c952c7e39b8f41cc66b788647e4c0f089680d0436"
     },
     {
+      "source": "asset_library/production/runtime-15f8909892c2ac3ab6bef3a6bae1d8f238089bc0d9ecee2d519d66326f64b268.webp",
+      "target": "res/portrait-campfire.png",
+      "original_source": "asset_library/production/portrait-campfire.png",
+      "encoding": "webp-lossless",
+      "rgba_sha256": "ff63c51fe8ad6c2c8034c91e67f4df2aaf8244a7128c5ec6b18a4112349d58e4",
+      "original_sha256": "46ee3edfa3f2af85cd059821861afc03d8e9c596ac930c1aa8d1699233f2aa89",
+      "encoded_sha256": "73f8d34f66fac27ec3827a8a78cfba2215026d98f8f8c5ee9dae9f0b012229c7"
+    },
+    {
       "source": "asset_library/production/runtime-4b2d0c16cc8cce32ee860a13ea814cfa42305a131a042e50ef589ebda8486b19.webp",
       "target": "res/portrait-castle-01.png",
       "original_source": "asset_library/production/portrait-castle-01.png",

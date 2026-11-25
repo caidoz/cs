@@ -22,6 +22,7 @@ void MergeTutorialBeginBattle();void MergeTutorialRememberAllyPlate(int x,int y,
 #include "TurretAttackPresentation.h"
 #include "CastleArtGeometry.h"
 #include "PortraitGameLayout.h"
+#include "LobbyCampModel.h"
 #include "Data/PortraitCastleArt.h"
 #include "Data/StarterCastleRig.h"
 #include "Data/CastleFiveFloorArt.h"
@@ -335,6 +336,10 @@ int mergeFlash=0,mergeFlashDuration=1;
 Box mergeBox={0,0,0,0};
 int mergeShownLevel=0;
 float portraitCameraY=0.f;
+float starterInteriorReveal=0.f;
+int starterInteriorFinger=-1,starterInteriorAxis=0;
+float starterInteriorDownX=0,starterInteriorDownY=0,starterInteriorStart=0;
+bool starterInteriorDragging=false;
 int portraitCameraFinger=-1;float portraitCameraDown=0,portraitCameraStart=0;
 struct Layout {
     float scale;
@@ -1989,6 +1994,7 @@ TurretAttack::Point heroTorsoPoint(const OBJECT& who,int motion,int x,int y,int 
  }
  return result;
 }
+#include "PortraitLobbyCamp.inc"
 void drawWorld(const Layout& l,bool combat) {
     const float s=l.scale;
     objectDrawOrder=monsterDrawOrder=allyDrawOrder=impactDrawOrder=0;monsterDrawn=false;
@@ -2003,7 +2009,7 @@ void drawWorld(const Layout& l,bool combat) {
     SetSectionClip(0,viewportTop,DX,std::max(1,viewportTop-viewportBottom),false);
     drawCastleHull(l,combat);
     if(nativeTitleBodyOnly)return;
-    if(!combat){UnSectionClip(false);return;}
+    if(!combat){drawPortraitLobbyCamp(l);UnSectionClip(false);return;}
     //---- 데크의 줄 ----
     //
     //전에는 히어로가 DX*0.57 에 서고 동료가 그 왼쪽으로 늘어섰다. 대포가
@@ -2905,6 +2911,7 @@ void waveTransitionReviewStep(const Layout& l){
 #include "MergeMonsterPartsReview.inc"
 #include "RewardRevealReview.inc"
 bool portraitCameraTouch(int,int,float,float);
+bool portraitStarterInteriorTouch(int,int,float,float);
 #include "PortraitGameReview.inc"
 void reviewStep(const Layout& l) {
     if(portraitReviewStep(l))return;
@@ -5071,6 +5078,7 @@ void writePlacementDiagnostic(const Layout& l,const Block& source,bool fromTray,
  out<<"---\r\n";
 }
 bool MergeRouletteTouch(int phase,int id,float x,float y) {
+    if(portraitStarterInteriorTouch(phase,id,x,y))return true;
     if(portraitCameraTouch(phase,id,x,y))return true;
     if(active&&phase==0&&(layout().attack.has(x,y)||layout().cannon.has(x,y)))portraitCameraY=0;
     if(active&&startEventActive()){if(phase==2)startEventElapsed=StartEventDuration;return true;}

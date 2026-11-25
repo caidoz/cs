@@ -70,7 +70,7 @@ void drawPortraitLobby(const Layout& l){
  const Box start=lobbyStart(l);drawLobbyStartButton(start);
  drawLobbyBottomNav(0,true);
  // Existing expeditions/PVP remain reachable; upgrades keep their existing UI.
- Box pvp=lobbyPvp(l);pvp={DX-(int)(80*s),l.ground+(int)(38*s),(int)(64*s),(int)(28*s)};
+ Box pvp=lobbyPvp(l);
  portraitFrame(pvp,false,true);label("PVP",pvp.x+pvp.w/2,pvp.y-(int)(5*s),.46f);
  // MergeRouletteTouch owns the PVP hit box.
 }
@@ -141,4 +141,27 @@ bool portraitCameraTouch(int phase,int id,float x,float y){
  if(phase==1)portraitCameraY=std::max(-maximum,std::min(0.f,portraitCameraStart+y-portraitCameraDown));
  if(phase==2||phase==3)portraitCameraFinger=-1;
  (void)fixedGround;(void)x;return true;
+}
+
+// Dragging the first castle opens only its registered front facade; other castles retain camera gestures.
+bool portraitStarterInteriorTouch(int phase,int id,float x,float y){
+ if(active||drawHandle!=MD_LOBBY||run.stage!=0||siegeActive||RewardPopup::open()||entryChoiceOpen||resumePromptOpen||quitPromptOpen||popUpCnt>0||LoadoutOpen()||DebugControlsOpen()||LobbyCastleDebugActive()){
+  if(id==starterInteriorFinger)starterInteriorFinger=-1;return false;
+ }
+ const Layout l=layout();const float s=l.scale;
+ if(phase==0){
+  if(!portraitCastleBox(l).has(x,y)||y<l.arenaBottom+12*s||y>DY-78*s)return false;
+  starterInteriorFinger=id;starterInteriorDownX=x;starterInteriorDownY=y;starterInteriorStart=starterInteriorReveal;starterInteriorDragging=false;starterInteriorAxis=0;return true;
+ }
+ if(id!=starterInteriorFinger)return false;
+ if(phase==1){
+  const float dx=x-starterInteriorDownX,dy=y-starterInteriorDownY;
+  if(!starterInteriorAxis&&std::max(std::abs(dx),std::abs(dy))>=8*s)starterInteriorAxis=std::abs(dx)>std::abs(dy)?1:2;
+  if(starterInteriorAxis){starterInteriorDragging=true;const float distance=starterInteriorAxis==1?-dx:dy;starterInteriorReveal=std::max(0.f,std::min(1.f,starterInteriorStart+distance/(80*s)));}
+ }
+ if(phase==2||phase==3){
+  starterInteriorReveal=phase==3?starterInteriorStart:starterInteriorDragging?(starterInteriorReveal>=.45f?1.f:0.f):starterInteriorStart;
+  starterInteriorFinger=-1;starterInteriorAxis=0;
+ }
+ return true;
 }

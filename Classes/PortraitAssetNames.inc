@@ -67,3 +67,4 @@
     "portrait-icons",
     "portrait-roulette-gear",
     "portrait-starter-interior",
+    "portrait-campfire",

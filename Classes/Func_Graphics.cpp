@@ -1019,6 +1019,7 @@ std::string  GetResourceName(int type, int idx)
 		if(idx>=PORTRAIT_CASTLE_FIRST_IMG&&idx<=PORTRAIT_CASTLE_LAST_IMG){char n[64];snprintf(n,sizeof(n),"res/portrait-castle-%02d.png",idx-PORTRAIT_CASTLE_FIRST_IMG+1);return n;}
 		if(idx>=PORTRAIT_WHEEL_FIRST_IMG&&idx<=PORTRAIT_WHEEL_LAST_IMG){char n[64];snprintf(n,sizeof(n),"res/portrait-wheel-%02d.png",idx-PORTRAIT_WHEEL_FIRST_IMG+1);return n;}
 		if(idx>=PORTRAIT_TURRET_FIRST_IMG&&idx<=PORTRAIT_TURRET_LAST_IMG){char n[64];snprintf(n,sizeof(n),"res/portrait-turret-%02d.png",idx-PORTRAIT_TURRET_FIRST_IMG+1);return n;}
+		if(idx==PORTRAIT_CAMPFIRE_IMG)return "res/portrait-campfire.png";
 		if(idx==PORTRAIT_STARTER_INTERIOR_IMG)return "res/portrait-starter-interior.png";
 		if(idx==PORTRAIT_NIGHT_IMG)return "res/portrait-night.png";
 		if(idx==PORTRAIT_RAIL_IMG)return "res/portrait-rail-stone.png";
