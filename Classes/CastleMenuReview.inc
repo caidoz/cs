@@ -23,10 +23,13 @@ static void CastleReviewClick(int command) {
 #include "MenuSceneReview.inc"
 #include "QuietMenuReview.inc"
 #include "CastleGrowthReview.inc"
+#include <chrono>
+#include "CurrentVersionTour.inc"
 static void CastleMenuReviewStep()
 {
     const char* path = getenv("CS_CASTLE_REVIEW_PATH");
     if (!path) return;
+    if(CurrentVersionTour(path))return;
     if(getenv("CS_FINAL_BOSS_REWARD_REVIEW")){
         static int tick=0;static bool pending=false;if(pending)return;++tick;
         if(tick==1){NewGame();robin.demoSeen[DEMO_TUTORIAL_END]=true;CastleTutorialLoad(CastleTutorial::Done);GotoLobby();while(popUpCnt>0)ClosePopUp();LoadoutSetOpen(false);}

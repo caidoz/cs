@@ -5534,3 +5534,24 @@ bool MergeRouletteFinalRewardReview(int step){
  if(step==3){const Box b=CastleVault::box(),start=lobbyStart(layout());return b.y-b.h>start.y&&b.x==start.x&&b.w==start.w;}
  return false;
 }
+
+// Recording-only final-boss finisher, in an isolated review account.
+// The saved boss has 10 HP left; normal touch, damage, reward and return paths run.
+bool MergeRouletteCurrentTour(int step){
+ if(!getenv("CS_CURRENT_VERSION_TOUR"))return false;
+ const auto tap=[](const Box& b){const float x=b.x+b.w*.5f,y=b.y-b.h*.5f;MergeRouletteTouch(0,988,x,y);MergeRouletteTouch(2,988,x,y);};
+ if(step==0){
+  review=false;configure();Run saved;saved.roster=&roster;saved.stage=0;saved.rng=12345;saved.setShape(castleShape(0));
+  if(!saved.start(pool,treeWeights))return false;
+  saved.setVitals(stats.heroHealth,stats.heroArmor);saved.wave=14;saved.enemyMax=waveHp(0,14);saved.enemyHp=std::min(10LL,saved.enemyMax);saved.enemyAttack=waveAttack(0,14);saved.reward=320;
+  const std::string encoded=saved.encode();if(encoded.size()>=sizeof(robin.mergeRouletteRun))return false;
+  memset(robin.mergeRouletteRun,0,sizeof(robin.mergeRouletteRun));memcpy(robin.mergeRouletteRun,encoded.data(),encoded.size());robin.mergeRouletteHero=curHero;
+  resumePromptChecked=true;resumePromptOpen=false;SaveGame();return true;
+ }
+ if(step==1){tap(lobbyStart(layout()));return entryChoiceOpen;}
+ if(step==2){entryChoiceOpen=false;resumePromptOpen=true;return true;}
+ if(step==3){if(resumePromptOpen){tap(resumeChoiceBox(1));return false;}if(!active||ticks<120||entering()||introActive()||run.attacking)return false;tap(layout().cannon);return run.attacking;}
+ if(step==4)return RewardPopup::open();
+ if(step==5){if(!RewardPopup::ready())return false;tap({RewardPopup::bx,RewardPopup::by,RewardPopup::bw,RewardPopup::bh});return !active&&drawHandle==MD_LOBBY;}
+ return false;
+}

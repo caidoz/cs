@@ -12446,13 +12446,13 @@
       "encoded_sha256": "73f8d34f66fac27ec3827a8a78cfba2215026d98f8f8c5ee9dae9f0b012229c7"
     },
     {
-      "source": "asset_library/production/runtime-84afbe59c61da592a8d9014bf4674630c63767ea19ac661ab34df0821416d060.webp",
+      "source": "asset_library/production/runtime-4b2d0c16cc8cce32ee860a13ea814cfa42305a131a042e50ef589ebda8486b19.webp",
       "target": "res/portrait-castle-01.png",
       "original_source": "asset_library/production/portrait-castle-01.png",
       "encoding": "webp-lossless",
-      "rgba_sha256": "10e3aa87faef7fc4a364629e2f90ca60904159134c80960d6aa2acbdee382db5",
-      "original_sha256": "c5d694cba20d5d93ac766b874e67f652b7466dc611965c8e003324bd05016fce",
-      "encoded_sha256": "57fc8c6c419ef475b1e20a98442a2e4af83c7232cb250206569155f3747a7dd8"
+      "rgba_sha256": "68a95da7ea46711a3d9eb288682239ccfa3f715825bf709daffa73698e70e1a3",
+      "original_sha256": "f84d4bbefbe7fcb30d10de863d72dcf34d764080f48d30e4aebe80a1895bc2ac",
+      "encoded_sha256": "f58fd197269d029c0c7fcabe09e65b32c90598e322e54c03664dce2102b3fe41"
     },
     {
       "source": "asset_library/production/runtime-6b8c8a88d25e6d44df86d6dc6b36a0e8702ab646c1da5d9fe52fa3e83d4a4a15.webp",
@@ -12653,13 +12653,13 @@
       "encoded_sha256": "b04806b47125a75b8c5bf4c0188f9020e50ed7a00ff1bff3a90f857921ed110c"
     },
     {
-      "source": "asset_library/production/runtime-3252d3f6df8cdad456921e30b3988d2bf535f37ba1e92af92f362e9e939c44e1.webp",
+      "source": "asset_library/production/runtime-9cf8f00f7aa57d0538d35ebabc092cbb17ad80cd0c6012846345ba82bced72a2.webp",
       "target": "res/portrait-starter-interior.png",
       "original_source": "asset_library/production/portrait-starter-interior.png",
       "encoding": "webp-lossless",
-      "rgba_sha256": "9e0da1472a0115e04c87e3fb37774db222ec20535c675b15d8472b532a2c44fc",
-      "original_sha256": "f897875e1a8ef2473f42ac184453e59e7e1badf79ccedc87b139fa0db02bd055",
-      "encoded_sha256": "0de40d4ec4a5caa03f80e04a089725e67eeaaf101482e691805cf1e5b1539a36"
+      "rgba_sha256": "a4601186abd3dec32d4082a1d1a81be60080adf3135bd0d207df4a3665e42b4e",
+      "original_sha256": "fa6e5f5dedf8aee9bfd909bf14a3960e9a9680eae961c4cdf555bb673769e29f",
+      "encoded_sha256": "de34a2edf0d2509d36b019182e5e53956ec8987000badc01412bad69e9fbaa56"
     },
     {
       "source": "asset_library/production/runtime-dd73bc870d729ed5ab59ab4a6246a25cbc463892feaf84a3f7edee40866b32e1.webp",

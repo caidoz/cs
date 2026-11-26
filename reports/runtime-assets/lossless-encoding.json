@@ -1,7 +1,7 @@
 {
-  "original_bytes": 267409054,
-  "optimized_bytes": 193530783,
-  "saved_bytes": 73878271,
+  "original_bytes": 267537853,
+  "optimized_bytes": 193620561,
+  "saved_bytes": 73917292,
   "converted_files": 1647,
   "all_rgba_exact": true,
   "images": [
@@ -22070,15 +22070,15 @@
       "selected_webp": true
     },
     {
-      "source_sha256": "c5d694cba20d5d93ac766b874e67f652b7466dc611965c8e003324bd05016fce",
-      "encoded_sha256": "57fc8c6c419ef475b1e20a98442a2e4af83c7232cb250206569155f3747a7dd8",
-      "rgba_sha256": "10e3aa87faef7fc4a364629e2f90ca60904159134c80960d6aa2acbdee382db5",
+      "source_sha256": "f84d4bbefbe7fcb30d10de863d72dcf34d764080f48d30e4aebe80a1895bc2ac",
+      "encoded_sha256": "f58fd197269d029c0c7fcabe09e65b32c90598e322e54c03664dce2102b3fe41",
+      "rgba_sha256": "68a95da7ea46711a3d9eb288682239ccfa3f715825bf709daffa73698e70e1a3",
       "size": [
         256,
         294
       ],
-      "source_bytes": 43950,
-      "encoded_bytes": 29606,
+      "source_bytes": 108230,
+      "encoded_bytes": 73984,
       "encoding": "webp-lossless-exact-v2-alpha-compatible-method4",
       "rgba_exact": true,
       "alpha_semantics_preserved": true,
@@ -22438,15 +22438,15 @@
       "selected_webp": true
     },
     {
-      "source_sha256": "f897875e1a8ef2473f42ac184453e59e7e1badf79ccedc87b139fa0db02bd055",
-      "encoded_sha256": "0de40d4ec4a5caa03f80e04a089725e67eeaaf101482e691805cf1e5b1539a36",
-      "rgba_sha256": "9e0da1472a0115e04c87e3fb37774db222ec20535c675b15d8472b532a2c44fc",
+      "source_sha256": "fa6e5f5dedf8aee9bfd909bf14a3960e9a9680eae961c4cdf555bb673769e29f",
+      "encoded_sha256": "de34a2edf0d2509d36b019182e5e53956ec8987000badc01412bad69e9fbaa56",
+      "rgba_sha256": "a4601186abd3dec32d4082a1d1a81be60080adf3135bd0d207df4a3665e42b4e",
       "size": [
         256,
         294
       ],
-      "source_bytes": 44269,
-      "encoded_bytes": 29870,
+      "source_bytes": 108788,
+      "encoded_bytes": 75270,
       "encoding": "webp-lossless-exact-v2-alpha-compatible-method4",
       "rgba_exact": true,
       "alpha_semantics_preserved": true,

@@ -48,7 +48,7 @@ void captureLobbyDeparture(){
 bool campRoomClip(const Layout& l,Box& room,int slot){
  const int c=std::max(0,std::min(18,run.stage));const Box window=portraitHabitatBounds(c,portraitCastleBox(l));const int floors=portraitHabitatFloors(c);
  const int floor=slot%floors,rank=slot/floors;
- room={window.x+(int)(window.w*(c==0?.80f:rank%2?.62f:.30f)),window.y-(floor+1)*window.h/floors+(int)(5*l.scale),window.w,window.h/floors};
+ room={window.x+(int)(window.w*(rank%2?.62f:.30f)),window.y-(floor+1)*window.h/floors+(int)(5*l.scale),window.w,window.h/floors};
  clipX=std::max(clipX,window.x);clipX2=std::min(clipX2,window.x+window.w);
  clipY=std::min(clipY,window.y-window.h+(int)(window.h*starterInteriorReveal));clipY2=std::max(clipY2,window.y-window.h);
  return clipX2>clipX&&clipY>clipY2&&starterInteriorReveal>0;
@@ -81,7 +81,7 @@ void drawPortraitLobbyCamp(const Layout& l){
   turretPart(img,0,41,64,23,{(int)(center-32*z),(int)(foot-10*s+23*z),(int)(64*z),(int)(23*z)});
   DrawLobbyCampFire(center,foot-10*s,s,ticks/60.f,true);campFireDrawn=true;restore();return;
  }
- const float doorX=hull.x+hull.w*.44f,doorFoot=hull.y-hull.h*(run.stage==0?.86f:.79f);
+ const float doorX=hull.x+hull.w*.44f,doorFoot=hull.y-hull.h*.79f;
  const float heroRecall=BaseCamp::recall(lobbyDepartureAge,0);
  if(!departing||heroRecall<.995f){
   campHeroX=departing?lobbyRecallX[0]*(1-heroRecall)+doorX*heroRecall:campOutsidePosition(l,0);
