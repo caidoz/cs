@@ -22,11 +22,13 @@ void portraitStat(const Box& b,int kind,long long value,long long maximum,bool e
  if(compact&&StringWidth(number,UiMinimumTextZoom())>b.w-size-14*s)std::snprintf(number,sizeof(number),"%s",a);
  const float zoom=std::max(.28f,std::min(compact?.48f:.66f,(b.w-size-16*s)/std::max(1.f,StringWidth(number,s))));
  label(number,b.x+size+(b.w-size)/2,y,zoom,enemy?0xFFE4D4:0xF1EFE3);
- const int n=8,gap=std::max(1,(int)(2*s)),left=b.x+(int)(8*s),width=b.w-(int)(16*s),height=std::max(3,(int)(6*s));
+ const int gap=std::max(1,(int)(2*s)),width=b.w-(int)(16*s),height=std::max(3,(int)(6*s));
+ const int n=std::max(1,(width+gap)/(height+gap));
+ const int left=b.x+(b.w-(n*height+(n-1)*gap))/2;
  const float fill=kind==2?std::max(0.f,std::min(1.f,value/(float)std::max(1LL,maximum))):value>0?1.f:0.f;
  const int ally[3]={0xCFA75A,0x77B8D8,0x58CC98},hostile[3]={0xF293A8,0xECAE72,0xED6D81};
- for(int i=0;i<n;++i){const int x0=left+i*width/n,x1=left+(i+1)*width/n;
-  bevel({x0,b.y-b.h+(int)(12*s),x1-x0-gap,height},(i+.5f)/n<=fill?(enemy?hostile[kind]:ally[kind]):0x2B303E,std::max(1,(int)s));}
+ for(int i=0;i<n;++i){const int x0=left+i*(height+gap);
+  bevel({x0,b.y-b.h+(int)(12*s),height,height},(i+.5f)/n<=fill?(enemy?hostile[kind]:ally[kind]):0x2B303E,std::max(1,(int)s));}
 }
 void portraitStatTrio(const Box& b,long long attack,long long defense,long long hp,long long maximum,bool enemy){
  const int gap=std::max(2,(int)(4*DX/640.f)),usable=b.w-2*gap;
