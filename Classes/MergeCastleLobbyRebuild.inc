@@ -211,7 +211,7 @@ void drawCastleCannon(const Layout& l,int c,bool mirror){
 
 }
 
-Box lobbyStart(const Layout& l){const auto p=PortraitGame::lobby(DX,DY);const int w=(int)(360*l.scale);return {(DX-w)/2,p.startTop,w,(int)(64*l.scale)};}
+Box lobbyStart(const Layout& l){const auto p=PortraitGame::lobby(DX,DY);const int w=(int)(360*l.scale);return {(DX-w)/2,p.startTop-(int)(10*l.scale),w,(int)(64*l.scale)};}
 
 Box lobbyContinue(const Layout& l){return OriginalCastle::box(411,1196,274,52);}
 Box lobbyManage(const Layout& l){return OriginalCastle::box(404,1005,276,49);}

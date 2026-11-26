@@ -27,6 +27,16 @@ static void CastleMenuReviewStep()
 {
     const char* path = getenv("CS_CASTLE_REVIEW_PATH");
     if (!path) return;
+    if(getenv("CS_FINAL_BOSS_REWARD_REVIEW")){
+        static int tick=0;static bool pending=false;if(pending)return;++tick;
+        if(tick==1){NewGame();robin.demoSeen[DEMO_TUTORIAL_END]=true;CastleTutorialLoad(CastleTutorial::Done);GotoLobby();while(popUpCnt>0)ClosePopUp();LoadoutSetOpen(false);}
+        const int step=tick==20?0:tick==70?1:tick==90?2:tick==110?3:-1;
+        if(step>=0)CastleReviewTrace(MergeRouletteFinalRewardReview(step)?"PASS final boss reward flow":"FAIL final boss reward flow");
+        const char* shot=tick==80?"stage-clear-reward.png":tick==120?"castle-income-lobby.png":nullptr;
+        if(shot){pending=true;cocos2d::utils::captureScreen([](bool ok,const std::string&){pending=false;CastleReviewTrace(ok?"PASS final reward capture":"FAIL final reward capture");},std::string(path)+shot);}
+        if(tick==140)CastleReviewTrace("DONE final boss reward review");
+        return;
+    }
     if(CastleGrowthReview(path))return;
     if(QuietMenuReview(path))return;
     if(getenv("CS_CASTLE_DEBUG_SELECTION_REVIEW")){

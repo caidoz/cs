@@ -67,7 +67,7 @@ void drawPortraitLobby(const Layout& l){
  const Box castleTag={DX/2-(int)(150*s),p.statsTop+(int)(36*s),(int)(300*s),(int)(28*s)};portraitSkin(4,castleTag);
  label(line,DX/2,castleTag.y-(int)(3*s),.48f,0xF3E4A5);
  uiSceneMotionY=leaving+(titleLobbyClock>=0?-260*s*(1.f-TitleLobbyEase(.76f,1.24f)):0);
- const Box destination={(int)(24*s),p.stageTop,DX-(int)(48*s),(int)(88*s)};portraitSkin(4,destination);
+ const Box destination={(int)(24*s),p.stageTop+(int)(16*s),DX-(int)(48*s),(int)(88*s)};portraitSkin(4,destination);
  portraitImage(PORTRAIT_NIGHT_IMG,{destination.x+(int)(16*s),destination.y-(int)(16*s),(int)(100*s),(int)(56*s)});
  const int textCenter=destination.x+(destination.w+(int)(120*s))/2;
  label(StageBg::RegionName(stage/10),textCenter,destination.y-(int)(14*s),.62f);

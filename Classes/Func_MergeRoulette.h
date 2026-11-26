@@ -40,3 +40,5 @@ void MergeRouletteLobbyTopbarDraw();
 int MergeRouletteCastleUpgradeHeight(int castle);
 void MergeRouletteCastleUpgradePreview(int castle,int x,int top,int width,int height);
 void MergeRouletteCastleTurretPreview(int castle,int x,int top,int width,int height);
+
+bool MergeRouletteFinalRewardReview(int step);

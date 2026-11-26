@@ -31,11 +31,8 @@ static bool pressed=false;
 //검증용 - 마지막 수거에서 무엇이 나갔나.
 static long long lastGold=0; static int lastGear=0,lastCrew=0;
 
-//단추 자리: 오른쪽 위, 환경설정 톱니의 터치 영역(GNB_GEAR_TOUCHH) 아래. 성 지붕은
-//가운데에 있어 이 구석은 하늘이다. 왼쪽 위는 로비 디버그 단추가 쓴다.
-//자원 띠(y >= DY-LOBBY_BAR_H) 안에는 두지 않는다 - 원본 상단 띠 검증이 그 줄에
-//수거 단추가 없기를 본다.
-inline Box box(){const float s=DX/640.f;return {DX-(int)(72*s),DY-(int)(68*s),(int)(56*s),(int)(56*s)};}
+// 성이 생산한 재화는 전투 시작 바로 위에서 수령한다. 터치와 비행 시작점도 공유한다.
+inline Box box(){const float s=DX/640.f;const Box start=lobbyStart(layout());return {start.x,start.y+(int)(40*s),start.w,(int)(30*s)};}
 inline int barTop(){return DY-(int)(2*DX/640.f);}   //MergeRouletteLobbySceneDraw 가 자원 띠를 그리는 y
 inline bool busy(){return age>=0;}
 inline float ease(float t){t=std::max(0.f,std::min(1.f,t));return t<.5f?4*t*t*t:1-std::pow(-2*t+2,3.f)/2;}
@@ -114,13 +111,13 @@ inline void drawButton(){
  const bool ready=p.gold>0&&!busy();
  const Box d=b;
  UiButtonStyle style;style.fill=0x7A4E18;style.frame=mergeButtonFrame;style.stacked=true;
- char amount[32];std::snprintf(amount,sizeof(amount),"%lld",p.gold);
+ char amount[96];std::snprintf(amount,sizeof(amount),u8"성 생산 재화 · %lld 수령",p.gold);
  grayScale=ready?0:32;
- portraitSkin(4,d);portraitGlyph(11,{d.x+8,d.y-4,d.w-16,d.h-22});label(amount,d.x+d.w/2,d.y-d.h+16,.4f);grayScale=0;
- const int gw=std::max(3,(int)(6*s)),gh=d.h-(int)(16*s),gx=d.x+(int)(7*s),gy=d.y-(int)(8*s);
+ portraitSkin(4,d);portraitGlyph(11,{d.x+(int)(8*s),d.y-(int)(3*s),(int)(24*s),(int)(24*s)});label(amount,d.x+d.w/2+(int)(12*s),d.y-(int)(6*s),.43f);grayScale=0;
+ const int gw=d.w-(int)(16*s),gh=std::max(2,(int)(3*s)),gx=d.x+(int)(8*s),gy=d.y-d.h+(int)(5*s);
  MemRect(gx,gy,gw,gh,0x1A1410);
- const int fill=gh*p.percent/100;
- if(fill>0)MemRect(gx,gy-(gh-fill),gw,fill,p.percent>=100?0xFFE27A:0x6FD28A);
+ const int fill=gw*p.percent/100;
+ if(fill>0)MemRect(gx,gy,fill,gh,p.percent>=100?0xFFE27A:0x6FD28A);
  //가득 찼으면 테두리가 숨 쉰다 - "지금 걷어라".
  if(p.percent>=100&&!busy()){
   ++pulse;const float k=.5f+.5f*std::sin(pulse*.18f);

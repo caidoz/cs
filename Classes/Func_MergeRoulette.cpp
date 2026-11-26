@@ -845,6 +845,7 @@ bool runExpedition() {
         RewardPopup::Entry it;it.type=type;it.detail=detail;it.grade=grade;it.lv=lv;it.count=1;rewards.push_back(it);
     }
     RewardPopup::drawButton=rewardButton;
+    RewardPopup::onClose=[](){CastleTutorialEvent(CastleTutorial::RewardClosed);};
     RewardPopup::show(u8"원정 보상",rewards,u8"확인");
     PlayMusic(M_CARDSPLIT);
     SaveGame();
@@ -2418,6 +2419,7 @@ void endSpinTurn() {
 static const char* OverlapMessage=u8"장비가 겹쳐 있습니다.\n빈 칸으로 옮겨 주세요.";
 void finishCombatTurn() {
     bool killed=run.enemyHp==0;
+    const bool stageClear=killed&&!siegeActive&&run.wave==WavesPerStage-1;
     long long overkill=std::max(0LL,run.damageDone-run.enemyMax);
     const long long previousLives=run.lives;
     if(killed&&!siegeActive){defeatedRailBoss=railBossScene();defeatedNpc=combatEnemyNpc();defeatedMotion=renderedEnemyMotion;}
@@ -2434,33 +2436,37 @@ void finishCombatTurn() {
     if(siegeActive){if(refillPending){refillPending=false;refillElapsed=0.f;}Siege::afterAttack(killed);return;}   //공성전: 웨이브가 아니라 상대 턴
     if(killed) {
         PlayMusic(M_ENEMYDEAD);
-        long long gold=run.reward;run.reward=0;
-        GetItem(ITEM_GOLD,false,false,false,gold,false);
         message=overkill>0?"오버킬! 다음 웨이브":"처치! 다음 웨이브";
-        //보상창: 골드·하트·(성 클리어면) 장비를 카드로. "다음" 을 눌러야 다음 몬스터가 온다.
+        // Waves 1-14 retain the pending reward in the saved run; only boss 15 pays.
         std::vector<RewardPopup::Entry> rewards;
-        {RewardPopup::Entry g;g.type=ITEM_GOLD;g.count=gold;rewards.push_back(g);}
-        const bool stageClear=run.wave==0;
         if(stageClear) {
+            const long long gold=run.reward;run.reward=0;
+            GetItem(ITEM_GOLD,false,false,false,gold,false);
+            RewardPopup::Entry g;g.type=ITEM_GOLD;g.count=gold;rewards.push_back(g);
             PlayMusic(M_CHEER);
-            message="성 클리어! 장비 획득 · 다음 성으로";
+            message="스테이지 클리어! 보상 획득 후 로비로";
             if(!review) {
                 int type=ITEM_SWORD+hero.type,lv=std::max(1,std::min(GetEquipMaxLevel(),run.stage+1));
                 int detail=MakeItemDetail(type,lv),grade=MakeItemGrade(type,lv,detail);
-                GetItem(type,lv,detail,grade,1,0);
-                RewardPopup::Entry it;it.type=type;it.detail=detail;it.grade=grade;it.lv=lv;it.count=1;rewards.push_back(it);
+                if(GetItem(type,lv,detail,grade,1,0)){
+                    RewardPopup::Entry it;it.type=type;it.detail=detail;it.grade=grade;it.lv=lv;it.count=1;rewards.push_back(it);
+                }
             }
         }
-        {
+        if(stageClear){
             RewardPopup::drawButton=rewardButton;
-            RewardPopup::show(u8"보상",rewards,stageClear?u8"다음 성으로":u8"다음",enemyBodyKnown?(float)enemyBodyX:DX*.85f,enemyBodyKnown?(float)enemyBodyY:layout().ground+48*DX/640.f);
+            RewardPopup::onClose=[](){CastleTutorialEvent(CastleTutorial::RewardClosed);waveTransition=MergeCombat::WaveTransition();leaveBattle(true);};
+            RewardPopup::show(u8"스테이지 클리어",rewards,u8"로비로",enemyBodyKnown?(float)enemyBodyX:DX*.85f,enemyBodyKnown?(float)enemyBodyY:layout().ground+48*DX/640.f);
+            // The payout and removal of the completed run share one save snapshot.
+            robin.mergeRouletteRun[0]=0;robin.curWaveIdx=0;SaveGame();
         }
+        else CastleTutorialEvent(CastleTutorial::RewardClosed);
         run.enemyHp=run.enemyMax=waveHp(run.stage,run.wave);
         if(run.realVitals)run.enemyAttack=waveAttack(run.stage,run.wave);
         waveTransition.begin();picked=finger=-1;
         allyFlash=0;enemyBodyKnown=false;
     } else message=run.lost?"목숨을 모두 사용했습니다":"턴 종료 · 다음 공격을 준비하세요.";
-    save();
+    if(!stageClear)save();
 }
 void tick(float dt) {
     if(!siegeActive&&!run.choosing&&!run.lost&&!run.attacking&&animation==0&&!pendingPass&&
@@ -5504,4 +5510,27 @@ bool MergeRouletteEntryChoiceReview(int step){
         Run decoded;return entryResume(&decoded)&&decoded.wave==6;
     }
     return false;
+}
+
+// Isolated native review, exercising the same settlement and popup-close paths.
+bool MergeRouletteFinalRewardReview(int step){
+ if(!getenv("CS_FINAL_BOSS_REWARD_REVIEW"))return false;
+ static long long balance=0,expected=0,paid=0;
+ if(step==0){
+  review=false;active=true;siegeActive=false;hero=ao[PLAYER];run=Run();run.roster=&roster;run.choosing=false;run.drafted=true;
+  robin.gold=10000;balance=robin.gold;expected=0;
+  for(int wave=0;wave<14;++wave){
+   run.attacking=true;run.enemyHp=0;run.damageDone=run.enemyMax;finishCombatTurn();
+   expected+=10*(BossTier(wave)?10:1);
+   Run restored;
+   if(RewardPopup::open()||robin.gold!=balance||run.wave!=wave+1||run.reward!=expected||!restored.decode(robin.mergeRouletteRun)||restored.reward!=expected)return false;
+  }
+  run.attacking=true;run.enemyHp=0;run.damageDone=run.enemyMax;finishCombatTurn();expected+=100;
+  paid=robin.gold;
+  return RewardPopup::open()&&paid==balance+expected&&run.reward==0&&robin.mergeRouletteRun[0]==0&&run.stage==1;
+ }
+ if(step==1){RewardPopup::finishReveal();return RewardPopup::ready()&&robin.gold==paid&&active;}
+ if(step==2){const float x=RewardPopup::bx+RewardPopup::bw*.5f,y=RewardPopup::by-RewardPopup::bh*.5f;MergeRouletteTouch(0,993,x,y);MergeRouletteTouch(2,993,x,y);const bool returned=!active;RewardPopup::closeNow();return returned&&!active&&drawHandle==MD_LOBBY&&!RewardPopup::open()&&robin.gold==paid&&robin.mergeRouletteRun[0]==0&&!waveTransition.active();}
+ if(step==3){const Box b=CastleVault::box(),start=lobbyStart(layout());return b.y-b.h>start.y&&b.x==start.x&&b.w==start.w;}
+ return false;
 }
