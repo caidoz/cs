@@ -10722,7 +10722,7 @@ static void LobbyZoomButtonsDraw(void)
  #include "LobbyReferenceUi.inc" // Energy-free lobby admission and shared resource header.
 // Shared ownership rule for dock paint, hit targets and reserved viewport height.
 bool MergeRouletteLobbyDockVisible(){
- return drawHandle==MD_LOBBY&&curMenu==MENU_PLAY&&popUpCnt==0&&!gRenewDungeon&&!LoadoutOpen()&&!SharedRewardOpen();
+ return !MergeRouletteLobbyDeparting()&&drawHandle==MD_LOBBY&&curMenu==MENU_PLAY&&popUpCnt==0&&!gRenewDungeon&&!LoadoutOpen()&&!SharedRewardOpen();
 }
 static void LobbyBottomNavDraw(void){
  if(!MergeRouletteLobbyDockVisible())return;

@@ -64,7 +64,7 @@ float portraitCannonFootX(int c){
 int portraitHullImage(int c){
  // Keep the approved exterior; the starter cutaway is a separate debug view.
  const bool interior=c==0&&((LobbyCastleDebugActive()&&LobbyCastleDebugInterior())||(review&&std::getenv("CS_PORTRAIT_INTERIOR")));
- return (interior||(c==0&&portraitLobbyWorld()&&starterInteriorReveal>=.999f))?PORTRAIT_STARTER_INTERIOR_IMG:PORTRAIT_CASTLE_FIRST_IMG+c;
+ return (interior||(c==0&&portraitLobbyWorld()&&popUpCnt==0&&!titleCampOnly&&starterInteriorReveal>=.999f))?PORTRAIT_STARTER_INTERIOR_IMG:PORTRAIT_CASTLE_FIRST_IMG+c;
 }
 PortraitCastleArt::Size portraitHullSize(int c){
  if(review&&c==0&&std::getenv("CS_PORTRAIT_SAMPLE_ASSETS")){
@@ -89,7 +89,8 @@ float portraitCastleZoom(const Layout& l){
  const float starterFit=std::max(1.f,DY-78*l.scale-PortraitGame::lobby(DX,DY).ground)*256.f/(firstSize.h+PortraitCastleArt::WheelSize(0)*.58f);
  // One uniform camera scale for every native hull: later widths grow with the art.
  const float assemblyFit=(DX-32*l.scale)/(PortraitCastleArt::MaxAssemblyRatio*PortraitCastleArt::Sizes[18].w/256.f);
- return std::min(std::min((243.2f+230.4f*t)*l.scale,starterFit),assemblyFit)/256.f;
+ const float base=std::min(std::min((243.2f+230.4f*t)*l.scale,starterFit),assemblyFit)/256.f;
+ const float moving=BaseCamp::travel(lobbyDepartureAge);return base*(1-moving)+.85f*l.scale*moving;
 }
 Box portraitCastleBox(const Layout& l){
  const int c=std::max(0,std::min(18,siegeHullStage>=0?siegeHullStage:run.stage));
@@ -107,7 +108,7 @@ Box portraitCastleBox(const Layout& l){
   const float gunWidth=c==0?StarterCastleRig::W*z:sprite[gun]?sprite[gun]->getTexture()->getContentSizeInPixels().width*z:100*z;
   const float left=std::min(0.f,b.w*.15f-wheel*.5f);
   const float right=std::max((float)b.w,b.w*PortraitCastleArt::FrontWheelAt(c)+gunWidth-portraitCannonFootX(c)*z);
-  b.x=(int)(28*l.scale-left);
+  b.x=(int)((28*l.scale-left)*(1-BaseCamp::travel(lobbyDepartureAge))+16*l.scale*BaseCamp::travel(lobbyDepartureAge));
  }
  if(siegeActive)b.x=DX-b.x-b.w;return b;
 }
@@ -216,7 +217,7 @@ Box lobbyContinue(const Layout& l){return OriginalCastle::box(411,1196,274,52);}
 Box lobbyManage(const Layout& l){return OriginalCastle::box(404,1005,276,49);}
 //원정 단추: 옛 "이어서" 줄의 오른쪽. 왼쪽은 행동력 게이지다.
 //PVP 디버그(공성전) 버튼. 오른쪽 위, 나가기 자리 아래.
-Box lobbyPvp(const Layout& l){const float s=l.scale;return {DX-(int)(80*s),l.ground+(int)(84*s),(int)(64*s),(int)(28*s)};}
+Box lobbyPvp(const Layout& l){const float s=l.scale;return {DX-(int)(80*s),l.ground+(int)(125*s),(int)(64*s),(int)(28*s)};}
 struct CastleMap {
  float sx[4],sy[4],dx[4],dy[4];
  float x(float p) const {int k=p<sx[1]?0:p<sx[2]?1:2;return dx[k]+(p-sx[k])*(dx[k+1]-dx[k])/(sx[k+1]-sx[k]);}
@@ -397,8 +398,36 @@ void drawBattleCover(const Layout& l){
  MistCastle::part(c,8,moving,siegeActive);
  UnSectionClip(false);measureFrontInner(l,c);
 }
+Box portraitHabitatBounds(int castle,const Box& hull){
+ if(castle==0)return {hull.x+(int)(27*hull.w/256.f),hull.y-(int)(145*hull.h/294.f),(int)(151*hull.w/256.f),(int)(90*hull.h/294.f)};
+ return {hull.x+(int)(hull.w*.16f),hull.y-(int)(hull.h*.25f),(int)(hull.w*.62f),(int)(hull.h*.57f)};
+}
+int portraitHabitatFloors(int castle){return castle==0?2:std::max(2,std::min(5,PortraitCastleArt::Sizes[castle].h/180));}
+void drawPortraitHabitatShell(int castle,const Box& hull){
+ portraitImage(portraitHullImage(castle),hull);
+ if(starterInteriorReveal<=0)return;
+ const Box b=portraitHabitatBounds(castle,hull);const int floors=portraitHabitatFloors(castle);
+ const int cx=clipX,cy=clipY,cx2=clipX2,cy2=clipY2;
+ clipX=std::max(cx,b.x);clipX2=std::min(cx2,b.x+b.w);clipY=std::min(cy,b.y-b.h+(int)(b.h*starterInteriorReveal));clipY2=std::max(cy2,b.y-b.h);
+ if(clipX2>clipX&&clipY>clipY2){
+  MemRect(b.x,b.y,b.w,b.h,0x191720);
+  const int img=MERGE_REBUILD_ROOMS_IMG+std::min(9,castle/2);if(!sprite[img])LoadImg(img);
+  if(sprite[img]){const auto sz=sprite[img]->getTexture()->getContentSizeInPixels();
+   for(int floor=0;floor<floors;++floor){
+    const auto f=MergeCastleTransition::RoomFrame(floor%4,castleRoomLevel(std::min(9,castle),floor%4),(int)sz.width,(int)sz.height);
+    const int top=b.y-floor*b.h/floors,h=b.h/floors;const float z=std::min(b.w/(float)f.w,h/(float)f.h);
+    MemRect(b.x,top,b.w,h,0x37333B);
+    for(int beam=0;beam<5;++beam)MemRect(b.x+beam*b.w/4,top,2,h,0x49434A);
+    MemRect(b.x,top,b.w,4,0x77583C);
+    artCut(img,{f.x,f.y,f.w,f.h},{b.x+(int)((b.w-f.w*z)*.5f),top-(int)(h-f.h*z),(int)(f.w*z),(int)(f.h*z)});
+    MemRect(b.x,top-h+2,b.w,2,0x77583C);
+   }
+  }
+ }
+ clipX=cx;clipY=cy;clipX2=cx2;clipY2=cy2;
+}
 void drawPortraitStarterHull(const Box& hull,bool mirror){
- const bool forced=portraitHullImage(0)==PORTRAIT_STARTER_INTERIOR_IMG;
+ const bool forced=lobbyDepartureAge<0&&portraitHullImage(0)==PORTRAIT_STARTER_INTERIOR_IMG;
  const float reveal=forced?1.f:std::max(0.f,std::min(1.f,starterInteriorReveal));
  if(reveal<=0||reveal>=1){portraitImage(reveal>=1?PORTRAIT_STARTER_INTERIOR_IMG:PORTRAIT_CASTLE_FIRST_IMG,hull,mirror);return;}
  const float z=hull.w/256.f;const int shown=(int)(90*reveal);
@@ -415,7 +444,9 @@ void drawCastleHull(const Layout& l,bool combat){
  castleWheelTravel=castleScrollSeconds*110.f*l.scale;
  const Box hull=portraitCastleBox(l);
  if(!nativeTitleBodyOnly&&!portraitAssembledSample())drawPortraitFarWheels(c,hull,portraitCastleZoom(l),castleWheelTravel,siegeActive);
- if(c==0&&portraitLobbyWorld())drawPortraitStarterHull(hull,siegeActive);else portraitImage(portraitHullImage(c),hull,siegeActive);
+ if(c==0&&portraitLobbyWorld()&&!titleCampOnly)drawPortraitStarterHull(hull,siegeActive);
+ else if(portraitLobbyWorld()&&!titleCampOnly)drawPortraitHabitatShell(c,hull);
+ else portraitImage(portraitHullImage(c),hull,siegeActive);
  if(portraitAssembledSample())return;
  if(!nativeTitleBodyOnly){
   const int img=PORTRAIT_WHEEL_FIRST_IMG+c;if(!sprite[img])LoadImg(img);
@@ -440,7 +471,8 @@ void drawLobbyStartButton(const Box& b){
  label(u8"\uc804\ud22c \uc2dc\uc791",b.x+b.w/2+(int)(24*s),b.y-(int)(19*s),.78f,0xF6E9C8);
 }
 void drawLobbyBottomNav(float drop=0.f,bool interactive=true){
- if(!MergeRouletteLobbyDockVisible())return;
+ if(!MergeRouletteLobbyDockVisible()&&lobbyDepartureAge<0)return;
+ if(lobbyDepartureAge>=0)interactive=false;
  Box nav=lobbyBottomNav();nav.y-=(int)drop;const float s=DX/640.f;
 
  const int actions[5]={TOUCH_FUNC_SHOP,TOUCH_FUNC_COLLECTIONS,TOUCH_FUNC_LOBBY_ADVENTURE,TOUCH_FUNC_POPUP_CREWLIST,TOUCH_FUNC_POPUP_CASTLEMENU};

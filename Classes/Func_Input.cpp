@@ -619,6 +619,7 @@ void TalkKey(void)
 
 void PlayKey(int obj)
 {
+ if(MergeRouletteLobbyDeparting()){systemKey=0;return;}
     // Preparing an admitted run must not return to the lobby before combat.
     if (BattleEntryLocked() && (systemKey == AVK_GOTOPLAY ||
         (systemKey == AVK_CLR && popUpCnt == 0))) {
@@ -3000,6 +3001,7 @@ void SetRectPoint(int rx, int ry, int width, int height, int func)
 
 void touchFunc(int func)
 {
+ if(MergeRouletteLobbyDeparting()){systemKey=0;return;}
  if(!touchDisable&&func>=0)PlayMusic(M_BUTTON);
 	if(CastleTutorialCommand(func)||MenuRenewalCommand(func)){systemKey=0;return;}
 	// Retired menu commands must not bypass per-castle upgrades or paid ownership.

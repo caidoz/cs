@@ -25,6 +25,7 @@ void MergeTutorialBeginBattle();void MergeTutorialRememberAllyPlate(int x,int y,
 #include "CastleArtGeometry.h"
 #include "PortraitGameLayout.h"
 #include "LobbyCampModel.h"
+#include "BaseCampPresentation.h"
 #include "Data/PortraitCastleArt.h"
 #include "Data/StarterCastleRig.h"
 #include "Data/CastleFiveFloorArt.h"
@@ -341,7 +342,12 @@ int mergeFlash=0,mergeFlashDuration=1;
 Box mergeBox={0,0,0,0};
 int mergeShownLevel=0;
 float portraitCameraY=0.f;
-float starterInteriorReveal=0.f;
+float starterInteriorReveal=1.f;
+float lobbyDepartureAge=-1.f;bool lobbyDepartureCommit=false,lobbySkipDeparture=false,lobbyDepartureCharge=false;
+float lobbyRecallX[4]={},lobbyRecallY[4]={};
+int baseCampReviewStage=0;
+int friendlyStatCount=0,hostileStatCount=0,friendlyStatKind[3]={},hostileStatKind[3]={};
+Box friendlyStatBounds[3],hostileStatBounds[3];long long friendlyStatValue[3]={},hostileStatValue[3]={};
 int starterInteriorFinger=-1,starterInteriorAxis=0;
 float starterInteriorDownX=0,starterInteriorDownY=0,starterInteriorStart=0;
 bool starterInteriorDragging=false;
@@ -376,6 +382,11 @@ Layout layout() {
     l.board={(DX-w)/2,p.boardBottom+h,w,h};
     l.ground=p.ground+(int)portraitCameraY;l.arenaBottom=p.statsTop;l.plateH=p.statsHeight;l.plateDrop=(int)(8*s);
     if(!active){l.ground=PortraitGame::lobby(DX,DY).ground+(int)portraitCameraY;l.arenaBottom=PortraitGame::lobby(DX,DY).statsTop;}
+    if(!active&&lobbyDepartureAge>=0){
+        const float t=BaseCamp::travel(lobbyDepartureAge);
+        l.ground=(int)(l.ground*(1-t)+(p.ground+portraitCameraY)*t);
+        l.arenaBottom=(int)(l.arenaBottom*(1-t)+p.statsTop*t);
+    }
     l.exit={DX-(int)(54*s),DY-(int)(8*s),(int)(42*s),(int)(40*s)};
     l.left={(int)(28*s),p.slotTop,(int)(40*s),p.slotHeight};
     l.right={DX-(int)(68*s),p.slotTop,(int)(40*s),p.slotHeight};
@@ -2338,6 +2349,7 @@ void drawWorld(const Layout& l,bool combat) {
 
 }
 void leaveBattle(bool abandon){
+    starterInteriorReveal=1;lobbyDepartureAge=-1;lobbyDepartureCharge=false;
     if(abandon){robin.mergeRouletteRun[0]=0;SaveGame();RewardPopup::closeNow();}
     else save();
     quitPromptOpen=false;quitPromptFinger=quitPromptChoice=exitPromptFinger=-1;
@@ -4177,7 +4189,7 @@ long long MergeRouletteHeroShieldRecovery(const OBJECT* h) {
     for(int slot:{EQUIP_HELM,EQUIP_ARMOR,EQUIP_PANTS,EQUIP_BOOTS}) if(h->equip[slot].type!=EMPTY) guard+=std::max(0LL,GetEquipPower(const_cast<ITEM*>(&h->equip[slot]),std::max(1,(int)h->equip[slot].lv)));
     return std::min(guard*(100+CastleTeamBonus(2))/100,1000000000000000LL);
 }
-void MergeRouletteBeginSiege() {Siege::begin();}
+void MergeRouletteBeginSiege() {lobbySkipDeparture=true;Siege::begin();lobbySkipDeparture=false;}
 bool MergeRouletteHousePreview(int house,int x,int top,int width,int height) {
     int castle=0;
     for(int i=0;i<std::min(19,gTotalCastle);++i)if(castleOrder[i]==house){castle=i;break;}
@@ -4198,6 +4210,10 @@ bool MergeRouletteOriginalPreview(int castle,int x,int top,int width,int height,
 void MergeRouletteSetHeartCapacity(int capacity) {(void)capacity;heartCapacity=Run::BattleEnergyMax;heartDisplay=run.battleEnergy;}
 void MergeRouletteBegin(bool resume) {
     if(active)return;
+    if(!resume&&!lobbyDepartureCommit&&!lobbySkipDeparture&&drawHandle==MD_LOBBY&&(!std::getenv("CS_MERGE_REVIEW")||std::getenv("CS_BASE_CAMP_REVIEW"))){
+        if(lobbyDepartureAge<0){captureLobbyDeparture();lobbyDepartureAge=0;entryChoiceOpen=false;finger=-1;ResetRectPoint();PlayMusic(M_OPENDOOR);}
+        return;
+    }
     entryChoiceOpen=false;entryChoiceFinger=entryChoicePressed=-1;
     siegeActive=false;siegeHullStage=-1;waveTransition=MergeCombat::WaveTransition();
     review=std::getenv("CS_MERGE_REVIEW")!=nullptr;
@@ -4237,7 +4253,7 @@ void MergeRouletteBegin(bool resume) {
             }
         }
         if(debugCastle>=0&&run.stage!=debugCastle){run.stage=debugCastle;run.wave=0;run.enemyHp=run.enemyMax=waveHp(run.stage,0);}
-    } else if(review) {robin.heart=20;run.rng=12345;}
+    } else if(review) {if(!lobbyDepartureCommit)robin.heart=20;run.rng=12345;}
     const bool migrateVitals=!run.realVitals;
     run.setVitals(stats.heroHealth,stats.heroArmor);
     run.enemyAttack=waveAttack(run.stage,run.wave);
@@ -4250,6 +4266,7 @@ void MergeRouletteBegin(bool resume) {
     entryElapsed=restoredRun?MergeCastleTransition::Duration:0.f;entryCaptures=0;panicSeed=run.rng;
     const bool firstEvent=!restoredRun&&!resume&&gCastleTutorialStep<=CastleTutorial::Depart&&!(gCastleTutorialHints&CastleTutorial::HintStartEvent);
     startEventElapsed=(!review&&firstEvent)||(review&&!resume&&std::getenv("CS_START_EVENT_REVIEW"))?0.f:-1.f;
+    if(lobbyDepartureCommit)startEventElapsed=-1;
     if(startEventActive())gCastleTutorialHints|=CastleTutorial::HintStartEvent;
     introElapsed=starting?0.f:-1.f;introCaptures=0;reviewCombatTick=-1;
     if(!restoredRun&&!siegeActive)PlayMusic(M_WARP);
@@ -4273,6 +4290,7 @@ void MergeRouletteBegin(bool resume) {
     heartDisplay=run.battleEnergy;heartBlink=messageTime=0;spentHeart=-1;
     refillPending=false;refillElapsed=-1.f;refillFrom=heartDisplay;
     active=true;drawHandle=MD_PLAY;keyHandle=MK_PLAY;curMenu=MENU_PLAY;
+    if(!review)PlayMusic(M_TITLE);
     MergeTutorialBeginBattle();
     RewardPopup::onClose=[](){CastleTutorialEvent(CastleTutorial::RewardClosed);};
     if(!resume)CastleTutorialEvent(CastleTutorial::Started);
@@ -4282,6 +4300,7 @@ void MergeRouletteBegin(bool resume) {
 namespace {
 #include "PortraitGameUi.inc"
 }
+bool MergeRouletteLobbyDeparting(){return lobbyDepartureAge>=0;}
 void MergeRouletteLobbyTopbarDraw(){drawPortraitTopbar();}
 void MergeRouletteBottomNavDraw(){if(MergeRouletteLobbyDockVisible())drawLobbyBottomNav();} // Shared navigation retains existing actions.
 void MergeRouletteUiFrame(int x,int top,int width,int height,int style){portraitSkin(std::max(0,std::min(6,style)),{x,top,width,height});}
@@ -4304,9 +4323,29 @@ bool MergeRouletteLobbySceneDraw(bool backdropOnly) {
         const int elapsed=(int)((idleRemainder+.000001f)*60.f);
         ticks+=elapsed;idleRemainder-=elapsed/60.f;
     }
+    if(lobbyDepartureAge>=0){
+        const float dt=review&&reviewCapturePending?0.f:std::min(.05f,std::max(0.f,cocos2d::Director::getInstance()->getDeltaTime()));
+        lobbyDepartureAge+=dt;
+        portraitCameraY=lobbyRecallCamera*(1-BaseCamp::ease(lobbyDepartureAge,0,1.15f));
+        starterInteriorReveal=lobbyRecallReveal*(1-BaseCamp::closure(lobbyDepartureAge));
+        if(lobbyDepartureAge>1.65f)castleScrollSeconds+=dt*(.25f+3.f*BaseCamp::travel(lobbyDepartureAge));
+        if(lobbyDepartureAge>=BaseCamp::duration()){
+            lobbyDepartureAge=-1;starterInteriorReveal=0;
+            if(lobbyDepartureCharge){
+                lobbyDepartureCharge=false;
+                if(!MergeExpedition::affordable(robin.heart)){starterInteriorReveal=1;message=u8"번개가 부족합니다 (5개 필요)";PlayMusic(M_ERROR);return true;}
+                GetItem(ITEM_HEART,false,false,false,-MergeExpedition::Cost,false);AddBar(&bar[BAR_HEART],-MergeExpedition::Cost,BARFRAME);
+            }
+            lobbyDepartureCommit=true;MergeRouletteBegin(false);lobbyDepartureCommit=false;if(!review)MergeRouletteDraw();return true;
+        }
+    }
     ResetRectPoint();SetAlpha(32);SetColor(0);grayScale=0;
     Layout l=layout();drawWorld(l,false);
     if(backdropOnly){needsConfigure=true;return true;}
+    if(lobbyDepartureAge>=0){
+        if(lobbyDepartureAge<.4f){drawPortraitLobby(l);uiSceneMotionY=(DY+80*l.scale)*BaseCamp::uiExit(lobbyDepartureAge);drawPortraitTopbar();uiSceneMotionY=0;}
+        ResetRectPoint();mustRefresh=true;return true;
+    }
     if((!review||std::getenv("CS_RESUME_PROMPT_REVIEW"))&&!resumePromptChecked){
         Run saved;saved.roster=&roster;
         resumePromptOpen=saved.decode(robin.mergeRouletteRun)&&!saved.lost&&!saved.choosing&&(review||IsGetHero(robin.mergeRouletteHero));
@@ -4769,11 +4808,11 @@ void MergeRouletteDraw() {
     const int hx=(int)(DX*.57f),ex=(int)(DX*.85f),ey=l.ground;
     UnSectionClip(false);MemRect(0,l.arenaBottom+(int)(6*s),DX,l.arenaBottom+(int)(6*s),0x030A13);
     if(siegeActive)Siege::drawHeader(l);else drawWaveHeader(l);
-    if(run.attacking) {
+    if(run.attacking&&!siegeActive) {
         const char* phase=action.index>=0&&run.shots[action.index].block.family<0?(turretFire.type==TurretAttack::Magnetic?(action.time.elapsed<action.time.release?u8"\uc911\uc790\uae30\ud30c \u00b7 \ucda9\uc804":u8"\uc911\uc790\uae30\ud30c \u00b7 \ubc1c\uc0ac"):turretFire.type==TurretAttack::Laser?(action.time.elapsed<action.time.release?u8"\ub808\uc774\uc800 \u00b7 \ucda9\uc804":u8"\ub808\uc774\uc800 \u00b7 \ubc1c\uc0ac"):turretFire.type==TurretAttack::Missiles?u8"\uc720\ub3c4\ubbf8\uc0ac\uc77c \u00b7 \ubc1c\uc0ac":turretFire.type==TurretAttack::Stone?u8"\ud22c\uc11d \u00b7 \ubc1c\uc0ac":u8"\ud3ec\uaca9"):enemyTurn.endShown?"턴 종료":enemyTurn.started?"적 반격":run.passing?"턴 넘김 · 적의 차례":
             action.index>=0&&action.bulletIcon>=0?(action.time.elapsed<action.time.release?"동료 · 총탄 생성":"동료 · 총탄 발사"):
             action.index>=0&&action.skill>=0&&!action.heroMotion.empty()?"동료 · 히어로 스킬 요청":"아군 공격";
-        const Box actionLabel={DX/2-(int)(82*s),l.ground-(int)(3*s),(int)(164*s),(int)(25*s)};
+        const Box actionLabel={DX/2-(int)(82*s),std::min(DY-(int)(80*s),l.ground+(int)(96*s)),(int)(164*s),(int)(25*s)};
         panel(actionLabel,0x182735,0xB99850);
         label(phase,DX/2,actionLabel.y-(int)(5*s),.53f,0xFFE2A2);
     }
@@ -4782,9 +4821,10 @@ void MergeRouletteDraw() {
         label(text,DX/2,l.ground+(int)(105*s),.65f,0xFFE2A2);
     }
     const long long predictedPower=run.preview(stats);
-    drawPortraitStats({(int)(24*s),l.arenaBottom,DX-(int)(48*s),l.plateH},
+    friendlyStatCount=hostileStatCount=0;
+    drawPortraitStats({(int)(24*s),l.arenaBottom,DX/2-(int)(32*s),l.plateH},
         predictedPower,currentGuard(),run.lives,run.maxLives);
-    MergeTutorialRememberAllyPlate((int)(24*s),l.arenaBottom,DX-(int)(48*s),l.plateH);
+    MergeTutorialRememberAllyPlate((int)(24*s),l.arenaBottom,DX/2-(int)(32*s),l.plateH);
     drawPortraitEnemyHealth(l);
     portraitSkin(2,l.exit);
     mergeRect(l.exit.x+(int)(13*s),l.exit.y-(int)(11*s),(int)(5*s),(int)(18*s),0xF5ECD6);
@@ -5101,6 +5141,7 @@ void writePlacementDiagnostic(const Layout& l,const Block& source,bool fromTray,
  out<<"---\r\n";
 }
 bool MergeRouletteTouch(int phase,int id,float x,float y) {
+    if(!active&&lobbyDepartureAge>=0)return true;
     if(!active&&titleLobbyClock>=0)return true;
     if(portraitStarterInteriorTouch(phase,id,x,y))return true;
     if(portraitCameraTouch(phase,id,x,y))return true;
@@ -5134,9 +5175,10 @@ bool MergeRouletteTouch(int phase,int id,float x,float y) {
                     if(selected==1){
                         if(!MergeExpedition::affordable(robin.heart)){message=u8"번개가 모자랍니다 (5개 필요)";PlayMusic(M_ERROR);}
                         else{
-                            GetItem(ITEM_HEART,false,false,false,-MergeExpedition::Cost,false);
-                            AddBar(&bar[BAR_HEART],-MergeExpedition::Cost,BARFRAME);
-                            SaveGame();entryChoiceOpen=false;MergeRouletteBegin(false);
+                            const bool cinematic=!std::getenv("CS_MERGE_REVIEW")||std::getenv("CS_BASE_CAMP_REVIEW");
+                            if(cinematic)lobbyDepartureCharge=true;
+                            else{GetItem(ITEM_HEART,false,false,false,-MergeExpedition::Cost,false);AddBar(&bar[BAR_HEART],-MergeExpedition::Cost,BARFRAME);SaveGame();}
+                            entryChoiceOpen=false;MergeRouletteBegin(false);
                         }
                     }
                     else if(selected==2){if(runExpedition())entryChoiceOpen=false;}
@@ -5161,7 +5203,7 @@ bool MergeRouletteTouch(int phase,int id,float x,float y) {
             Layout l=layout();Box b=lobbyStart(l);
             //전투 시작은 언제나 새 판이다. 저장된 판을 이어 가는 길("이어서")은 없앴다.
             if(b.has(x,y)) {entryChoiceOpen=true;entryChoiceFinger=entryChoicePressed=-1;message.clear();PlayMusic(M_BUTTON);return true;}
-            if(lobbyPvp(l).has(x,y)) {Siege::begin();return true;}
+            if(lobbyPvp(l).has(x,y)) {MergeRouletteBeginSiege();return true;}
             if(lobbyDebugTouch(l,x,y)){debugFinger=id;return true;}   //성 디버그(단계 순환·다음 성·배경)
             for(int i=0;i<4;++i)if(roomBox(l,i).has(x,y)){
                 CastleMenuFocusFacility(i);systemKey=AVK_POPUP_CASTLEMENU;return true;

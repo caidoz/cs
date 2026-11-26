@@ -1,8 +1,8 @@
 {
-  "original_bytes": 239550308,
-  "optimized_bytes": 179325212,
-  "saved_bytes": 60225096,
-  "converted_files": 1636,
+  "original_bytes": 266395879,
+  "optimized_bytes": 198332247,
+  "saved_bytes": 68063632,
+  "converted_files": 1646,
   "all_rgba_exact": true,
   "images": [
     {
@@ -8579,6 +8579,166 @@
       "rgba_exact": true,
       "alpha_semantics_preserved": true,
       "target": "res/castle_cannon_v2-atlas.png",
+      "selected_webp": true
+    },
+    {
+      "source_sha256": "2ad0b33b441ff721c7098c07c9374751e04ca263c315d8d9ac127c401f5b8703",
+      "encoded_sha256": "1cee57c568495f51cc6aecb6aebd78d6747bec0c161ec3d62bb06455d126d457",
+      "rgba_sha256": "a295ee39e1fca5d1161c48a823d840fc20e6145d1af7fbb242fb3ac647b37279",
+      "size": [
+        1295,
+        1214
+      ],
+      "source_bytes": 2306827,
+      "encoded_bytes": 1633740,
+      "encoding": "webp-lossless-exact-v2-alpha-compatible-method4",
+      "rgba_exact": true,
+      "alpha_semantics_preserved": true,
+      "target": "res/castle_four_rooms_v5-rooms-01.png",
+      "selected_webp": true
+    },
+    {
+      "source_sha256": "ea04dacdb231dc5aa033195ad86bae0858f5db72b8973e45689b3118a270e4bd",
+      "encoded_sha256": "8aaeca73cb68e56725713aba16510d1b80087cba047eda84b01d05be0a7f8130",
+      "rgba_sha256": "38956179f9c6fdd6e5e54a7f8262ec9a68d0eb1cf166d74411558df2926c50dc",
+      "size": [
+        1295,
+        1215
+      ],
+      "source_bytes": 2777112,
+      "encoded_bytes": 1978512,
+      "encoding": "webp-lossless-exact-v2-alpha-compatible-method4",
+      "rgba_exact": true,
+      "alpha_semantics_preserved": true,
+      "target": "res/castle_four_rooms_v5-rooms-02.png",
+      "selected_webp": true
+    },
+    {
+      "source_sha256": "994d2c9f01ebc956d2e38b2e2f3c2714094668de4cd7d1abb4d682069469b8c8",
+      "encoded_sha256": "0d76a68a60e3c1afee17250765c68798d448e62bfe9df44111c9240db38eb735",
+      "rgba_sha256": "bc965c3bfc85160a055f89cb47a2f9f7bebb7c4ff8283649a5899d228025320e",
+      "size": [
+        1295,
+        1215
+      ],
+      "source_bytes": 2791864,
+      "encoded_bytes": 1983352,
+      "encoding": "webp-lossless-exact-v2-alpha-compatible-method4",
+      "rgba_exact": true,
+      "alpha_semantics_preserved": true,
+      "target": "res/castle_four_rooms_v5-rooms-03.png",
+      "selected_webp": true
+    },
+    {
+      "source_sha256": "a96dc4ba476be913618c77a7bf998bf27ae3b7ec9e0633b497d5ce94f27ebef3",
+      "encoded_sha256": "4ccdda5164825e31d38f2a5832a4fb33f5172317eb7ab1b4f5d8b34545e52041",
+      "rgba_sha256": "529ad16607dd1e15617be024d8a73c3bbb5f70328686350cf81dc9948ba632bd",
+      "size": [
+        1295,
+        1215
+      ],
+      "source_bytes": 2756012,
+      "encoded_bytes": 2002454,
+      "encoding": "webp-lossless-exact-v2-alpha-compatible-method4",
+      "rgba_exact": true,
+      "alpha_semantics_preserved": true,
+      "target": "res/castle_four_rooms_v5-rooms-04.png",
+      "selected_webp": true
+    },
+    {
+      "source_sha256": "5d75ca2cd0d3c23836e489e59b62b2bbab18e412000df0f266b8bed569422d02",
+      "encoded_sha256": "5a9afa365717ca18cd397285863a9256a475f4d0ea94055558ce7a2ea0e7e56c",
+      "rgba_sha256": "159d0baf17e1fef4f262c1626a0f498b3a41995e7f92c1915cdb8287ff99e169",
+      "size": [
+        1295,
+        1215
+      ],
+      "source_bytes": 2841674,
+      "encoded_bytes": 2064264,
+      "encoding": "webp-lossless-exact-v2-alpha-compatible-method4",
+      "rgba_exact": true,
+      "alpha_semantics_preserved": true,
+      "target": "res/castle_four_rooms_v5-rooms-05.png",
+      "selected_webp": true
+    },
+    {
+      "source_sha256": "b743a082b8e59954a4a8f37c58205c6a778b592354107d4dc95ac34b7e66177d",
+      "encoded_sha256": "24771fd000680d697e5ca413ee09eb11cce5597bd361097a49f63d4b761d5551",
+      "rgba_sha256": "e726390fca2c8d091e6e160d7a09d900140e5d49d3f8fc14f6d93aa1e71aebcf",
+      "size": [
+        1295,
+        1215
+      ],
+      "source_bytes": 2784146,
+      "encoded_bytes": 1999012,
+      "encoding": "webp-lossless-exact-v2-alpha-compatible-method4",
+      "rgba_exact": true,
+      "alpha_semantics_preserved": true,
+      "target": "res/castle_four_rooms_v5-rooms-06.png",
+      "selected_webp": true
+    },
+    {
+      "source_sha256": "9655f4cf8ce393e3ceae227b31b2c18bdb882a3a2165bc445103063397c5c054",
+      "encoded_sha256": "c7dcf3ec0373cfd9c4326a274a9559262df868163a68bc01e595ef6f9357ef30",
+      "rgba_sha256": "290d815ad5f12547209f8f888e629e6668d6ae0ac14471368a827f1262cc025f",
+      "size": [
+        1295,
+        1215
+      ],
+      "source_bytes": 3043170,
+      "encoded_bytes": 2236680,
+      "encoding": "webp-lossless-exact-v2-alpha-compatible-method4",
+      "rgba_exact": true,
+      "alpha_semantics_preserved": true,
+      "target": "res/castle_four_rooms_v5-rooms-07.png",
+      "selected_webp": true
+    },
+    {
+      "source_sha256": "4eab59b9f0d5088fee33ef69e51cbb10417393765078f7c989f9f0559c307e8a",
+      "encoded_sha256": "b0bd4591608d3751128920f01c3f44f4c52e0473228f272ca58036bfde3ceb15",
+      "rgba_sha256": "38c17879b34cc721a8efe9e90bd6e5020fa5aa8969e655dbc775b4dbbfb1284d",
+      "size": [
+        1295,
+        1215
+      ],
+      "source_bytes": 3022969,
+      "encoded_bytes": 2166542,
+      "encoding": "webp-lossless-exact-v2-alpha-compatible-method4",
+      "rgba_exact": true,
+      "alpha_semantics_preserved": true,
+      "target": "res/castle_four_rooms_v5-rooms-08.png",
+      "selected_webp": true
+    },
+    {
+      "source_sha256": "54bd1194b4bce917fdb940e696a42162b1b90502a884d12ca4fc87b54e62ce6e",
+      "encoded_sha256": "7177a3dcc1307f7d7eb1acbb7ce0aaaee5cb6e30302a0a4d99d1a11e7f4f4b14",
+      "rgba_sha256": "00c3b8a440abc8cbb9ea19bdf9c2e8db16009e3fe93a5d8702561d7dc040f8f6",
+      "size": [
+        1295,
+        1215
+      ],
+      "source_bytes": 2840868,
+      "encoded_bytes": 2029802,
+      "encoding": "webp-lossless-exact-v2-alpha-compatible-method4",
+      "rgba_exact": true,
+      "alpha_semantics_preserved": true,
+      "target": "res/castle_four_rooms_v5-rooms-09.png",
+      "selected_webp": true
+    },
+    {
+      "source_sha256": "ad92ab367387cb43af72ff2c964c906c5a48a3058f2428b2c1a8534ff07cf276",
+      "encoded_sha256": "7d5a37c8adb81a7bfbb2a258e058b23731ba3ad0e53e12b4fe038e67323df6a5",
+      "rgba_sha256": "68e2b084c0872e6e563aa02ade70fd80496913a1170284d0397d3ded28f03d23",
+      "size": [
+        1295,
+        1215
+      ],
+      "source_bytes": 2765706,
+      "encoded_bytes": 1997454,
+      "encoding": "webp-lossless-exact-v2-alpha-compatible-method4",
+      "rgba_exact": true,
+      "alpha_semantics_preserved": true,
+      "target": "res/castle_four_rooms_v5-rooms-10.png",
       "selected_webp": true
     },
     {

@@ -35,6 +35,38 @@ void portraitReviewFixture(){
 }
 bool portraitReviewLobby(){
  if(!portraitReviewEnabled()||!std::getenv("CS_PORTRAIT_LOBBY"))return false;
+ if(std::getenv("CS_BASE_CAMP_REVIEW")){
+  static int phase=0,startTick=0;static float startX=0,startZoom=0,startTravel=0;static bool travelCaptured=false;static long long paid=0;
+  if(phase>=6)return false;if(reviewCapturePending)return true;
+  active=false;drawHandle=MD_LOBBY;curMenu=MENU_PLAY;
+  if(phase==0){campReviewScenario=2;starterInteriorReveal=1;titleLobbyClock=-1;}
+  MergeRouletteLobbySceneDraw();
+  if(active&&lobbyDepartureAge<0&&phase>=2){
+   reviewTrace(robin.heart==paid&&starterInteriorReveal==0&&!startEventActive()?"PASS departure commits one paid battle with closed facade":"FAIL departure commit or duplicate charge");
+   phase=6;baseCampReviewStage=1;return false;
+  }
+  if(phase==0){
+   reviewTrace(!campFireDrawn&&campInteriorCount==1&&campOutsideCount==2&&campDrawnCrewCount==3?"PASS owned residents populate interior and patrol outside without a lobby fire":"FAIL base camp population");
+   startTick=ticks;startX=campHeroX;startZoom=portraitCastleZoom(layout());startTravel=castleScrollSeconds;reviewCapture("base-lobby");++phase;
+  }else if(phase==1&&ticks-startTick>80){
+   reviewTrace(std::abs(campHeroX-startX)>1?"PASS original walking sprites patrol instead of standing in a campfire row":"FAIL base patrol movement");
+   robin.heart=20;const Box start=lobbyStart(layout());MergeRouletteTouch(0,991,start.x+start.w/2,start.y-start.h/2);MergeRouletteTouch(2,991,start.x+start.w/2,start.y-start.h/2);
+   const Box fight=entryChoiceBox(1);MergeRouletteTouch(0,992,fight.x+fight.w/2,fight.y-fight.h/2);MergeRouletteTouch(2,992,fight.x+fight.w/2,fight.y-fight.h/2);
+   paid=robin.heart-MergeExpedition::Cost;reviewTrace(!active&&lobbyDepartureAge==0&&robin.heart==20&&paid==15?"PASS actual battle confirmation reserves entry without charging during recall":"FAIL recall trigger");++phase;
+  }else if(phase==2&&lobbyDepartureAge>.45f){
+   const float age=lobbyDepartureAge;const bool locked=MergeRouletteTouch(0,993,DX/2,DY/2);
+   reviewTrace(locked&&age==lobbyDepartureAge?"PASS departure locks extra taps while villagers return":"FAIL departure input lock");reviewCapture("base-recall");++phase;
+  }else if(phase==3&&lobbyDepartureAge>1.18f){
+   reviewTrace(campOutsideCount==0&&campHeroInside&&starterInteriorReveal>0?"PASS all exterior actors enter before facade starts closing":"FAIL recall ordering");reviewCapture("base-returned");++phase;
+  }else if(phase==4&&lobbyDepartureAge>1.55f){reviewTrace(starterInteriorReveal<.15f?"PASS facade closes after recall":"FAIL facade close");reviewCapture("base-closing");++phase;
+  }else if(phase==5&&!travelCaptured&&lobbyDepartureAge>2.2f){
+   reviewTrace(portraitCastleZoom(layout())<startZoom&&castleScrollSeconds>startTravel?"PASS castle accelerates and scales uniformly into battle camera":"FAIL castle travel scale");reviewCapture("base-travel");travelCaptured=true;
+  }
+  if(std::getenv("CS_BASE_CAPTURE_FRAMES")&&!reviewCapturePending){
+   static int last=-100,shot=0;if(ticks-last>=6){last=ticks;char name[48];std::snprintf(name,sizeof(name),"base-frame-%03d",shot++);reviewCapture(name);}
+  }
+  active=true;drawHandle=MD_PLAY;return true;
+ }
  if(std::getenv("CS_SFX_REVIEW")){
   static int phase=0,cue=M_ROULETTEUP,age=0;static bool done=false;
   if(reviewCapturePending)return true;if(done)return true;
@@ -107,17 +139,17 @@ bool portraitReviewLobby(){
   }else if(phase==3){
    portraitStarterInteriorTouch(0,991,x,y);portraitStarterInteriorTouch(1,991,x,y-100*q.scale);portraitStarterInteriorTouch(2,991,x,y-100*q.scale);
    reviewTrace(starterInteriorReveal==0?"PASS reverse drag restores original exterior":"FAIL starter interior close gesture");campReviewScenario=1;++phase;
-  }else if(phase==4){reviewTrace(campDrawnCrewCount==1&&campDrawnCrew[0]==0?"PASS only one owned companion renders once":"FAIL camp single companion");reviewCapture("starter-camp-one");campReviewScenario=2;++phase;
+  }else if(phase==4){reviewTrace(campDrawnCrewCount==1&&campDrawnCrew[0]==0?"PASS only one owned companion renders once":"FAIL camp single companion");reviewCapture("starter-camp-one");campReviewScenario=2;starterInteriorReveal=1;++phase;
   }else if(phase==5){
    const auto chosen=LobbyCamp::highestOwned(portraitCampOwned());bool valid=campDrawnCrewCount==(int)chosen.size()&&campDrawnCrewCount==3;
    for(int i=0;i<campDrawnCrewCount;++i)valid=valid&&campDrawnCrew[i]==chosen[i].id;
    reviewTrace(valid?"PASS camp renders the three highest owned grades without duplicates":"FAIL camp owned grade order");
-   firstFire=campFireFrame;reviewCapture("starter-camp-three");++phase;
-  }else if(phase==6&&firstFire!=campFireFrame){reviewTrace("PASS actual campfire animation advances frames");reviewCapture("starter-fire-next");++phase;
+   firstFire=(int)campHeroX;reviewCapture("starter-camp-three");++phase;
+  }else if(phase==6&&firstFire!=(int)campHeroX){reviewTrace(!campFireDrawn?"PASS lobby patrol advances without campfire":"FAIL lobby fire remains");reviewCapture("starter-patrol-next");++phase;
   }else if(phase==7&&std::getenv("CS_PORTRAIT_CAMP_ANIMATION")){
    static int frame=0,lastTick=-100;if(ticks-lastTick>=6){lastTick=ticks;char name[48];std::snprintf(name,sizeof(name),"camp-life-%02d",frame++);reviewCapture(name);if(frame>=16)++phase;}
   }else if(phase==7||phase==8){
-   portraitStarterInteriorTouch(0,991,x,y);portraitStarterInteriorTouch(2,991,x,y);bool valid=starterInteriorReveal==0;
+   starterInteriorReveal=0;portraitStarterInteriorTouch(0,991,x,y);portraitStarterInteriorTouch(2,991,x,y);bool valid=starterInteriorReveal==0;
    portraitStarterInteriorTouch(0,991,x,y);portraitStarterInteriorTouch(1,991,x-40*q.scale,y);portraitStarterInteriorTouch(3,991,x-40*q.scale,y);valid=valid&&starterInteriorReveal==0;
    active=true;const bool battle=portraitStarterInteriorTouch(0,991,x,y);active=false;
    reviewTrace(valid&&!battle?"PASS taps, cancelled drags and battle input do not open interior":"FAIL starter gesture isolation");
@@ -191,6 +223,34 @@ bool portraitReviewLobby(){
 bool portraitReviewStep(const Layout& l){
  if(!portraitReviewEnabled())return false;static int hold=0;static bool done=false;if(done)return true;
  if(reviewCapturePending)return true;
+ if(std::getenv("CS_BASE_CAMP_REVIEW")){
+  if(baseCampReviewStage==1&&!entering()&&!introActive()){reviewTrace(friendlyStatCount==3&&hostileStatCount==1?"PASS battle arrives with compact friendly trio and enemy HP":"FAIL arrival HUD");reviewCapture("base-battle");baseCampReviewStage=2;}
+  else if(baseCampReviewStage==2){reviewTrace("DONE portrait review");baseCampReviewStage=3;}
+  return true;
+ }
+ if(std::getenv("CS_BASE_HUD_REVIEW")){
+  static int phase=0;static bool done=false;static long long leftHp=0,rightHp=0,expectedLeft=0,expectedRight=0;if(done)return true;
+  if(phase==0){++phase;return true;}
+  if(phase==1){
+   bool geometry=friendlyStatCount==3&&hostileStatCount==1&&hostileStatKind[0]==2;
+   for(int i=0;i<3;++i)geometry=geometry&&friendlyStatKind[i]==i&&friendlyStatBounds[i].x+friendlyStatBounds[i].w<=DX/2;
+   geometry=geometry&&hostileStatBounds[0].x>DX/2;
+   reviewTrace(geometry?"PASS PvE HUD uses left-half allied trio and differently colored right enemy HP":"FAIL compact PvE HUD");reviewCapture("battle-hud-pve");++phase;
+  }else if(phase==2){
+   active=false;MergeRouletteBeginSiege();entryElapsed=MergeCastleTransition::Duration;introElapsed=-1;run.choosing=false;Siege::phase=0;Siege::step=Siege::Idle;combatNumbers.clear();
+   expectedLeft=std::max(1LL,run.maxLives/2);expectedRight=std::max(1LL,Siege::foe.maxLives/2);
+   run.lives=expectedLeft;run.enemyHp=expectedRight;run.enemyMax=Siege::foe.maxLives;Siege::foe.lives=expectedRight;Siege::foe.enemyHp=expectedLeft;Siege::foe.enemyMax=run.maxLives;++phase;
+  }else if(phase==3){
+   bool mirrored=friendlyStatCount==3&&hostileStatCount==3;
+   for(int i=0;i<3;++i)mirrored=mirrored&&friendlyStatKind[i]==i&&hostileStatKind[i]==2-i;
+   leftHp=friendlyStatValue[2];rightHp=hostileStatValue[0];
+   if(!mirrored||leftHp!=expectedLeft||rightHp!=expectedRight){char d[200];std::snprintf(d,sizeof(d),"DETAIL HUD counts=%d,%d hp=%lld,%lld run=%lld,%lld swapped=%d",friendlyStatCount,hostileStatCount,leftHp,rightHp,run.lives,run.enemyHp,(int)Siege::swapped);reviewTrace(d);}
+   reviewTrace(mirrored&&leftHp==expectedLeft&&rightHp==expectedRight?"PASS PvP mirrors HP defense attack on the enemy side":"FAIL mirrored PvP HUD");reviewCapture("battle-hud-pvp");++phase;
+  }else if(phase==4){Siege::swapSides();++phase;
+  }else if(phase==5){reviewTrace(friendlyStatValue[2]==leftHp&&hostileStatValue[0]==rightHp?"PASS physical HUD ownership stays fixed during opponent turn":"FAIL swapped HUD ownership");reviewCapture("battle-hud-pvp-opponent");++phase;
+  }else{reviewTrace("DONE portrait review");done=true;}
+  return true;
+ }
  if(std::getenv("CS_PORTRAIT_CATAPULT")){
   static int phase=0;static long long hp=0;static Box mount;
   if(phase==0){reviewCapture("catapult-idle");phase=1;return true;}

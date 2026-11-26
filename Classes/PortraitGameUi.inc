@@ -10,37 +10,40 @@ void portraitShortAmount(char* out,size_t size,long long value){
  while(n>=999.5&&unit<3){n/=1000.;++unit;}
  std::snprintf(out,size,n<10?"%.1f%c":"%.0f%c",n,units[unit]);
 }
-void portraitStat(const Box& b,int kind,long long value,long long maximum){
- const float s=DX/640.f;portraitSkin(4,b);
- const int size=(int)(28*s),x=b.x+(int)(8*s),y=b.y-(int)(5*s);
+void portraitStat(const Box& b,int kind,long long value,long long maximum,bool enemy=false){
+ int& count=enemy?hostileStatCount:friendlyStatCount;
+ if(count<3){(enemy?hostileStatBounds:friendlyStatBounds)[count]=b;(enemy?hostileStatKind:friendlyStatKind)[count]=kind;(enemy?hostileStatValue:friendlyStatValue)[count]=value;}++count;
+ const float s=DX/640.f;const bool compact=b.w<150*s;
+ portraitSkin(enemy?3:4,b);
+ const int size=(int)((compact?16:26)*s),x=b.x+(int)(5*s),y=b.y-(int)(6*s);
  portraitGlyph(kind==0?1:kind==1?4:5,{x,y,size,size});
- char number[80];if(kind==2)std::snprintf(number,sizeof(number),"%lld / %lld",value,maximum);else std::snprintf(number,sizeof(number),"%lld",value);
- if(StringWidth(number,UiMinimumTextZoom())>b.w-size-20*s){
-  char a[32],z[32];portraitShortAmount(a,sizeof(a),value);portraitShortAmount(z,sizeof(z),maximum);
-  if(kind==2)std::snprintf(number,sizeof(number),"%s/%s",a,z);else std::snprintf(number,sizeof(number),"%s",a);
- }
- const float zoom=std::max(.32f,std::min(.68f,(b.w-size-22*s)/std::max(1.f,StringWidth(number,s))));
- label(number,b.x+size+(b.w-size)/2,y,zoom,0xF1EFE3);
- const int n=8,gap=std::max(1,(int)(2*s)),left=b.x+(int)(10*s),width=b.w-(int)(20*s),height=std::max(3,(int)(7*s));
+ char a[32],z[32],number[80];portraitShortAmount(a,sizeof(a),value);portraitShortAmount(z,sizeof(z),maximum);
+ if(kind==2)std::snprintf(number,sizeof(number),"%s/%s",a,z);else std::snprintf(number,sizeof(number),"%s",a);
+ if(compact&&StringWidth(number,UiMinimumTextZoom())>b.w-size-14*s)std::snprintf(number,sizeof(number),"%s",a);
+ const float zoom=std::max(.28f,std::min(compact?.48f:.66f,(b.w-size-16*s)/std::max(1.f,StringWidth(number,s))));
+ label(number,b.x+size+(b.w-size)/2,y,zoom,enemy?0xFFE4D4:0xF1EFE3);
+ const int n=8,gap=std::max(1,(int)(2*s)),left=b.x+(int)(8*s),width=b.w-(int)(16*s),height=std::max(3,(int)(6*s));
  const float fill=kind==2?std::max(0.f,std::min(1.f,value/(float)std::max(1LL,maximum))):value>0?1.f:0.f;
- const int colors[3]={0xCFA75A,0x77B8D8,0x58CC98};
+ const int ally[3]={0xCFA75A,0x77B8D8,0x58CC98},hostile[3]={0xF293A8,0xECAE72,0xED6D81};
  for(int i=0;i<n;++i){const int x0=left+i*width/n,x1=left+(i+1)*width/n;
-  bevel({x0,b.y-b.h+(int)(13*s),x1-x0-gap,height},(i+.5f)/n<=fill?colors[kind]:0x2B3B46,std::max(1,(int)s));}
+  bevel({x0,b.y-b.h+(int)(12*s),x1-x0-gap,height},(i+.5f)/n<=fill?(enemy?hostile[kind]:ally[kind]):0x2B303E,std::max(1,(int)s));}
 }
-void drawPortraitStats(const Box& b,long long attack,long long defense,long long hp,long long maxHp){
- const int gap=std::max(2,(int)(8*DX/640.f)),unit=(b.w-2*gap)/3;
- portraitStat({b.x,b.y,unit,b.h},0,attack,attack);
- portraitStat({b.x+unit+gap,b.y,unit,b.h},1,defense,defense);
- portraitStat({b.x+2*(unit+gap),b.y,b.w-2*(unit+gap),b.h},2,hp,maxHp);
+void portraitStatTrio(const Box& b,long long attack,long long defense,long long hp,long long maximum,bool enemy){
+ const int gap=std::max(2,(int)(4*DX/640.f)),usable=b.w-2*gap;
+ const int narrow=usable*2/7;const int widths[3]={narrow,narrow,usable-2*narrow};
+ const long long values[3]={attack,defense,hp};int x=b.x;
+ for(int slot=0;slot<3;++slot){const int kind=enemy?2-slot:slot;portraitStat({x,b.y,widths[kind],b.h},kind,values[kind],kind==2?maximum:values[kind],enemy);x+=widths[kind]+gap;}
+}
+void drawPortraitStats(const Box& b,long long attack,long long defense,long long hp,long long maximum){
+ if(siegeActive&&Siege::swapped){attack=Siege::foe.preview(Siege::foeStats);defense=run.enemyGuard;hp=run.enemyHp;maximum=run.enemyMax;}
+ portraitStatTrio(b,attack,defense,hp,maximum,false);
 }
 void drawPortraitEnemyHealth(const Layout& l){
- const float s=l.scale;const int x=(int)(DX*.73f),width=(int)(DX*.23f),y=l.arenaBottom+(int)(17*s),h=(int)(9*s);
- bevel({x,y,width,h},0x204248,(int)(3*s));
- const double ratio=run.enemyMax>0?std::max(0.,std::min(1.,enemyHealthDisplay.value/run.enemyMax)):0;
- if(ratio>0)bevel({x+2,y-2,(int)((width-4)*ratio),h-4},0x72D0A3,(int)(2*s));
- const Box ally={(int)(48*s),y,(int)(DX*.46f),h};portraitSkin(0,ally);
- const float life=run.maxLives>0?std::max(0.f,std::min(1.f,run.lives/(float)run.maxLives)):0.f;
- if(life>0)bevel({ally.x+2,ally.y-2,(int)((ally.w-4)*life),h-4},0x64E7AD,(int)(2*s));
+ const float s=l.scale;const Box right={DX/2+(int)(8*s),l.arenaBottom,DX/2-(int)(32*s),l.plateH};
+ if(siegeActive){
+  const auto& foe=Siege::swapped?run:Siege::foe;const auto& power=Siege::swapped?stats:Siege::foeStats;
+  portraitStatTrio(right,foe.preview(power),Siege::swapped?currentGuard():run.enemyGuard,Siege::swapped?run.lives:run.enemyHp,Siege::swapped?run.maxLives:run.enemyMax,true);
+ }else portraitStat(right,2,std::max(0LL,(long long)enemyHealthDisplay.value),run.enemyMax,true);
 }
 void drawPortraitEnergy(const Layout& l){
  const float s=l.scale;const Box b=l.heart;
@@ -56,26 +59,28 @@ void drawPortraitEnergy(const Layout& l){
 void drawPortraitLobby(const Layout& l){
  UnSectionClip(false);
  const float s=l.scale;const auto p=PortraitGame::lobby(DX,DY);
+ const float leaving=-(DY+100*s)*BaseCamp::uiExit(lobbyDepartureAge);
  MemRect(0,p.statsTop+(int)(6*s),DX,p.statsTop+(int)(6*s),0x030A13);
  const int stage=std::max(0,std::min(18,run.stage));
  char line[96];std::snprintf(line,sizeof(line),u8"%s \u00b7 %d\ub2e8\uacc4",PortraitCastleArt::Names[stage],stage+1);
- uiSceneMotionY=titleLobbyClock>=0?-160*s*(1.f-TitleLobbyEase(.64f,1.1f)):0;
+ uiSceneMotionY=leaving+(titleLobbyClock>=0?-160*s*(1.f-TitleLobbyEase(.64f,1.1f)):0);
  const Box castleTag={DX/2-(int)(150*s),p.statsTop+(int)(36*s),(int)(300*s),(int)(28*s)};portraitSkin(4,castleTag);
  label(line,DX/2,castleTag.y-(int)(3*s),.48f,0xF3E4A5);
- uiSceneMotionY=titleLobbyClock>=0?-260*s*(1.f-TitleLobbyEase(.76f,1.24f)):0;
+ uiSceneMotionY=leaving+(titleLobbyClock>=0?-260*s*(1.f-TitleLobbyEase(.76f,1.24f)):0);
  const Box destination={(int)(24*s),p.stageTop,DX-(int)(48*s),(int)(88*s)};portraitSkin(4,destination);
  portraitImage(PORTRAIT_NIGHT_IMG,{destination.x+(int)(16*s),destination.y-(int)(16*s),(int)(100*s),(int)(56*s)});
  const int textCenter=destination.x+(destination.w+(int)(120*s))/2;
  label(StageBg::RegionName(stage/10),textCenter,destination.y-(int)(14*s),.62f);
  std::snprintf(line,sizeof(line),"STAGE %02d \u00b7 WAVE %02d / 15",stage+1,std::max(1,std::min(15,(int)robin.curWaveIdx+1)));
  label(line,textCenter,destination.y-(int)(48*s),.52f,0xEFE5BF);
- uiSceneMotionY=titleLobbyClock>=0?-240*s*(1.f-TitleLobbyEase(.88f,1.36f)):0;
+ uiSceneMotionY=leaving+(titleLobbyClock>=0?-240*s*(1.f-TitleLobbyEase(.88f,1.36f)):0);
  const Box start=lobbyStart(l);drawLobbyStartButton(start);
- uiSceneMotionY=0;
+ uiSceneMotionY=leaving;
  drawLobbyBottomNav(0,true);
  // Existing expeditions/PVP remain reachable; upgrades keep their existing UI.
  Box pvp=lobbyPvp(l);
  portraitFrame(pvp,false,true);label("PVP",pvp.x+pvp.w/2,pvp.y-(int)(5*s),.46f);
+ uiSceneMotionY=0;
  // MergeRouletteTouch owns the PVP hit box.
 }
 

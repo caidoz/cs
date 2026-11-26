@@ -19,15 +19,15 @@ void PlayCampMusic(bool lobby){
   if(campFadeId>=0)AudioEngine::stop(campFadeId);
   campFadeId=campMusicId;campLobbyTrack=lobby;campFadeAge=0;
   if(curID>=0){AudioEngine::stop(audioID[curID]);curID=-1;}
-  campMusicId=AudioEngine::play2d(lobby?"res/lobby-embers-techno-trot.ogg":"res/lobby-embers-at-rest.ogg",true,0,nullptr);
+  campMusicId=AudioEngine::play2d(lobby?"res/lobby-base-morning-patrol.ogg":"res/lobby-embers-at-rest.ogg",true,0,nullptr);
  }
  campFadeAge+=std::max(0.f,std::min(.1f,cocos2d::Director::getInstance()->getDeltaTime()));
  const float fade=std::min(1.f,campFadeAge/.75f);
  if(campMusicId>=0)AudioEngine::setVolume(campMusicId,VOLUME_BGM*fade);
  if(campFadeId>=0){AudioEngine::setVolume(campFadeId,VOLUME_BGM*(1-fade));if(fade>=1){AudioEngine::stop(campFadeId);campFadeId=-1;}}
  static bool logged[2]={false,false};
- if(!logged[lobby]&&std::getenv("CS_CAMP_AUDIO_REVIEW")&&campMusicId>=0&&AudioEngine::getState(campMusicId)==AudioEngine::AudioState::PLAYING&&AudioEngine::getDuration(campMusicId)>(lobby?59:47)){
-  logged[lobby]=true;std::printf("PASS native %s loop decoded and playing\n",lobby?"60-second lobby techno trot":"48-second original title");std::fflush(stdout);
+ if(!logged[lobby]&&std::getenv("CS_CAMP_AUDIO_REVIEW")&&campMusicId>=0&&AudioEngine::getState(campMusicId)==AudioEngine::AudioState::PLAYING&&AudioEngine::getDuration(campMusicId)>(lobby?39:47)){
+  logged[lobby]=true;std::printf("PASS native %s loop decoded and playing\n",lobby?"40-second calm base camp":"48-second original title");std::fflush(stdout);
  }
 }
 

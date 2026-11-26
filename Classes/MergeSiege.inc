@@ -330,7 +330,7 @@ void drawExpanded(const Layout& l){
 //웨이브 헤더 자리. 맞바꾼 런의 성 번호를 읽어 "스테이지 10" 이 뜨던 것을 공성전 글로 바꾼다.
 void drawHeader(const Layout& l){
     const float s=l.scale;
-    const Box head={DX/2-(int)(200*s),(int)(70*s),(int)(400*s),(int)(44*s)};
+    const Box head={(int)(60*s),DY-(int)(8*s),DX-(int)(120*s),(int)(44*s)};
     panel(head,0x182735,0xB99850);
     char text[96];std::snprintf(text,sizeof(text),"공성전 · 다이애나의 %d성 · %d턴",castle+1,turnNo);
     label(text,DX/2,head.y-(int)(8*s),.6f,0xFFE2A2);
@@ -339,7 +339,7 @@ void drawHud(const Layout& l){
     const float s=l.scale;
     drawFoeBoard(l);
     char text[96];
-    const Box banner={DX/2-(int)(130*s),l.ground-(int)(3*s),(int)(260*s),(int)(28*s)};
+    const Box banner={DX/2-(int)(130*s),DY-(int)(54*s),(int)(260*s),(int)(24*s)};
     if(phase==1){
         const char* what=step==Pulling||step==Spinning?"상대 턴 · 룰렛":step==Dragging?"상대 턴 · 합성":step==Pressing||step==Attacking?(selectedAction==ChoiceCannon?"상대 턴 · 포탑":"상대 턴 · 전투"):"상대 턴 · 행동 선택";
         char line[96];std::snprintf(line,sizeof(line),"%s",what);
