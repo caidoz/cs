@@ -42,7 +42,7 @@
 
 const int getHeroLv[] = {
 	//0, 4, 9,
-	0, 99, 99,//일단 나머지 두개의 히어로는 오픈하지 않는다.
+	0, 100, 100,// Unreleased heroes are not unlocked by the Lv.100 account cap.
 };
 
 const int getSkillSlotLv[] = {

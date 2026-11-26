@@ -1,5 +1,6 @@
 ﻿#include "Core.h"
 #include "TitleLobbyMotion.h"
+#include "AccountLevelModel.h"
 #include "GameSfx.h"
 #pragma pack(push, 8)
 #include "Data.h"
@@ -2430,6 +2431,8 @@ void endSpinTurn() {
 }
 static const char* OverlapMessage=u8"장비가 겹쳐 있습니다.\n빈 칸으로 옮겨 주세요.";
 void finishCombatTurn() {
+    const int accountBefore=robin.lv;
+    const long long accountExpBefore=AccountLevel::normalizedTotal(robin.lv,robin.exps);
     bool killed=run.enemyHp==0;
     const bool stageClear=killed&&!siegeActive&&run.wave==WavesPerStage-1;
     long long overkill=std::max(0LL,run.damageDone-run.enemyMax);
@@ -2452,6 +2455,9 @@ void finishCombatTurn() {
         // Waves 1-14 retain the pending reward in the saved run; only boss 15 pays.
         std::vector<RewardPopup::Entry> rewards;
         if(stageClear) {
+            // Retire the run before LevelUp saves: reload cannot replay boss EXP.
+            robin.mergeRouletteRun[0]=0;robin.curWaveIdx=0;
+            AccountLevelGain(AccountLevel::bossExp(std::max(0,run.stage-1)),false);
             const long long gold=run.reward;run.reward=0;
             GetItem(ITEM_GOLD,false,false,false,gold,false);
             RewardPopup::Entry g;g.type=ITEM_GOLD;g.count=gold;rewards.push_back(g);
@@ -2469,6 +2475,8 @@ void finishCombatTurn() {
             RewardPopup::drawButton=rewardButton;
             RewardPopup::onClose=[](){CastleTutorialEvent(CastleTutorial::RewardClosed);waveTransition=MergeCombat::WaveTransition();leaveBattle(true);};
             RewardPopup::show(u8"스테이지 클리어",rewards,u8"로비로",enemyBodyKnown?(float)enemyBodyX:DX*.85f,enemyBodyKnown?(float)enemyBodyY:layout().ground+48*DX/640.f);
+            if(accountBefore<AccountLevel::Max){char note[96];std::snprintf(note,sizeof(note),u8"모험 EXP +%lld  ·  Lv.%d",std::max(0LL,(long long)robin.exps-accountExpBefore),robin.lv+1);RewardPopup::summaryNote=note;}
+            else RewardPopup::summaryNote=u8"모험가 최고 레벨 달성";
             // The payout and removal of the completed run share one save snapshot.
             robin.mergeRouletteRun[0]=0;robin.curWaveIdx=0;SaveGame();
         }

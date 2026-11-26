@@ -1,0 +1,25 @@
+{
+  "role": "account mastery, separate from combat power",
+  "display_max_level": 100,
+  "level_up_exp": "100 + 25 * (display_level - 1)",
+  "stage_clear_exp": "100 + 20 * min(18, stage_index)",
+  "settlement": "only wave 15 boss clear; once, with the cleared run removed in the same save",
+  "excluded": [
+    "failed run",
+    "abandoned run",
+    "instant expedition",
+    "PVP",
+    "ordinary monster kill"
+  ],
+  "level_benefit": {
+    "maximum_energy_bonus": "display_level - 1",
+    "energy_restored_per_level": 5,
+    "restore_capped_to_current_maximum": true,
+    "preserve_existing_over_cap_energy": true
+  },
+  "energy_base": "existing castle capacity and pass bonus remain additive",
+  "combat_HP_bonus": false,
+  "unreleased_hero_unlock": false,
+  "legacy_save_policy": "keep earned level; reset incompatible EXP remainder instead of jumping levels",
+  "ui": "quiet full-height page below shared resource bar; current level, EXP, current and next benefit; no old benefit cards"
+}

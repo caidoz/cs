@@ -25,10 +25,12 @@ static void CastleReviewClick(int command) {
 #include "CastleGrowthReview.inc"
 #include <chrono>
 #include "CurrentVersionTour.inc"
+#include "AccountLevelReview.inc"
 static void CastleMenuReviewStep()
 {
     const char* path = getenv("CS_CASTLE_REVIEW_PATH");
     if (!path) return;
+    if(AccountLevelReview(path))return;
     if(CurrentVersionTour(path))return;
     if(getenv("CS_FINAL_BOSS_REWARD_REVIEW")){
         static int tick=0;static bool pending=false;if(pending)return;++tick;

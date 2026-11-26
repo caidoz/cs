@@ -1,6 +1,7 @@
 ﻿#include "Core.h"
 #include "Func.h"
 #include "Data.h"
+#include "AccountLevelModel.h"
 
 /*===========================================================================
  * 전투의 확률을 정해진 차례로 바꾼다.
@@ -457,25 +458,9 @@ void RefreshStat_Sub(OBJECT* pObj)
 	//강화효과
 	RefreshBuff(pObj);
 
-	//----------------------------------------------------------------------
-	// 체력 결정
-	//
-	//     기본 + 유저레벨 + 장비(허리 + 신발)
-	//
-	// 레벨이 pObj->lv 가 아니라 robin.lv 인 것에 주의. pObj->lv 는 히어로
-	// 오브젝트의 레벨이고, 화면 좌상단에 뜨는 것은 robin.lv 다. 사용자가
-	// 보는 레벨과 체력이 같이 움직여야 성장이 눈에 보인다.
-	//
-	// 비율은 만렙 기준으로 장비가 일곱, 기본과 레벨이 셋이다. 초반에는
-	// 레벨이 바닥을 깔고, 뒤로 갈수록 장비가 대부분을 가져간다. 장비를
-	// 갈아끼우는 것이 곧 체력이 되어야 "좋은 걸 끼면 세진다" 가 보인다.
-	//
-	// 히어로가 아닌 것(동료, 적)은 예전 식을 그대로 쓴다. robin.lv 는
-	// 사용자의 레벨이라 그들에게 얹을 값이 아니다.
-	//----------------------------------------------------------------------
+	// Hero HP comes from base stats and equipment, not account mastery.
 	if (obj >= ROBIN && obj < TOTALPLAYER) {
 		pObj->ps[PS_HP] += HERO_BASE_HP
-			+ robin.lv * HERO_HP_PER_LEVEL
 			+ RoundDiv(pObj->ps[PS_HPEQUIP] * HERO_HP_PER_ARMOR, 100);
 	}
 	else {
@@ -994,31 +979,21 @@ int GetLevelUpRewardLv(int type, int userLv)
 	return sameRewardCnt;
 }
 
-void LevelUp(int getExp)
+void AccountLevelGain(int getExp,bool persist)
 {
-	int tempLevel;
-
-	if (robin.lv >= MAXUSERLEVEL)
-		return;
-
-	//로빈의 경험치
-	tempLevel = robin.lv;
-	robin.exps += getExp;
-
-	while (robin.exps >= NextExp(robin.lv)) {
-		robin.lv++;
-	}
-
-	if (robin.lv != tempLevel) {
-		PlayMusic(M_LEVELUP);
-		levelUpFrame = 1;
-
-		if (robin.lv == MAXUSERLEVEL)
-			robin.exps = NextExp(robin.lv - 1);
-	}
-
-	SaveGame();
+ if(getExp<=0||robin.lv>=AccountLevel::Max)return;
+ const int before=AccountLevel::bounded(robin.lv);
+ // Preserve levels from older saves whose EXP used another curve.
+ robin.exps=std::min(AccountLevel::floor(AccountLevel::Max),AccountLevel::normalizedTotal(before,robin.exps)+getExp);
+ robin.lv=AccountLevel::advance(before,robin.exps);
+ if(robin.lv>before){
+  const long long energy=robin.heart;
+  robin.heart=std::max(energy,std::min((long long)GetInitHeart(),energy+5LL*(robin.lv-before)));
+  PlayMusic(M_LEVELUP);
+ }
+ if(persist)SaveGame();
 }
+void LevelUp(int getExp){AccountLevelGain(getExp,true);}
 
 
 void LevelUpObj(OBJECT* pObj, int getExp)
@@ -3659,28 +3634,7 @@ NEXT:
 			break;
 		}
 	ENEMYDIE:
-		//----------------------------------------------------------------
-		// 경험치
-		//
-		// 유저 레벨(robin.lv)이 오르는 유일한 자리다. 그동안은 오르는 길이
-		// 아예 없었다 - LevelUp() 을 부르는 곳이 디버그 키 하나뿐이었다.
-		//
-		// 값을 표에서 안 읽는다. enemy.tsv 의 add_exp 는 360 마리가 전부
-		// 0 이고, 표에 적어두면 체력 곡선을 고칠 때마다 같이 고쳐야 하며
-		// 잊으면 조용히 어긋난다. 그 자리 잡몹 체력에서 나눈다 - 체력이
-		// 이미 등비로 오르므로(WAVE_HP_TIER_MUL) 경험치도 같이 오른다.
-		//
-		// 보스는 체력이 배수만큼 많으니 경험치도 같은 배수다. 잡는 데 든
-		// 하트도 그 배수라, "들인 만큼 받는다" 가 어디서나 같다.
-		//
-		// LevelUp() 이 안에서 SaveGame() 을 한다. 값을 얻은 그 자리에서
-		// 남기는 것이라 이 파일의 다른 자리와 규칙이 같다.
-		if (GetObjFromPtr(pDest) >= ENEMY && GetObjFromPtr(pDest) < NEUTRAL) {
-			long long exp = pDest->maxhp / ENEMY_EXP_DIV;
-
-			if (exp > 0)
-				LevelUp((int)Min(exp, (long long)0x7fffffff));
-		}
+		// Account EXP is settled once by the final-boss clear, not per monster.
 
 #if BALANCE_LOG
 		//밸런스 한 줄. 이 값들이 하트 리듬 전체의 바탕이다.

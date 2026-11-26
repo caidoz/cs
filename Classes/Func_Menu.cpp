@@ -4050,87 +4050,9 @@ void JokboDraw(int x, int y, float zoom)
 }
 
 
-void LevelUpMenuDraw(int lv, int status, int x, int y, float zoom)
-{
-	int i;
-
-
-
-	ExpBarWideDraw(robin.lv, robin.exps, x + (float)(POPUPWINDOWSIZE_X - CROWNBARWIDTH_WIDE) / 2 * zoom, y - (float)0 * _2X * zoom, zoom);
-
-	for (i = 0; i < TOTAL_LVUPREWARD; i++) {
-		DrawLevelUpCard(i, GetLevelUpRewardLv(i, robin.lv), GetLevelUpRewardLv(i, robin.lv) == false ? true : false, x + (float)(2 * _2X + (i % COLLECTION_XCOUNT) * (COLLECTIONCARDSIZE_X + 4 * _2X) + TSIZE + 2 * _2X) * zoom, y - (float)((i / COLLECTION_XCOUNT) * (COLLECTIONCARDSIZE_Y - 12 * _2X) + TSIZE * 2 + 8 * _2X) * zoom, zoom);
-
-		/*
-		if (setItemCnt == 0)
-			SetColor(COLOR_BLACK);
-
-		DrawIcon(GetItemIcon(itemType, itemDetail, itemGrade), x + 2 * _2X + (i % COLLECTION_XCOUNT) * (COLLECTIONCARDSIZE_X + 4 * _2X) + TSIZE + 2 * _2X + 12 * _2X + 4 * _2X, y - (i / COLLECTION_XCOUNT) * (COLLECTIONCARDSIZE_Y + 4 * _2X + 32 * _2X) - TSIZE * 2 - 24 * _2X + 32 * _2X + (setItemCnt == COLLECTIONSITEMCNT ? -Abs((frame + i) / 2 % 32 - 16) : 0), 2.0f, false, false, false, gScreenBuffer, gScreenLayer, false);
-
-		SetColor(false);
-
-		if (setItemCnt > 0)
-			for (j = 0; j < COLLECTIONSITEMCNT; j++) {
-				itemType = collectionData[COLLECTIONSITEMCNT * COLLECTIONSDATASIZE * i + j * COLLECTIONSDATASIZE + 0];
-				itemDetail = collectionData[COLLECTIONSITEMCNT * COLLECTIONSDATASIZE * i + j * COLLECTIONSDATASIZE + 1];
-				itemGrade = collectionData[COLLECTIONSITEMCNT * COLLECTIONSDATASIZE * i + j * COLLECTIONSDATASIZE + 2];
-				itemLv = GetItemLv(itemType, itemDetail, itemGrade);
-
-				itemSlot = GetEquipSlot(itemType, itemDetail, itemGrade);
-
-				if (GetInvenIdx(itemType, itemDetail, itemGrade) == -1) {
-					SetColor(COLOR_BLACK);
-					DrawIcon(GetItemIcon(itemType, itemDetail, itemGrade), x + 2 * _2X + (i % COLLECTION_XCOUNT) * (COLLECTIONCARDSIZE_X + 4 * _2X) + (j % 3) * (ITEMICONSIZE + 4 * _2X) + 22 * _2X, y - (i / COLLECTION_XCOUNT) * (COLLECTIONCARDSIZE_Y + 4 * _2X + 32 * _2X) - TSIZE * 2 - 4 * _2X - 48 * _2X - (j / 3) * (ITEMICONSIZE + 4 * _2X), 1.0f, false, false, false, gScreenBuffer, gScreenLayer, false);
-				}
-				else {
-					if (itemSlot == -1)
-						grayScale = 32;
-					DrawIcon(GetItemIcon(itemType, itemDetail, itemGrade), x + 2 * _2X + (i % COLLECTION_XCOUNT) * (COLLECTIONCARDSIZE_X + 4 * _2X) + (j % 3) * (ITEMICONSIZE + 4 * _2X) + 22 * _2X, y - (i / COLLECTION_XCOUNT) * (COLLECTIONCARDSIZE_Y + 4 * _2X + 32 * _2X) - TSIZE * 2 - 4 * _2X - 48 * _2X - (j / 3) * (ITEMICONSIZE + 4 * _2X), 1.0f, true, false, false, gScreenBuffer, gScreenLayer, false);
-
-				}
-
-				grayScale = 0;
-				SetColor(false);
-			}
-
-
-		//몇분의 몇을 모았는지를 보여주는
-		if (setItemCnt > 0) {
-			DrawImageNum(setItemCnt, x + 2 * _2X + (i % COLLECTION_XCOUNT) * (COLLECTIONCARDSIZE_X + 4 * _2X) + TSIZE + 2 * _2X + 12 * _2X + 22 * _2X - 14 * _2X, y - (i / COLLECTION_XCOUNT) * (COLLECTIONCARDSIZE_Y + 4 * _2X + 32 * _2X) - TSIZE * 2 - 24 * _2X - 32 * _2X + 18 * _2X, NUM_FONT_NORMAL, LEFT, false, false, false, 1.0f, gScreenBuffer, gScreenLayer, false);
-			DrawText(TEXT_SLASH, x + 2 * _2X + (i % COLLECTION_XCOUNT) * (COLLECTIONCARDSIZE_X + 4 * _2X) + TSIZE + 2 * _2X + 12 * _2X + 22 * _2X - 2 * _2X, y - (i / COLLECTION_XCOUNT) * (COLLECTIONCARDSIZE_Y + 4 * _2X + 32 * _2X) - TSIZE * 2 - 24 * _2X - 32 * _2X - 2 * _2X + 18 * _2X, 1.0f, gScreenBuffer, gScreenLayer, false);
-			DrawImageNum(COLLECTIONSITEMCNT, x + 2 * _2X + (i % COLLECTION_XCOUNT) * (COLLECTIONCARDSIZE_X + 4 * _2X) + TSIZE + 2 * _2X + 12 * _2X + 22 * _2X + 6 * _2X, y - (i / COLLECTION_XCOUNT) * (COLLECTIONCARDSIZE_Y + 4 * _2X + 32 * _2X) - TSIZE * 2 - 24 * _2X - 32 * _2X + 18 * _2X, NUM_FONT_NORMAL, LEFT, false, false, false, 1.0f, gScreenBuffer, gScreenLayer, false);
-		}
-		//6개가 다 장착되어 있어서 스킬이 활성화 되어 있으면
-		if (GetFullEquipedCollectionIdx() == i)
-			DrawNeutral(OBJ_STAMPEFFECT0 + (frame / 3 % 8), x + 2 * _2X + (i % COLLECTION_XCOUNT) * (COLLECTIONCARDSIZE_X + 4 * _2X) + TSIZE + 2 * _2X + 12 * _2X + 4 * _2X + 16 * _2X, y - (i / COLLECTION_XCOUNT) * (COLLECTIONCARDSIZE_Y + 4 * _2X + 32 * _2X) - TSIZE * 2 - 24 * _2X, 0, 1.0f, gScreenBuffer, gScreenLayer, false);
-		//만약 6개가 다 모여만 있으면
-		else if (setItemCnt == COLLECTIONSITEMCNT) {
-			//아무것도 하지 않는다.
-		}
-		else if (setItemCnt > 0) {
-			//아무것도 하지 않는다.
-		}
-		//아무것도 없으면
-		else
-			DrawIcon(ICON_EVENT_LOCK, x + 2 * _2X + (i % COLLECTION_XCOUNT) * (COLLECTIONCARDSIZE_X + 4 * _2X) + TSIZE + 2 * _2X + 12 * _2X + 4 * _2X, y - (i / COLLECTION_XCOUNT) * (COLLECTIONCARDSIZE_Y + 4 * _2X + 32 * _2X) - TSIZE * 2 - 24 * _2X + 32 * _2X - 12 * _2X - 52 * _2X, 2.0f, false, false, false, gScreenBuffer, gScreenLayer, false);
-		*/
-
-		SetRectPoint(x + (float)(2 * _2X + (i % COLLECTION_XCOUNT) * (COLLECTIONCARDSIZE_X + 4 * _2X) + TSIZE + 2 * _2X) * zoom, y - (float)((i / COLLECTION_XCOUNT) * (COLLECTIONCARDSIZE_Y - 12 * _2X) + TSIZE * 2 + 8 * _2X) * zoom, (float)(COLLECTIONCARDSIZE_X - 36 * _2X) * zoom, (float)(COLLECTIONCARDSIZE_Y - 16 * _2X) * zoom, TOUCH_FUNC_COLLECTIONS_DETAIL + i);
-
-	}
-	//
-	//일단 메뉴 정리부터 하자.
-	//1. 상점->
-	//2. 퀘스트가 있고
-	//3. 
-
-	//레벨업 이펙트를 정의하자.
-	//케이스 정의
-	//1. 최대 하트와 시간당 회복량 증가
-	//2. 메뉴 오픈
-	//   - 
-	//   - 
-	//3. 
+#include "AccountLevelMenu.inc"
+void LevelUpMenuDraw(int lv,int status,int x,int y,float zoom){
+ (void)lv;(void)status;(void)x;(void)y;(void)zoom;DrawAccountLevelMenu();
 }
 
 void DeptDiscountDraw(int x, int y, float zoom)

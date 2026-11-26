@@ -25,6 +25,7 @@ void RefreshEnemyTime(void);
 long long NextExp(int);
 int NextExpEquip(ITEM *, int);
 int GetLevelUpRewardLv(int type, int userLv);
+void AccountLevelGain(int getExp,bool persist);
 void LevelUp(int getExp);
 void LevelUpObj(OBJECT *, int);
 void PlusHp(OBJECT *, long long int);

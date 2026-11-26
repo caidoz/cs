@@ -12311,7 +12311,7 @@ bool LobbySectionOwnsPopups()
 	if(popUpCnt<1)return false;
 	const int root=popUp[0].type;
 	return root==POPUPTYPE_CASTLEMENU||root==POPUPTYPE_SHOPINFO||root==POPUPTYPE_EVENTSHOP
-		||root==POPUPTYPE_COLLECTIONS||root==POPUPTYPE_CREWLIST;
+		||root==POPUPTYPE_COLLECTIONS||root==POPUPTYPE_CREWLIST||root==POPUPTYPE_LEVELUP;
 }
 void LobbyDraw(void)
 {
@@ -13836,7 +13836,7 @@ void DrawPopUp(int idx)
 		break;
 	case POPUPTYPE_LEVELUP:
 		LevelUpMenuDraw(robin.lv, false, xOffset + DX / 2 - (float)(POPUPWINDOWSIZE_X / 2) * p->zoom, p->y + (float)POPUPWINDOWSIZE_Y / 2 * p->zoom, p->zoom);
-		break;
+		return;
 	case POPUPTYPE_HEROSTAT:
 		HeroStatDraw(&ao[curHero], xOffset + DX / 2 - (float)(POPUPWINDOWSIZE_X / 2) * p->zoom, p->y + (float)POPUPWINDOWSIZE_Y / 2 * p->zoom, p->zoom);
 		break;

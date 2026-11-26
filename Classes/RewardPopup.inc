@@ -12,7 +12,7 @@ static float sourceX=0,sourceY=0;
 struct CardCache {cocos2d::RenderTexture* target=nullptr; cocos2d::Sprite* image=nullptr;};
 static std::vector<CardCache> cards;
 inline void clearCards(){for(auto& c:cards){if(c.image)c.image->release();if(c.target)c.target->release();}cards.clear();}
-static std::string title,buttonText;
+static std::string title,buttonText,summaryNote;
 static std::vector<Entry> entries;
 static std::vector<bool> revealed;
 static std::vector<int> starts;
@@ -30,7 +30,7 @@ inline int summaryStart(){return entries.empty()?CardStart:cardFlipEnd((int)entr
 inline int endFrame(){return summaryStart()+26;}
 inline bool ready(){return opened&&age>=endFrame();}
 inline void show(const char*,const std::vector<Entry>& list,const char* button,float originX=-1,float originY=-1){
- clearCards();cards.resize(list.size());opened=true;age=0;title=u8"보상";buttonText=button?button:u8"확인";
+ clearCards();cards.resize(list.size());opened=true;age=0;title=u8"보상";buttonText=button?button:u8"확인";summaryNote.clear();
  sourceX=originX>=0?originX:DX*.5f;sourceY=originY>=0?originY:DY*.72f;bx=by=bw=bh=0;
  entries=list;revealed.assign(entries.size(),false);starts.clear();
  int start=CardStart;
@@ -159,6 +159,7 @@ inline void draw(){
    MemRect(x,barY,w,barH,(255<<16)|(g<<8)|blue);
   }
   if(barWidth>0)MemRect(barLeft,barY-1,barWidth,1,0xFFFFFF);
+  if(!summaryNote.empty())DrawUiTextBox(summaryNote.c_str(),(int)(28*s),(int)(DY-120*s),DX-(int)(56*s),(int)(28*s),0xD0E7DE,.65f);
  }
  if(l.maximum>0){const int track=(int)l.view,thumb=std::max(24,(int)(l.view*l.view/l.content));
   SetAlpha(18);MemRect(DX-(int)(10*s),(int)l.top,3,track,0x33465B);

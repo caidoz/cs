@@ -1,5 +1,6 @@
 ﻿#include "Core.h"
 #include "TitleLobbyMotion.h"
+#include "AccountLevelModel.h"
 #include "GameSfx.h"
 #include "Func_MergeRoulette.h"
 #include "Func.h"
@@ -5707,7 +5708,7 @@ int GetMaxShield(void)
 //에너지 상한. 기본 35에 성 단계(0~9)마다 5씩 는다.
 int GetInitHeart(void)
 {
-	int init = HEART_MAX_BASE + Max(0, Min((int)robin.castle, 9)) * HEART_MAX_PER_CASTLE;
+	int init = HEART_MAX_BASE + Max(0, Min((int)robin.castle, 9)) * HEART_MAX_PER_CASTLE + AccountLevel::energyBonus(robin.lv);
 
 	if (IapHeartPass())
 		init += HEARTPASS_MAXBONUS;
@@ -5718,7 +5719,7 @@ int GetInitHeart(void)
 	init = Max(init, HEART_TEST_MAX);
 #endif
 
-	return Min(99,init);
+	return Min(199,init);
 }
 
 //시간이 지날 때 차오르는 양. 10분마다 1개(HEART_REGEN_BASE)씩 회복된다.
