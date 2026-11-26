@@ -1466,14 +1466,16 @@ void drawEntryChoice(){
     drawStageProgress(yy(105),wave,s);
     const Box scene={p.x+(int)(22*s),yy(145),p.w-(int)(44*s),(int)(150*s)};
     panel(scene,0x16333E,0xAD965E);
-    // Crop each existing stage layer with a uniform scale; never stretch artwork.
-    for(int layer=0;layer<2;++layer){
-        const int img=STAGE_MIST_FIRST_IMG+combatRegion()*3+layer;
-        if(!sprite[img])LoadImg(img);if(!sprite[img])continue;
+    // Use the same simple distant skyline as the lobby and portrait battle.
+    {
+        const int img=PORTRAIT_NIGHT_IMG;
+        if(!sprite[img])LoadImg(img);if(sprite[img]){
         auto* texture=sprite[img]->getTexture();const auto size=texture->getContentSizeInPixels();
         const float z=std::max(scene.w/size.width,scene.h/size.height);
         const int sw=(int)(scene.w/z),sh=(int)(scene.h/z);
-        DrawMenuBackdropCrop(texture,((int)size.width-sw)/2,((int)size.height-sh)/2,sw,sh,scene.x,scene.y,scene.w,scene.h);
+        const int sy=std::max(0,std::min((int)size.height-sh,(int)(size.height*.825f-sh*.8f)));
+        DrawMenuBackdropCrop(texture,((int)size.width-sw)/2,sy,sw,sh,scene.x,scene.y,scene.w,scene.h);
+        }
     }
     label(u8"출전 히어로 선택",DX/2,yy(307),.67f,0xFFF0CD);
     for(int i=0;i<3;++i){
@@ -1495,8 +1497,12 @@ void drawEntryChoice(){
         const Box b=entryChoiceBox(part);
         label(title,b.x+b.w/2,b.y+(int)(30*s),.8f,0xFFF2D8);
         UiButtonStyle style;style.fill=color;style.frame=mergeButtonFrame;
-        char cost[48];std::snprintf(cost,sizeof(cost),u8"\uBC88\uAC1C %d",MergeExpedition::Cost);
-        DrawUiButtonIcon(b.x,b.y,b.w,b.h,icon,cost,0,false,true,style);
+        DrawUiButton(b.x,b.y,b.w,b.h,"",0,false,true,style);
+        const int center=b.x+b.w/2;
+        DrawIcon(icon,center-(int)(53*s),b.y-(int)(12*s),s,0x07101B,false,false,1.f);
+        portraitGlyph(3,{center-(int)(8*s),b.y-(int)(13*s),(int)(23*s),(int)(29*s)});
+        char cost[16];std::snprintf(cost,sizeof(cost),"%d",MergeExpedition::Cost);
+        label(cost,center+(int)(32*s),b.y-(int)(17*s),.82f,0xFFF0CD);
     };
     mode(1,u8"전투",ICON_EVENT_2SWORD,0x174DA0);
     mode(2,u8"원정",GetItemIcon(ITEM_GREAVES,0,GRADE_NORMAL),0x1F5A3A);
@@ -5495,9 +5501,10 @@ bool MergeRouletteEntryChoiceReview(int step){
         tap(entryChoiceBox(1));if(active||robin.heart!=4)return false;
         robin.heart=5;
         tap(entryChoiceBox(3));tap(lobbyStart(layout()));
-        tap(entryChoiceBox(1));return !entryChoiceOpen&&active&&entering()&&robin.heart==0;
+        tap(entryChoiceBox(1));return !entryChoiceOpen&&!active&&lobbyDepartureAge==0&&robin.heart==5;
     }
     if(step==5){
+        if(!active||robin.heart!=0||lobbyDepartureAge>=0)return false;
         const long long energy=robin.heart;
         run.choosing=false;run.attacking=false;run.lost=false;
         run.tray.clear();run.board.clear();run.spins=3;entryElapsed=-1;introElapsed=-1;animation=0;

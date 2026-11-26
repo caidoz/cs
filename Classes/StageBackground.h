@@ -182,7 +182,8 @@ inline const Region& Cur(void) {
 }
 
 inline int Img(int slot) {
-	if(slot<3)return STAGE_MIST_FIRST_IMG+Max(0,Min(s_region,STAGEBG_REGION_CNT-1))*3+slot;
+ if(slot==0||slot==1)return PORTRAIT_NIGHT_IMG;
+	if(slot==2)return STAGE_MIST_FIRST_IMG+Max(0,Min(s_region,STAGEBG_REGION_CNT-1))*3+slot;
 	// New scenery embeds distant creatures as atmospheric terrain silhouettes.
 	// Foreground combat enemies use their independent character resources.
 	return STAGEBG_FIRST_IMG +
@@ -393,7 +394,7 @@ inline void Layer(int img, float designW, float designTopY, float speed,
 inline void Boss(const Camera& cam) {
 	// The new far resources already contain the region's distant landmark.
 	// Drawing an old full-color boss over them would mix two scenery styles.
-	if(Img(SlotFar)>=STAGE_MIST_FIRST_IMG&&Img(SlotFar)<=STAGE_MIST_LAST_IMG)return;
+	if(Img(SlotFar)==PORTRAIT_NIGHT_IMG||(Img(SlotFar)>=STAGE_MIST_FIRST_IMG&&Img(SlotFar)<=STAGE_MIST_LAST_IMG))return;
 	const Region& r = Cur();
 	//보스는 원경에 붙어 있다. 원경과 같은 배율 · 같은 깊이로 움직여야
 	//붙어 있는 것으로 보인다.
@@ -474,7 +475,7 @@ inline void Draw(const Camera& cam, int arenaBottom, bool withBoss = true) {
 	Layer(Img(SlotFar),  kSkyW,  0.0f,      kSpeedFar,  cam, kDepthFar);
 	if (withBoss)
 		Boss(cam);
-	Layer(Img(SlotMid),  kSkyW,  0.0f,      kSpeedMid,  cam, kDepthMid);
+	if(Img(SlotMid)!=Img(SlotFar))Layer(Img(SlotMid), kSkyW, 0.0f, kSpeedMid, cam, kDepthMid);
 	Layer(Img(SlotRail), kRailW, kRailTopY, kSpeedRail, cam, kDepthRail);
 
 	SetColor(savedColor);

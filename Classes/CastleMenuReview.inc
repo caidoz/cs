@@ -129,11 +129,11 @@ static void CastleMenuReviewStep()
     if(getenv("CS_ENTRY_CHOICE_REVIEW")){
         static int tick=0;static bool pending=false;if(pending)return;++tick;
         if(tick==1){NewGame();robin.demoSeen[DEMO_TUTORIAL_END]=true;CastleTutorialLoad(CastleTutorial::Done);GotoLobby();while(popUpCnt>0)ClosePopUp();LoadoutSetOpen(false);}
-        const int step=tick==30?0:tick==50?6:tick==60?1:tick==80?2:tick==150?3:tick==190?4:tick==300?5:-1;
+        const int step=tick==30?0:tick==50?6:tick==60?1:tick==80?2:tick==150?3:tick==190?4:tick==430?5:-1;
         if(step>=0)CastleReviewTrace(MergeRouletteEntryChoiceReview(step)?"PASS entry choice input and accounting":"FAIL entry choice flow");
         const char* shot=tick==25?"lobby.png":tick==45?"choice.png":tick==55?"progress.png":tick==130?"expedition-rewards.png":tick==170?"insufficient-energy.png":nullptr;
         if(shot){pending=true;cocos2d::utils::captureScreen([](bool ok,const std::string&){pending=false;CastleReviewTrace(ok?"PASS entry capture":"FAIL entry capture");},std::string(path)+shot);}
-        if(tick==305)CastleReviewTrace("DONE entry choice review");
+        if(tick==435)CastleReviewTrace("DONE entry choice review");
         return;
     }
     if(getenv("CS_VAULT_COLLECT_REVIEW")){

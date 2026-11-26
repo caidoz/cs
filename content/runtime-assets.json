@@ -13389,24 +13389,6 @@
       "encoded_sha256": "aad2e8d67169ee3c3fd2fc0fb6bc0d449de54bce9482e00e2066040985a8ab53"
     },
     {
-      "source": "asset_library/production/runtime-d6ee72ff52c8c235e2e49ac3edc89a1cf91ecd6ba2970ee3cb064202945e5bb9.webp",
-      "target": "res/stage_mist_v3-region-01-far.png",
-      "original_source": "asset_library/reference/Resources/res/stage_mist_v3/region-01-far.png",
-      "encoding": "webp-lossless",
-      "rgba_sha256": "eece4cf33ba836fc780ffdb9162277cd97fb66e81aedd8a5d2ff0deeaaa00b24",
-      "original_sha256": "29e41450595eb0391cf4b2de3434854bd3d36f20bbd07312064c5c94ef76e002",
-      "encoded_sha256": "c0ed66598c2b412b35eb34431b088b4c33feb4bb68a999c47323031dd17a66ae"
-    },
-    {
-      "source": "asset_library/production/runtime-fae4c2b073d367b943709ad35bfc19987a1e1d36edef9c78db65d8030bfb6d4f.webp",
-      "target": "res/stage_mist_v3-region-01-mid.png",
-      "original_source": "asset_library/reference/Resources/res/stage_mist_v3/region-01-mid.png",
-      "encoding": "webp-lossless",
-      "rgba_sha256": "e91097fb5e155df5f5c16c10bc4954fdf3ba465be3c2ebde39c20e541edcfe70",
-      "original_sha256": "353340e6c77c0e84098892ef6d7713dfd6318c8e7c1cc424355c6a080dc0012a",
-      "encoded_sha256": "82500721750162563e4f2f2be9a63ebe240ee824c4100bbbd594aff10d6ecb5d"
-    },
-    {
       "source": "asset_library/production/runtime-08adf8824acdcfd45ac6f689596a628c8134e5b0e7c2808e9f138b8b66d31ddf.webp",
       "target": "res/stage_mist_v3-region-01-rail.png",
       "original_source": "asset_library/reference/Resources/res/stage_mist_v3/region-01-rail.png",
@@ -13414,24 +13396,6 @@
       "rgba_sha256": "da2eb558996bde4fe673d3f86b459b1ed4ccb81bae8887b0381c62849eac4ba3",
       "original_sha256": "c710ce0041fef9ac52b09c899ffa29cb38920f68d69033e0de843c7347abc8c6",
       "encoded_sha256": "722ed04ac222f09bba9dd5c6b4ed5b429a6582012449ee592bd3333561ae5d38"
-    },
-    {
-      "source": "asset_library/production/runtime-513b90ccc6d340e27cf504724c17de93e3eef6fc4a729eaf6901cbeca8938dbc.webp",
-      "target": "res/stage_mist_v3-region-02-far.png",
-      "original_source": "asset_library/reference/Resources/res/stage_mist_v3/region-02-far.png",
-      "encoding": "webp-lossless",
-      "rgba_sha256": "dc5bc959a8e6cb5cfecbb477423698837a5aef3b545d58a58ac572cd70c7f517",
-      "original_sha256": "0391daed8ff2efe493fc7a7c942b1f8d738e87121a6e253709840167e62879e0",
-      "encoded_sha256": "b524d3669fd778f72c3f0b22acaa28bd8f1de5c71ae467e8d4779ab68d3fb59e"
-    },
-    {
-      "source": "asset_library/production/runtime-3c512bcddd2be655ae902baec304d37f8ec55311cae26eafd2143353cb4d8d3b.webp",
-      "target": "res/stage_mist_v3-region-02-mid.png",
-      "original_source": "asset_library/reference/Resources/res/stage_mist_v3/region-02-mid.png",
-      "encoding": "webp-lossless",
-      "rgba_sha256": "09dd077cec4855189798cd8a161733adb93d963e3e6dc59351d94753b2f303e4",
-      "original_sha256": "4442cd8938b3b020f28d506848da65f5fcbf6251d259968470e589450922057d",
-      "encoded_sha256": "3e7aa53ce02e3baa0290f696551959755ffa64ee198fc1cd6d176534de78a4cf"
     },
     {
       "source": "asset_library/production/runtime-4a7d11006ac1b5e34fb3bb4cec5a5e460f533615c9fb0a52d817022faa7b0a09.webp",
@@ -13443,24 +13407,6 @@
       "encoded_sha256": "c00c0a88d3f894c131568249e7956ad111883c8058ca1f5f6a275d4432ea12cd"
     },
     {
-      "source": "asset_library/production/runtime-35588c89675ceea0e45de2508ca42c2d94e8d160a2534aa2686dcd352923de5d.webp",
-      "target": "res/stage_mist_v3-region-03-far.png",
-      "original_source": "asset_library/reference/Resources/res/stage_mist_v3/region-03-far.png",
-      "encoding": "webp-lossless",
-      "rgba_sha256": "2a05240382407250aef060b80acc4fe35f45ec5b83307c6e299d91f40a394066",
-      "original_sha256": "daa9b5e8dce64704a1004cb1228f25e304756b467fe423dcd97b734075ef715c",
-      "encoded_sha256": "796e58e6133b300226c3773954c5b58962c0c32db175b7a032af8f95fe97050c"
-    },
-    {
-      "source": "asset_library/production/runtime-35d02df379edd9b5ef8f223aa89987da3e27c1fd6347fbec5aa07f1911bca401.webp",
-      "target": "res/stage_mist_v3-region-03-mid.png",
-      "original_source": "asset_library/reference/Resources/res/stage_mist_v3/region-03-mid.png",
-      "encoding": "webp-lossless",
-      "rgba_sha256": "27c5bbf02b4437850cae3e00c7af4e185a10f9b67aef6b56feb0e6712c2b0d54",
-      "original_sha256": "063c30593986c40f63d3cbe0f32251aa3a4b731f32e12a93b0f11a4e75c941d0",
-      "encoded_sha256": "3e674242431563349a66eff4e20b74d3d554945c153e04e4034c5d83eef69408"
-    },
-    {
       "source": "asset_library/production/runtime-872df7f07ca31e0ad95bd7c49caf5c18db67314fbca215f49d867efbcd83d811.webp",
       "target": "res/stage_mist_v3-region-03-rail.png",
       "original_source": "asset_library/reference/Resources/res/stage_mist_v3/region-03-rail.png",
@@ -13468,24 +13414,6 @@
       "rgba_sha256": "a8988756d5c741b57deb130229214c8f0615235d33229361ebfb399ad448f5dc",
       "original_sha256": "ce96317cc5566dbaa6ce945584357b878bd10df0cef574d9552c6a21e69cbe8a",
       "encoded_sha256": "565988a1f443368888a6dd5f0f1f5e74e77148a340f2542eeb4ba25b19bf13ab"
-    },
-    {
-      "source": "asset_library/production/runtime-bef2c4f932b2d12bb77ee3c4963214dde47cb1415695d669a720dbe06c2d4dbb.webp",
-      "target": "res/stage_mist_v3-region-04-far.png",
-      "original_source": "asset_library/reference/Resources/res/stage_mist_v3/region-04-far.png",
-      "encoding": "webp-lossless",
-      "rgba_sha256": "11768c7cdbfa2499a3da80c0dd36ead4adb075d79384f2d76774aa90081e45c6",
-      "original_sha256": "e768e807ee8b3ea3b93691878dfc44eeacb931954a560a9e53d88555b500c17e",
-      "encoded_sha256": "2107a0c771acf270319dbfc20da91b47aeae32260a16a4af4071f442dd0ed1c5"
-    },
-    {
-      "source": "asset_library/production/runtime-980e276f721c06761447732232b2a8b7bbd46ea953d548f884e119f33a403c7a.webp",
-      "target": "res/stage_mist_v3-region-04-mid.png",
-      "original_source": "asset_library/reference/Resources/res/stage_mist_v3/region-04-mid.png",
-      "encoding": "webp-lossless",
-      "rgba_sha256": "27602f2eb6a5a199250b8f89b9afa5a05f8ed382830e5814db10599f81405973",
-      "original_sha256": "1d1c113d031dd2f98845f3339438a2a1edac0fc1e5c6fcb9f370e86f993b52cc",
-      "encoded_sha256": "4f2fe907e55da6b8f78be9868fe7e918f86397e5c94cd4d949493319e90f9279"
     },
     {
       "source": "asset_library/production/runtime-6981ca64d8d6a4acccb9e60f3fc4a1bfa77bd3630dc67b7aacade964274e37c2.webp",
@@ -13497,24 +13425,6 @@
       "encoded_sha256": "ab003cf5dfd3f54d837c293ba332636cc4299399a726951235d8fc1cbf47cd28"
     },
     {
-      "source": "asset_library/production/runtime-080f69d0d2edc39a27f8ec2580e91ff350ca4a27b1d941a1a1e81416d942af5b.webp",
-      "target": "res/stage_mist_v3-region-05-far.png",
-      "original_source": "asset_library/reference/Resources/res/stage_mist_v3/region-05-far.png",
-      "encoding": "webp-lossless",
-      "rgba_sha256": "6c2b6ee6f1772f09615476ab67987f0bfc90a470ccdecd226ff6d2577e440106",
-      "original_sha256": "ccafaee5cf148b63c90d93b7ac2ec620b92b244b514e503950ce8f8344790e46",
-      "encoded_sha256": "2e3eb87474f842f097e49c04bcb49a477752abdfac2940c616c3c9039c2cc803"
-    },
-    {
-      "source": "asset_library/production/runtime-9c4c6236132d47f12d6d3602f7280bdb3fb22900a3ba8390629be4d824871ebc.webp",
-      "target": "res/stage_mist_v3-region-05-mid.png",
-      "original_source": "asset_library/reference/Resources/res/stage_mist_v3/region-05-mid.png",
-      "encoding": "webp-lossless",
-      "rgba_sha256": "0e20cba27dc89088749a4d487669bb6dfcaa4e634d39eab3fa783910c286d124",
-      "original_sha256": "7d8a9ba4ee19b51dddbf15ee724ab791b2d8b0b3a33c05d80c23936ab29fd8b6",
-      "encoded_sha256": "31bce86aee61b590f50f31e644ed9add485a87ecec97fe22990f492efec21f51"
-    },
-    {
       "source": "asset_library/production/runtime-a9b95386b00b2b15b63995a940f02a2ae46f89e7ee82a030f0f527e8fdfa40db.webp",
       "target": "res/stage_mist_v3-region-05-rail.png",
       "original_source": "asset_library/reference/Resources/res/stage_mist_v3/region-05-rail.png",
@@ -13522,24 +13432,6 @@
       "rgba_sha256": "f5ce5afe4d3666822454ab7f2b070d76483536e834e65af99a5566403958ec38",
       "original_sha256": "3f3197e082f4e1c0f2b56166f3703f5046a4f68a391c90ff9e5854a624003c97",
       "encoded_sha256": "abcb268ea2c953f9813197b285305e52fc7c25645bb30d9a0431e0056763876d"
-    },
-    {
-      "source": "asset_library/production/runtime-d48474721d0b90141e27fdfbe14811e5a4052ff94280c23ec41435edb7bc7d14.webp",
-      "target": "res/stage_mist_v3-region-06-far.png",
-      "original_source": "asset_library/reference/Resources/res/stage_mist_v3/region-06-far.png",
-      "encoding": "webp-lossless",
-      "rgba_sha256": "fbefb7642b428468376f233a9bd699b3287783a8b980a13d97cdc952a660c15f",
-      "original_sha256": "2eb2f8219079cb3f512836fc1169a1543f1373dd4ca357abe9f0fef17261e75d",
-      "encoded_sha256": "794edff9119942b1ef205439fc6711e2dbdafe9fd27b1def79fae981fe7e6d07"
-    },
-    {
-      "source": "asset_library/production/runtime-8114d3b4ff1f0910a0938c6f888e0b3001df6bd22e5e303ec57e596b4f173fe0.webp",
-      "target": "res/stage_mist_v3-region-06-mid.png",
-      "original_source": "asset_library/reference/Resources/res/stage_mist_v3/region-06-mid.png",
-      "encoding": "webp-lossless",
-      "rgba_sha256": "a9978d8c4f320f2e5bd889a7b729486e1976f8d2921c6d6ce3a9ed6402763f2b",
-      "original_sha256": "1d049fed952bbd0cb46c66a9038e80192395839b6ac9e496a27f34b269adbf51",
-      "encoded_sha256": "be18d56a1111e0301c80d4ff666de7587d7015babcfb2895ea81aa8f5f76774c"
     },
     {
       "source": "asset_library/production/runtime-4641610cae7b273708adc07155ea2f0e21802488c7a61235f6b6a123d4665e96.webp",
@@ -13551,24 +13443,6 @@
       "encoded_sha256": "24a1cd93d851bd8b9e6e22ee2c2bea50863e0d16198d4c0772940e1e64db19ce"
     },
     {
-      "source": "asset_library/production/runtime-7fc81d0f591437f3d4369b20995ed19584a815dc83e0025d4e01dc2b002575af.webp",
-      "target": "res/stage_mist_v3-region-07-far.png",
-      "original_source": "asset_library/reference/Resources/res/stage_mist_v3/region-07-far.png",
-      "encoding": "webp-lossless",
-      "rgba_sha256": "1fa9080ecaa2edca88223a1102f5c2c0ac2c6366a94ecd1671b0b3f537bf25d6",
-      "original_sha256": "2a23d75c329bebcf648b5d3081bed3c0420add8ebb0f7443790da0159ab61e6c",
-      "encoded_sha256": "e36775d1106a04277563f7c3d5a0307441022683fe18c48359f5f6446d8b55d3"
-    },
-    {
-      "source": "asset_library/production/runtime-b067e48572b8ce13e75eeaa1f819f77ce86de5f9d0e0a7ea979a2b161a15785d.webp",
-      "target": "res/stage_mist_v3-region-07-mid.png",
-      "original_source": "asset_library/reference/Resources/res/stage_mist_v3/region-07-mid.png",
-      "encoding": "webp-lossless",
-      "rgba_sha256": "b3c14f67c28ef0e93b71bd8a620d2c3663a24885fcfaa81e43f0d8de661dea2d",
-      "original_sha256": "3eb22b6a15f49ac1857f4c3fc97ee5fb04c2788f770e2fc787a54586706bafc8",
-      "encoded_sha256": "8a02a4d94c4b3290078e588c42120e308dc9958bbfe85d5fd9587ae570167838"
-    },
-    {
       "source": "asset_library/production/runtime-9b833ddf1439ed5290e826c4f053841acc5a5b9c33c21fe21072424ac45ea7ca.webp",
       "target": "res/stage_mist_v3-region-07-rail.png",
       "original_source": "asset_library/reference/Resources/res/stage_mist_v3/region-07-rail.png",
@@ -13576,24 +13450,6 @@
       "rgba_sha256": "0770b9927db2d3329dd71aba7c0dcace92a794f2e089c52adadee1df6f079fe0",
       "original_sha256": "b0c762e3bb53ba2bb6c3ee11a3c256b77ed50e298d19a5528e73613fce67881f",
       "encoded_sha256": "f38c5a8f3f5fbdc7a8eab675ddf83cfcaf83c741b0674bb120b8908bfe06d67a"
-    },
-    {
-      "source": "asset_library/production/runtime-c1506f1f637a0af78ff9e2c0d93f13aea04b08ed1d2844bbf2f3c1ad7c3f13d0.webp",
-      "target": "res/stage_mist_v3-region-08-far.png",
-      "original_source": "asset_library/reference/Resources/res/stage_mist_v3/region-08-far.png",
-      "encoding": "webp-lossless",
-      "rgba_sha256": "d838a03f49e0370ce8800d8172a4ca691182584c4bf883003520fa4e9b449318",
-      "original_sha256": "6ce0bdae05bb3c000a8f7ee2b905c5b86e145dcb74a898202eb953ba2634b241",
-      "encoded_sha256": "de81f03cbaf3d43a4bbbf5ece7c7905ffcbdcff68a59e467dfb18c5e6bb49c99"
-    },
-    {
-      "source": "asset_library/production/runtime-b8f5135aec98d46751dadac5c02edd90adb3b8ec93495bc87eb1d9ef6eea3fc7.webp",
-      "target": "res/stage_mist_v3-region-08-mid.png",
-      "original_source": "asset_library/reference/Resources/res/stage_mist_v3/region-08-mid.png",
-      "encoding": "webp-lossless",
-      "rgba_sha256": "678575f7e7d5c27520ee3e4debf9bfa3215c0ae7e09b0c9b0c8e50c14c158893",
-      "original_sha256": "def4833651f8c8f23e1ad05ee8c02cf7187b5590ce85193bde127006fdd36305",
-      "encoded_sha256": "2e47b31d974db7f028c8c6719ab37e8a85077e4b4ee0e17a10e28d7f2e969217"
     },
     {
       "source": "asset_library/production/runtime-fd64003140c083c4591f4bfd552c37321b1956d8794909e492c2db367db367d5.webp",
@@ -13605,24 +13461,6 @@
       "encoded_sha256": "73f755966e1550b4c5ad53d61e70654516738df3383b22d6ab778ed9aa9ba907"
     },
     {
-      "source": "asset_library/production/runtime-86075633603a204dfb941161632270fe824bd85817caec8bc9a967067339eb17.webp",
-      "target": "res/stage_mist_v3-region-09-far.png",
-      "original_source": "asset_library/reference/Resources/res/stage_mist_v3/region-09-far.png",
-      "encoding": "webp-lossless",
-      "rgba_sha256": "13f636f85e8319170118ac0880b00ce0f3177201c8f88d9ddf21f84bd7860f7c",
-      "original_sha256": "51884ef344b99747a193230b4d64fd71ae1620e781564fb69007dc92d23ef9e0",
-      "encoded_sha256": "37be8185fa88ca9fb0353f7864603f83383f389d751a455c8e78514f6b0b6801"
-    },
-    {
-      "source": "asset_library/production/runtime-e393afbdb01dedd8aad9fb73c236bca17bc2f009dd23292a66c647364d9adc97.webp",
-      "target": "res/stage_mist_v3-region-09-mid.png",
-      "original_source": "asset_library/reference/Resources/res/stage_mist_v3/region-09-mid.png",
-      "encoding": "webp-lossless",
-      "rgba_sha256": "415d3e941a8c9f9a027961343babab0e8bb5eececf0a233c3759cfedcc785437",
-      "original_sha256": "8691f0f2bcf558a486b7c335090896f54dd6cba1d998b1406a3d396b10eec1e8",
-      "encoded_sha256": "74cbd3170d6d12d81678dd18dba90b61b87bb9ad061c3935caefb2400ba0cabb"
-    },
-    {
       "source": "asset_library/production/runtime-4860f162f48bc668d29c29e15df574c308c8d6d3dfd3d086b3d47a5dfc431519.webp",
       "target": "res/stage_mist_v3-region-09-rail.png",
       "original_source": "asset_library/reference/Resources/res/stage_mist_v3/region-09-rail.png",
@@ -13630,24 +13468,6 @@
       "rgba_sha256": "0f018f891d6ea096fa3ddc358d4113a52af2b83f01dc14a3efdb5c1baee97330",
       "original_sha256": "52a423a909b4e68e5f5b7231d4d4fdac20b095fa4d8ba54af2a021e37c1bfa87",
       "encoded_sha256": "dafea7a997a8a85197ad23e2803442f53f360ea6d24a85628a9ffaeb31db456e"
-    },
-    {
-      "source": "asset_library/production/runtime-5e3b213a94c50979047dcfe6a69c1c3dac2abcc4c7a5ea491d9b8159405c855e.webp",
-      "target": "res/stage_mist_v3-region-10-far.png",
-      "original_source": "asset_library/reference/Resources/res/stage_mist_v3/region-10-far.png",
-      "encoding": "webp-lossless",
-      "rgba_sha256": "a25340dec67b03b87b3ee8afac6a0879b8100b83bdbaae3091f2bfd63151a87d",
-      "original_sha256": "f0e5500a875cae56d38b3ef9a369864122d753754572e35ce8e6e522829ce06d",
-      "encoded_sha256": "7c50f0efcf11c55664878bf1e116adfd9f402fc7819c3e2ab70bbe12d08d742f"
-    },
-    {
-      "source": "asset_library/production/runtime-17bc406fde7cf025f4553f93e4fca002e46cf6ec2d6effcde63cb4452f009d40.webp",
-      "target": "res/stage_mist_v3-region-10-mid.png",
-      "original_source": "asset_library/reference/Resources/res/stage_mist_v3/region-10-mid.png",
-      "encoding": "webp-lossless",
-      "rgba_sha256": "cfb08ec77e285dcc27c617764a24ec4b6d7df6ebdf9ba2f68a476e39e7d4e799",
-      "original_sha256": "b1877bcfd8bf7b7076987673e8ab15167dfcb0f99538a4589521d43f3a740bc9",
-      "encoded_sha256": "47529cf868c3388332e143916ad6b7b0c5f9cc15135c229959715b72dfdf8f08"
     },
     {
       "source": "asset_library/production/runtime-fa8117f468f2df6258d18b495f96922b89e7689d20aa7fc53864d72682ae0fa4.webp",
@@ -13659,24 +13479,6 @@
       "encoded_sha256": "c47c6845a77b3450d77c52e32f132b66c3f3eb7cb6c37d312828e3d8bed94c14"
     },
     {
-      "source": "asset_library/production/runtime-e9d686f3b602c0d8711de7a89b5d6348ca3bc29086adf1b3970e1b8b79938ee2.webp",
-      "target": "res/stage_mist_v3-region-11-far.png",
-      "original_source": "asset_library/reference/Resources/res/stage_mist_v3/region-11-far.png",
-      "encoding": "webp-lossless",
-      "rgba_sha256": "cdaf3590540f5746a5074e594daadbb415934e4720d6d62364679daa17ace860",
-      "original_sha256": "92988413e65a52bd81a1a872ffa5fa3428e2a5b9fb54008ad9b16e4252cca2cc",
-      "encoded_sha256": "f1e7e42858d3183903a982ab83f18ede95fe944fd089005166574e681064a54e"
-    },
-    {
-      "source": "asset_library/production/runtime-edc35ab120f6bc329128f30226e3057d970d857b4f8cbb5cd0f07b35a28603ab.webp",
-      "target": "res/stage_mist_v3-region-11-mid.png",
-      "original_source": "asset_library/reference/Resources/res/stage_mist_v3/region-11-mid.png",
-      "encoding": "webp-lossless",
-      "rgba_sha256": "c49b2ef40e22a8f7c12b67d47da39886e4452a603b5318bb4d689ffd9d3a173b",
-      "original_sha256": "f70e6fc401e8663d6065c2126d2c4ce0f457b722b67834f2ad8903dc30bd26be",
-      "encoded_sha256": "df3efe89ebf2852a0adb6de3d9a5e19c571cad385a0283dc69e752a6c86a6db4"
-    },
-    {
       "source": "asset_library/production/runtime-2f5efa48b8fb9dc34ab472690ac02c9a302d9ac3d3169d5ddc315e98f6d25f81.webp",
       "target": "res/stage_mist_v3-region-11-rail.png",
       "original_source": "asset_library/reference/Resources/res/stage_mist_v3/region-11-rail.png",
@@ -13684,24 +13486,6 @@
       "rgba_sha256": "bbf57c4140aa047d7895d419c85628b2c5555d56568cc5a3655a8c516f1b9437",
       "original_sha256": "6a4654320d1e79d86427d7bdaf46b7125200d174ac4e0850a31641010cb5c9f0",
       "encoded_sha256": "3fff86417758c544a8549d3a93f2c64cb561bf166c081d692b536e90e2f2bc7f"
-    },
-    {
-      "source": "asset_library/production/runtime-3edbcb45eb645bce69e037179a236e48a3619a3579c007be6d39c9c2e8acc738.webp",
-      "target": "res/stage_mist_v3-region-12-far.png",
-      "original_source": "asset_library/reference/Resources/res/stage_mist_v3/region-12-far.png",
-      "encoding": "webp-lossless",
-      "rgba_sha256": "a48ec5f7af3651436bd20015c962d65a7800fe459e7c960a6e9c418363696f51",
-      "original_sha256": "acae65e7ffa39ee84a1da9f9796c4703d357bbd9d26965e18872dba4c805f9c3",
-      "encoded_sha256": "1987c5c5db54c5e53c4c494e5770226a065c921aa60331e828d99a629d5e9384"
-    },
-    {
-      "source": "asset_library/production/runtime-05eede6e34ec900b274e492b74dce66f6a2f0a58ba122c5472b7d9e31d6e9452.webp",
-      "target": "res/stage_mist_v3-region-12-mid.png",
-      "original_source": "asset_library/reference/Resources/res/stage_mist_v3/region-12-mid.png",
-      "encoding": "webp-lossless",
-      "rgba_sha256": "b7efa19f2f84dec42e88b8671b51644d94803bd15fabf8b8f22780aaffc28541",
-      "original_sha256": "e6d936a1bbf5c9de4d4c82f39067c092b3fbc71d2f2c8db4c6ba27df9fa80773",
-      "encoded_sha256": "a8aec0eb1c25b501e6da9635376d873116bbf254c824650b0fc5ad0040910518"
     },
     {
       "source": "asset_library/production/runtime-d89c4fd67be391a86caa7dfcbd5eb1718ef5fecf8a15c734755d1a84d2378d8a.webp",
@@ -13713,24 +13497,6 @@
       "encoded_sha256": "7b0c4087e449232d0406f2adb03e166be14bd63bf41bdbc00e3bbc9cf0198d9d"
     },
     {
-      "source": "asset_library/production/runtime-011bd73285f5bd8b7357dd4503f0f184e1b90973dde26434f83956f47666cf82.webp",
-      "target": "res/stage_mist_v3-region-13-far.png",
-      "original_source": "asset_library/reference/Resources/res/stage_mist_v3/region-13-far.png",
-      "encoding": "webp-lossless",
-      "rgba_sha256": "9a5c506399e75bf25563621a79b97875ce63055aaca6b66a06a61942d0ca9aeb",
-      "original_sha256": "8e291302a8e8feb2714d07e9d0fbddb352be00cd9ed8f3b8999da9310020f70a",
-      "encoded_sha256": "82abc9123403415d6a829f4675bafe88be19df3263f16a0a5ede4d05e5c246b3"
-    },
-    {
-      "source": "asset_library/production/runtime-50bc77e3048c54ce8ef399fb6ed17464cc9e9357386026598e2aa684efac9b82.webp",
-      "target": "res/stage_mist_v3-region-13-mid.png",
-      "original_source": "asset_library/reference/Resources/res/stage_mist_v3/region-13-mid.png",
-      "encoding": "webp-lossless",
-      "rgba_sha256": "612b6a9de2b9cf860b9ea6ad89fd16cd685574f23806b26139d03a5b948654a9",
-      "original_sha256": "94e7af21c0d55125fbab3b34d92f64a8888dd3a9e7593cd6c1040ef18483549a",
-      "encoded_sha256": "0d376d3ef7d84ad5644f89eb5b4316a740b11680c78c023cd0f7994420c19fc2"
-    },
-    {
       "source": "asset_library/production/runtime-f87f4e6f98ca47052b20bcd17f404ff2d35ee52cf868f409684de2c43e9dea68.webp",
       "target": "res/stage_mist_v3-region-13-rail.png",
       "original_source": "asset_library/reference/Resources/res/stage_mist_v3/region-13-rail.png",
@@ -13740,24 +13506,6 @@
       "encoded_sha256": "ac77c78be51947512a8cf0498bbfb9fdeddb1a7669e0d7e0be7cd26ca814065b"
     },
     {
-      "source": "asset_library/production/runtime-da86ec1b94e5dacb1d21600989e3349d13f3aec947c35efee4219ed9d404b5ec.webp",
-      "target": "res/stage_mist_v3-region-14-far.png",
-      "original_source": "asset_library/reference/Resources/res/stage_mist_v3/region-14-far.png",
-      "encoding": "webp-lossless",
-      "rgba_sha256": "7923f9edf1759753e484e83fcf48e9304d66b7e870baca05daea9c8ca7fc1fa5",
-      "original_sha256": "c15652861b3b5b9e85f5da83dd864c4920f6a2c11d4c697ce91a0d8792ad0f62",
-      "encoded_sha256": "903a2e0f66e75982d8f1b19e46a02e3fd58b4a4cd92f0dde34500f9e5010909c"
-    },
-    {
-      "source": "asset_library/production/runtime-9cdcf3fdde3114176a339e0b9e46b39d305f0415f7c1a55ced2cd6e5a5331eb4.webp",
-      "target": "res/stage_mist_v3-region-14-mid.png",
-      "original_source": "asset_library/reference/Resources/res/stage_mist_v3/region-14-mid.png",
-      "encoding": "webp-lossless",
-      "rgba_sha256": "db0150e28fa32e5c657ef95c95eb7b21592f45868270c5efad3ab830d7b8ab71",
-      "original_sha256": "a946d22b6d4873f82c9f5f6ba88a805da5864d20dfb69e1aa15a04d43837d7c3",
-      "encoded_sha256": "bdf1f72f0c759d4eda47a95429b4be02dfaf472fcb65caa3a7dcecd24b981789"
-    },
-    {
       "source": "asset_library/production/runtime-9a19c6d60c9fdf3b71a744396c0aef620aa6541238aaee35ecf96ff7e161b1c7.webp",
       "target": "res/stage_mist_v3-region-14-rail.png",
       "original_source": "asset_library/reference/Resources/res/stage_mist_v3/region-14-rail.png",
@@ -13765,24 +13513,6 @@
       "rgba_sha256": "f039d4921fb6a477a6cd42d0598b59d2c58a5c954da2432cf1101311f1eb85c3",
       "original_sha256": "0370ca0de782442093d23ae6070b2bce33c547720d5e895134f4f8b1b640f987",
       "encoded_sha256": "ccf9680dd8e660baf0369af9a304b46bc3b2a7c1034cc6c7a8a34e48a2e33802"
-    },
-    {
-      "source": "asset_library/production/runtime-238f7d453b90fe06ed9c86f02d79c8fe380dad1ed086b820e8e3f9ad48c03999.webp",
-      "target": "res/stage_mist_v3-region-15-far.png",
-      "original_source": "asset_library/reference/Resources/res/stage_mist_v3/region-15-far.png",
-      "encoding": "webp-lossless",
-      "rgba_sha256": "90f02757ecee8c371f3745c531c24b11b43d6a8d981b1724663c3d97b4a53459",
-      "original_sha256": "da4007bc6c95f2a914d7db8377f0f6e0708dd71cc0d2eb1ebd163eef8bd02a84",
-      "encoded_sha256": "9291db3b08be22bbbbfe4f9810d60e86ee47ab7b68a3461636f51ee7682dfe72"
-    },
-    {
-      "source": "asset_library/production/runtime-f1098496aaff817499feb29a61658dd24105149b4ee9d046565f243c948d0828.webp",
-      "target": "res/stage_mist_v3-region-15-mid.png",
-      "original_source": "asset_library/reference/Resources/res/stage_mist_v3/region-15-mid.png",
-      "encoding": "webp-lossless",
-      "rgba_sha256": "78d2726e784663e1de9618439c84b5256ba832615ff61737a959d435570e4424",
-      "original_sha256": "18fc174164e4b1e4c00e696e1b25dd8c604ebedb621beee05ba447f9244d52ca",
-      "encoded_sha256": "76e8924e560ad6e7dcf2e539e2d959c53dc53b38618b4dce43218491d8fbbe6c"
     },
     {
       "source": "asset_library/production/runtime-4615a69c9f6d7fc24aad94246c8a415f89cbda8517a1fdcdc5f92ca982f83279.webp",
