@@ -6,6 +6,7 @@
 #include "Config/ShopConfig.h"
 #include "Data/MergeTreeData.h"
 #include "BoardModel.h"
+#include "QuietCardStyle.h"
 void DrawCastleMenuBackdrop(int,int,int,int,int);
 void DrawHeroCastleBackdrop(int,int,int,int,int);
 void DrawMenuBackdropCrop(cocos2d::Texture2D*,int,int,int,int,int,int,int,int);
@@ -5557,6 +5558,20 @@ int GetCrewInventoryIdx(int type)
 	return false;
 }
 // 최종 그리기 함수
+static void DrawOwnedCardBar(int,int,int,int,long long,long long,int);
+static void DrawCompactCrewCard(ITEM* it,int x,int top,float zoom,int command){
+ const int width=(int)(124*zoom),height=(int)(180*zoom),star=GetItemStar(it->type,it->detail,it->grade);
+ DrawQuietCardFrame(x,top,width,height,star);
+ DrawStar(ICON_STAR,x+width/2,top-18*zoom,star,star,star,CENTER,false,.6f*zoom);
+ const int type=crewData[it->detail*CREWDATASIZE+CREWDATA_TYPE],cmf=enemyData[type*ENEMYDATASIZE+ENEMYDATA_CMF];
+ DrawCmfDetailShadow(cmf,crewPos[type*5],x+width/2,top-122*zoom,RIGHT,enemyZoom[type]*2.2f*CARDDEFAULTZOOM*zoom);
+ const char* name=textId[TEXT_MONSTERNAME_START+type];SetFontColor(COLOR_WHITE);
+ CenterTextStrSolid(name,x+width/2,top-126*zoom,Min(.56f*zoom,(width-8)/Max(1.f,StringWidth(name,1.f))));
+ ITEM level=*it;if(level.lv<1)level.lv=1;
+ DrawOwnedCardBar(x+6*zoom,top-153*zoom,width-12*zoom,20*zoom,it->count,GetCrewUpgradeCost(&level,0),star);
+ if(command)SetRectPoint(x,top,width,height,command);
+}
+
 void CrewMenuDraw(int x, int y, float zoom)
 {
  if(drawHandle==MD_LOBBY)y=DY-(GNBHEIGHT-GNB_INIT_HEIGHT)-LOBBY_BAR_H-3*_2X;
@@ -5594,10 +5609,10 @@ void CrewMenuDraw(int x, int y, float zoom)
 		int col = i % INVENTORY_COL_CNT;
 		int row = i / INVENTORY_COL_CNT;
 
-		int cardX = x + (float)(INVENTORY_X + INVENTORY_GAP_X * col) * zoom;
-		int cardY = y - (float)(72 + (CREW_GAP_Y) * row - scY[MENU_CREW]) * zoom;
+		int cardX = x + (float)(INVENTORY_X + 10 + INVENTORY_GAP_X * col) * zoom;
+		int cardY = y - (float)(72 + 190 * row - scY[MENU_CREW]) * zoom;
 		// Keep the complete list for scrolling, but do not build offscreen cards.
-		const float cardHeight=400*CARDDEFAULTZOOM*zoom;
+		const float cardHeight=180*zoom;
 		if(cardY+32*zoom<clipY2||cardY-cardHeight>clipY+32*zoom)continue;
 
 		itemType = robin.inven[itemInvenIdxList[i]].type;
@@ -5606,34 +5621,17 @@ void CrewMenuDraw(int x, int y, float zoom)
 		itemLv = robin.inven[itemInvenIdxList[i]].lv;
 		itemCnt = robin.inven[itemInvenIdxList[i]].count;
 		
-		DrawItemCard(
-			itemType,
-			itemDetail,
-			itemGrade,
-			itemLv,
-			itemCnt,
-			false,
-			cardX,
-			cardY,
-			itemLv == 0 ? TEXT_NOTACQUIRED : TEXT_EQUIP,
-			CARDDEFAULTZOOM* zoom,
-			false,
-			false,
-			menuDepth == 0 ? TOUCH_FUNC_ITEMDETAIL + itemInvenIdxList[i] : false,
-			//itemLv > 0 ? TOUCH_FUNC_EQUIP_INVENTORY + itemInvenIdxList[i] : false,
-			//menuDepth == 0 ? TOUCH_FUNC_ITEMDETAIL + itemInvenIdxList[i] + i : false,
-			false,
-			0);
+		DrawCompactCrewCard(&robin.inven[itemInvenIdxList[i]],cardX,cardY,zoom,menuDepth==0?TOUCH_FUNC_ITEMDETAIL+itemInvenIdxList[i]:0);
 
 		//튜토리얼: 새로 얻은 동료 카드만 밝게 남기고 나머지를 어둡게 덮는다.
 		//사각형은 DrawItemCard()가 카드 터치영역으로 등록하는 것과 같은 값이다.
 		if (GetTutorialCrewCardTouchFunc() == TOUCH_FUNC_ITEMDETAIL + itemInvenIdxList[i]) {
 			int itemStar = GetItemStar(itemType, itemDetail, itemGrade);
 			float cardZoom = CARDDEFAULTZOOM * zoom;
-			float rx = cardX + (float)equipBgData[(itemStar - 1) * 6 + 4] * cardZoom;
-			float ry = cardY - (float)equipBgData[(itemStar - 1) * 6 + 5] * cardZoom;
-			float rw = (float)equipBgData[(itemStar - 1) * 6 + 0] * cardZoom;
-			float rh = (float)equipBgData[(itemStar - 1) * 6 + 1] * cardZoom;
+			float rx = (float)cardX;
+			float ry = (float)cardY;
+			float rw = 124*zoom;
+			float rh = 180*zoom;
 			float pulse = 1.0f + sinf((float)frame * 0.1f) * 0.06f;
 
 			//손은 카드 한가운데에, 크게.
@@ -5655,7 +5653,7 @@ void CrewMenuDraw(int x, int y, float zoom)
 	}
 
 	int scrollH = WINY - (float)92 * zoom;
- scT[MENU_CREW]=Max(0,((j+3)/4)*CREW_GAP_Y*zoom-scrollH);
+ scT[MENU_CREW]=Max(0,((j+3)/4)*190*zoom-scrollH);
  scY[MENU_CREW]=Min(scT[MENU_CREW],Max(0,scY[MENU_CREW]));
 
 	DrawScroll(
@@ -5751,6 +5749,18 @@ void DrawButton(int x, int y, int color, int size, int icon, int text, bool ani,
 		SetFontColor(COLOR_WHITE);
 		CenterText(text, x + (float)buttonImgData[color * 5 + 0] / 2 * zoomX, y - (float)3 * _2X * zoom, 1.2f * zoom);
 	}
+}
+
+// Ownership stays visible even when cards have no decorative background.
+static void DrawOwnedCardBar(int x,int top,int width,int height,long long owned,long long needed,int rank){
+ if(width<8||height<4)return;
+ const int color=QuietCard::Color(rank);
+ MemRect(x,top,width,height,0x15232D);
+ const int fill=needed>0?(int)((width-2)*Min(1.0,Max(0.0,owned/(double)needed))):(owned>0?width-2:0);
+ if(fill>0)MemRect(x+1,top-1,fill,height-2,0x305A61);
+ MemRectFrame(x,top,width,height,color);
+ char label[64];if(needed>0)snprintf(label,sizeof(label),"%lld / %lld",owned,needed);else snprintf(label,sizeof(label),"x%lld",owned);
+ SetFontColor(COLOR_WHITE);CenterTextStrSolid(label,x+width/2,top+5,Min(.36f,(width-6)/Max(1.f,StringWidth(label,1.f))));
 }
 
 void DrawItemCardBack(
@@ -6464,6 +6474,7 @@ static void DrawInvenSlot(int invenIdx, int x, int y, int w, int h, float zoom)
  const int star=Max(1,Min(6,GetItemStar(it->type,it->detail,it->grade)));
  DrawQuietCardFrame(x,y,w,h,grade+1,wearer>=0);
  DrawStar(ICON_STAR,x+w/2,y-12,star,star,star,CENTER,false,Min(.55f,w/240.f));
+ DrawOwnedCardBar(x+6,y-h+28,w-12,20,GetItemCount(it->type,it->detail,it->grade),grade<TOTALGRADE-1?ITEM_MERGE_COUNT:0,grade+1);
 
 
 	//착용 중인 것은 테두리를 한 겹 더 두른다. 같은 장비가 여럿이라
@@ -6471,9 +6482,9 @@ static void DrawInvenSlot(int invenIdx, int x, int y, int w, int h, float zoom)
 	// Selected/equipped items use the same rounded frame as the other menus.
 
  const bool weapon=it->type>=ITEM_SWORD&&it->type<=ITEM_BOOMERANG;
- const float iconZoom=Min(zoom*(weapon?1.3f:1.f),Min(w*.76f,h*.65f)/ITEMICONSIZE);
+ const float iconZoom=Min(zoom*(weapon?1.3f:1.f),Min(w*.76f,(h-36.f)*.9f)/ITEMICONSIZE);
 	DrawIcon(GetItemIcon(it->type, it->detail, it->grade),
-		x + w / 2 - ITEMICONSIZE * iconZoom / 2, y - h / 2 + ITEMICONSIZE * iconZoom / 2,
+		x + w / 2 - ITEMICONSIZE * iconZoom / 2, y - (h-18) / 2 + ITEMICONSIZE * iconZoom / 2,
 		iconZoom, false, false, weapon, true);
 
 	//강화 레벨. 장비는 cooldown 칸에 들어간다(ITEM 주석 참고).

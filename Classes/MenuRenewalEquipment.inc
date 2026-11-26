@@ -45,19 +45,20 @@ static void RenewalCrewDraw(){
  Tabs(top-preview-86);
  std::vector<int> items(GetMaxInven());int count=0;
  for(int i=0;i<GetMaxInven();++i)if(robin.inven[i].type==ITEM_CREW)items[count++]=i;
- const int cols=4,pitchX=(DX-32)/cols,cell=pitchX-8,rowH=120,height=Max(1,listTop-EquipmentV2::Bottom());
+ const int cols=4,pitchX=(DX-32)/cols,cell=pitchX-28,rowH=128,height=Max(1,listTop-EquipmentV2::Bottom());
  scT[MENU_CREW]=Max(0,((count+cols-1)/cols)*rowH-height);scY[MENU_CREW]=Min(scT[MENU_CREW],Max(0,scY[MENU_CREW]));
  SetSectionClip(16,listTop,DX-32,height,false);
  for(int i=0;i<count;++i){
-  const int x=16+(i%cols)*pitchX,y=listTop-(i/cols)*rowH+scY[MENU_CREW];if(y<EquipmentV2::Bottom()||y-rowH>listTop)continue;
+  const int x=26+(i%cols)*pitchX,y=listTop-(i/cols)*rowH+scY[MENU_CREW];if(y<EquipmentV2::Bottom()||y-rowH>listTop)continue;
   const auto& it=robin.inven[items[i]];
   bool equipped=false;for(int n=0;n<MAXCREW;++n)equipped|=robin.slotCrew[n]>=0&&GetCrewInventoryIdx(robin.slotCrew[n])==items[i];
   DrawQuietCardFrame(x,y,cell,rowH-8,GetItemStar(it.type,it.detail,it.grade),equipped);
-  CrewPortrait(it.detail,x+cell*34/100,y-78,62);
+  CrewPortrait(it.detail,x+cell/2,y-70,62);
   sprintf(text,"Lv.%d",it.lv);SetFontColor(0xF2E7CB);DrawTextStrSystem(text,x+cell-8,y-14,.6f,RIGHT,false);
   const int crewType=crewData[it.detail*CREWDATASIZE+CREWDATA_TYPE];
   const char* name=textId[TEXT_MONSTERNAME_START+crewType];
-  DrawTextStrSystem(name,x+cell/2,y-90,Min(.62f,(cell-14)/Max(1.f,StringWidth(name,1.f))),CENTER,false);
+  DrawTextStrSystem(name,x+cell/2,y-76,Min(.58f,(cell-14)/Max(1.f,StringWidth(name,1.f))),CENTER,false);
+  DrawOwnedCardBar(x+6,y-94,cell-12,20,it.count,GetCrewUpgradeCost(&robin.inven[items[i]],0),GetItemStar(it.type,it.detail,it.grade));
   if(equipped){SetFontColor(0xA7E5AC);DrawTextStrSystem("✓",x+6,y-4,.65f,LEFT,false);}
   if(menuDepth==0)SetRectPoint(x,y,cell,rowH-8,TOUCH_FUNC_ITEMDETAIL+items[i]);
  }

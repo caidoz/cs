@@ -141,7 +141,7 @@ static void EquipmentMenuV2Draw()
   items[j+1]=key;
  }
  const int cols=6, gap=8, cell=(DX-32-(cols-1)*gap)/cols, pitch=cell+gap,
-  cardHeight=(int)(332.f*cell/240),rowPitch=cardHeight+12,listBottom=Bottom()+74,height=Max(1,listTop-listBottom);
+  cardHeight=cell+22,rowPitch=cardHeight+10,listBottom=Bottom()+74,height=Max(1,listTop-listBottom);
  scT[MENU_COLLECTIONS]=Max(0,((count+cols-1)/cols)*rowPitch-height);
  scY[MENU_COLLECTIONS]=Min(scT[MENU_COLLECTIONS],Max(0,scY[MENU_COLLECTIONS]));
  SetSectionClip(16,listTop,DX-32,height,false);
