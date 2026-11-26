@@ -7,8 +7,8 @@ namespace StarterCastleRig {
 constexpr int W=112,H=96,PivotX=77,PivotY=48,CupX=23,CupY=31;
 constexpr int RockX=W*2+1,RockY=1,RockW=14,RockH=13;
 constexpr float RockScale=1.8f,RockDrawW=RockW*RockScale,RockDrawH=RockH*RockScale;
-constexpr int StoneDeckY=235,FixedBaseBottomY=84;
-constexpr int Wheel=50,BaseFromFloor=47,FootX=61;
+constexpr int StoneDeckY=142,FixedBaseBottomY=84;
+constexpr int Wheel=50,BaseFromFloor=36,FootX=61;
 // Far axle follows the chassis' receding right face and the second rail.
 constexpr int FarWheelDx=26,FarWheelDy=10;
 inline float angle(int age,int release=18){

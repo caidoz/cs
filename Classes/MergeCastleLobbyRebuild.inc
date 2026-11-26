@@ -148,20 +148,6 @@ float catapultAngle(int age,int release){
 void drawMountedPortraitGun(int img,const Box& b,const Box& hull,bool mirror,float recoil=0){
  if(!sprite[img])LoadImg(img);if(!sprite[img])return;
  const auto dim=sprite[img]->getTexture()->getContentSizeInPixels();
- if(img==PORTRAIT_TURRET_FIRST_IMG+18){
-  const float z=std::min(b.w/dim.width,b.h/dim.height);
-  const int cut=(int)std::ceil(dim.height*.68f),right=(int)std::ceil(dim.width*.72f);
-  const int shift=(int)((mirror?1:-1)*recoil);
-  // Show the original barrel and entire muzzle, hiding only the separate lower pedestal.
-  turretPart(img,0,0,(int)dim.width,cut,{b.x+shift,b.y,b.w,(int)(cut*z)},0,.5f,.5f,mirror);
-  const int muzzleX=mirror?b.x:b.x+(int)(right*z);
-  turretPart(img,right,cut,(int)dim.width-right,(int)dim.height-cut,
-   {muzzleX+shift,b.y-(int)(cut*z),(int)((dim.width-right)*z),(int)((dim.height-cut)*z)},0,.5f,.5f,mirror);
-  const auto& q=PortraitCastleArt::RoyalWallOcclusion;const float hz=hull.w/(float)PortraitCastleArt::Sizes[18].w;
-  const int x=mirror?hull.x+(int)((PortraitCastleArt::Sizes[18].w-q[0]-q[2])*hz):hull.x+(int)(q[0]*hz);
-  turretPart(PORTRAIT_CASTLE_FIRST_IMG+18,q[0],q[1],q[2],q[3],{x,hull.y-(int)(q[1]*hz),(int)(q[2]*hz),(int)(q[3]*hz)},0,.5f,.5f,mirror);
-  return;
- }
  const int split=(int)(dim.height*.72f);const float z=std::min(b.w/dim.width,b.h/dim.height);
  // Draw the whole mount in front of the near deck; barrel recoil is independent.
  turretPart(img,0,split,(int)dim.width,(int)dim.height-split,
@@ -399,10 +385,10 @@ void drawBattleCover(const Layout& l){
  UnSectionClip(false);measureFrontInner(l,c);
 }
 Box portraitHabitatBounds(int castle,const Box& hull){
- if(castle==0)return {hull.x+(int)(27*hull.w/256.f),hull.y-(int)(145*hull.h/294.f),(int)(151*hull.w/256.f),(int)(90*hull.h/294.f)};
+ if(castle==0)return {hull.x+(int)(15*hull.w/256.f),hull.y-(int)(85*hull.h/190.f),(int)(135*hull.w/256.f),(int)(72*hull.h/190.f)};
  return {hull.x+(int)(hull.w*.16f),hull.y-(int)(hull.h*.25f),(int)(hull.w*.62f),(int)(hull.h*.57f)};
 }
-int portraitHabitatFloors(int castle){return castle==0?2:std::max(2,std::min(5,PortraitCastleArt::Sizes[castle].h/180));}
+int portraitHabitatFloors(int castle){return castle==0?1:std::max(2,std::min(5,PortraitCastleArt::Sizes[castle].h/180));}
 void drawPortraitHabitatShell(int castle,const Box& hull){
  portraitImage(portraitHullImage(castle),hull);
  if(starterInteriorReveal<=0)return;
@@ -430,14 +416,14 @@ void drawPortraitStarterHull(const Box& hull,bool mirror){
  const bool forced=lobbyDepartureAge<0&&portraitHullImage(0)==PORTRAIT_STARTER_INTERIOR_IMG;
  const float reveal=forced?1.f:std::max(0.f,std::min(1.f,starterInteriorReveal));
  if(reveal<=0||reveal>=1){portraitImage(reveal>=1?PORTRAIT_STARTER_INTERIOR_IMG:PORTRAIT_CASTLE_FIRST_IMG,hull,mirror);return;}
- const float z=hull.w/256.f;const int shown=(int)(90*reveal);
+ const float z=hull.w/256.f;const int shown=(int)(72*reveal);
  auto piece=[&](int img,int x,int y,int w,int h){if(w<=0||h<=0)return;
   turretPart(img,x,y,w,h,{hull.x+(int)((mirror?256-x-w:x)*z),hull.y-(int)(y*z),(int)(w*z),(int)(h*z)},0,.5f,.5f,mirror);
  };
- piece(PORTRAIT_CASTLE_FIRST_IMG,0,0,256,145);piece(PORTRAIT_CASTLE_FIRST_IMG,0,235,256,59);
- piece(PORTRAIT_CASTLE_FIRST_IMG,0,145,27,90);piece(PORTRAIT_CASTLE_FIRST_IMG,178,145,78,90);
- piece(PORTRAIT_CASTLE_FIRST_IMG,27,145,151,90-shown);
- piece(PORTRAIT_STARTER_INTERIOR_IMG,27,235-shown,151,shown);
+ piece(PORTRAIT_CASTLE_FIRST_IMG,0,0,256,85);piece(PORTRAIT_CASTLE_FIRST_IMG,0,157,256,33);
+ piece(PORTRAIT_CASTLE_FIRST_IMG,0,85,15,72);piece(PORTRAIT_CASTLE_FIRST_IMG,150,85,106,72);
+ piece(PORTRAIT_CASTLE_FIRST_IMG,15,85,135,72-shown);
+ piece(PORTRAIT_STARTER_INTERIOR_IMG,15,157-shown,135,shown);
 }
 void drawCastleHull(const Layout& l,bool combat){
  (void)combat;const int c=std::max(0,std::min(18,siegeHullStage>=0?siegeHullStage:run.stage));

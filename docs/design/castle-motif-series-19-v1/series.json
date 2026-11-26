@@ -1,0 +1,351 @@
+{
+  "generator": "built-in image_gen",
+  "backup_head": "af7fbcdb",
+  "backup_index": "asset_library\\work\\castle-motif-series-20261126\\backup-before-motif-series\\backup-index.json",
+  "source_work": "asset_library\\work\\castle-motif-series-20261126",
+  "uniform_export": true,
+  "first_last_native": [
+    {
+      "width": 256,
+      "height": 190
+    },
+    {
+      "width": 323,
+      "height": 741
+    }
+  ],
+  "stages": [
+    {
+      "n": 1,
+      "name": "개척의 나무집",
+      "motif": "A tiny sapling carved directly into a plain wooden door lintel; humble origin, no badge.",
+      "architecture": "A SMALL habitable one-story rough timber cabin on a low wooden wagon bed. Plain uneven brown plank roof, one warm window, patched plank door, short visible right-front empty deck. No stone house or second story. Preserve native first-castle source canvas and lower floor, but leave transparent space at top after removing the flag.",
+      "accent": "matte warm brown wood, dull iron, a tiny muted leaf-green accent",
+      "width": 256,
+      "height": 190,
+      "deck": 47,
+      "source_stage": 1,
+      "source_bounds": [
+        19,
+        499,
+        1153,
+        1321
+      ]
+    },
+    {
+      "n": 2,
+      "name": "새싹 수비소",
+      "motif": "Small oak leaves and a root-shaped carved corner beam, actual wood carving rather than a glowing logo.",
+      "architecture": "Timber lower house and compact raised lookout, slightly taller than first. One supply alcove and a plain short balcony. Wooden dwelling on a quiet grey stone skirt.",
+      "accent": "warm brown wood, grey stone, muted green corner trim",
+      "width": 259,
+      "height": 329,
+      "deck": 57,
+      "source_stage": 2,
+      "source_bounds": [
+        11,
+        73,
+        1088,
+        1426
+      ]
+    },
+    {
+      "n": 3,
+      "name": "태양 사자 초소",
+      "motif": "One chunky original lion-face stone relief on the upper front lintel, with a few simple sun-ray cuts.",
+      "architecture": "Two connected stepped timber-and-stone volumes, lower storage hatch, taller lookout room. Functional little side terrace, no pyramid temple or sprawling town.",
+      "accent": "grey stone, warm timber, restrained turquoise and old brass",
+      "width": 262,
+      "height": 353,
+      "deck": 42,
+      "source_stage": 3,
+      "source_bounds": [
+        8,
+        67,
+        1053,
+        1460
+      ]
+    },
+    {
+      "n": 4,
+      "name": "닻의 변경 요새",
+      "motif": "A modest anchor-shaped iron brace built into one timber support; no pirate flag or heraldic shield.",
+      "architecture": "Broad low stone gatehouse, unequal upper timber watch rooms, recessed supply hoist. Same basic house-and-keep lineage, not a ship-shaped building.",
+      "accent": "warm grey stone, brown wood, muted charcoal and brass",
+      "width": 265,
+      "height": 377,
+      "deck": 32,
+      "source_stage": 4,
+      "source_bounds": [
+        8,
+        81,
+        1018,
+        1503
+      ]
+    },
+    {
+      "n": 5,
+      "name": "불새 주조성",
+      "motif": "A simple phoenix-wing bas-relief flanking the forge opening, using large geometric feather shapes.",
+      "architecture": "Heavy lower foundry block, upper inhabited keep, one compact glowing forge window, one stout chimney and short worker balcony. Thick stable lower mass.",
+      "accent": "dark grey stone, charcoal iron, small ember-orange light",
+      "width": 267,
+      "height": 447,
+      "deck": 35,
+      "source_stage": 7,
+      "source_bounds": [
+        3,
+        86,
+        934,
+        1632
+      ]
+    },
+    {
+      "n": 6,
+      "name": "서리 나무 성채",
+      "motif": "A leafless carved tree around a small icy-blue upper window and two sparse frost notches on stone corners.",
+      "architecture": "Vertical compact three-level keep, ordinary warm-lit doors, a sheltered workshop balcony. Stone walls remain grey, not an entire ice sculpture or snow mountain.",
+      "accent": "grey stone, dark wood, low-saturation icy slate-blue",
+      "width": 270,
+      "height": 459,
+      "deck": 44,
+      "source_stage": 5,
+      "source_bounds": [
+        15,
+        85,
+        922,
+        1613
+      ]
+    },
+    {
+      "n": 7,
+      "name": "청동 사자 공방",
+      "motif": "Original small lion relief inside one broad bronze gear housing, attached to a useful workshop winch.",
+      "architecture": "Taller tiered stone-and-timber stronghold with one bronze foundry chimney, upper living room, one recessed cargo hatch. Clear large volumes, not an all-metal factory.",
+      "accent": "grey stone, warm wood, muted copper-bronze",
+      "width": 273,
+      "height": 465,
+      "deck": 40,
+      "source_stage": 6,
+      "source_bounds": [
+        3,
+        65,
+        932,
+        1633
+      ]
+    },
+    {
+      "n": 8,
+      "name": "참나무 권양성",
+      "motif": "Root-shaped timber braces merging into a large working rope-winch frame, one small oak-leaf carving.",
+      "architecture": "Tall three-tier mixed timber-and-stone fortress, warehouse base and compact upper living gallery, one short recessed stair. Machinery gives character without horizontal expansion.",
+      "accent": "grey stone, desaturated oak, restrained bronze",
+      "width": 276,
+      "height": 483,
+      "deck": 33,
+      "source_stage": 8,
+      "source_bounds": [
+        5,
+        61,
+        929,
+        1664
+      ]
+    },
+    {
+      "n": 9,
+      "name": "수정 사자 성채",
+      "motif": "A compact stone lion head above a recessed violet-crystal power window; one bold carving rather than tiny filigree.",
+      "architecture": "Tall inhabited central stronghold and shorter offset service tower connected inside the hull width. Small warehouse loading door, workshop balcony and power bay.",
+      "accent": "grey stone, dark wood, muted violet crystals, dull brass",
+      "width": 279,
+      "height": 497,
+      "deck": 31,
+      "source_stage": 10,
+      "source_bounds": [
+        6,
+        113,
+        884,
+        1664
+      ]
+    },
+    {
+      "n": 10,
+      "name": "청룡 병참성",
+      "motif": "One stylized original dragon-head corner beam above a small gate; broad simple scale shapes only.",
+      "architecture": "Four stepped fortified floors with warehouse base, short service stairs, one covered work balcony and compact command roof. Strong ordinary-door scale.",
+      "accent": "warm grey stone, brown wood, muted jade and aged bronze",
+      "width": 282,
+      "height": 532,
+      "deck": 33,
+      "source_stage": 12,
+      "source_bounds": [
+        0,
+        250,
+        832,
+        1809
+      ]
+    },
+    {
+      "n": 11,
+      "name": "까마귀 비전성",
+      "motif": "Two small angular raven-head stone projections on a single upper lintel, never a forest of spikes.",
+      "architecture": "Stepped stone keep with a dark recessed arcane service bay, side habitation balcony, upper slate-roof room. Solid dimensional walls and a few ordinary warm windows.",
+      "accent": "warm grey stone, dark slate, restricted low-saturation violet",
+      "width": 284,
+      "height": 537,
+      "deck": 30,
+      "source_stage": 9,
+      "source_bounds": [
+        12,
+        35,
+        898,
+        1699
+      ]
+    },
+    {
+      "n": 12,
+      "name": "고목 수호성",
+      "motif": "Thick carved wood root supports embracing one stone doorway, one small living branch along a balcony; keep most wall area plain.",
+      "architecture": "Large vertical fortified settlement with lower logistics room, forge/repair alcove, timber living gallery and deep inset machinery chamber. Neither a giant treehouse nor a hollow tower.",
+      "accent": "grey stone, aged brown oak, muted leaf green",
+      "width": 287,
+      "height": 577,
+      "deck": 36,
+      "source_stage": 13,
+      "source_bounds": [
+        5,
+        168,
+        829,
+        1814
+      ]
+    },
+    {
+      "n": 13,
+      "name": "조개 수로성",
+      "motif": "A large simple scallop-shaped stone lintel and a shallow spiral water-channel carving, no shiny decorative shell palace.",
+      "architecture": "Vertical fortress with a recessed cooling cistern, upper residential gallery and compact water-driven service hoist. Architecture stays grounded stone and timber.",
+      "accent": "grey stone, warm wood, quiet sea-green and pale sand",
+      "width": 290,
+      "height": 589,
+      "deck": 39,
+      "source_stage": 11,
+      "source_bounds": [
+        12,
+        19,
+        875,
+        1760
+      ]
+    },
+    {
+      "n": 14,
+      "name": "태양 관측성",
+      "motif": "An original simple sun-disk and lion-sideprofile stone relief integrated into the command level's large lintel.",
+      "architecture": "Tall four-mass fortress with compact observatory room, short maintenance stair, work balcony and broad low supply hatch. No huge decorative telescope or crown-shaped roof.",
+      "accent": "grey stone, dark slate-blue roof caps, small warm brass accents",
+      "width": 293,
+      "height": 601,
+      "deck": 43,
+      "source_stage": 14,
+      "source_bounds": [
+        0,
+        171,
+        820,
+        1843
+      ]
+    },
+    {
+      "n": 15,
+      "name": "뇌목 동력성",
+      "motif": "Branch-shaped metal power conduits resembling a sacred oak, with one simple lightning-split trunk carving.",
+      "architecture": "Vertical industrial fortress with a deep central charging bay, one maintenance bridge inside the recess, strong upper living/command volumes and low warehouse hatches.",
+      "accent": "grey stone, dark steel, muted blue and small pale-cyan glow",
+      "width": 296,
+      "height": 633,
+      "deck": 48,
+      "source_stage": 16,
+      "source_bounds": [
+        2,
+        146,
+        797,
+        1835
+      ]
+    },
+    {
+      "n": 16,
+      "name": "홍염 불새 대성채",
+      "motif": "One paired phoenix-wing shoulder relief supporting the central keep; only a few bold stone feather cuts.",
+      "architecture": "Extremely heavy three-part vertical siege citadel, dark internal power bay, compact side forge, tiny maintenance doors, short service terraces. Human activity is embedded in immense machinery.",
+      "accent": "dark warm-grey stone, charcoal armor, muted crimson and ember light",
+      "width": 299,
+      "height": 647,
+      "deck": 45,
+      "source_stage": 17,
+      "source_bounds": [
+        8,
+        229,
+        781,
+        1892
+      ]
+    },
+    {
+      "n": 17,
+      "name": "별사슴 천문요새",
+      "motif": "A compact original stag-antler stone motif branching around one upper observation window, plus one quiet star-shaped masonry keystone.",
+      "architecture": "Near-final vertical fortress city of four stepped large volumes, lower logistics district, middle deep weapon bay, cargo elevator recessed into left wall and upper habitation gallery.",
+      "accent": "grey stone, dark slate-blue armor, restrained pale gold and cyan",
+      "width": 302,
+      "height": 698,
+      "deck": 34,
+      "source_stage": 18,
+      "source_bounds": [
+        6,
+        194,
+        770,
+        1949
+      ]
+    },
+    {
+      "n": 18,
+      "name": "적룡 공성성채",
+      "motif": "A single large carved dragon shoulder on one armored buttress, with a restrained red eye-like furnace slot.",
+      "architecture": "Monumental vertically inhabited keep with lower weapon-service chamber, middle residential gallery, recessed cargo lift and upper command block. THREE clear big masses, no horizontal wing.",
+      "accent": "warm grey stone, dark iron, limited desaturated burgundy",
+      "width": 304,
+      "height": 717,
+      "deck": 41,
+      "source_stage": 15,
+      "source_bounds": [
+        4,
+        9,
+        810,
+        1899
+      ]
+    },
+    {
+      "n": 19,
+      "name": "사자와 세계수의 거신성",
+      "motif": "An enormous original stone LION FACE integrated high in the armored central arch, broad ROOT-SHAPED structural buttresses and branch-like metal power conduits embracing the recessed reactor. These motifs are actual load-bearing architecture, not flags or heraldic logos.",
+      "architecture": "Legendary VERTICAL mobile fortress-city: broad low logistics block with ordinary small doors, immense central reactor/weapon chamber framed by angled armored shoulders, three clearly stepped upper inhabited/command masses. Useful cargo lift, forge balcony and maintenance bridge INSIDE the width. Great dimensional depth and human-scale openings; no giant palace front door, no thin spire. Simplify into large powerful masses that read at game resolution.",
+      "accent": "warm grey stone, charcoal steel, dull bronze structural plates, restricted pale-cyan core and warm amber windows",
+      "width": 323,
+      "height": 741,
+      "deck": 35,
+      "source_stage": 19,
+      "source_bounds": [
+        3,
+        176,
+        781,
+        1952
+      ]
+    }
+  ],
+  "native_review": {
+    "ratios": [
+      "1:1.33",
+      "1:2.2"
+    ],
+    "lobby_and_battle_captures": 76,
+    "catapult_and_departure_captures": 22,
+    "castle_menu_upgrade_and_scroll": "passed both ratios"
+  }
+}

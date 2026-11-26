@@ -1,3 +1,4 @@
+int motifReviewStage=0;
 bool portraitReviewEnabled(){return review&&std::getenv("CS_PORTRAIT_REVIEW");}
 void portraitReviewFixture(){
  if(!portraitReviewEnabled())return;static bool initialized=false;if(initialized)return;initialized=true;
@@ -43,6 +44,26 @@ void portraitReviewFixture(){
 }
 bool portraitReviewLobby(){
  if(!portraitReviewEnabled()||!std::getenv("CS_PORTRAIT_LOBBY"))return false;
+ if(std::getenv("CS_MOTIF_SERIES_REVIEW")){
+  if(reviewCapturePending)return true;
+  if(motifReviewStage<19){
+   run.stage=robin.castle=gMobileCastleVisual=motifReviewStage;
+   robin.castleProgress.version=3;robin.castleProgress.owned=(1u<<(motifReviewStage+1))-1;
+   active=false;drawHandle=MD_LOBBY;starterInteriorReveal=0;titleLobbyClock=-1;
+   MergeRouletteLobbySceneDraw();
+   char name[48];std::snprintf(name,sizeof(name),"motif-lobby-%02d",motifReviewStage+1);reviewCapture(name);
+   const auto size=portraitHullSize(motifReviewStage);const Box body=portraitCastleBox(layout());
+   const Box gun=castleCannonBox(layout());const float z=portraitCastleZoom(layout());
+   const bool aspect=std::abs(body.w*size.h-body.h*size.w)<=size.h;
+   const int axle=body.x+(int)(body.w*PortraitCastleArt::FrontWheelAt(motifReviewStage));
+   const bool mount=std::abs(gun.x+(int)(portraitCannonFootX(motifReviewStage)*z)-axle)<=1;
+   reviewTrace(aspect&&mount?"PASS motif native aspect and shared front-wheel turret socket":"FAIL motif assembly");
+   ++motifReviewStage;active=true;drawHandle=MD_PLAY;return true;
+  }
+  if(motifReviewStage>=38)return true;
+  run.stage=motifReviewStage-19;run.shape=BattleShape(run.stage);portraitCameraY=0;
+  active=true;drawHandle=MD_PLAY;return false;
+ }
  if(std::getenv("CS_BASE_CAMP_REVIEW")){
   static int phase=0,startTick=0;static float startX=0,startZoom=0,startTravel=0;static bool travelCaptured=false;static long long paid=0;
   if(phase>=6)return false;if(reviewCapturePending)return true;
@@ -231,6 +252,15 @@ bool portraitReviewLobby(){
 bool portraitReviewStep(const Layout& l){
  if(!portraitReviewEnabled())return false;static int hold=0;static bool done=false;if(done)return true;
  if(reviewCapturePending)return true;
+ if(std::getenv("CS_MOTIF_SERIES_REVIEW")){
+  char name[48];std::snprintf(name,sizeof(name),"motif-battle-%02d",run.stage+1);reviewCapture(name);
+  const Box hull=portraitCastleBox(l),gun=castleCannonBox(l);const auto size=portraitHullSize(run.stage);
+  const bool aspect=std::abs(hull.w*size.h-hull.h*size.w)<=size.h;
+  const bool visible=std::min(gun.y,(int)(DY-78*l.scale))-std::max(gun.y-gun.h,l.arenaBottom)>16*l.scale;
+  reviewTrace(aspect&&visible?"PASS motif battle keeps aspect and visible weapon above board":"FAIL motif battle clipping");
+  if(++motifReviewStage==38)reviewTrace("DONE motif series review");
+  return true;
+ }
  if(std::getenv("CS_GRID_RARITY_REVIEW")){
   static int phase=0;if(phase++==2){reviewCapture("grid-rarity");
    for(const auto& b:run.board){const Box box=blockBox(b,l);char line[120];std::snprintf(line,sizeof(line),"RIM %d %06X %d %d",gridRarity(b),QuietCard::Color(gridRarity(b)),box.x+1,DY-box.y+5);reviewTrace(line);}
