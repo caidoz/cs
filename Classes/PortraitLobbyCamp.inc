@@ -46,6 +46,7 @@ void captureLobbyDeparture(){
  starterInteriorReveal=1;
 }
 bool campRoomClip(const Layout& l,Box& room,int slot){
+ if(run.stage!=0)return false;
  const int c=std::max(0,std::min(18,run.stage));const Box window=portraitHabitatBounds(c,portraitCastleBox(l));const int floors=portraitHabitatFloors(c);
  const int floor=slot%floors,rank=slot/floors;
  room={window.x+(int)(window.w*(rank%2?.62f:.30f)),window.y-(floor+1)*window.h/floors+(int)(5*l.scale),window.w,window.h/floors};
@@ -71,7 +72,7 @@ void drawPortraitLobbyCamp(const Layout& l){
  if(active||nativeTitleIsolate||siegeActive)return;
  const auto selected=LobbyCamp::highestOwned(portraitCampOwned());const float s=l.scale;const Box hull=portraitCastleBox(l);
  const float foot=l.ground+20*s;const bool departing=lobbyDepartureAge>=0;
- const int indoor=selected.size()>=2?1:0;
+ const int indoor=run.stage==0&&selected.size()>=2?1:0;
  const int cx=clipX,cy=clipY,cx2=clipX2,cy2=clipY2;
  auto restore=[&](){clipX=cx;clipY=cy;clipX2=cx2;clipY2=cy2;};
  if(titleCampOnly){

@@ -391,6 +391,9 @@ Box portraitHabitatBounds(int castle,const Box& hull){
 int portraitHabitatFloors(int castle){return castle==0?1:std::max(2,std::min(5,PortraitCastleArt::Sizes[castle].h/180));}
 void drawPortraitHabitatShell(int castle,const Box& hull){
  portraitImage(portraitHullImage(castle),hull);
+ // Only the starter has a registered cutaway for the current exterior series.
+ // Legacy rectangular rooms belong to the previous hulls, not these facades.
+ if(castle!=0)return;
  if(starterInteriorReveal<=0)return;
  const Box b=portraitHabitatBounds(castle,hull);const int floors=portraitHabitatFloors(castle);
  const int cx=clipX,cy=clipY,cx2=clipX2,cy2=clipY2;
