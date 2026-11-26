@@ -51,7 +51,10 @@ void frame(int x,int top,int w,int h,int func,bool on,bool enabled,const UiButto
  const int alpha=m_lgrpAlpha,color=baseColor;
  SetAlpha(ALPHA_MAX);SetColor(0);
  if(style.frame)style.frame(x,top,w,h,enabled,style.fill);
- else DrawUiGoldFrame(x,top,w,h,enabled,on?blend(style.fill,0x000000,.3f):style.fill);   //기본 틀 = 금테(2026-11-23 통일)
+ else if(LobbySectionOwnsPopups()){
+  bevel(x,top,w,h,on?0xA69A75:enabled?0x48606A:0x2B343B,4);
+  bevel(x+1,top-1,w-2,h-2,on?0x1C2E36:0x0F1D27,3);
+ }else DrawUiGoldFrame(x,top,w,h,enabled,on?blend(style.fill,0x000000,.3f):style.fill);   //기본 틀 = 금테(2026-11-23 통일)
  if(func&&enabled)SetRectPoint(x,top,w,h,func);
  SetAlpha(alpha);SetColor(color);
 }

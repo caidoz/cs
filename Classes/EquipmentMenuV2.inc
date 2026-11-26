@@ -102,7 +102,7 @@ static void EquipmentMenuV2Draw()
   const ITEM& it=hero->equip[i];
   const bool valid=it.type>=0 && it.type<=ITEM_RING && itemEquipSlot[it.type]==i && EquipCheck(hero,const_cast<ITEM*>(&it));
   const int border=valid?InvenCardBorderColor(it):menuX==i?0xEDBB58:0x43859B;
-  DrawMenuReferencePanel(sx,sy,slot,slot,0,menuX==i?0x205363:0x102638,border);
+  DrawQuietCardFrame(sx,sy,slot,slot,valid?it.grade+1:1,menuX==i);
   if(valid){
    float z=1.0f;
    DrawIcon(GetItemIcon(it.type,it.detail,it.grade),sx+slot/2-ITEMICONSIZE*z/2,sy-slot/2+ITEMICONSIZE*z/2,z,false,false,false,true);

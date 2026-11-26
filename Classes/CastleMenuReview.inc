@@ -21,10 +21,12 @@ static void CastleReviewClick(int command) {
 #include "CastleFourFacilityReview.inc"
 #include "CastleUpgradeBlockReview.inc"
 #include "MenuSceneReview.inc"
+#include "QuietMenuReview.inc"
 static void CastleMenuReviewStep()
 {
     const char* path = getenv("CS_CASTLE_REVIEW_PATH");
     if (!path) return;
+    if(QuietMenuReview(path))return;
     if(getenv("CS_CASTLE_DEBUG_SELECTION_REVIEW")){
         static int tick=0;static bool pending=false;if(pending)return;++tick;
         static CastleMenuModel::Progress saved;

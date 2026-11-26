@@ -52,7 +52,7 @@ static void RenewalCrewDraw(){
   const int x=16+(i%cols)*pitchX,y=listTop-(i/cols)*rowH+scY[MENU_CREW];if(y<EquipmentV2::Bottom()||y-rowH>listTop)continue;
   const auto& it=robin.inven[items[i]];
   bool equipped=false;for(int n=0;n<MAXCREW;++n)equipped|=robin.slotCrew[n]>=0&&GetCrewInventoryIdx(robin.slotCrew[n])==items[i];
-  DrawPixelPanel(x,y,cell,rowH-8,0x152D37,equipped?0xC5A269:0x65827F);
+  DrawQuietCardFrame(x,y,cell,rowH-8,GetItemStar(it.type,it.detail,it.grade),equipped);
   CrewPortrait(it.detail,x+cell*34/100,y-78,62);
   sprintf(text,"Lv.%d",it.lv);SetFontColor(0xF2E7CB);DrawTextStrSystem(text,x+cell-8,y-14,.6f,RIGHT,false);
   const int crewType=crewData[it.detail*CREWDATASIZE+CREWDATA_TYPE];

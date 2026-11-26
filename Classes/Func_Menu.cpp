@@ -5760,72 +5760,9 @@ void DrawItemCardBack(
 	float zoom,
 	int backFrame)
 {
-	const int CARD_BACK_W = 240;
-	const int CARD_BACK_H = 332;
-	const int CARD_BACK_COL = 4;
-
-	int frameIdx =
-		backFrame - 1;
-
-	int xs =
-		(frameIdx % CARD_BACK_COL) *
-		CARD_BACK_W;
-
-	int ys =
-		(frameIdx / CARD_BACK_COL) *
-		CARD_BACK_H;
-
-	float frontX =
-		x +
-		(float)equipBgData[
-			(itemStar - 1) * 6 + 4
-		] * zoom;
-
-	float frontY =
-		y -
-		(float)equipBgData[
-			(itemStar - 1) * 6 + 5
-		] * zoom;
-
-	float frontW =
-		(float)equipBgData[
-			(itemStar - 1) * 6 + 0
-		] * zoom;
-
-	float frontH =
-		(float)equipBgData[
-			(itemStar - 1) * 6 + 1
-		] * zoom;
-
-	float scaleX =
-		frontW /
-		(float)CARD_BACK_W;
-
-	float scaleY =
-		frontH /
-		(float)CARD_BACK_H;
-
-	DrawImageScale(
-		CARD_BACK_W,
-		CARD_BACK_H,
-		xs,
-		ys,
-
-		frontX,
-		frontY,
-
-		false,
-		false,
-		false,
-		false,
-		false,
-
-		scaleX,
-		scaleY,
-
-		sprite[CARDBACK_IMG],
-
-		CARDBACK_IMG);
+ DrawQuietCardFrame(x,y,(int)(240*zoom),(int)(332*zoom),itemStar);
+ SetFontColor(0xA7ADB1);CenterTextStrSolid("?",x+(int)(120*zoom),y-(int)(152*zoom),1.4f*zoom);
+ (void)backFrame;
 }
 
 void DrawItemCard(
@@ -5848,7 +5785,7 @@ void DrawItemCard(
 	int i;
 	int itemStar = 1;
 	int invenIdx = 0;
-	int bgIndex = crewData[itemDetail * CREWDATASIZE + CREWDATA_CARDBG];
+
 
 
 	//--------------------------------------------------------
@@ -5875,46 +5812,9 @@ void DrawItemCard(
 
 	invenIdx = GetInvenIdx(itemType, itemDetail, itemGrade);
 
-	{
-	DrawImageScale(
-		198,
-		288,
-		198 * (bgIndex % 5),
-		288 * (bgIndex / 5),
-		x + (float)18 * zoom,
-		y - (float)22 * zoom,
-		false, false, false, false, false,
-		1.02f * zoom,
-		zoom,
-		sprite[CARDBG_IMG],
-		CARDBG_IMG);
-
-	DrawImageScale(
-		equipBgData[(itemStar - 1) * 6 + 0],
-		equipBgData[(itemStar - 1) * 6 + 1],
-		equipBgData[(itemStar - 1) * 6 + 2],
-		equipBgData[(itemStar - 1) * 6 + 3],
-		x + (float)equipBgData[(itemStar - 1) * 6 + 4] * zoom,
-		y - (float)equipBgData[(itemStar - 1) * 6 + 5] * zoom,
-		false, false, false, false, false,
-		zoom,
-		zoom,
-		sprite[CARD_IMG],
-		CARD_IMG);
-
-	}
+ DrawQuietCardFrame(x,y,(int)(240*zoom),(int)(332*zoom),itemType==ITEM_CREW?itemStar:itemGrade+1,selectedFrame!=0);
 
 	SetColor(false);
-
-	if (selectedFrame) {
-		MemRectFrameThick(
-			x + (float)equipBgData[(itemStar - 1) * 6 + 4] * zoom,
-			y - (float)(equipBgData[(itemStar - 1) * 6 + 5] + 8) * zoom,
-			equipBgData[(itemStar - 1) * 6 + 0] * zoom,
-			(equipBgData[(itemStar - 1) * 6 + 1] - 8) * zoom,
-			selectedFrame,
-			1 * _2X);
-	}
 
 	if (empty) {
 		//카드 한가운데에 오도록 왼쪽 4픽셀, 아래 8픽셀 밀어준다(y는 위로 갈수록 커진다).
@@ -5993,25 +5893,12 @@ void DrawItemCard(
 			//memset(&tempStr, 0, sizeof(tempStr));
 			//sprintf(tempStr, "LV %d", itemLv);
 
-			if(PixelEquipmentUi()) DrawPixelPanel((int)(x+24*zoom),(int)(y-268*zoom),(int)(200*zoom),(int)(46*zoom),0x205363);
-			else DrawImageScale(222, 46, 0, 664 + 46 * (itemStar - 1), x + (float)24 * zoom, y - (float)(268) * zoom, false, false, false, false, false, 0.9f * zoom, 0.9f * zoom, sprite[CARD_IMG], CARD_IMG);
 			memset(&tempStr, 0, sizeof(tempStr));
 			sprintf(tempStr, "%d/%d", robin.inven[invenIdx].count, upgradeCostCrew[itemStar - 1][itemLv * 2 + 0]);
 
 			SetFontColor(COLOR_WHITE);
 			CenterTextStr(tempStr, x + (float)120 * zoom, y - (float)(268 + 4) * zoom, 1.3f * zoom);
 
-			float yScale = 1.05f + 0.35f * sinf(frame * 0.18f - 1.57f);
-
-			if (robin.inven[invenIdx].count < upgradeCostCrew[itemStar - 1][itemLv * 2 + 0])
-				yScale = 1.0f;
-
-			SetColor(COLOR_BLACK);
-			for (i = 0; i < 4; i++) {
-				DrawImageScale(56, 70, 223 + (itemStar - 1) * 56, 731, x + (float)4 * _2X * zoom + (float)solidPosition[2 * i + 0] * 1 * _2X * zoom, y - (float)(174 - 55 * 0.5f * yScale) / 0.55f * zoom + (float)solidPosition[2 * i + 1] * 1 * _2X * zoom, false, false, false, false, false, 0.7f * zoom, 0.6f * yScale * zoom, sprite[CARD_IMG], CARD_IMG);
-			}
-			SetColor(false);
-			DrawImageScale(56, 70, 223 + (itemStar - 1) * 56, 731, x + (float)4 * _2X * zoom, y - (float)(174 - 55 * 0.5f * yScale) / 0.55f * zoom, false, false, false, false, false, 0.7f * zoom, 0.6f * yScale * zoom, sprite[CARD_IMG], CARD_IMG);
 
 		}
 
@@ -6574,17 +6461,8 @@ static void DrawInvenSlot(int invenIdx, int x, int y, int w, int h, float zoom)
 	const int wearer = InvenEquippedBy(invenIdx);
 	char str[24];
 
-	//바탕은 단색. 등급이 높을수록 아주 조금만 밝다.
-	static const int tileFill[]={0x13383E,0x243E40,0x343147,0x4B354C,0x51422C,0x51422C};
  const int star=Max(1,Min(6,GetItemStar(it->type,it->detail,it->grade)));
- const int* f=&equipBgData[(star-1)*6];
- // The frame texture is transparent: submit the native card illustration first.
- if(!sprite[CARDBG_IMG])LoadImg(CARDBG_IMG);
- const int bg=crewData[it->detail*CREWDATASIZE+CREWDATA_CARDBG];
- DrawMenuBackdropCrop(sprite[CARDBG_IMG]->getTexture(),198*(bg%5),288*(bg/5),198,288,
-  x+w*18/240,y-h*22/332,(int)(198*w*1.02f/240.f),(int)(288*h/332.f));
- DrawImageScale(f[0],f[1],f[2],f[3],x,y,false,false,false,false,false,
-  w/(float)f[0],h/(float)f[1],sprite[CARD_IMG],CARD_IMG);
+ DrawQuietCardFrame(x,y,w,h,grade+1,wearer>=0);
  DrawStar(ICON_STAR,x+w/2,y-12,star,star,star,CENTER,false,Min(.55f,w/240.f));
 
 
@@ -7454,7 +7332,7 @@ static void DrawShopGemBundle(int tier,int x,int top,int size){
 }
 static const char* ShopProductName(int product)
 {
-	static const char* gemName[]={"보석 1,000","보석 2,200","보석 6,000","보석 25,000","보석 65,000","보석 140,000"};
+	static const char* gemName[]={"다이아 1,000","다이아 2,200","다이아 6,000","다이아 25,000","다이아 65,000","다이아 140,000"};
 	if(product>=IAP_COIN_01&&product<=IAP_COIN_06)return gemName[product-IAP_COIN_01];
 	static const char* rainbowName[6] = {
 		"레인보우 코인 60", "레인보우 코인 180", "레인보우 코인 600",
@@ -7480,12 +7358,12 @@ static void ShopRibbon(const char* title, float cx, float y, float w, float zoom
 //동료 상세보기와 같은 프레임 계열을 사용하는 구매 확인창.
 static void DrawTreasurePrice(int detail,int cx,int top,int width){
  const long long price=GetBoxPrice(detail,GRADE_NORMAL);
- if(!ShopTreasure::UsesGems(detail-BOX_PAID0)){DrawGoldAmount(price,cx,top,width);return;}
- char number[32];sprintf(number,"%lld",price);const float z=.92f;
- const int rowW=32+8+(int)StringWidth(number,z),left=cx-rowW/2;
- //보석값 상자도 캐시로 산다. 그 표식은 다이아 하나로 통일한다.
- DrawIcon(ITEM_PREMIUM_DIAMOND_ICON,left,top,64.0f*.5f/ITEMICONSIZE,false,false,false,true);
- SetFontColor(0xF6EACA);DrawTextStrSystem(number,left+40,top-4,z,LEFT,false);
+ const bool gems=ShopTreasure::UsesGems(detail-BOX_PAID0);
+ char number[32];snprintf(number,sizeof(number),"%lld",price);
+ const float z=Min(.88f,(width-34)/Max(1.f,StringWidth(number,1.f)));
+ const int rowW=30+(int)StringWidth(number,z),left=cx-rowW/2;
+ DrawIcon(gems?ITEM_PREMIUM_DIAMOND_ICON:ICON_GOLD,left,top-3,24.f/ITEMICONSIZE,0,false,false,true);
+ SetFontColor(0xE0D9C9);DrawTextStrSystem(number,left+30,top-4,z,LEFT,false);
 }
 namespace ShopRatesScroll {
  bool active=false;
@@ -7855,7 +7733,7 @@ static void ShopBoxCard(int i, float x, float y, float w, float h, float zoom)
  const float size=44,step=(w-40)/3;
  for(int k=0;k<3;++k){
   const int ix=(int)(x+20+step*k+(step-size)/2),iy=(int)(y-176);
-  DrawMenuReferencePanel(ix-4,iy+4,(int)size+8,(int)size+8,0,0x13353A,0xC9AF78);
+
   if(k==0){
    const int npc=crewData[CREWDATA_TYPE],cmf=enemyData[npc*ENEMYDATASIZE+ENEMYDATA_CMF];
    if(cmfLoaded[cmf]!=cmf)CmfRead(cmf,cmf);
@@ -7864,7 +7742,6 @@ static void ShopBoxCard(int i, float x, float y, float w, float h, float zoom)
    DrawCmfDetail(cmf,motion,ix+size/2,iy-size/2,RIGHT,scale,0,true);
   }else DrawIcon(icons[k],ix,iy,size/ITEMICONSIZE,0x070C20,false,false,true);
  }
- SetFontColor(0xD7ECE8);CenterTextStrSolid(u8"동료 · 장비 · 골드",x+w/2,y-229,.60f);
  const int by=(int)(y-h+46),priceW=(int)(w*.52f)-12,infoX=(int)(x+w*.52f),infoW=(int)(w*.48f)-12;
  DrawMenuReferencePanel((int)x+10,by,priceW,36,0,0x0D3037,0xDDB77D);
  DrawTreasurePrice(detail,(int)x+10+priceW/2,by-5,priceW-8);

@@ -116,18 +116,7 @@ void Draw(float x,float y,float w,float h,float zoom) {
    cy-=88;
   }
 
-  DrawMenuRoomBackdrop((int)x,cy,(int)w,112,0,0);
-  const int merchant=MENU_REFERENCE_SHOPKEEPER_IMG;if(!sprite[merchant])LoadImg(merchant);
-  if(sprite[merchant])DrawMenuBackdropCrop(sprite[merchant]->getTexture(),235,36,748,1135,(int)x+(int)w/5,cy-3,71,108);
-  // Reuse the lower counter pixels over the merchant so she stands behind it.
-  if(sprite[MENU_RENEWAL_ROOM_IMG]){
-   const auto sz=sprite[MENU_RENEWAL_ROOM_IMG]->getContentSize();const int strip=(int)sz.height/3;
-   const float cover=Max(w/sz.width,112.f/strip);const int sw=(int)(w/cover),sh=(int)(112/cover),cut=(int)(54/cover);
-   const int sx=((int)sz.width-sw)/2,sy=strip*2+(strip-sh)/2;
-   DrawMenuBackdropCrop(sprite[MENU_RENEWAL_ROOM_IMG]->getTexture(),sx,sy+cut,sw,sh-cut,(int)x+12,cy-54,(int)w-24,58);
-   SetAlpha(4);MemRect((int)x+12,cy-54,(int)w-24,58,0x092B30);SetAlpha(32);
-  }
-  cy-=88;
+  cy-=12;
 
   //---- 종합 상자 ----
   DrawMenuPlaque("보물상자",(int)x+inner/5,cy,inner*3/5,54,1.05f);cy-=68;
@@ -150,13 +139,13 @@ void Draw(float x,float y,float w,float h,float zoom) {
   //
   // Premium gems use the existing coin-product grants; gold is exchanged for gems.
   int shown=0;
-  DrawMenuPlaque("보석",(int)x+inner/6,cy,inner*2/3,48,.94f);cy-=62;
+  DrawMenuPlaque("다이아",(int)x+inner/6,cy,inner*2/3,48,.94f);cy-=62;
   const int columns=3,cardW=(inner-16)/columns,cardH=202,pitch=cardH+10;
   for(int i=IAP_COIN_01;i<=IAP_COIN_06;++i) {
    ShopCard(i,x+pad+(shown%columns)*(cardW+8),cy-(shown/columns)*pitch,cardW,cardH,1);++shown;++currencyCardsDrawn;
   }
   cy-=((shown+columns-1)/columns)*pitch+14;shown=0;
-  DrawMenuPlaque("골드 · 보석으로 구매",(int)x+inner/6,cy,inner*2/3,48,.94f);cy-=62;
+  DrawMenuPlaque("골드 · 다이아로 구매",(int)x+inner/6,cy,inner*2/3,48,.94f);cy-=62;
   for(int i=0;i<6;++i) {
    GoldCard(i,x+pad+(shown%columns)*(cardW+8),cy-(shown/columns)*pitch,cardW,cardH);++shown;++currencyCardsDrawn;
   }

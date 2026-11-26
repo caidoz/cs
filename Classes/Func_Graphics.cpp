@@ -13,6 +13,20 @@
 #include <unordered_map>
 #include <unordered_set>
 #include <sstream>
+#include "QuietCardStyle.h"
+void DrawQuietCardFrame(int x,int top,int w,int h,int rank,bool selected){
+ if(w<3||h<3)return;
+ const int color=QuietCard::Color(rank),p=Max(1,DX/640);
+ MemRectFrameThick(x,top,w,h,color,p);
+ // Discrete rank ticks supplement color without adding a decorated backdrop.
+ const int count=QuietCard::Rank(rank),tick=Max(2,Min(5,w/24));
+ for(int k=0;k<count;++k)MemRect(x+w-6*p-(k+1)*(tick+2*p),top-h+5*p,tick,2*p,color);
+ if(selected){
+  const int len=Min(12*p,Min(w,h)/4);
+  MemRect(x,top,len,2*p,0xE7E1CF);MemRect(x,top,2*p,len,0xE7E1CF);
+  MemRect(x+w-len,top-h+2*p,len,2*p,0xE7E1CF);MemRect(x+w-2*p,top-h+len,2*p,len,0xE7E1CF);
+ }
+}
 // Castle room/facade overlays share the registered body silhouette.
 #include "Data.h"
 #include "Data/SwordSprites.h"
@@ -33,7 +47,7 @@ static void ApplyRasterFilter(cocos2d::Sprite* s,int index) {
  const bool smooth=index==MENU_RENEWAL_ROOM_IMG||index==MENU_RENEWAL_DUNGEON_IMG||regional||IsAuthoredCastleImage(index)||(index>=HYBRID_PARTS_IMG && index<=HYBRID_FLEET_LAST_IMG) || index==TITLE_IMG ||
    (index>=LOBBY_NAV_SHOP_IMG && index<=LOBBY_NAV_DUNGEON_IMG);
  // Retouched grid equipment and held swords use the character sprite filter.
- if(smooth || index==TURRET_IRONBALL_IMG || (index>=ITEM_SERIES_FIRST_IMG&&index<=ITEM_SERIES_LAST_IMG))s->getTexture()->setAntiAliasTexParameters();else s->getTexture()->setAliasTexParameters();
+ if(smooth || (index>=BOX0_IMG&&index<=BOX32_IMG) || (index>=SHOP_GEM_BUNDLE_FIRST_IMG&&index<SHOP_GEM_BUNDLE_FIRST_IMG+6) || index==TURRET_IRONBALL_IMG || (index>=ITEM_SERIES_FIRST_IMG&&index<=ITEM_SERIES_LAST_IMG))s->getTexture()->setAntiAliasTexParameters();else s->getTexture()->setAliasTexParameters();
 }
 
 static_assert(sizeof(textId) / sizeof(textId[0]) == TEXT_LENGTH,
@@ -6104,31 +6118,7 @@ void DrawCrewBulletAni(int idx, int x, int y, float zoom, int ani, int aniFrame,
 //�ϴ� ��Ƽ�� ��ų�� ��쿡��?����Ѵ�?
 static void DrawSkillCardWinFrame(int x, int y, float w, float h, float z)
 {
-	const int sx = 418, sy = 508, sw = 198, sh = 198, cap = 44;
-	float c = (float)cap * z;
-	int sm = sw - cap * 2;
-	int tm = sh - cap * 2;
-
-	if (w < c * 2) c = w / 2;
-	if (h < c * 2) c = h / 2;
-
-	float kx = (w - c * 2) / (float)sm;
-	float ky = (h - c * 2) / (float)tm;
-	float sc = c / (float)cap;
-	float xl = (float)x, xm = x + c, xr = x + w - c;
-	float yt = (float)y, ym = y - c, yb = y - (h - c);
-	int srcRight = sx + sw - cap;
-	int srcBottom = sy + sh - cap;
-
-	DrawImageScale(cap, cap, sx, sy, xl, yt, false, false, false, false, false, sc, sc, sprite[WIN_IMG], WIN_IMG);
-	DrawImageScale(sm, cap, sx + cap, sy, xm, yt, false, false, false, false, false, kx, sc, sprite[WIN_IMG], WIN_IMG);
-	DrawImageScale(cap, cap, srcRight, sy, xr, yt, false, false, false, false, false, sc, sc, sprite[WIN_IMG], WIN_IMG);
-	DrawImageScale(cap, tm, sx, sy + cap, xl, ym, false, false, false, false, false, sc, ky, sprite[WIN_IMG], WIN_IMG);
-	//가운데 판은 그리지 않는다. 아이콘 위에는 win.png의 테두리 조각만 올린다.
-	DrawImageScale(cap, tm, srcRight, sy + cap, xr, ym, false, false, false, false, false, sc, ky, sprite[WIN_IMG], WIN_IMG);
-	DrawImageScale(cap, cap, sx, srcBottom, xl, yb, false, false, false, false, false, sc, sc, sprite[WIN_IMG], WIN_IMG);
-	DrawImageScale(sm, cap, sx + cap, srcBottom, xm, yb, false, false, false, false, false, kx, sc, sprite[WIN_IMG], WIN_IMG);
-	DrawImageScale(cap, cap, srcRight, srcBottom, xr, yb, false, false, false, false, false, sc, sc, sprite[WIN_IMG], WIN_IMG);
+ DrawQuietCardFrame(x,y,(int)w,(int)h,1);(void)z;
 }
 
 //상태이상 전용 64x64 카드. centerX/centerY는 화면상의 카드 중심이다.
@@ -6169,24 +6159,7 @@ static int GetSkillCardBackground(int ownerObj)
 static void DrawSkillCardPlate(int x, int y, float w, float h, float zoom,
 	int backgroundIndex)
 {
-	const float inset = (float)(2 * _2X) * zoom;
-	if (backgroundIndex >= 0) {
-		// 실제 동료 카드가 쓰는 CARDBG_IMG의 198x288 셀 중앙에서
-		// 스킬 아이콘 크기의 정사각형만 잘라 카드 안쪽에 먼저 깐다.
-		const int cellW = 198;
-		const int cellH = 288;
-		const int crop = Min(cellW, SKILLICONSIZE);
-		const int xs = cellW * (backgroundIndex % 5) + (cellW - crop) / 2;
-		const int ys = cellH * (backgroundIndex / 5) + (cellH - crop) / 2;
-		DrawImageScale(crop, crop, xs, ys,
-			x + inset, y - inset, false, false, false, false, false,
-			(w - inset * 2.0f) / crop,
-			(h - inset * 2.0f) / crop,
-			sprite[CARDBG_IMG], CARDBG_IMG);
-	}
-	else
-		MemRect(x + inset, y - inset, w - inset * 2.0f, h - inset * 2.0f,
-			COLOR_WHITE);
+ (void)backgroundIndex;DrawQuietCardFrame(x,y,(int)w,(int)h,1);(void)zoom;
 }
 
 static bool IsBahamutSkillCardEnemy(int enemyIdx)

@@ -20,16 +20,12 @@ uniform vec4 uClip;
 uniform vec3 uFill;
 uniform vec3 uEdge;
 uniform float uRadius;
-uniform float uStyle;
 float rounded(vec2 p,vec2 halfSize,float radius){
  vec2 q=abs(p)-(halfSize-radius);
  return length(max(q,0.0))+min(max(q.x,q.y),0.0)-radius;
 }
 float outline(vec2 p){
  vec2 halfSize=uSize*.5-vec2(2.0,3.0);
- if(uStyle>0.5 && uStyle<1.5){
-  return min(rounded(p,halfSize-vec2(0.0,7.0),9.0),rounded(p,halfSize-vec2(12.0,0.0),9.0));
- }
  return rounded(p,halfSize,uRadius);
 }
 void main(){
@@ -39,16 +35,11 @@ void main(){
  vec2 p=(uv-.5)*uSize;
  float d=outline(p);
  float a=1.0-smoothstep(-.5,.5,d);
- float border=smoothstep(-2.4,-1.4,d);
- float light=.83+.24*(1.0-uv.y)+.16*sin(uv.x*3.14159);
- vec3 body=uFill*light;
- // Soft central light, dark recessed corners, and a warm two-tone rim.
- body+=vec3(.012,.035,.032)*sin(uv.x*3.14159)*sin(uv.y*3.14159);
- vec3 metal=mix(uEdge*.64,min(vec3(1.0),uEdge*1.28),1.0-uv.y);
+ float border=smoothstep(-1.5,-.5,d);
+ vec3 body=mix(vec3(.026,.046,.064),uFill*.55,.35);
+ vec3 metal=mix(vec3(.16,.22,.25),uEdge,.18);
  vec3 color=mix(body,metal,border);
- float inset=(1.0-smoothstep(.0,1.0,abs(d+4.4)))*.16;
- color+=inset*uEdge;
- float shadow=(1.0-smoothstep(-.5,2.0,outline(p-vec2(0.0,2.0))))*.65;
+ float shadow=0.0;
  gl_FragColor=vec4(color*a, a+(1.0-a)*shadow)*v_fragmentColor.a;
 })";
   program=cocos2d::GLProgram::createWithByteArrays(cocos2d::ccPositionTextureColor_noMVP_vert,fragment);
@@ -67,8 +58,7 @@ void main(){
  state->setUniformVec2("uOrigin",cocos2d::Vec2(x,y));
  state->setUniformVec4("uClip",cocos2d::Vec4(clipX,clipY,clipX2,clipY2));
  state->setUniformVec3("uFill",rgb(fill));state->setUniformVec3("uEdge",rgb(edge));
- state->setUniformFloat("uStyle",(float)sReferencePanel);
- state->setUniformFloat("uRadius",w>=DX-8&&h>200?0.f:(float)Min(16,Min(w,h)/4));
+ state->setUniformFloat("uRadius",w>=DX-8&&h>200?0.f:(float)Min(5,Min(w,h)/4));
  target->setGLProgramState(state);target->setBlendFunc(cocos2d::BlendFunc::ALPHA_PREMULTIPLIED);
  AfterSpriting(target);return true;
 }
@@ -124,28 +114,13 @@ void DrawMenuReferencePanel(int x,int top,int w,int h,int kind,int fill,int edge
 
 void DrawMenuBackdropCrop(cocos2d::Texture2D*,int,int,int,int,int,int,int,int);
 void DrawMenuRoomBackdrop(int x,int top,int w,int h,int castle,int room){
- if(w<=0||h<=0)return;
- if(x<=0&&x+w>=DX){x=12;w=DX-24;}
- const int img=MENU_RENEWAL_ROOM_IMG;
- if(!sprite[img])LoadImg(img);if(!sprite[img])return;
- const auto size=sprite[img]->getTexture()->getContentSizeInPixels();
- const int stripH=(int)size.height/3,strip=castle==0?2:room==0?1:0;
- const float scale=Max(w/size.width,h/(float)stripH);
- const int sw=Min((int)size.width,(int)(w/scale)),sh=Min(stripH,(int)(h/scale));
- const int sx=((int)size.width-sw)/2,sy=strip*stripH+(stripH-sh)/2;
- const int color=baseColor,alpha=m_lgrpAlpha;
- SetColor(0);
- DrawMenuBackdropCrop(sprite[img]->getTexture(),sx,sy,sw,sh,x,top,w,h);
- SetColor(color);SetAlpha(4);MemRect(x,top,w,h,0x092B30);SetAlpha(alpha);
+ // Deliberate negative space: object art owns the scene.
+ (void)x;(void)top;(void)w;(void)h;(void)castle;(void)room;
 }
 
 void DrawMenuPlaque(const char* text,int x,int top,int w,int h,float size){
- DrawMenuReferencePanel(x,top,w,h,1,0x10383D,0xF1C47E);
- SetFontColor(0xF7CF83);
- DrawTextStrSystem("◆",x+14,top-h/2+6,.44f,LEFT,false);
- DrawTextStrSystem("◆",x+w-14,top-h/2+6,.44f,RIGHT,false);
- SetFontColor(0xFFF0C9);
- CenterTextStrSolid(text,x+w/2,top-h/2+10,Min(size,(w-56)/Max(1.f,StringWidth(text,1.f))));
+ SetFontColor(0xC8C4B7);
+ CenterTextStrSolid(text,x+w/2,top-h/2+10,Min(size,(w-24)/Max(1.f,StringWidth(text,1.f))));
 }
 
 // Shared menu navigation: one large, left-aligned back action.
@@ -172,18 +147,5 @@ void DrawCastleMenuBackdrop(int x,int top,int w,int h,int castle){
 
 // Every castle has its own fitting room, including the painted circular dais.
 void DrawHeroCastleBackdrop(int x,int top,int w,int h,int castle){
- castle=Max(0,Min(9,castle));
- static cocos2d::Texture2D* rooms[10]={};
- if(!rooms[castle]){
-  char name[128];snprintf(name,sizeof(name),"res/menu_renewal-dressing-v3-castle-%02d.png",castle+1);
-  const auto path=cocos2d::FileUtils::getInstance()->fullPathForFilename(name);
-  if(!path.empty())rooms[castle]=cocos2d::Director::getInstance()->getTextureCache()->addImage(path);
- }
- auto* room=rooms[castle];
- if(!room){DrawMenuRoomBackdrop(x,top,w,h,1,1);return;}
- room->setAntiAliasTexParameters();
- const auto size=room->getContentSizeInPixels();const int tw=(int)size.width,th=(int)size.height;
- const float scale=Max(w/(float)tw,h/(float)th);
- const int sw=Min(tw,(int)(w/scale)),sh=Min(th,(int)(h/scale));
- DrawMenuBackdropCrop(room,(tw-sw)/2,(th-sh)/2,sw,sh,x,top,w,h);
+ (void)x;(void)top;(void)w;(void)h;(void)castle;
 }

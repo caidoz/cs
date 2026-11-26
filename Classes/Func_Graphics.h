@@ -240,3 +240,6 @@ void DrawPixelPanel(int x,int y,int w,int h,int fill=0x102638,int edge=0x43859B)
 bool DrawSd3dPanel(int x,int y,int w,int h,int style=1);
 
 void DrawMenuRoomBackdrop(int x,int top,int w,int h,int castle=1,int room=1);
+
+// Transparent card surround, shared by companion and equipment views.
+void DrawQuietCardFrame(int x,int top,int w,int h,int rank,bool selected=false);
