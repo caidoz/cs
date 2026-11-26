@@ -1,0 +1,502 @@
+[
+  {
+    "stage": 1,
+    "variant": "main",
+    "source_size": [
+      1456,
+      1080
+    ],
+    "source_visible_bounds": [
+      0,
+      7,
+      1456,
+      1068
+    ],
+    "native_size": [
+      256,
+      187
+    ],
+    "reference_size": [
+      256,
+      190
+    ],
+    "uniform_scale": 0.17582417582417584,
+    "sha256": "1c83e3b660805542cc9ef5ff5334dc24cee54cd90db7c20bcb12cb875568ab91",
+    "alpha": true
+  },
+  {
+    "stage": 2,
+    "variant": "main",
+    "source_size": [
+      1113,
+      1414
+    ],
+    "source_visible_bounds": [
+      3,
+      7,
+      1110,
+      1385
+    ],
+    "native_size": [
+      259,
+      322
+    ],
+    "reference_size": [
+      259,
+      329
+    ],
+    "uniform_scale": 0.23396567299006324,
+    "sha256": "1fa53fba8098278df14943608639ce35b6349aaf8e25c4c6ba5090f480aedb8f",
+    "alpha": true
+  },
+  {
+    "stage": 3,
+    "variant": "main",
+    "source_size": [
+      1080,
+      1456
+    ],
+    "source_visible_bounds": [
+      2,
+      7,
+      1079,
+      1431
+    ],
+    "native_size": [
+      262,
+      346
+    ],
+    "reference_size": [
+      262,
+      353
+    ],
+    "uniform_scale": 0.24326833797585887,
+    "sha256": "f09843e3d457c66dfd216e73f25ce3c4a2ff912ab45c5b62085badc960c0ab91",
+    "alpha": true
+  },
+  {
+    "stage": 4,
+    "variant": "main",
+    "source_size": [
+      1051,
+      1496
+    ],
+    "source_visible_bounds": [
+      0,
+      2,
+      1051,
+      1469
+    ],
+    "native_size": [
+      265,
+      370
+    ],
+    "reference_size": [
+      265,
+      377
+    ],
+    "uniform_scale": 0.2521408182683159,
+    "sha256": "1864c5aa3a4beeb461f37f41e160e85cb23afb91a1459a08cd84251c4c48df71",
+    "alpha": true
+  },
+  {
+    "stage": 5,
+    "variant": "main",
+    "source_size": [
+      969,
+      1622
+    ],
+    "source_visible_bounds": [
+      0,
+      0,
+      969,
+      1618
+    ],
+    "native_size": [
+      267,
+      446
+    ],
+    "reference_size": [
+      267,
+      447
+    ],
+    "uniform_scale": 0.2755417956656347,
+    "sha256": "7bbcb606b0cf260ae08d03e29a7418473331f675d5a891109cad9df7194cc7b2",
+    "alpha": true
+  },
+  {
+    "stage": 6,
+    "variant": "main",
+    "source_size": [
+      962,
+      1635
+    ],
+    "source_visible_bounds": [
+      0,
+      1,
+      962,
+      1607
+    ],
+    "native_size": [
+      270,
+      451
+    ],
+    "reference_size": [
+      270,
+      459
+    ],
+    "uniform_scale": 0.2806652806652807,
+    "sha256": "9e12338e5c5a818b9789ae440b98b196ed1a3deaa54cc41e11e81f5ac3fc94d0",
+    "alpha": true
+  },
+  {
+    "stage": 7,
+    "variant": "main",
+    "source_size": [
+      961,
+      1637
+    ],
+    "source_visible_bounds": [
+      2,
+      3,
+      952,
+      1579
+    ],
+    "native_size": [
+      273,
+      453
+    ],
+    "reference_size": [
+      273,
+      465
+    ],
+    "uniform_scale": 0.2873684210526316,
+    "sha256": "849f3354baf8069b683274bc197ca6762df7b569c1b9492f94ff96766092f9e0",
+    "alpha": true
+  },
+  {
+    "stage": 8,
+    "variant": "main",
+    "source_size": [
+      948,
+      1659
+    ],
+    "source_visible_bounds": [
+      0,
+      5,
+      947,
+      1627
+    ],
+    "native_size": [
+      276,
+      473
+    ],
+    "reference_size": [
+      276,
+      483
+    ],
+    "uniform_scale": 0.2914466737064414,
+    "sha256": "35322669833f28ca47e2c6e56a75a40cda5fe0a7ec83755f19d7d43c5e14bac4",
+    "alpha": true
+  },
+  {
+    "stage": 9,
+    "variant": "main",
+    "source_size": [
+      940,
+      1674
+    ],
+    "source_visible_bounds": [
+      0,
+      2,
+      940,
+      1657
+    ],
+    "native_size": [
+      279,
+      491
+    ],
+    "reference_size": [
+      279,
+      497
+    ],
+    "uniform_scale": 0.2968085106382979,
+    "sha256": "05ac36ea7d342c3b9f51b3abcd0b6510d78d9a8174434bf29e6301b4a76a2392",
+    "alpha": true
+  },
+  {
+    "stage": 10,
+    "variant": "main",
+    "source_size": [
+      912,
+      1724
+    ],
+    "source_visible_bounds": [
+      5,
+      5,
+      911,
+      1721
+    ],
+    "native_size": [
+      282,
+      534
+    ],
+    "reference_size": [
+      282,
+      532
+    ],
+    "uniform_scale": 0.31125827814569534,
+    "sha256": "b95b6a7ab5b9318172f47a150ae12087265cd2105bf900f4c6f05012c2411e4e",
+    "alpha": true
+  },
+  {
+    "stage": 11,
+    "variant": "main",
+    "source_size": [
+      912,
+      1725
+    ],
+    "source_visible_bounds": [
+      0,
+      0,
+      912,
+      1725
+    ],
+    "native_size": [
+      284,
+      537
+    ],
+    "reference_size": [
+      284,
+      537
+    ],
+    "uniform_scale": 0.31140350877192985,
+    "sha256": "8d205614ad94bd45bf555fc1e101b7250e6280a67b33589714d0e00fcb92df9f",
+    "alpha": true
+  },
+  {
+    "stage": 12,
+    "variant": "main",
+    "source_size": [
+      884,
+      1779
+    ],
+    "source_visible_bounds": [
+      0,
+      4,
+      884,
+      1777
+    ],
+    "native_size": [
+      287,
+      576
+    ],
+    "reference_size": [
+      287,
+      577
+    ],
+    "uniform_scale": 0.3246606334841629,
+    "sha256": "517f717377be456e20ba5f8ab6d17055872f9a4cfcec77bbda51bfb75e7e6070",
+    "alpha": true
+  },
+  {
+    "stage": 13,
+    "variant": "main",
+    "source_size": [
+      880,
+      1788
+    ],
+    "source_visible_bounds": [
+      0,
+      7,
+      880,
+      1778
+    ],
+    "native_size": [
+      290,
+      584
+    ],
+    "reference_size": [
+      290,
+      589
+    ],
+    "uniform_scale": 0.32954545454545453,
+    "sha256": "ec2496b7a111367bf66c8a467941a48a2f8ce3aec86fa3e5b110ded54a7ad1d4",
+    "alpha": true
+  },
+  {
+    "stage": 14,
+    "variant": "main",
+    "source_size": [
+      875,
+      1798
+    ],
+    "source_visible_bounds": [
+      0,
+      3,
+      875,
+      1797
+    ],
+    "native_size": [
+      293,
+      601
+    ],
+    "reference_size": [
+      293,
+      601
+    ],
+    "uniform_scale": 0.33485714285714285,
+    "sha256": "acfcc483e735b699fe0d35ec658b63624920193d07a96359d8f2397e0a3556f1",
+    "alpha": true
+  },
+  {
+    "stage": 15,
+    "variant": "main",
+    "source_size": [
+      857,
+      1836
+    ],
+    "source_visible_bounds": [
+      0,
+      7,
+      857,
+      1831
+    ],
+    "native_size": [
+      296,
+      630
+    ],
+    "reference_size": [
+      296,
+      633
+    ],
+    "uniform_scale": 0.3453908984830805,
+    "sha256": "43ba558d9b923d560bf06a3e2592de0ceb36b545d5a871ec5464fb985acb3378",
+    "alpha": true
+  },
+  {
+    "stage": 16,
+    "variant": "main",
+    "source_size": [
+      853,
+      1844
+    ],
+    "source_visible_bounds": [
+      0,
+      2,
+      853,
+      1841
+    ],
+    "native_size": [
+      299,
+      645
+    ],
+    "reference_size": [
+      299,
+      647
+    ],
+    "uniform_scale": 0.3505275498241501,
+    "sha256": "c35405de2b68c8de22750caa97bd9dde5082d2a2f611890d75ddf4d5cc0855b4",
+    "alpha": true
+  },
+  {
+    "stage": 17,
+    "variant": "main",
+    "source_size": [
+      825,
+      1907
+    ],
+    "source_visible_bounds": [
+      0,
+      4,
+      825,
+      1907
+    ],
+    "native_size": [
+      302,
+      697
+    ],
+    "reference_size": [
+      302,
+      698
+    ],
+    "uniform_scale": 0.3660606060606061,
+    "sha256": "93771e68be75114dfd7dc69041741f44325f33a2042e36a5d530a8fee3574f54",
+    "alpha": true
+  },
+  {
+    "stage": 18,
+    "variant": "main",
+    "source_size": [
+      816,
+      1926
+    ],
+    "source_visible_bounds": [
+      0,
+      1,
+      816,
+      1926
+    ],
+    "native_size": [
+      304,
+      717
+    ],
+    "reference_size": [
+      304,
+      717
+    ],
+    "uniform_scale": 0.37254901960784315,
+    "sha256": "654679c3c8237877f01e6c68d35c2f7f82ed7532e3af177ca47afe931d81324e",
+    "alpha": true
+  },
+  {
+    "stage": 19,
+    "variant": "main",
+    "source_size": [
+      828,
+      1900
+    ],
+    "source_visible_bounds": [
+      2,
+      6,
+      828,
+      1896
+    ],
+    "native_size": [
+      323,
+      739
+    ],
+    "reference_size": [
+      323,
+      741
+    ],
+    "uniform_scale": 0.3910411622276029,
+    "sha256": "3510a27a7a9a744db5d10114db191686539a5a046f5e1ba5b0f761cf16dffc28",
+    "alpha": true
+  },
+  {
+    "stage": 19,
+    "variant": "ten-rooms",
+    "source_size": [
+      828,
+      1900
+    ],
+    "source_visible_bounds": [
+      0,
+      3,
+      828,
+      1900
+    ],
+    "native_size": [
+      323,
+      740
+    ],
+    "reference_size": [
+      323,
+      741
+    ],
+    "uniform_scale": 0.39009661835748793,
+    "sha256": "1c27e449714eec7edf26491d7b3aee0fc9e53c0fddd35121fc9855a3ca8a2ed0",
+    "alpha": true
+  }
+]

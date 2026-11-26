@@ -1,0 +1,1032 @@
+{
+  "status": "visual-layout proposal, not runtime mechanics",
+  "date": "2026-11-27",
+  "stages": [
+    {
+      "stage": 1,
+      "name": "개척의 나무집",
+      "indoor_rooms": 1,
+      "functional_zones": 2,
+      "facilities": [
+        {
+          "id": "production",
+          "name": "생산 작업장",
+          "effect": "시간당 골드 생산",
+          "unlock_stage": 1,
+          "level_cap": 5
+        },
+        {
+          "id": "hero_attack",
+          "name": "병기 공방",
+          "effect": "히어로 공격력",
+          "unlock_stage": 1,
+          "level_cap": 5
+        }
+      ],
+      "external_turret": true,
+      "upgrade_items": 3,
+      "construction_seconds_draft": 0,
+      "reference": "references/exterior-01.png",
+      "turret_level_cap": 5
+    },
+    {
+      "stage": 2,
+      "name": "새싹 수비소",
+      "indoor_rooms": 2,
+      "functional_zones": 3,
+      "facilities": [
+        {
+          "id": "production",
+          "name": "생산 작업장",
+          "effect": "시간당 골드 생산",
+          "unlock_stage": 1,
+          "level_cap": 10
+        },
+        {
+          "id": "hero_attack",
+          "name": "병기 공방",
+          "effect": "히어로 공격력",
+          "unlock_stage": 1,
+          "level_cap": 10
+        },
+        {
+          "id": "hero_health",
+          "name": "생활·훈련실",
+          "effect": "히어로 최대 체력",
+          "unlock_stage": 2,
+          "level_cap": 5
+        }
+      ],
+      "external_turret": true,
+      "upgrade_items": 4,
+      "construction_seconds_draft": 0,
+      "reference": "references/exterior-02.png",
+      "turret_level_cap": 10
+    },
+    {
+      "stage": 3,
+      "name": "태양 사자 초소",
+      "indoor_rooms": 3,
+      "functional_zones": 4,
+      "facilities": [
+        {
+          "id": "production",
+          "name": "생산 작업장",
+          "effect": "시간당 골드 생산",
+          "unlock_stage": 1,
+          "level_cap": 15
+        },
+        {
+          "id": "hero_attack",
+          "name": "병기 공방",
+          "effect": "히어로 공격력",
+          "unlock_stage": 1,
+          "level_cap": 15
+        },
+        {
+          "id": "hero_health",
+          "name": "생활·훈련실",
+          "effect": "히어로 최대 체력",
+          "unlock_stage": 2,
+          "level_cap": 10
+        },
+        {
+          "id": "hero_defense",
+          "name": "방어 공방",
+          "effect": "히어로 방어력",
+          "unlock_stage": 3,
+          "level_cap": 5
+        }
+      ],
+      "external_turret": true,
+      "upgrade_items": 5,
+      "construction_seconds_draft": 0,
+      "reference": "references/exterior-03.png",
+      "turret_level_cap": 15
+    },
+    {
+      "stage": 4,
+      "name": "닻의 변경 요새",
+      "indoor_rooms": 4,
+      "functional_zones": 4,
+      "facilities": [
+        {
+          "id": "production",
+          "name": "생산 작업장",
+          "effect": "시간당 골드 생산",
+          "unlock_stage": 1,
+          "level_cap": 20
+        },
+        {
+          "id": "hero_attack",
+          "name": "병기 공방",
+          "effect": "히어로 공격력",
+          "unlock_stage": 1,
+          "level_cap": 20
+        },
+        {
+          "id": "hero_health",
+          "name": "생활·훈련실",
+          "effect": "히어로 최대 체력",
+          "unlock_stage": 2,
+          "level_cap": 15
+        },
+        {
+          "id": "hero_defense",
+          "name": "방어 공방",
+          "effect": "히어로 방어력",
+          "unlock_stage": 3,
+          "level_cap": 10
+        }
+      ],
+      "external_turret": true,
+      "upgrade_items": 5,
+      "construction_seconds_draft": 60,
+      "reference": "references/exterior-04.png",
+      "turret_level_cap": 20
+    },
+    {
+      "stage": 5,
+      "name": "불새 주조성",
+      "indoor_rooms": 4,
+      "functional_zones": 4,
+      "facilities": [
+        {
+          "id": "production",
+          "name": "생산 작업장",
+          "effect": "시간당 골드 생산",
+          "unlock_stage": 1,
+          "level_cap": 25
+        },
+        {
+          "id": "hero_attack",
+          "name": "병기 공방",
+          "effect": "히어로 공격력",
+          "unlock_stage": 1,
+          "level_cap": 25
+        },
+        {
+          "id": "hero_health",
+          "name": "생활·훈련실",
+          "effect": "히어로 최대 체력",
+          "unlock_stage": 2,
+          "level_cap": 20
+        },
+        {
+          "id": "hero_defense",
+          "name": "방어 공방",
+          "effect": "히어로 방어력",
+          "unlock_stage": 3,
+          "level_cap": 15
+        }
+      ],
+      "external_turret": true,
+      "upgrade_items": 5,
+      "construction_seconds_draft": 180,
+      "reference": "references/exterior-05.png",
+      "turret_level_cap": 25
+    },
+    {
+      "stage": 6,
+      "name": "서리 나무 성채",
+      "indoor_rooms": 4,
+      "functional_zones": 4,
+      "facilities": [
+        {
+          "id": "production",
+          "name": "생산 작업장",
+          "effect": "시간당 골드 생산",
+          "unlock_stage": 1,
+          "level_cap": 30
+        },
+        {
+          "id": "hero_attack",
+          "name": "병기 공방",
+          "effect": "히어로 공격력",
+          "unlock_stage": 1,
+          "level_cap": 30
+        },
+        {
+          "id": "hero_health",
+          "name": "생활·훈련실",
+          "effect": "히어로 최대 체력",
+          "unlock_stage": 2,
+          "level_cap": 25
+        },
+        {
+          "id": "hero_defense",
+          "name": "방어 공방",
+          "effect": "히어로 방어력",
+          "unlock_stage": 3,
+          "level_cap": 20
+        }
+      ],
+      "external_turret": true,
+      "upgrade_items": 5,
+      "construction_seconds_draft": 300,
+      "reference": "references/exterior-06.png",
+      "turret_level_cap": 30
+    },
+    {
+      "stage": 7,
+      "name": "청동 사자 공방",
+      "indoor_rooms": 5,
+      "functional_zones": 5,
+      "facilities": [
+        {
+          "id": "production",
+          "name": "생산 작업장",
+          "effect": "시간당 골드 생산",
+          "unlock_stage": 1,
+          "level_cap": 35
+        },
+        {
+          "id": "hero_attack",
+          "name": "병기 공방",
+          "effect": "히어로 공격력",
+          "unlock_stage": 1,
+          "level_cap": 35
+        },
+        {
+          "id": "hero_health",
+          "name": "생활·훈련실",
+          "effect": "히어로 최대 체력",
+          "unlock_stage": 2,
+          "level_cap": 30
+        },
+        {
+          "id": "hero_defense",
+          "name": "방어 공방",
+          "effect": "히어로 방어력",
+          "unlock_stage": 3,
+          "level_cap": 25
+        },
+        {
+          "id": "storage",
+          "name": "식량·자재 창고",
+          "effect": "생산 재화 저장 한도",
+          "unlock_stage": 7,
+          "level_cap": 5
+        }
+      ],
+      "external_turret": true,
+      "upgrade_items": 6,
+      "construction_seconds_draft": 600,
+      "reference": "references/exterior-07.png",
+      "turret_level_cap": 35
+    },
+    {
+      "stage": 8,
+      "name": "참나무 권양성",
+      "indoor_rooms": 5,
+      "functional_zones": 5,
+      "facilities": [
+        {
+          "id": "production",
+          "name": "생산 작업장",
+          "effect": "시간당 골드 생산",
+          "unlock_stage": 1,
+          "level_cap": 40
+        },
+        {
+          "id": "hero_attack",
+          "name": "병기 공방",
+          "effect": "히어로 공격력",
+          "unlock_stage": 1,
+          "level_cap": 40
+        },
+        {
+          "id": "hero_health",
+          "name": "생활·훈련실",
+          "effect": "히어로 최대 체력",
+          "unlock_stage": 2,
+          "level_cap": 35
+        },
+        {
+          "id": "hero_defense",
+          "name": "방어 공방",
+          "effect": "히어로 방어력",
+          "unlock_stage": 3,
+          "level_cap": 30
+        },
+        {
+          "id": "storage",
+          "name": "식량·자재 창고",
+          "effect": "생산 재화 저장 한도",
+          "unlock_stage": 7,
+          "level_cap": 10
+        }
+      ],
+      "external_turret": true,
+      "upgrade_items": 6,
+      "construction_seconds_draft": 600,
+      "reference": "references/exterior-08.png",
+      "turret_level_cap": 40
+    },
+    {
+      "stage": 9,
+      "name": "수정 사자 성채",
+      "indoor_rooms": 5,
+      "functional_zones": 5,
+      "facilities": [
+        {
+          "id": "production",
+          "name": "생산 작업장",
+          "effect": "시간당 골드 생산",
+          "unlock_stage": 1,
+          "level_cap": 45
+        },
+        {
+          "id": "hero_attack",
+          "name": "병기 공방",
+          "effect": "히어로 공격력",
+          "unlock_stage": 1,
+          "level_cap": 45
+        },
+        {
+          "id": "hero_health",
+          "name": "생활·훈련실",
+          "effect": "히어로 최대 체력",
+          "unlock_stage": 2,
+          "level_cap": 40
+        },
+        {
+          "id": "hero_defense",
+          "name": "방어 공방",
+          "effect": "히어로 방어력",
+          "unlock_stage": 3,
+          "level_cap": 35
+        },
+        {
+          "id": "storage",
+          "name": "식량·자재 창고",
+          "effect": "생산 재화 저장 한도",
+          "unlock_stage": 7,
+          "level_cap": 15
+        }
+      ],
+      "external_turret": true,
+      "upgrade_items": 6,
+      "construction_seconds_draft": 1200,
+      "reference": "references/exterior-09.png",
+      "turret_level_cap": 45
+    },
+    {
+      "stage": 10,
+      "name": "청룡 병참성",
+      "indoor_rooms": 6,
+      "functional_zones": 6,
+      "facilities": [
+        {
+          "id": "production",
+          "name": "생산 작업장",
+          "effect": "시간당 골드 생산",
+          "unlock_stage": 1,
+          "level_cap": 50
+        },
+        {
+          "id": "hero_attack",
+          "name": "병기 공방",
+          "effect": "히어로 공격력",
+          "unlock_stage": 1,
+          "level_cap": 50
+        },
+        {
+          "id": "hero_health",
+          "name": "생활·훈련실",
+          "effect": "히어로 최대 체력",
+          "unlock_stage": 2,
+          "level_cap": 45
+        },
+        {
+          "id": "hero_defense",
+          "name": "방어 공방",
+          "effect": "히어로 방어력",
+          "unlock_stage": 3,
+          "level_cap": 40
+        },
+        {
+          "id": "storage",
+          "name": "식량·자재 창고",
+          "effect": "생산 재화 저장 한도",
+          "unlock_stage": 7,
+          "level_cap": 20
+        },
+        {
+          "id": "crew_attack",
+          "name": "동료 훈련소",
+          "effect": "동료 공격력",
+          "unlock_stage": 10,
+          "level_cap": 5
+        }
+      ],
+      "external_turret": true,
+      "upgrade_items": 7,
+      "construction_seconds_draft": 1200,
+      "reference": "references/exterior-10.png",
+      "turret_level_cap": 50
+    },
+    {
+      "stage": 11,
+      "name": "까마귀 비전성",
+      "indoor_rooms": 6,
+      "functional_zones": 6,
+      "facilities": [
+        {
+          "id": "production",
+          "name": "생산 작업장",
+          "effect": "시간당 골드 생산",
+          "unlock_stage": 1,
+          "level_cap": 55
+        },
+        {
+          "id": "hero_attack",
+          "name": "병기 공방",
+          "effect": "히어로 공격력",
+          "unlock_stage": 1,
+          "level_cap": 55
+        },
+        {
+          "id": "hero_health",
+          "name": "생활·훈련실",
+          "effect": "히어로 최대 체력",
+          "unlock_stage": 2,
+          "level_cap": 50
+        },
+        {
+          "id": "hero_defense",
+          "name": "방어 공방",
+          "effect": "히어로 방어력",
+          "unlock_stage": 3,
+          "level_cap": 45
+        },
+        {
+          "id": "storage",
+          "name": "식량·자재 창고",
+          "effect": "생산 재화 저장 한도",
+          "unlock_stage": 7,
+          "level_cap": 25
+        },
+        {
+          "id": "crew_attack",
+          "name": "동료 훈련소",
+          "effect": "동료 공격력",
+          "unlock_stage": 10,
+          "level_cap": 10
+        }
+      ],
+      "external_turret": true,
+      "upgrade_items": 7,
+      "construction_seconds_draft": 1800,
+      "reference": "references/exterior-11.png",
+      "turret_level_cap": 55
+    },
+    {
+      "stage": 12,
+      "name": "고목 수호성",
+      "indoor_rooms": 6,
+      "functional_zones": 6,
+      "facilities": [
+        {
+          "id": "production",
+          "name": "생산 작업장",
+          "effect": "시간당 골드 생산",
+          "unlock_stage": 1,
+          "level_cap": 60
+        },
+        {
+          "id": "hero_attack",
+          "name": "병기 공방",
+          "effect": "히어로 공격력",
+          "unlock_stage": 1,
+          "level_cap": 60
+        },
+        {
+          "id": "hero_health",
+          "name": "생활·훈련실",
+          "effect": "히어로 최대 체력",
+          "unlock_stage": 2,
+          "level_cap": 55
+        },
+        {
+          "id": "hero_defense",
+          "name": "방어 공방",
+          "effect": "히어로 방어력",
+          "unlock_stage": 3,
+          "level_cap": 50
+        },
+        {
+          "id": "storage",
+          "name": "식량·자재 창고",
+          "effect": "생산 재화 저장 한도",
+          "unlock_stage": 7,
+          "level_cap": 30
+        },
+        {
+          "id": "crew_attack",
+          "name": "동료 훈련소",
+          "effect": "동료 공격력",
+          "unlock_stage": 10,
+          "level_cap": 15
+        }
+      ],
+      "external_turret": true,
+      "upgrade_items": 7,
+      "construction_seconds_draft": 1800,
+      "reference": "references/exterior-12.png",
+      "turret_level_cap": 60
+    },
+    {
+      "stage": 13,
+      "name": "조개 수로성",
+      "indoor_rooms": 7,
+      "functional_zones": 7,
+      "facilities": [
+        {
+          "id": "production",
+          "name": "생산 작업장",
+          "effect": "시간당 골드 생산",
+          "unlock_stage": 1,
+          "level_cap": 65
+        },
+        {
+          "id": "hero_attack",
+          "name": "병기 공방",
+          "effect": "히어로 공격력",
+          "unlock_stage": 1,
+          "level_cap": 65
+        },
+        {
+          "id": "hero_health",
+          "name": "생활·훈련실",
+          "effect": "히어로 최대 체력",
+          "unlock_stage": 2,
+          "level_cap": 60
+        },
+        {
+          "id": "hero_defense",
+          "name": "방어 공방",
+          "effect": "히어로 방어력",
+          "unlock_stage": 3,
+          "level_cap": 55
+        },
+        {
+          "id": "storage",
+          "name": "식량·자재 창고",
+          "effect": "생산 재화 저장 한도",
+          "unlock_stage": 7,
+          "level_cap": 35
+        },
+        {
+          "id": "crew_attack",
+          "name": "동료 훈련소",
+          "effect": "동료 공격력",
+          "unlock_stage": 10,
+          "level_cap": 20
+        },
+        {
+          "id": "battle_rewards",
+          "name": "전리품 관리실",
+          "effect": "전투 클리어 보상 증가",
+          "unlock_stage": 13,
+          "level_cap": 5
+        }
+      ],
+      "external_turret": true,
+      "upgrade_items": 8,
+      "construction_seconds_draft": 3600,
+      "reference": "references/exterior-13.png",
+      "turret_level_cap": 65
+    },
+    {
+      "stage": 14,
+      "name": "태양 관측성",
+      "indoor_rooms": 7,
+      "functional_zones": 7,
+      "facilities": [
+        {
+          "id": "production",
+          "name": "생산 작업장",
+          "effect": "시간당 골드 생산",
+          "unlock_stage": 1,
+          "level_cap": 70
+        },
+        {
+          "id": "hero_attack",
+          "name": "병기 공방",
+          "effect": "히어로 공격력",
+          "unlock_stage": 1,
+          "level_cap": 70
+        },
+        {
+          "id": "hero_health",
+          "name": "생활·훈련실",
+          "effect": "히어로 최대 체력",
+          "unlock_stage": 2,
+          "level_cap": 65
+        },
+        {
+          "id": "hero_defense",
+          "name": "방어 공방",
+          "effect": "히어로 방어력",
+          "unlock_stage": 3,
+          "level_cap": 60
+        },
+        {
+          "id": "storage",
+          "name": "식량·자재 창고",
+          "effect": "생산 재화 저장 한도",
+          "unlock_stage": 7,
+          "level_cap": 40
+        },
+        {
+          "id": "crew_attack",
+          "name": "동료 훈련소",
+          "effect": "동료 공격력",
+          "unlock_stage": 10,
+          "level_cap": 25
+        },
+        {
+          "id": "battle_rewards",
+          "name": "전리품 관리실",
+          "effect": "전투 클리어 보상 증가",
+          "unlock_stage": 13,
+          "level_cap": 10
+        }
+      ],
+      "external_turret": true,
+      "upgrade_items": 8,
+      "construction_seconds_draft": 3600,
+      "reference": "references/exterior-14.png",
+      "turret_level_cap": 70
+    },
+    {
+      "stage": 15,
+      "name": "뇌목 동력성",
+      "indoor_rooms": 7,
+      "functional_zones": 7,
+      "facilities": [
+        {
+          "id": "production",
+          "name": "생산 작업장",
+          "effect": "시간당 골드 생산",
+          "unlock_stage": 1,
+          "level_cap": 75
+        },
+        {
+          "id": "hero_attack",
+          "name": "병기 공방",
+          "effect": "히어로 공격력",
+          "unlock_stage": 1,
+          "level_cap": 75
+        },
+        {
+          "id": "hero_health",
+          "name": "생활·훈련실",
+          "effect": "히어로 최대 체력",
+          "unlock_stage": 2,
+          "level_cap": 70
+        },
+        {
+          "id": "hero_defense",
+          "name": "방어 공방",
+          "effect": "히어로 방어력",
+          "unlock_stage": 3,
+          "level_cap": 65
+        },
+        {
+          "id": "storage",
+          "name": "식량·자재 창고",
+          "effect": "생산 재화 저장 한도",
+          "unlock_stage": 7,
+          "level_cap": 45
+        },
+        {
+          "id": "crew_attack",
+          "name": "동료 훈련소",
+          "effect": "동료 공격력",
+          "unlock_stage": 10,
+          "level_cap": 30
+        },
+        {
+          "id": "battle_rewards",
+          "name": "전리품 관리실",
+          "effect": "전투 클리어 보상 증가",
+          "unlock_stage": 13,
+          "level_cap": 15
+        }
+      ],
+      "external_turret": true,
+      "upgrade_items": 8,
+      "construction_seconds_draft": 3600,
+      "reference": "references/exterior-15.png",
+      "turret_level_cap": 75
+    },
+    {
+      "stage": 16,
+      "name": "홍염 불새 대성채",
+      "indoor_rooms": 8,
+      "functional_zones": 8,
+      "facilities": [
+        {
+          "id": "production",
+          "name": "생산 작업장",
+          "effect": "시간당 골드 생산",
+          "unlock_stage": 1,
+          "level_cap": 80
+        },
+        {
+          "id": "hero_attack",
+          "name": "병기 공방",
+          "effect": "히어로 공격력",
+          "unlock_stage": 1,
+          "level_cap": 80
+        },
+        {
+          "id": "hero_health",
+          "name": "생활·훈련실",
+          "effect": "히어로 최대 체력",
+          "unlock_stage": 2,
+          "level_cap": 75
+        },
+        {
+          "id": "hero_defense",
+          "name": "방어 공방",
+          "effect": "히어로 방어력",
+          "unlock_stage": 3,
+          "level_cap": 70
+        },
+        {
+          "id": "storage",
+          "name": "식량·자재 창고",
+          "effect": "생산 재화 저장 한도",
+          "unlock_stage": 7,
+          "level_cap": 50
+        },
+        {
+          "id": "crew_attack",
+          "name": "동료 훈련소",
+          "effect": "동료 공격력",
+          "unlock_stage": 10,
+          "level_cap": 35
+        },
+        {
+          "id": "battle_rewards",
+          "name": "전리품 관리실",
+          "effect": "전투 클리어 보상 증가",
+          "unlock_stage": 13,
+          "level_cap": 20
+        },
+        {
+          "id": "power",
+          "name": "동력·주포 제어실",
+          "effect": "주포 지원·관통 효과 후보, 전투 규칙 확정 후 수치 결정",
+          "unlock_stage": 16,
+          "level_cap": 5
+        }
+      ],
+      "external_turret": true,
+      "upgrade_items": 9,
+      "construction_seconds_draft": 7200,
+      "reference": "references/exterior-16.png",
+      "turret_level_cap": 80
+    },
+    {
+      "stage": 17,
+      "name": "별사슴 천문요새",
+      "indoor_rooms": 8,
+      "functional_zones": 8,
+      "facilities": [
+        {
+          "id": "production",
+          "name": "생산 작업장",
+          "effect": "시간당 골드 생산",
+          "unlock_stage": 1,
+          "level_cap": 85
+        },
+        {
+          "id": "hero_attack",
+          "name": "병기 공방",
+          "effect": "히어로 공격력",
+          "unlock_stage": 1,
+          "level_cap": 85
+        },
+        {
+          "id": "hero_health",
+          "name": "생활·훈련실",
+          "effect": "히어로 최대 체력",
+          "unlock_stage": 2,
+          "level_cap": 80
+        },
+        {
+          "id": "hero_defense",
+          "name": "방어 공방",
+          "effect": "히어로 방어력",
+          "unlock_stage": 3,
+          "level_cap": 75
+        },
+        {
+          "id": "storage",
+          "name": "식량·자재 창고",
+          "effect": "생산 재화 저장 한도",
+          "unlock_stage": 7,
+          "level_cap": 55
+        },
+        {
+          "id": "crew_attack",
+          "name": "동료 훈련소",
+          "effect": "동료 공격력",
+          "unlock_stage": 10,
+          "level_cap": 40
+        },
+        {
+          "id": "battle_rewards",
+          "name": "전리품 관리실",
+          "effect": "전투 클리어 보상 증가",
+          "unlock_stage": 13,
+          "level_cap": 25
+        },
+        {
+          "id": "power",
+          "name": "동력·주포 제어실",
+          "effect": "주포 지원·관통 효과 후보, 전투 규칙 확정 후 수치 결정",
+          "unlock_stage": 16,
+          "level_cap": 10
+        }
+      ],
+      "external_turret": true,
+      "upgrade_items": 9,
+      "construction_seconds_draft": 7200,
+      "reference": "references/exterior-17.png",
+      "turret_level_cap": 85
+    },
+    {
+      "stage": 18,
+      "name": "적룡 공성성채",
+      "indoor_rooms": 8,
+      "functional_zones": 8,
+      "facilities": [
+        {
+          "id": "production",
+          "name": "생산 작업장",
+          "effect": "시간당 골드 생산",
+          "unlock_stage": 1,
+          "level_cap": 90
+        },
+        {
+          "id": "hero_attack",
+          "name": "병기 공방",
+          "effect": "히어로 공격력",
+          "unlock_stage": 1,
+          "level_cap": 90
+        },
+        {
+          "id": "hero_health",
+          "name": "생활·훈련실",
+          "effect": "히어로 최대 체력",
+          "unlock_stage": 2,
+          "level_cap": 85
+        },
+        {
+          "id": "hero_defense",
+          "name": "방어 공방",
+          "effect": "히어로 방어력",
+          "unlock_stage": 3,
+          "level_cap": 80
+        },
+        {
+          "id": "storage",
+          "name": "식량·자재 창고",
+          "effect": "생산 재화 저장 한도",
+          "unlock_stage": 7,
+          "level_cap": 60
+        },
+        {
+          "id": "crew_attack",
+          "name": "동료 훈련소",
+          "effect": "동료 공격력",
+          "unlock_stage": 10,
+          "level_cap": 45
+        },
+        {
+          "id": "battle_rewards",
+          "name": "전리품 관리실",
+          "effect": "전투 클리어 보상 증가",
+          "unlock_stage": 13,
+          "level_cap": 30
+        },
+        {
+          "id": "power",
+          "name": "동력·주포 제어실",
+          "effect": "주포 지원·관통 효과 후보, 전투 규칙 확정 후 수치 결정",
+          "unlock_stage": 16,
+          "level_cap": 15
+        }
+      ],
+      "external_turret": true,
+      "upgrade_items": 9,
+      "construction_seconds_draft": 7200,
+      "reference": "references/exterior-18.png",
+      "turret_level_cap": 90
+    },
+    {
+      "stage": 19,
+      "name": "사자와 세계수의 거신성",
+      "indoor_rooms": 8,
+      "functional_zones": 8,
+      "facilities": [
+        {
+          "id": "production",
+          "name": "생산 작업장",
+          "effect": "시간당 골드 생산",
+          "unlock_stage": 1,
+          "level_cap": 95
+        },
+        {
+          "id": "hero_attack",
+          "name": "병기 공방",
+          "effect": "히어로 공격력",
+          "unlock_stage": 1,
+          "level_cap": 95
+        },
+        {
+          "id": "hero_health",
+          "name": "생활·훈련실",
+          "effect": "히어로 최대 체력",
+          "unlock_stage": 2,
+          "level_cap": 90
+        },
+        {
+          "id": "hero_defense",
+          "name": "방어 공방",
+          "effect": "히어로 방어력",
+          "unlock_stage": 3,
+          "level_cap": 85
+        },
+        {
+          "id": "storage",
+          "name": "식량·자재 창고",
+          "effect": "생산 재화 저장 한도",
+          "unlock_stage": 7,
+          "level_cap": 65
+        },
+        {
+          "id": "crew_attack",
+          "name": "동료 훈련소",
+          "effect": "동료 공격력",
+          "unlock_stage": 10,
+          "level_cap": 50
+        },
+        {
+          "id": "battle_rewards",
+          "name": "전리품 관리실",
+          "effect": "전투 클리어 보상 증가",
+          "unlock_stage": 13,
+          "level_cap": 35
+        },
+        {
+          "id": "power",
+          "name": "동력·주포 제어실",
+          "effect": "주포 지원·관통 효과 후보, 전투 규칙 확정 후 수치 결정",
+          "unlock_stage": 16,
+          "level_cap": 20
+        }
+      ],
+      "external_turret": true,
+      "upgrade_items": 9,
+      "construction_seconds_draft": 14400,
+      "reference": "references/exterior-19.png",
+      "turret_level_cap": 95
+    }
+  ],
+  "last_castle_comparison": {
+    "main_rooms": 8,
+    "alternative_rooms": 10,
+    "optional_facilities": [
+      {
+        "name": "성 수리실",
+        "effect": "성 체력 도입 이후 검토"
+      },
+      {
+        "name": "동료 의무실",
+        "effect": "부상·복귀 규칙 도입 이후 검토"
+      }
+    ]
+  },
+  "construction": {
+    "condition": "현재 열린 시설 및 포대의 현 단계 상한 달성 후 확장 비용 납부",
+    "preserve": "기존 강화와 효과 유지, 확장으로 상한 및 새 시설 개방",
+    "while_building": "현재 성으로 전투·생산·수금 가능",
+    "completion": "무료 시간 경과 또는 선택적 즉시 완료, 완성 성능 동일",
+    "timer_status": "초안; 재화 획득 속도와 플레이 시간 검증 후 확정",
+    "new_facility_cap": "새 시설의 첫 상한은 Lv.5, 이후 확장마다 +5. 신규 시설에 수십 단계의 즉시 강화를 요구하지 않음",
+    "cost_status": "확장 비용은 큰 일시금. 정확한 금액·상한별 효과 수치는 경제 검증 후 확정"
+  },
+  "review_notes": [
+    "시설 수와 공사 시간은 검토용 초안. 현재 게임의 시설 로직·공사 타이머는 변경하지 않았음.",
+    "창문·외부 적재칸·밀폐 기계는 별도 강화 방으로 세지 않음. 1~3단계는 공용 공간에 복수 기능 구역을 배치.",
+    "포대와 바퀴는 기존 별도 부품을 사용. 이 시트는 실내 배치 확인을 위해 성 본체만 표시.",
+    "중앙 동력실은 큰 시설 하나로 계산. 10실안의 수리실·의무실 효과는 향후 전투 규칙 확정이 필요.",
+    "시안 이미지는 런타임에 교체하지 않음. 외부 윤곽 정합·전면 포대의 실내 가림·NPC 및 터치 클리핑은 적용 단계에서 검증해야 함."
+  ]
+}

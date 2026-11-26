@@ -1,0 +1,38 @@
+{
+  "tool": "built-in image_gen",
+  "prompt_file": "image-prompts.json",
+  "primary_append": "\nReference image 1 is the exact edit target. Reference image 2 is ONLY a furnishing/material color anchor; do not copy its small cottage silhouette into the current castle.",
+  "primary_append_stages": [
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18
+  ],
+  "retry_append": "\nReference 1 is the precise exterior to open. Reference 2 is only the style and furnishing palette anchor.",
+  "retry_stages": [
+    11,
+    12
+  ],
+  "color_edits": [
+    {
+      "stage": 16,
+      "prompt": "Precise color correction edit. Image 1 is the completed cutaway castle to edit; image 2 is its original approved exterior color reference. Change ONLY the CYAN / TURQUOISE light and glass energy inside the central reactor tube to the warm ORANGE / EMBER-RED energy of image 2. Preserve all room arrangements, furniture, grey stone, brown timber, silhouette, carved bird/dragon, empty cannon terrace and transparent background exactly. Do not add/remove any object, room or floor, do not change proportions or crop. Keep the same simple matte 3-tone game sprite coloring and original warm lamp colors. Only the glowing reactor color must match the fire-themed exterior. No text."
+    },
+    {
+      "stage": 18,
+      "prompt": "Precise color correction edit. Image 1 is the completed cutaway castle to edit; image 2 is its original approved exterior color reference. Change ONLY the CYAN / TURQUOISE light and glass energy inside the central reactor tube to the warm ORANGE / EMBER-RED energy of image 2. Preserve all room arrangements, furniture, grey stone, brown timber, silhouette, carved bird/dragon, empty cannon terrace and transparent background exactly. Do not add/remove any object, room or floor, do not change proportions or crop. Keep the same simple matte 3-tone game sprite coloring and original warm lamp colors. Only the glowing reactor color must match the fire-themed exterior. No text."
+    }
+  ],
+  "runtime_imported": false
+}
