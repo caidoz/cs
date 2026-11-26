@@ -75,17 +75,38 @@ void portraitArchBridge(int top,int bottom){
  portraitBridgeTop=portraitBridgeBottom=0;if(top<=bottom)return;
  const int region=std::max(0,std::min(14,StageBg::s_region)),img=StageBg::Img(StageBg::SlotRail);
  if(!sprite[img])LoadImg(img);if(!sprite[img])return;
- const auto size=sprite[img]->getTexture()->getContentSizeInPixels();
  const auto& cycle=StageRailArt::Cycles[region];
- const int sourceTop=50,sourceWidth=cycle[1]-cycle[0],sourceHeight=cycle[3]+12-sourceTop;
- const float s=DX/640.f,z=std::max(DX/size.width,(PortraitGame::railLift(DX,DY)+64*s)/sourceHeight);
+ const int sourceTop=50,sourceWidth=cycle[1]-cycle[0],sourceHeight=cycle[3]-90-sourceTop;
+ const float s=DX/640.f,z=.40f*s;
  const int period=std::max(1,(int)(sourceWidth*z)),offset=(int)std::fmod(castleScrollSeconds*110*s,(float)period);
- const int left=clipX,right=clipX2,upper=clipY,lower=clipY2;
+ const int left=clipX,right=clipX2,upper=clipY,lower=clipY2,alpha=m_lgrpAlpha;
  clipY=std::min(clipY,top);clipY2=std::max(clipY2,bottom);
- for(int x=-offset;x<DX;x+=period)DrawImage(sourceWidth,sourceHeight,cycle[0],sourceTop,x,top,false,0,0,0,0,z,sprite[img],img);
- clipX=left;clipX2=right;clipY=upper;clipY2=lower;
+ auto* stone=sprite[img]->getTexture();
+ // Raw source crops bypass the regional scrolling shader, preserving pier anchors.
+ for(int x=-offset;x<DX;x+=period)DrawMenuBackdropCrop(stone,cycle[0],sourceTop,sourceWidth,sourceHeight,x,top,(int)(sourceWidth*z+.5f),(int)(sourceHeight*z+.5f));
+ const int pierTop=top-(int)(sourceHeight*z)+2;
+ if(pierTop>bottom){
+  static cocos2d::Texture2D* pier=nullptr;
+  if(!pier)pier=cocos2d::Director::getInstance()->getTextureCache()->addImage("res/portrait-bridge-pier-mist.png");
+  if(pier){
+   const auto size=pier->getContentSizeInPixels();const float scale=.40f*s;
+   const int width=(int)(size.width*scale),length=std::min((int)(size.height*scale),(int)((pierTop-bottom)*.98f));
+   const int bands=24;
+   for(int x=-offset-period;x<DX;x+=period)for(int pillar=0;pillar<2;++pillar){
+    const int center=x+pillar*period/2;
+    for(int band=0;band<bands;++band){
+     const int from=length*band/bands,to=length*(band+1)/bands;if(to<=from)continue;
+     const float t=(band+.5f)/bands,fade=1-BaseCamp::ease(t,.15f,.96f);
+     SetAlpha((int)(alpha*fade));
+     DrawMenuBackdropCrop(pier,0,(int)(from/scale),(int)size.width,std::max(1,(int)((to-from)/scale)),center-width/2,pierTop-from,width,to-from);
+    }
+   }
+  }
+ }
+ SetAlpha(alpha);clipX=left;clipX2=right;clipY=upper;clipY2=lower;
  portraitBridgeTop=top;portraitBridgeBottom=bottom;
 }
+
 void portraitNight(int ground,float worldZoom=0,int bridgeBottom=0){
  portraitBridgeTop=portraitBridgeBottom=0;
  const float s=DX/640.f;MemRect(0,DY,DX,DY,0x030A13);

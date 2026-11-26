@@ -1,8 +1,8 @@
 {
-  "original_bytes": 266686361,
-  "optimized_bytes": 193092809,
-  "saved_bytes": 73593552,
-  "converted_files": 1646,
+  "original_bytes": 267537853,
+  "optimized_bytes": 193620561,
+  "saved_bytes": 73917292,
+  "converted_files": 1647,
   "all_rgba_exact": true,
   "images": [
     {
@@ -22035,6 +22035,22 @@
       "rgba_exact": true,
       "alpha_semantics_preserved": true,
       "target": "res/playButton.png",
+      "selected_webp": true
+    },
+    {
+      "source_sha256": "0ec09b4765be46343182c1bc83096ed4a3dbc4c02df5df0abe4acf24667f9aca",
+      "encoded_sha256": "7fcf3891c92bd0af31c2a23b5b6c1af49ba7095acd7eddeb24b0042655401c65",
+      "rgba_sha256": "2a79730821f0269cb5d4cd82b8531bacf7dd6e4b8d9222b460b10dd71db19ed4",
+      "size": [
+        1024,
+        1536
+      ],
+      "source_bytes": 851492,
+      "encoded_bytes": 527752,
+      "encoding": "webp-lossless-exact-v2-alpha-compatible-method4",
+      "rgba_exact": true,
+      "alpha_semantics_preserved": true,
+      "target": "res/portrait-bridge-pier-mist.png",
       "selected_webp": true
     },
     {

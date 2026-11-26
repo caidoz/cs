@@ -12428,6 +12428,15 @@
       "encoded_sha256": "28cdc3c09cb50c0aeae4f18c952c7e39b8f41cc66b788647e4c0f089680d0436"
     },
     {
+      "source": "asset_library/production/runtime-a0637b9e67c018ec277871fe4896f0fd5877d880a5292ac5efa1c9c6de9e9e5b.webp",
+      "target": "res/portrait-bridge-pier-mist.png",
+      "original_source": "asset_library/production/portrait-bridge-pier-mist.png",
+      "encoding": "webp-lossless",
+      "rgba_sha256": "2a79730821f0269cb5d4cd82b8531bacf7dd6e4b8d9222b460b10dd71db19ed4",
+      "original_sha256": "0ec09b4765be46343182c1bc83096ed4a3dbc4c02df5df0abe4acf24667f9aca",
+      "encoded_sha256": "7fcf3891c92bd0af31c2a23b5b6c1af49ba7095acd7eddeb24b0042655401c65"
+    },
+    {
       "source": "asset_library/production/runtime-15f8909892c2ac3ab6bef3a6bae1d8f238089bc0d9ecee2d519d66326f64b268.webp",
       "target": "res/portrait-campfire.png",
       "original_source": "asset_library/production/portrait-campfire.png",
