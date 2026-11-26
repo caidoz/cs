@@ -399,10 +399,10 @@ void drawBattleCover(const Layout& l){
  UnSectionClip(false);measureFrontInner(l,c);
 }
 Box portraitHabitatBounds(int castle,const Box& hull){
- if(castle==0)return {hull.x+(int)(27*hull.w/256.f),hull.y-(int)(145*hull.h/294.f),(int)(151*hull.w/256.f),(int)(90*hull.h/294.f)};
+ if(castle==0)return {hull.x+(int)(33*hull.w/256.f),hull.y-(int)(194*hull.h/294.f),(int)(103*hull.w/256.f),(int)(62*hull.h/294.f)};
  return {hull.x+(int)(hull.w*.16f),hull.y-(int)(hull.h*.25f),(int)(hull.w*.62f),(int)(hull.h*.57f)};
 }
-int portraitHabitatFloors(int castle){return castle==0?2:std::max(2,std::min(5,PortraitCastleArt::Sizes[castle].h/180));}
+int portraitHabitatFloors(int castle){return castle==0?1:std::max(2,std::min(5,PortraitCastleArt::Sizes[castle].h/180));}
 void drawPortraitHabitatShell(int castle,const Box& hull){
  portraitImage(portraitHullImage(castle),hull);
  if(starterInteriorReveal<=0)return;
@@ -430,14 +430,14 @@ void drawPortraitStarterHull(const Box& hull,bool mirror){
  const bool forced=lobbyDepartureAge<0&&portraitHullImage(0)==PORTRAIT_STARTER_INTERIOR_IMG;
  const float reveal=forced?1.f:std::max(0.f,std::min(1.f,starterInteriorReveal));
  if(reveal<=0||reveal>=1){portraitImage(reveal>=1?PORTRAIT_STARTER_INTERIOR_IMG:PORTRAIT_CASTLE_FIRST_IMG,hull,mirror);return;}
- const float z=hull.w/256.f;const int shown=(int)(90*reveal);
+ const float z=hull.w/256.f;const int shown=(int)(62*reveal);
  auto piece=[&](int img,int x,int y,int w,int h){if(w<=0||h<=0)return;
   turretPart(img,x,y,w,h,{hull.x+(int)((mirror?256-x-w:x)*z),hull.y-(int)(y*z),(int)(w*z),(int)(h*z)},0,.5f,.5f,mirror);
  };
- piece(PORTRAIT_CASTLE_FIRST_IMG,0,0,256,145);piece(PORTRAIT_CASTLE_FIRST_IMG,0,235,256,59);
- piece(PORTRAIT_CASTLE_FIRST_IMG,0,145,27,90);piece(PORTRAIT_CASTLE_FIRST_IMG,178,145,78,90);
- piece(PORTRAIT_CASTLE_FIRST_IMG,27,145,151,90-shown);
- piece(PORTRAIT_STARTER_INTERIOR_IMG,27,235-shown,151,shown);
+ piece(PORTRAIT_CASTLE_FIRST_IMG,0,0,256,194);piece(PORTRAIT_CASTLE_FIRST_IMG,0,256,256,38);
+ piece(PORTRAIT_CASTLE_FIRST_IMG,0,194,33,62);piece(PORTRAIT_CASTLE_FIRST_IMG,136,194,120,62);
+ piece(PORTRAIT_CASTLE_FIRST_IMG,33,194,103,62-shown);
+ piece(PORTRAIT_STARTER_INTERIOR_IMG,33,256-shown,103,shown);
 }
 void drawCastleHull(const Layout& l,bool combat){
  (void)combat;const int c=std::max(0,std::min(18,siegeHullStage>=0?siegeHullStage:run.stage));
