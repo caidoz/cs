@@ -60,7 +60,7 @@ void drawPortraitLobby(const Layout& l){
  UnSectionClip(false);
  const float s=l.scale;const auto p=PortraitGame::lobby(DX,DY);
  const float leaving=-(DY+100*s)*BaseCamp::uiExit(lobbyDepartureAge);
- MemRect(0,p.statsTop+(int)(6*s),DX,p.statsTop+(int)(6*s),0x030A13);
+ // Keep the rail arches and fading piers visible behind the separate lobby panels.
  const int stage=std::max(0,std::min(18,run.stage));
  char line[96];std::snprintf(line,sizeof(line),u8"%s \u00b7 %d\ub2e8\uacc4",PortraitCastleArt::Names[stage],stage+1);
  uiSceneMotionY=leaving+(titleLobbyClock>=0?-160*s*(1.f-TitleLobbyEase(.64f,1.1f)):0);
