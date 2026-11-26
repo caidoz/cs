@@ -7,6 +7,11 @@ namespace PortraitGame {
 inline int railLift(int width,int height){
  const float s=width/640.f;return (int)(std::max(0.f,height-850*s)*.60f);
 }
+// Spend tall-screen headroom on the castle before decorative bridge clearance.
+inline int castleGround(int desired,int minimum,int ceiling,float assemblyHeight){
+ const float overflow=std::max(0.f,desired+assemblyHeight-ceiling);
+ return desired-(int)std::min((float)std::max(0,desired-minimum),overflow+.5f);
+}
 struct Battle {
     float scale;
     int cell,cellHeight,boardBottom,boardTop,slotTop,slotWidth,slotHeight,energyTop,actionTop,actionHeight;

@@ -58,6 +58,8 @@ bool portraitReviewLobby(){
    const int axle=body.x+(int)(body.w*PortraitCastleArt::FrontWheelAt(motifReviewStage));
    const bool mount=std::abs(gun.x+(int)(portraitCannonFootX(motifReviewStage)*z)-axle)<=1;
    reviewTrace(aspect&&mount?"PASS motif native aspect and shared front-wheel turret socket":"FAIL motif assembly");
+   const auto scene=layout();const int minimum=(int)(336*scene.scale);
+   reviewTrace(body.y<=DY-78*scene.scale+2||scene.ground-(int)portraitCameraY<=minimum+1?"PASS lobby spends headroom on castle before bridge":"FAIL bridge hides lobby castle");
    ++motifReviewStage;active=true;drawHandle=MD_PLAY;return true;
   }
   if(motifReviewStage>=38)return true;
@@ -258,6 +260,8 @@ bool portraitReviewStep(const Layout& l){
   const bool aspect=std::abs(hull.w*size.h-hull.h*size.w)<=size.h;
   const bool visible=std::min(gun.y,(int)(DY-78*l.scale))-std::max(gun.y-gun.h,l.arenaBottom)>16*l.scale;
   reviewTrace(aspect&&visible?"PASS motif battle keeps aspect and visible weapon above board":"FAIL motif battle clipping");
+  const int minimum=PortraitGame::battle(DX,DY,run.shape.height,run.shape.width).statsTop+(int)(18*l.scale);
+  reviewTrace(hull.y<=DY-78*l.scale+2||l.ground-(int)portraitCameraY<=minimum+1?"PASS battle spends headroom on castle before bridge":"FAIL bridge hides battle castle");
   if(++motifReviewStage==38)reviewTrace("DONE motif series review");
   return true;
  }
