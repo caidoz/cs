@@ -4283,10 +4283,10 @@ namespace {
 #include "PortraitGameUi.inc"
 }
 void MergeRouletteLobbyTopbarDraw(){drawPortraitTopbar();}
-void MergeRouletteBottomNavDraw(){drawLobbyBottomNav();} // Shared navigation retains existing actions.
+void MergeRouletteBottomNavDraw(){if(MergeRouletteLobbyDockVisible())drawLobbyBottomNav();} // Shared navigation retains existing actions.
 void MergeRouletteUiFrame(int x,int top,int width,int height,int style){portraitSkin(std::max(0,std::min(6,style)),{x,top,width,height});}
 void MergeRouletteUiGlyph(int icon,int x,int top,int width,int height){portraitGlyph(std::max(0,std::min(11,icon)),{x,top,width,height});}
-int MergeRouletteBottomNavHeight(){return lobbyBottomNav().y;}
+int MergeRouletteBottomNavHeight(){return MergeRouletteLobbyDockVisible()?lobbyBottomNav().y:0;}
 bool MergeRouletteLobbySceneDraw(bool backdropOnly) {
     if(!review||std::getenv("CS_CAMP_AUDIO_REVIEW"))PlayCampMusic(!titleCampOnly);
     cocos2d::Director::getInstance()->setDisplayStats(false);

@@ -20,6 +20,7 @@ void MergeRouletteBegin(bool resume=false);
 void MergeRouletteBeginSiege();   // PVP debug: castle vs castle (MergeSiege.inc)
 void MergeRouletteLobbyDraw();
 bool MergeRouletteLobbySceneDraw(bool backdropOnly=false);
+bool MergeRouletteLobbyDockVisible();
 void MergeRouletteBottomNavDraw();
 int MergeRouletteBottomNavHeight();
 bool MergeRouletteOriginalPreview(int castle,int x,int top,int width,int height);

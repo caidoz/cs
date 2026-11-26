@@ -21,7 +21,7 @@ void CrewDetailDraw(ITEM* it,int x,int y,float zoom,float winH) {
  static const char* names[]={u8"표식",u8"고무",u8"강타",u8"연타",u8"빙결",u8"지속 피해"};
  CdBeginBoard();
  // Leave the persistent bottom navigation accessible, including on short windows.
- const float bottom=(float)BOTTOMMENUHEIGHT+12.0f;
+ const float bottom=drawHandle==MD_LOBBY?12.f:(float)BOTTOMMENUHEIGHT+12.f;
  const float top=(float)DY-GNBHEIGHT;
  sCdU=std::min((float)DX/CD_DESIGNW,(top-bottom)/CD_DESIGNH);
  sCdOx=(DX-CD_DESIGNW*sCdU)/2;sCdOy=top;

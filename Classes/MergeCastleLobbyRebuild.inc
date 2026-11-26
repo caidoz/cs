@@ -440,6 +440,7 @@ void drawLobbyStartButton(const Box& b){
  label(u8"\uc804\ud22c \uc2dc\uc791",b.x+b.w/2+(int)(24*s),b.y-(int)(19*s),.78f,0xF6E9C8);
 }
 void drawLobbyBottomNav(float drop=0.f,bool interactive=true){
+ if(!MergeRouletteLobbyDockVisible())return;
  Box nav=lobbyBottomNav();nav.y-=(int)drop;const float s=DX/640.f;
 
  const int actions[5]={TOUCH_FUNC_SHOP,TOUCH_FUNC_COLLECTIONS,TOUCH_FUNC_LOBBY_ADVENTURE,TOUCH_FUNC_POPUP_CREWLIST,TOUCH_FUNC_POPUP_CASTLEMENU};

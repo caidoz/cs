@@ -42,18 +42,35 @@ static void CastleMenuReviewStep()
         if(tick==1){NewGame();robin.demoSeen[DEMO_TUTORIAL_END]=true;CastleTutorialLoad(CastleTutorial::Done);GotoLobby();while(popUpCnt>0)ClosePopUp();LoadoutSetOpen(false);}
         const int actions[5]={TOUCH_FUNC_SHOP,TOUCH_FUNC_COLLECTIONS,TOUCH_FUNC_POPUP_CREWLIST,TOUCH_FUNC_POPUP_CASTLEMENU,TOUCH_FUNC_LOBBY_ADVENTURE};
         for(int page=0;page<5;++page){
+            if(tick==20+page*30){while(popUpCnt>0)ClosePopUp();}
             if(tick==30+page*30){CastleReviewClick(actions[page]);PlayKey(PLAYER);systemKey=0;}
+            if(page==0&&tick==36)touchFunc(TOUCH_FUNC_SHOP_MAIN_TAB+2);
             if(tick==45+page*30){
                 const int commands[5]={TOUCH_FUNC_SHOP,TOUCH_FUNC_COLLECTIONS,TOUCH_FUNC_LOBBY_ADVENTURE,TOUCH_FUNC_POPUP_CREWLIST,TOUCH_FUNC_POPUP_CASTLEMENU};
-                bool valid=true;for(int tab=0;tab<5;++tab){int count=0;for(int i=0;i<touchIndex;++i)count+=touchRect[i][4]==commands[tab]&&touchRect[i][1]==MergeRouletteBottomNavHeight();valid=valid&&count==1;}
+                bool valid=page==4?MergeRouletteBottomNavHeight()>0:MergeRouletteBottomNavHeight()==0;
+                for(int tab=0;tab<5;++tab){int count=0;for(int i=0;i<touchIndex;++i)count+=touchRect[i][4]==commands[tab];valid=valid&&count==(page==4?1:0);}
+                valid=valid&&(MergeRouletteLobbyDockVisible()==(page==4));
                 const int types[4]={POPUPTYPE_SHOPINFO,POPUPTYPE_COLLECTIONS,POPUPTYPE_CREWLIST,POPUPTYPE_CASTLEMENU};
                 valid=valid&&(page==4?popUpCnt==0:popUpCnt==1&&popUp[0].type==types[page]);
-                CastleReviewTrace(valid?"PASS five dock actions remain reachable on selected page":"FAIL dock page or duplicate actions");
+                CastleReviewTrace(valid?"PASS section owns full height with no dock targets; lobby restores five actions":"FAIL section dock ownership");
                 char name[40];snprintf(name,sizeof(name),"dock-page-%d.png",page);pending=true;
                 cocos2d::utils::captureScreen([](bool ok,const std::string&){pending=false;CastleReviewTrace(ok?"PASS dock capture":"FAIL dock capture");},std::string(path)+name);
             }
         }
-        if(tick==180)CastleReviewTrace("DONE centered lobby navigation review");
+        if(tick==180){CastleReviewClick(TOUCH_FUNC_SHOP);PlayKey(PLAYER);systemKey=0;}
+        if(tick==190){CastleReviewClick(TOUCH_FUNC_SETTING);PlayKey(PLAYER);systemKey=0;}
+        if(tick==205){
+            bool modal=popUpCnt>=2&&!MergeRouletteLobbyDockVisible()&&MergeRouletteBottomNavHeight()==0;
+            for(int i=0;i<touchIndex;++i){for(int a:actions)if(touchRect[i][4]==a)modal=false;if(touchRect[i][4]==TOUCH_FUNC_SETTING)modal=false;}
+            CastleReviewTrace(modal?"PASS nested modal owns input above section and resource bar":"FAIL nested modal priority");
+            pending=true;cocos2d::utils::captureScreen([](bool ok,const std::string&){pending=false;CastleReviewTrace(ok?"PASS modal capture":"FAIL modal capture");},std::string(path)+"nested-modal.png");
+        }
+        if(tick==215){while(popUpCnt>0)ClosePopUp();}
+        if(tick==230){
+            int dock=0;for(int i=0;i<touchIndex;++i)for(int a:actions)dock+=touchRect[i][4]==a;
+            CastleReviewTrace(MergeRouletteLobbyDockVisible()&&dock==5?"PASS closing all pages restores exactly five live lobby actions":"FAIL dock restore after modal");
+            CastleReviewTrace("DONE centered lobby navigation review");
+        }
         return;
     }
     if(getenv("CS_UI_TYPE_REVIEW")){
@@ -258,13 +275,13 @@ static void CastleMenuReviewStep()
         if(tick==30){CastleReviewClick(TOUCH_FUNC_POPUP_CREWLIST);PlayKey(PLAYER);systemKey=0;}
         if(tick==20||tick==50||tick==90){
             const int commands[]={TOUCH_FUNC_SHOP,TOUCH_FUNC_COLLECTIONS,TOUCH_FUNC_LOBBY_ADVENTURE,TOUCH_FUNC_POPUP_CREWLIST,TOUCH_FUNC_POPUP_CASTLEMENU};
-            const int margin=Max(1,(int)(8*DX/640.f)),width=DX-2*margin;
+            const int margin=(int)(24*DX/640.f),width=DX-2*margin,gap=Max(1,(int)(2*DX/640.f));
             bool correct=true;
             for(int tab=0;tab<5;++tab){int count=0;
-                for(int i=0;i<touchIndex;++i)if(touchRect[i][4]==commands[tab]&&touchRect[i][1]<=MergeRouletteBottomNavHeight()){
-                    ++count;correct=correct&&touchRect[i][0]==margin+width*tab/5&&touchRect[i][2]==width*(tab+1)/5-width*tab/5;
+                for(int i=0;i<touchIndex;++i)if(touchRect[i][4]==commands[tab]){
+                    ++count;correct=correct&&touchRect[i][0]==margin+width*tab/5&&touchRect[i][2]==width*(tab+1)/5-width*tab/5-gap;
                 }
-                correct=correct&&count==1;
+                correct=correct&&count==(tick==50?0:1);
             }
             if(tick==50){
                 int backButtons=0;for(int i=0;i<touchIndex;++i)backButtons+=touchRect[i][4]==TOUCH_FUNC_POPUP_CLOSE;
@@ -274,7 +291,7 @@ static void CastleMenuReviewStep()
             pending=true;const char* name=tick==20?"nav-main.png":tick==50?"nav-companions.png":"nav-return.png";
             cocos2d::utils::captureScreen([](bool ok,const std::string&){pending=false;CastleReviewTrace(ok?"PASS nav capture":"FAIL nav capture");},std::string(path)+name);
         }
-        if(tick==70){CastleReviewClick(TOUCH_FUNC_LOBBY_ADVENTURE);PlayKey(PLAYER);systemKey=0;}
+        if(tick==70){CastleReviewClick(TOUCH_FUNC_POPUP_CLOSE);PlayKey(PLAYER);systemKey=0;}
         if(tick==100)CastleReviewTrace("DONE shared navigation review");
         return;
     }

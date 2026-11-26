@@ -10720,44 +10720,15 @@ static void LobbyZoomButtonsDraw(void)
 
 #include "MenuRenewalDungeon.inc" // Modal options draw and dismiss above the dungeon page.
  #include "LobbyReferenceUi.inc" // Energy-free lobby admission and shared resource header.
-static void LobbyBottomNavDraw(void)
-{
-	//---- 출정 준비 중에는 쉰다 ----
-	//
-	//전투로 넘어가는 중이라 상점이나 성으로 갈 일이 없고, 그 높이를
-	//가방과 보관함이 쓴다.
-	//
-	//덮어서 가릴 수는 없다. 이 줄은 LoadoutDraw 뒤에 그려지므로 출정
-	//준비가 깐 받침 위로 올라온다. 그리는 것만 막아도 안 된다 - 터치
-	//영역도 여기서 잡으므로, 안 보이는 자리를 눌러 로비로 빠져나가는
-	//함정이 생긴다.
-	if (LoadoutOpen())
-		return;
-	//---- 창이 떠 있으면 쉰다 ----
-	//
-	//이 줄은 팝업보다 나중에 그려진다. 그려 두면 창의 아래쪽을 덮어
-	//메뉴가 쓸 수 있는 높이가 그만큼 줄고, 터치영역까지 여기서 마지막에
-	//잡으므로 창 위를 눌러도 로비 탭이 먼저 먹는다.
-	//
-	//전에는 성 메뉴(POPUPTYPE_CASTLEMENU) 하나만 그렇게 비켰다. 다른 창도
-	//사정이 같다 - 창이 하나라도 떠 있으면 통째로 비킨다.
-	if (popUpCnt > 0) {
-		const int topType = popUp[popUpCnt - 1].type;
-		// The shop covers the dock, including its touch rectangles.
-		if(popUpCnt>1||menuDepth>0)return;
-		const bool isLobbySection = (topType == POPUPTYPE_SHOPINFO
-			|| topType == POPUPTYPE_EVENTSHOP
-			|| topType == POPUPTYPE_COLLECTIONS
-			|| topType == POPUPTYPE_CREWLIST
-			|| topType == POPUPTYPE_CREWUPGRADE
-			|| topType == POPUPTYPE_CASTLEMENU);
-		if (!isLobbySection)
-			return;
-	}
-
-	UnSectionClip(false);
-	MemRect(0,MergeRouletteBottomNavHeight()+4,DX,MergeRouletteBottomNavHeight()+4,0x030A13);
-	MergeRouletteBottomNavDraw();
+// Shared ownership rule for dock paint, hit targets and reserved viewport height.
+bool MergeRouletteLobbyDockVisible(){
+ return drawHandle==MD_LOBBY&&curMenu==MENU_PLAY&&popUpCnt==0&&!gRenewDungeon&&!LoadoutOpen()&&!SharedRewardOpen();
+}
+static void LobbyBottomNavDraw(void){
+ if(!MergeRouletteLobbyDockVisible())return;
+ UnSectionClip(false);
+ MemRect(0,MergeRouletteBottomNavHeight()+4,DX,MergeRouletteBottomNavHeight()+4,0x030A13);
+ MergeRouletteBottomNavDraw();
 }
 
 //성 안의 히어로와 동료를 그린다. 로비와 전투가 같이 쓴다.
@@ -12361,22 +12332,23 @@ void LobbyDraw(void)
 		MemRect(0,DY,DX,DY,0x0C1C2C);
 		gLobbyCastleMenuOpen=false;
 		if(gRenewDungeon)MenuRenewalDungeonDraw(true);
-		for(int p=0;p<popUpCnt;++p){
-			if(p>0||gRenewDungeon){ScreenDarken(SCREENDARKEN);ResetRectPoint();}
-			DrawPopUp(p);
-		}
-		MergeRouletteLobbyTopbarDraw();
-		LobbyBottomNavDraw();++frame;return;
+        int firstModal=0;
+        if(!gRenewDungeon&&popUpCnt>0){DrawPopUp(0);firstModal=1;}
+        MergeRouletteLobbyTopbarDraw();
+        for(int p=firstModal;p<popUpCnt;++p){
+            ScreenDarken(SCREENDARKEN);ResetRectPoint();DrawPopUp(p);
+        }
+        ++frame;return;
 	}
 	// Settings and secondary popups share the current castle world. Do not
 	// instantiate the superseded modular castle beneath an opaque menu.
 	if(!getenv("CS_LEGACY_CASTLE_ART")){
 		MergeRouletteLobbySceneDraw(true);ResetRectPoint();
-		LoadoutDraw();
-		for(int p=0;p<popUpCnt;++p)DrawPopUp(p);
-		MenuRenewalDungeonDraw();
-		LobbyResourceBarsDraw(DY-(GNBHEIGHT-GNB_INIT_HEIGHT));
-		GNBDraw(0,DY-(GNBHEIGHT-GNB_INIT_HEIGHT));LobbyBottomNavDraw();++frame;return;
+        LoadoutDraw();MenuRenewalDungeonDraw();
+        LobbyResourceBarsDraw(DY-(GNBHEIGHT-GNB_INIT_HEIGHT));
+        GNBDraw(0,DY-(GNBHEIGHT-GNB_INIT_HEIGHT));
+        for(int p=0;p<popUpCnt;++p){ResetRectPoint();DrawPopUp(p);}
+        LobbyBottomNavDraw();++frame;return;
 	}
 	char str[96];
 	ResetRectPoint();
