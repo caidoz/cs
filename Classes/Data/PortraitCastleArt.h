@@ -7,9 +7,9 @@ static const Size Sizes[Count]={{256,190},{259,329},{262,353},{265,377},{267,447
 static constexpr float MaxAssemblyRatio=1.482f;
 static const int WheelPixels[Count]={50,56,57,59,62,64,67,69,71,72,76,79,79,82,85,87,89,93,93};
 // Measured deck contact above the hull bottom; all coordinates are native pixels.
-static const int DeckPixels[Count]={36,55,55,42,64,62,57,48,82,111,61,61,60,89,114,72,84,94,66};
+static const int DeckPixels[Count]={36,55,55,42,64,62,57,48,82,111,61,61,60,70,114,72,84,94,66};
 inline float WheelSize(int c){return (float)WheelPixels[c];}
 inline float FrontWheelAt(int c){return c<5?.80f:.84f;}
 inline float CannonBaseFromFloor(int c){return (float)DeckPixels[c];}
-static const int CannonFootX[Count]={61,25,28,32,35,52,56,61,65,70,74,79,83,88,92,97,101,106,150};
+static const int CannonFootX[Count]={61,25,28,32,35,52,56,61,65,70,74,79,83,128,92,97,101,106,150};
 }
