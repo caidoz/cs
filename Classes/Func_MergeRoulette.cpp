@@ -557,7 +557,7 @@ void shield(int x,int y,int size) {
 #include "MergeCastleArt.inc"
 float castleScrollSeconds=0.f;
 #include "PortraitSkin.inc"
-void drawPortraitCastlePreview(int,const Box&,float wheelTravel=-1.f,bool rollLeft=false);
+void drawPortraitCastlePreview(int,const Box&,float wheelTravel=-1.f,bool rollLeft=false,float fixedScale=-1.f);
 //---- 유닛 패 ----
 //
 //[같은 서식]
@@ -4201,6 +4201,19 @@ bool MergeRouletteHousePreview(int house,int x,int top,int width,int height) {
 #include "TitleCastleBackdrop.inc"
 static bool DrawOriginalCastlePreview(int castle,int x,int top,int width,int height,bool moving=false){
     (void)moving;drawPortraitCastlePreview(castle,{x,top,width,height});return true;
+}
+int MergeRouletteCastleUpgradeHeight(int castle){
+ const int c=std::max(0,std::min(18,castle));const float z=1.18f*DX/640.f;
+ return (int)((PortraitCastleArt::Sizes[c].h+PortraitCastleArt::WheelSize(c))*z)+140;
+}
+void MergeRouletteCastleUpgradePreview(int castle,int x,int top,int width,int height){
+ drawPortraitCastlePreview(castle,{x,top,width,height},-1,false,1.18f*DX/640.f);
+}
+void MergeRouletteCastleTurretPreview(int castle,int x,int top,int width,int height){
+ const int c=std::max(0,std::min(18,castle)),img=PORTRAIT_TURRET_FIRST_IMG+c;if(!sprite[img])LoadImg(img);if(!sprite[img])return;
+ if(c==0){const float z=std::min(width/(float)StarterCastleRig::W,height/(float)StarterCastleRig::H);const Box b={x+(int)((width-StarterCastleRig::W*z)/2),top-(int)((height-StarterCastleRig::H*z)/2),(int)(StarterCastleRig::W*z),(int)(StarterCastleRig::H*z)};
+ turretPart(img,0,0,StarterCastleRig::W,StarterCastleRig::H,b);turretPart(img,StarterCastleRig::W,0,StarterCastleRig::W,StarterCastleRig::H,b);
+ }else{const auto sz=sprite[img]->getTexture()->getContentSizeInPixels();const float z=std::min(width/sz.width,height/sz.height);portraitImage(img,{x+(int)((width-sz.width*z)/2),top-(int)((height-sz.height*z)/2),(int)(sz.width*z),(int)(sz.height*z)});}
 }
 void MergeRouletteCastleMenuBackdrop(int castle,int x,int top,int width,int height){
     (void)castle;const int cx=clipX,cy=clipY,cx2=clipX2,cy2=clipY2;

@@ -37,28 +37,28 @@ void CastleSaveChanges() {
 }
 void CastleProgressEnsure() {
     CastleMenuModel::Migrate(robin.castleProgress,robin.castle,robin.castlePartLv);
-    robin.castle=CastleMenuModel::Clamp(robin.castle);
+    robin.castle=CastleMenuModel::ClampVisual(robin.castle);
     auto& p=robin.castleProgress;
-    p.owned=(p.owned&1023u)|1u;
+    p.owned=(p.owned&((1u<<CastleMenuModel::VisualCount)-1))|1u;
     for(int c=0;c<10;++c) for(int i=0;i<5;++i) {
         p.parts[c][i]=(unsigned char)Min(5,(int)p.parts[c][i]);
         p.rooms[c][i]=(unsigned char)Min(5,(int)p.rooms[c][i]);
     }
-    if(!CastleMenuModel::Owned(p,robin.castle)) robin.castle=0;
+    robin.castle=CastleMenuModel::Current(p);
 }
 int CastleInventoryCapacity(int c) { return InventorySlots(); }
 int CastleEquipmentCapacity(int c) { CastleProgressEnsure(); return CastleMenuModel::Equipment(robin.castleProgress,c,GridTestCellCnt(c)); }
 int CastleCannonDamagePercent(int c) {
-    CastleProgressEnsure(); c=CastleMenuModel::Clamp(c);
+    CastleProgressEnsure(); c=CastleMenuModel::ClampVisual(c);
     return CastleArtillery::Of(c).damagePercent*CastleMenuModel::CannonDamageMultiplier(robin.castleProgress,c)/100;
 }
 int CastleCannonCooldown(int c) {
-    CastleProgressEnsure(); c=CastleMenuModel::Clamp(c);
+    CastleProgressEnsure(); c=CastleMenuModel::ClampVisual(c);
     return CastleArtillery::Of(c).cooldown*CastleMenuModel::CannonCooldownMultiplier(robin.castleProgress,c)/100;
 }
 int CastleVisualPartLevel(int c,int i) {
  const int preview=LobbyCastleDebugLevel(c,i);if(preview>=0)return preview;
- CastleProgressEnsure(); return c>=0&&c<10&&i>=0&&i<5?robin.castleProgress.parts[c][i]:0;
+ CastleProgressEnsure();return c>=0&&c<CastleMenuModel::VisualCount&&i>=0&&i<5?(i==3?CastleMenuModel::TurretLevel(robin.castleProgress,c):robin.castleProgress.parts[CastleMenuModel::Clamp(c)][i]):0;
 }
 int CastleTeamBonus(int kind) {
     CastleProgressEnsure(); const auto& p=robin.castleProgress; int c=CastleMenuModel::Clamp(robin.castle);
@@ -72,7 +72,6 @@ void CastleMenuFocusFacility(int room){castlePendingFacility=Max(0,Min(3,room));
 void CastleMenuOpen() { CastleProgressEnsure();
     if(DebugControlsOpen()&&!LobbyCastleDebugActive())LobbyCastleDebugCommand(TOUCH_FUNC_LOBBY_CASTLE_DEBUG);
     if(DebugControlsOpen())LobbyCastleDebugCommand(TOUCH_FUNC_LOBBY_CASTLE_HIDE);
-    if(CastleMenuModel::EnableAllCastles(robin.castleProgress))CastleSaveChanges();
     castleBrowse=robin.castle;castlePage=castleModal=castleCategory=0;castleRow=3;castleMessage="";castlePanY=0;scY[MENU_CASTLE]=0;scAccelY=0;
     if(castlePendingFacility>=0){
         const int row=castlePendingFacility==2?0:castlePendingFacility==3?1:castlePendingFacility==1?2:3;
@@ -80,20 +79,9 @@ void CastleMenuOpen() { CastleProgressEnsure();
     }
 }
 bool CastleSelectDeparture(int c){
- if(c<0||c>=CastleMenuModel::Count)return false;
- CastleProgressEnsure();auto& p=robin.castleProgress;
- if(!CastleMenuModel::Owned(p,c))return false;
- if(robin.castle==c){gMobileCastleVisual=c;return true;}
-        if(CastleInventoryUsed()>CastleInventoryCapacity(c)||CastleEquippedCells()>CastleEquipmentCapacity(c)||LoadoutCellUsed()>CastleEquipmentCapacity(c)||LoadoutUsed()>LOADOUT_BASE+c+p.rooms[c][1]) {
-            castleMessage="용량 초과: 적재 아이템과 배치 장비를 먼저 정리해주세요."; return false;
-        }
- const long long oldGoldPerHour=CastleIncomePerHour(),oldGoldCap=CastleIncomeCap();
- const int oldEnergySeconds=CastleEnergyRecoverySeconds();
- robin.castle=c;gMobileCastleVisual=c;
- CastleProductionRebase(oldGoldPerHour,oldEnergySeconds,oldGoldCap);CastleSaveChanges();
- castleMessage=u8"\ucd9c\uc815 \uc131\uc73c\ub85c \uc120\ud0dd\ud588\uc2b5\ub2c8\ub2e4.";
- return true;
+ CastleProgressEnsure();return c==robin.castle; // A grown castle cannot be switched back to a prior stage.
 }
+
 bool CastleMenuCommand(int func) {
     if(DebugControlsOpen() && LobbyCastleDebugActive()){
         const bool room=func>=TOUCH_FUNC_CASTLE_FACILITY_UPGRADE&&func<TOUCH_FUNC_CASTLE_FACILITY_UPGRADE+4;
@@ -110,9 +98,9 @@ bool CastleMenuCommand(int func) {
     }
     if(func>=TOUCH_FUNC_CASTLE_FACILITY_UPGRADE && func<=TOUCH_FUNC_CASTLE_FACILITY_UPGRADE_END){
         if(castleModal)return true;
-        CastleProgressEnsure();const int c=castleBrowse,i=func-TOUCH_FUNC_CASTLE_FACILITY_UPGRADE;
-        const int lv=robin.castleProgress.rooms[c][i];
-        if(i<CastleFacilities::Counts[c] && CastleMenuModel::Owned(robin.castleProgress,c) && lv<5 && robin.gold>=CastleMenuModel::UpgradeCost(c,lv,true) && !(NetLastRequest()==NETREQ_SAVE && NetLastResult()==NETRESULT_ERR_CONFLICT)){
+        CastleProgressEnsure();const int c=castleBrowse,i=func-TOUCH_FUNC_CASTLE_FACILITY_UPGRADE;if(c!=robin.castle)return true;
+        const int lv=CastleMenuModel::RoomLevel(robin.castleProgress,c,i);
+        if(i<CastleFacilities::RoomCount && CastleMenuModel::Owned(robin.castleProgress,c) && lv<5 && robin.gold>=CastleMenuModel::UpgradeCost(c,lv,true) && !(NetLastRequest()==NETREQ_SAVE && NetLastResult()==NETRESULT_ERR_CONFLICT)){
             castleUpgradeIsRoom=true;castleUpgradeCastle=c;castleUpgradePart=i;castleUpgradeLevel=lv;
             castleUpgradePrice=CastleMenuModel::UpgradeCost(c,lv,true);castleModal=2;
         }return true;
@@ -127,22 +115,24 @@ bool CastleMenuCommand(int func) {
     castleMessage="";
     switch(func) {
     case TOUCH_FUNC_CASTLE_NEW_PREV: castleBrowse=Max(0,c-1); castlePanY=0;scY[MENU_CASTLE]=0; break;
-    case TOUCH_FUNC_CASTLE_NEW_NEXT: castleBrowse=Min(9,c+1); castlePanY=0;scY[MENU_CASTLE]=0; break;
+    case TOUCH_FUNC_CASTLE_NEW_NEXT: castleBrowse=Min(CastleMenuModel::VisualCount-1,c+1); castlePanY=0;scY[MENU_CASTLE]=0; break;
     case TOUCH_FUNC_CASTLE_NEW_DETAIL: castlePage=1; break;
     case TOUCH_FUNC_CASTLE_NEW_BACK: castlePage=castlePage==2?1:0; break;
     case TOUCH_FUNC_CASTLE_NEW_ROOMS: break;
     case TOUCH_FUNC_CASTLE_NEW_PARTS: castleCategory=1; break;
     case TOUCH_FUNC_CASTLE_NEW_SELECT:
-        CastleSelectDeparture(c);break;
+        if(c==robin.castle&&c+1<CastleMenuModel::VisualCount&&CastleMenuModel::Unlocked(p,c+1)){
+            castleUpgradeCastle=c;castleUpgradePrice=CastleMenuModel::GoldPrice(c+1);castleModal=3;
+        }else castleMessage=u8"\uD604\uC7AC \uC131\uC758 \uC2DC\uC124\uACFC \uD3EC\uB300\uB97C Lv.5\uAE4C\uC9C0 \uAC15\uD654\uD574\uC8FC\uC138\uC694.";break;
     case TOUCH_FUNC_CASTLE_NEW_BUY:
         if(!CastleMenuModel::Owned(p,c)) {
-            if(CastleMenuModel::Unlocked(p,c)) castleModal=3;
+            if(c==robin.castle+1&&CastleMenuModel::Unlocked(p,c)){castleUpgradeCastle=robin.castle;castleUpgradePrice=CastleMenuModel::GoldPrice(c);castleModal=3;}
             else castleMessage="골드 구매는 이전 성의 모든 파츠 Lv.5가 필요합니다.";
         }
         break;
     case TOUCH_FUNC_CASTLE_NEW_BUY_GOLD:
         if(!CastleMenuModel::Owned(p,c)) {
-            if(CastleMenuModel::Unlocked(p,c)) castleModal=3;
+            if(c==robin.castle+1&&CastleMenuModel::Unlocked(p,c)){castleUpgradeCastle=robin.castle;castleUpgradePrice=CastleMenuModel::GoldPrice(c);castleModal=3;}
             else castleMessage="골드 구매는 이전 성의 모든 파츠 Lv.5가 필요합니다.";
         }
         break;
@@ -150,15 +140,15 @@ bool CastleMenuCommand(int func) {
         if(castleModal==2) {
             castleModal=0; // Consume this confirmation before charging or saving.
             if(c==castleUpgradeCastle && (castleUpgradeIsRoom || castleRow==castleUpgradePart) &&
-               (castleUpgradeIsRoom?p.rooms[c][castleUpgradePart]:p.parts[c][castleUpgradePart])==castleUpgradeLevel &&
+               (castleUpgradeIsRoom?CastleMenuModel::RoomLevel(p,c,castleUpgradePart):CastleMenuModel::TurretLevel(p,c))==castleUpgradeLevel &&
                CastleMenuModel::UpgradeCost(c,castleUpgradeLevel,castleUpgradeIsRoom)==castleUpgradePrice &&
                CastleMenuModel::Upgrade(p,c,castleUpgradePart,castleUpgradeIsRoom,robin.gold)) {
                 CastleProductionRebase(oldGoldPerHour,oldEnergySeconds,oldGoldCap);CastleSaveChanges();castleMessage="업그레이드 완료 · 저장 요청됨";
             } else castleMessage="레벨 또는 골드가 변경되었습니다. 다시 확인해주세요.";
         }
         else if(castleModal==3) {
-            const bool bought=CastleMenuModel::BuyGold(p,c,robin.gold);
-            if(bought) { robin.castle=c;gMobileCastleVisual=c;CastleProductionRebase(oldGoldPerHour,oldEnergySeconds,oldGoldCap);CastleSaveChanges(); castlePage=1; }
+            const bool bought=robin.castle==castleUpgradeCastle&&castleUpgradePrice==CastleMenuModel::GoldPrice(robin.castle+1)&&CastleMenuModel::Advance(p,robin.castle,robin.gold);
+            if(bought) { robin.castle=CastleMenuModel::Current(p);castleBrowse=robin.castle;castlePanY=0;scY[MENU_CASTLE]=0;gMobileCastleVisual=robin.castle;CastleProductionRebase(oldGoldPerHour,oldEnergySeconds,oldGoldCap);CastleSaveChanges(); castlePage=1; }
             else castleMessage="이전 성 보유 여부와 잔액을 확인해주세요.";
             castleModal=0;
         }
@@ -167,10 +157,11 @@ bool CastleMenuCommand(int func) {
     case TOUCH_FUNC_CASTLE_NEW_CONDITION:
         castleModal=0; castleMessage="골드 구매는 이전 성의 모든 파츠 Lv.5가 필요합니다."; break;
     case TOUCH_FUNC_CASTLE_NEW_UPGRADE:
+        if(c!=robin.castle)return true;
         if(NetLastRequest()==NETREQ_SAVE && NetLastResult()==NETRESULT_ERR_CONFLICT) {castleMessage="저장 충돌 해결 후 다시 시도해주세요.";break;}
-        if(CastleMenuModel::Owned(p,c) && p.parts[c][castleRow]<CastleMenuModel::MaxLevel &&
-           robin.gold>=CastleMenuModel::UpgradeCost(c,p.parts[c][castleRow],false)) {
-            castleUpgradeIsRoom=false;castleUpgradeCastle=c;castleUpgradePart=castleRow;castleUpgradeLevel=p.parts[c][castleRow];
+        if(CastleMenuModel::Owned(p,c) && CastleMenuModel::TurretLevel(p,c)<CastleMenuModel::MaxLevel &&
+           robin.gold>=CastleMenuModel::UpgradeCost(c,CastleMenuModel::TurretLevel(p,c),false)) {
+            castleUpgradeIsRoom=false;castleUpgradeCastle=c;castleUpgradePart=castleRow;castleUpgradeLevel=CastleMenuModel::TurretLevel(p,c);
             castleUpgradePrice=CastleMenuModel::UpgradeCost(c,castleUpgradeLevel,false);castleModal=2;
         } else castleMessage="최대 단계이거나 골드가 부족합니다.";
         break;

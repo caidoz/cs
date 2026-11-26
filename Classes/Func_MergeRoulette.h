@@ -36,3 +36,7 @@ bool MergeRouletteVaultReview(int step);          // 로비 금고 수거 단추
 bool MergeRouletteDebugTouchReview();
 
 void MergeRouletteLobbyTopbarDraw();
+
+int MergeRouletteCastleUpgradeHeight(int castle);
+void MergeRouletteCastleUpgradePreview(int castle,int x,int top,int width,int height);
+void MergeRouletteCastleTurretPreview(int castle,int x,int top,int width,int height);

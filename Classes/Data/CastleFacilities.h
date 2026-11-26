@@ -22,17 +22,17 @@ static const Facility Rooms[10][4]={
  {{"수정 작물 온실","골드 생산·저장",0},{"태양 레이저·병기 제어실","히어로 공격력",0},{"마력 회복·스파 센터","히어로 최대 체력",0},{"태양 방호막 제어실","히어로 방어력",0}}
 };
 inline int Output(int castle,int room,int level){
- if(castle<0||castle>=10||room<0||room>=RoomCount)return 0;
+ if(castle<0||castle>=PortraitCastleArt::Count||room<0||room>=RoomCount)return 0;
  level=level<0?0:level>5?5:level;
  return level*(room==FoodRoom?25:room==MedicalRoom?6:4);
 }
-inline bool Food(int castle,int room){return castle>=0&&castle<10&&room==FoodRoom;}
-inline bool Armory(int castle,int room){return castle>=0&&castle<10&&room==WeaponRoom;}
+inline bool Food(int castle,int room){return castle>=0&&castle<PortraitCastleArt::Count&&room==FoodRoom;}
+inline bool Armory(int castle,int room){return castle>=0&&castle<PortraitCastleArt::Count&&room==WeaponRoom;}
 inline int AttackUpgrade(int castle,int room,int level){return Armory(castle,room)?Output(castle,room,level):0;}
 inline const char* Effect(int castle,int room){return room==FoodRoom?"골드 생산량":room==WeaponRoom?"히어로 공격력":room==MedicalRoom?"히어로 최대 체력":"히어로 방어력";}
 template<class Progress> inline int Bonus(const Progress& p,int castle,bool energy){
- if(castle<0||castle>=10||!(p.owned&(1u<<castle))||energy)return 0;
- return Output(castle,FoodRoom,p.rooms[castle][FoodRoom]);
+ if(castle<0||castle>=PortraitCastleArt::Count||!(p.owned&(1u<<castle))||energy)return 0;
+ return Output(castle,FoodRoom,p.rooms[castle<10?castle:9][FoodRoom]);
 }
-template<class Progress> inline int StorageBonus(const Progress& p,int castle){return castle>=0&&castle<10?p.rooms[castle][FoodRoom]*50:0;}
+template<class Progress> inline int StorageBonus(const Progress& p,int castle){return castle>=0&&castle<PortraitCastleArt::Count?p.rooms[castle<10?castle:9][FoodRoom]*50:0;}
 }

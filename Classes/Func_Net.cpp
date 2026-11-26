@@ -318,11 +318,12 @@ static void NetBuildDump(std::string& out)
 		PutNum(gNetUserId);PutNum(8);PutNum(1);PutNum(CastleTutorialPacked());RowEnd();   //단계 | 로비 힌트<<8
 	}
 	CastleProgressEnsure();
-	PutNum(gNetUserId); PutNum(7); PutNum(0); PutNum(1); RowEnd();
-	for(int c=0;c<10;++c) {
+	PutNum(gNetUserId); PutNum(7); PutNum(0); PutNum(robin.castleProgress.version); RowEnd();
+	for(int c=0;c<CastleMenuModel::VisualCount;++c) {
 		if(CastleMenuModel::Owned(robin.castleProgress,c)) {
 			PutNum(gNetUserId); PutNum(6); PutNum(c); PutNum(1); RowEnd();
 		}
+		if(c>=CastleMenuModel::Count)continue;
 		for(int k=0;k<5;++k) {
 			PutNum(gNetUserId); PutNum(4); PutNum(c*5+k); PutNum(robin.castleProgress.parts[c][k]); RowEnd();
 			PutNum(gNetUserId); PutNum(5); PutNum(c*5+k); PutNum(robin.castleProgress.rooms[c][k]); RowEnd();
@@ -941,8 +942,8 @@ static void NetApplyDump(NetTableMap& tables)
 			case 8: if(idx==1)CastleTutorialLoad(val);break;
 			case 4: if(idx<50) robin.castleProgress.parts[idx/5][idx%5]=(unsigned char)Max(0,Min(5,val)); break;
 			case 5: if(idx<50) robin.castleProgress.rooms[idx/5][idx%5]=(unsigned char)Max(0,Min(5,val)); break;
-			case 6: if(idx<10&&val) robin.castleProgress.owned|=1u<<idx; break;
-			case 7: if(idx==0&&val==1) robin.castleProgress.version=1; break;
+			case 6: if(idx>=0&&idx<CastleMenuModel::VisualCount&&val) robin.castleProgress.owned|=1u<<idx; break;
+			case 7: if(idx==0&&val>=1&&val<=3) robin.castleProgress.version=val; break;
 			case 0: if (idx < TOTALDEMO) robin.demoSeen[idx] = (val != 0); break;
 			case 1: if (idx < TOTAL_MENU) robin.openedMenu[idx] = (unsigned char)val; break;
 			case 2: if (idx < TOTAL_STATUE) robin.statue[idx] = (val != 0); break;
@@ -1415,8 +1416,9 @@ bool NetCastleProtocolSelfTest(void)
     MergeRoulette::Stats stats;
     merge.attack(stats);merge.step();
     const std::string expectedMerge=merge.encode();
+    const auto fail=[](int selected,int step){if(const char* path=getenv("CS_CASTLE_PROTOCOL_TRACE")){FILE* f=fopen(path,"a");if(f){fprintf(f,"FAIL stage=%d step=%d actual=%d version=%d owned=%u gold=%lld\n",selected,step,robin.castle,robin.castleProgress.version,robin.castleProgress.owned,robin.gold);fclose(f);}}return false;};
     // Runs before AppDelegate in the explicit test process, without account I/O.
-    for (int selected = 0; selected < CastleMenuModel::Count; ++selected) {
+    for (int selected = 0; selected < CastleMenuModel::VisualCount; ++selected) {
         std::memset(robin.mergeRouletteRun,0,sizeof(robin.mergeRouletteRun));
         std::memcpy(robin.mergeRouletteRun,expectedMerge.data(),expectedMerge.size());
         robin.mergeRouletteHero=selected%3;
@@ -1424,8 +1426,8 @@ bool NetCastleProtocolSelfTest(void)
         robin.gold = 987654321;
         robin.coin = 43210;
         auto& p = robin.castleProgress;
-        p.version = 1;
-        p.owned = 1023u;
+        p.version = 3;
+        p.owned = (1u<<(selected+1))-1;
         for (int c = 0; c < CastleMenuModel::Count; ++c)
             for (int i = 0; i < CastleMenuModel::Categories; ++i) {
                 p.parts[c][i] = (unsigned char)((c+i+selected)%6);
@@ -1436,20 +1438,20 @@ bool NetCastleProtocolSelfTest(void)
         NetBuildDump(dump);
         NetTableMap tables;
         long long user = 0, revision = 0;
-        if (!NetParseDump(dump, tables, &user, &revision)) return false;
+        if (!NetParseDump(dump, tables, &user, &revision)) return fail(selected,1);
         robin.castleProgress = CastleMenuModel::Progress();
         robin.castle = 0;
         robin.gold = robin.coin = 0;
         NetApplyDump(tables);
         MergeRoulette::Run restored;
         if(robin.mergeRouletteHero!=selected%3 || !restored.decode(robin.mergeRouletteRun)
-           || restored.encode()!=expectedMerge)return false;
+           || restored.encode()!=expectedMerge)return fail(selected,2);
         if (robin.castle != selected || robin.gold != 987654321 || robin.coin != 43210 ||
-            p.version != expected.version || p.owned != expected.owned) return false;
+            p.version != expected.version || p.owned != expected.owned) return fail(selected,3);
         for (int c = 0; c < CastleMenuModel::Count; ++c)
             for (int i = 0; i < CastleMenuModel::Categories; ++i)
                 if (p.parts[c][i] != expected.parts[c][i] ||
-                    p.rooms[c][i] != expected.rooms[c][i]) return false;
+                    p.rooms[c][i] != expected.rooms[c][i]) return fail(selected,4);
     }
     return true;
 }

@@ -23,49 +23,28 @@ static void GoldPair(long long needed,long long owned,int left,int top,int width
 static int HeaderTop(){return DY-(GNBHEIGHT-GNB_INIT_HEIGHT)-LOBBY_BAR_H-6;}
 static int BodyTop(){return HeaderTop()-54;}
 static int BodyBottom(){return drawHandle==MD_LOBBY?MergeRouletteBottomNavHeight()+10:16;}
-static int PreviewHeight(){return CastleUpgradeBlocks::PreviewHeight(DY);}
-static int ContentHeight(){return CastleUpgradeBlocks::ContentHeight(DY);}
+static int PreviewHeight(){return MergeRouletteCastleUpgradeHeight(castleBrowse);}
+static int ContentHeight(){return PreviewHeight()+12+60+5*(CastleUpgradeBlocks::CardHeight(DY)+CastleUpgradeBlocks::Gap)+16;}
 static int ScrollMax(){return Max(0,ContentHeight()-(BodyTop()-BodyBottom()));}
 static int panelDrawSlot=0;
 // The rounded panel shader is expensive on large overlapping menu surfaces.
 // Rasterize each static style once; scrolling changes only its clipped quad.
 static void Panel(int x,int top,int w,int h,int fill,int edge){
- MergeRouletteUiFrame(x,top,w,h,6);return;
- if(w<2||h<2||x+w<=clipX||x>=clipX2||top<=clipY2||top-h>=clipY)return;
- if(getenv("CS_CASTLE_PREVIEW_UNCACHED")){DrawPixelPanel(x,top,w,h,fill,edge);return;}
- struct Cached {int w=0,h=0,fill=0,edge=0;cocos2d::RenderTexture* target=nullptr;};
- static Cached cache[32];static int next=0;
- static std::vector<cocos2d::Sprite*> images;
- Cached* entry=nullptr;
- for(auto& item:cache)if(item.target&&item.w==w&&item.h==h&&item.fill==fill&&item.edge==edge){entry=&item;break;}
- if(!entry){
-  entry=&cache[next++%32];if(entry->target)entry->target->release();*entry=Cached();
-  entry->target=cocos2d::RenderTexture::create(w,h);
-  if(!entry->target){DrawPixelPanel(x,top,w,h,fill,edge);return;}
-  entry->target->retain();entry->w=w;entry->h=h;entry->fill=fill;entry->edge=edge;
-  const int cx=clipX,cy=clipY,cx2=clipX2,cy2=clipY2,alpha=m_lgrpAlpha;
-  PushRenderTarget(entry->target,nullptr,true);SetSectionClip(0,h,w,h,true);SetAlpha(ALPHA_MAX);
-  DrawPixelPanel(0,h,w,h,fill,edge);
-  PopRenderTarget();clipX=cx;clipY=cy;clipX2=cx2;clipY2=cy2;SetAlpha(alpha);
- }
- if(panelDrawSlot>=(int)images.size()){
-  auto* image=cocos2d::Sprite::createWithTexture(entry->target->getSprite()->getTexture());image->retain();images.push_back(image);
- }
- auto* image=images[panelDrawSlot++];image->setTexture(entry->target->getSprite()->getTexture());
- const int left=Max(x,clipX),right=Min(x+w,clipX2),upper=Min(top,clipY),lower=Max(top-h,clipY2);
- image->setTextureRect(cocos2d::Rect(left-x,lower-(top-h),right-left,upper-lower));image->setFlippedY(true);
- image->setAnchorPoint({0,1});image->setPosition({(float)left,(float)upper});image->setOpacity(m_lgrpAlpha*255/32);AuditDrawnTexture(image->getTexture());image->visit();
+ DrawMenuReferencePanel(x,top,w,h,0,fill,edge);
 }
+
 static void Button(const char* text,int x,int y,int w,int h,int command,bool enabled=true,bool selected=false){
  UiButtonStyle style;style.fill=selected?0x246873:0x17444A;
  DrawUiButton(x,y,w,h,text,command,selected,enabled,style);
 }
-static void FacilityIcon(int c,int room,int lv,int x,int top,int size){
- (void)c;(void)lv;const int glyphs[4]={6,4,5,9};MergeRouletteUiGlyph(glyphs[std::max(0,std::min(3,room))],x,top,size,size);
-}
 static void FacilityPreview(int c,int room,int lv,int x,int top,int width,int height){
- MergeRouletteUiFrame(x,top,width,height,6);FacilityIcon(c,room,lv,x+width/2-32,top-height/2+32,64);
+ const int img=MERGE_REBUILD_ROOMS_IMG+Min(9,Max(0,c/2));if(!sprite[img])LoadImg(img);if(!sprite[img])return;
+ const auto size=sprite[img]->getTexture()->getContentSizeInPixels();const auto f=MergeCastleTransition::RoomFrame(room,lv,(int)size.width,(int)size.height);
+ const int cropW=Min(f.w,Max(1,(int)(f.h*width/(float)height)));const float z=Min(width/(float)cropW,height/(float)f.h);
+ DrawMenuBackdropCrop(sprite[img]->getTexture(),f.x+(f.w-cropW)/2,f.y,cropW,f.h,x+(int)((width-cropW*z)/2),top,(int)(cropW*z),(int)(f.h*z));
 }
+static void FacilityIcon(int c,int room,int lv,int x,int top,int size){FacilityPreview(c,room,lv,x,top,size,size);}
+
 }
 
 namespace CastleFinal {
@@ -166,3 +145,6 @@ void CastleMenuModuleReviewSet(int castle,int variant){
  if(variant==11){const int mixed[5]={1,5,2,4,3};for(int i=0;i<5;++i)robin.castleProgress.parts[castle][i]=mixed[i];}
  scY[MENU_CASTLE]=0;
 }
+
+int CastleMenuGrowthBrowse(){return castleBrowse;}
+bool CastleMenuGrowthPending(){return castleModal==3;}

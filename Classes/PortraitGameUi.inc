@@ -104,13 +104,20 @@ void drawPortraitTopbar(){
 }
 
 //wheelTravel 가 0 이상이면 그만큼 굴러간 각도로 바퀴를 돌린다(제목 화면). 음수면 그대로 선 바퀴.
-void drawPortraitCastlePreview(int castle,const Box& b,float wheelTravel,bool rollLeft){
+void drawPortraitCastlePreview(int castle,const Box& b,float wheelTravel,bool rollLeft,float fixedScale){
  const int c=std::max(0,std::min(18,castle));const auto& size=PortraitCastleArt::Sizes[c];
  const float wheel=PortraitCastleArt::WheelSize(c);
- const float z=std::min(b.w/(size.w+80.f),b.h/(size.h+wheel));
- const int w=(int)(size.w*z),h=(int)(size.h*z),x=b.x+(b.w-w)/2,bottom=b.y-b.h+(int)(wheel*.58f*z);
+ const float z=fixedScale>0?fixedScale:std::min(b.w/(size.w+80.f),b.h/(size.h+wheel));
+ const int w=(int)(size.w*z),h=(int)(size.h*z),bottom=b.y-b.h+(int)(wheel*.58f*z);
+ int x=b.x+(b.w-w)/2;
+ if(fixedScale>0){
+  const int gun=PORTRAIT_TURRET_FIRST_IMG+c;if(!sprite[gun])LoadImg(gun);
+  const float gw=c==0?StarterCastleRig::W*z:sprite[gun]?sprite[gun]->getTexture()->getContentSizeInPixels().width*z:0;
+  const float right=std::max((float)w,w*PortraitCastleArt::FrontWheelAt(c)-PortraitCastleArt::CannonFootX[c]*z+gw);
+  x=b.x+(int)((b.w-right)/2);
+ }
  drawPortraitFarWheels(c,{x,bottom+h,w,h},z,wheelTravel,false,rollLeft);
- portraitImage(portraitHullImage(c),{x,bottom+h,w,h});
+ portraitImage(fixedScale>0?PORTRAIT_CASTLE_FIRST_IMG+c:portraitHullImage(c),{x,bottom+h,w,h});
  const int diameter=(int)(wheel*z);for(int i=0;i<(c<5?2:3);++i){const float at=c<5?(i?PortraitCastleArt::FrontWheelAt(c):.17f):(.15f+.345f*i);
   const Box wb={x+(int)(w*at)-diameter/2,bottom+(int)(diameter*.42f),diameter,diameter};
   const int img=PORTRAIT_WHEEL_FIRST_IMG+c;if(wheelTravel<0){portraitImage(img,wb);continue;}

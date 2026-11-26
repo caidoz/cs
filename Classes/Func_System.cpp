@@ -4901,7 +4901,7 @@ void LoadGameAfterNet(void)
 	robin.heart=Min((long long)GetInitHeart(),Max(0LL,robin.heart));
 	CrewGrantEnsure();
 	GearGrantEnsure();
-	gMobileCastleVisual=CastleMenuModel::Clamp(robin.castle);
+	gMobileCastleVisual=CastleMenuModel::ClampVisual(robin.castle);
 	robin.maxInven=(unsigned short)GetMaxInven();
 	//crewCnt는 ROBINDATA에 없는 순수 전역이라 저장에서 복원되지 않는다.
 	//편성표(slotCrew)를 보고 다시 센다. LoadGame()과 같은 이유다.

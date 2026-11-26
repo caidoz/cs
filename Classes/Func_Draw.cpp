@@ -5955,7 +5955,7 @@ int LoadoutPoint(void)
 	//한다.
 	return Max(LOADOUT_BASE, CastleEquipmentCapacity(castle))
 		+ CastleBonusOf(CPE_LOADOUT)
-		+ robin.castleProgress.rooms[castle][1];
+		+ CastleMenuModel::RoomLevel(robin.castleProgress,castle,1);
 }
 
 //지금 고른 것이 드는 점수의 합.
@@ -10133,7 +10133,7 @@ static int LobbyCastleLevel(void)
 		//원래는 robin.castle 을 따랐는데, 제목 화면의 이어하기가
 		//디버그 최대치라 늘 열 층짜리로 들어왔다. 실제 진행을 따르게
 		//하려면 아래 줄을 robin.castle 로 되돌리면 된다.
-		if(!LobbyCastleDebugActive())gMobileCastleVisual = CastleMenuModel::Clamp(robin.castle);
+		if(!LobbyCastleDebugActive())gMobileCastleVisual = CastleMenuModel::ClampVisual(robin.castle);
 		gLobbyVisualReady = true;
 	}
 

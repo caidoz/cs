@@ -246,3 +246,6 @@ bool CastleMenuFinalReviewChecks();
 void CastleMenuModuleReviewSet(int,int);
 bool EquipDetailStatsTouch(int phase,int id,float x,float y);
 bool EquipmentDetailStatsReview(int step);
+
+int CastleMenuGrowthBrowse();
+bool CastleMenuGrowthPending();
