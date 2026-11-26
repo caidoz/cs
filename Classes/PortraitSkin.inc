@@ -70,7 +70,24 @@ Box portraitBackdropBox(int ground){
  return {-(int)std::fmod(castleScrollSeconds*110.f*s,std::max(1.f,size.width*z-DX+1)),
   fixedGround+(int)(size.height*.825f*z),(int)(size.width*z),(int)(size.height*z)};
 }
-void portraitNight(int ground,float worldZoom=0){
+int portraitBridgeTop=0,portraitBridgeBottom=0;
+void portraitArchBridge(int top,int bottom){
+ portraitBridgeTop=portraitBridgeBottom=0;if(top<=bottom)return;
+ const int region=std::max(0,std::min(14,StageBg::s_region)),img=StageBg::Img(StageBg::SlotRail);
+ if(!sprite[img])LoadImg(img);if(!sprite[img])return;
+ const auto size=sprite[img]->getTexture()->getContentSizeInPixels();
+ const auto& cycle=StageRailArt::Cycles[region];
+ const int sourceTop=50,sourceWidth=cycle[1]-cycle[0],sourceHeight=cycle[3]+12-sourceTop;
+ const float s=DX/640.f,z=std::max(DX/size.width,(PortraitGame::railLift(DX,DY)+64*s)/sourceHeight);
+ const int period=std::max(1,(int)(sourceWidth*z)),offset=(int)std::fmod(castleScrollSeconds*110*s,(float)period);
+ const int left=clipX,right=clipX2,upper=clipY,lower=clipY2;
+ clipY=std::min(clipY,top);clipY2=std::max(clipY2,bottom);
+ for(int x=-offset;x<DX;x+=period)DrawImage(sourceWidth,sourceHeight,cycle[0],sourceTop,x,top,false,0,0,0,0,z,sprite[img],img);
+ clipX=left;clipX2=right;clipY=upper;clipY2=lower;
+ portraitBridgeTop=top;portraitBridgeBottom=bottom;
+}
+void portraitNight(int ground,float worldZoom=0,int bridgeBottom=0){
+ portraitBridgeTop=portraitBridgeBottom=0;
  const float s=DX/640.f;MemRect(0,DY,DX,DY,0x030A13);
  const int img=PORTRAIT_NIGHT_IMG;const Box bg=portraitBackdropBox(ground);
  if(!sprite[img])return;const auto size=sprite[img]->getTexture()->getContentSizeInPixels();
@@ -81,6 +98,7 @@ void portraitNight(int ground,float worldZoom=0){
   if(sprite[road]){const auto q=sprite[road]->getTexture()->getContentSizeInPixels();const float rz=!sample&&worldZoom>0?worldZoom:DX/q.width;
    const char* rail=sample?std::getenv("CS_PORTRAIT_SAMPLE_RAIL_Y"):nullptr;
    const int top=ground+(int)((rail?std::atof(rail):sample?q.height*.70f:26.f)*rz);
+   if(!sample)portraitArchBridge(top-(int)(q.height*rz)+1,bridgeBottom);
    const int period=std::max(1,(int)(q.width*rz));
    const int offset=(int)std::fmod(castleScrollSeconds*110.f*s,(float)period);
    for(int x=-offset;x<DX;x+=period)

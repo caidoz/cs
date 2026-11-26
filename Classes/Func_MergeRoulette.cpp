@@ -2024,7 +2024,7 @@ void drawWorld(const Layout& l,bool combat) {
     SetAlpha(32);SetColor(0);grayScale=0;
     // Lobby and title are a parked campsite; only battle travel moves wheels and rails.
     if(!nativeTitleIsolate){const int c=std::max(0,std::min(18,siegeHullStage>=0?siegeHullStage:run.stage));
-     portraitNight(l.ground,portraitCastleZoom(l));}
+     portraitNight(l.ground,portraitCastleZoom(l),l.arenaBottom+(int)(8*s));}
     const int viewportTop=DY-(int)(72*s),viewportBottom=l.arenaBottom+(int)(8*s);
     SetSectionClip(0,viewportTop,DX,std::max(1,viewportTop-viewportBottom),false);
     const float savedMotionX=uiSceneMotionX;
