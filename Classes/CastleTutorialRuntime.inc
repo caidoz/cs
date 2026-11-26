@@ -151,10 +151,7 @@ bool CastleTutorialCommand(int command){
 void CastleTutorialDraw(){
  using namespace CastleTutorial;
  if(CastleGuide::DisabledReview()||!CastleGuide::Scene())return;
- if(gCastleTutorialStep>=Done){
-  if(drawHandle==MD_LOBBY&&popUpCnt==0&&!LoadoutOpen())CastleGuide::Button("?",DX-48,DY-LOBBY_BAR_H-8,32,TOUCH_FUNC_TUTORIAL_HELP);
-  return;
- }
+ if(gCastleTutorialStep>=Done)return;
  if(gCastleTutorialStep<0||popUpCnt>0||isDemo)return;
  int holes[2][4]={};int count=CastleTutorialFocus(holes);
  if(!count){
