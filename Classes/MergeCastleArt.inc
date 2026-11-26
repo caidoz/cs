@@ -61,12 +61,13 @@ void padArt(int index,const Box& b,float angle=0){
 //블록 밑판은 등급 색을 **테두리에만** 둔다(2026-11-23). 판 전체가 금·보라·파랑이면 그림이 색에 묻히고
 //빈 칸(크림·청록 바둑판)과도 구분이 흐려졌다. 등급 테두리 안쪽은 네이비 한 색이다.
 void gradePad(int level,const Box& b){
- const int img=PORTRAIT_UI_FIRST_IMG+1;if(!sprite[img])LoadImg(img);if(!sprite[img])return;
- const auto size=sprite[img]->getTexture()->getContentSizeInPixels();
- portraitTile(b,0);
- SetAlpha(14);MemRectFrameThick(b.x-1,b.y+1,b.w+2,b.h+2,0x5AE6B7,2);SetAlpha(32);
- MemRectFrameThick(b.x+1,b.y-1,b.w-2,b.h-2,0x7BF6CC,2);
- (void)level;
+ const int p=std::max(1,(int)(DX/640.f)),alpha=m_lgrpAlpha;
+ const int color=QuietCard::Color(level);
+ // A dark plate retains its depth; only its rim carries the rarity color.
+ bevel({b.x,b.y-3*p,b.w,b.h},0x101C25,3*p);
+ bevel(b,color,3*p);
+ bevel(inset(b,2*p),0x07131B,2*p);
+ SetAlpha(alpha);
 }
 
 Box slotWindow(const Box& b,int i){

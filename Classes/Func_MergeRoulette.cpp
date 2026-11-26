@@ -26,6 +26,7 @@ void MergeTutorialBeginBattle();void MergeTutorialRememberAllyPlate(int x,int y,
 #include "PortraitGameLayout.h"
 #include "LobbyCampModel.h"
 #include "BaseCampPresentation.h"
+#include "QuietCardStyle.h"
 #include "Data/PortraitCastleArt.h"
 #include "Data/StarterCastleRig.h"
 #include "Data/CastleFiveFloorArt.h"
@@ -1136,9 +1137,10 @@ void drawLever(const Layout& l) {
     uiArt(MergeCastleArt::Lever,b);
 }
 bool entering();
-void portraitRankBadge(int level,const Box& box){
- const float s=DX/640.f;const int colors[6]={0xC4D1D9,0x76D890,0x76BFFF,0xC899FF,0xFFD15E,0xFF9375};
- const int tint=colors[std::max(0,std::min(5,level-1))],w=(int)(32*s),h=(int)(18*s);
+int gridRarity(const Block& b){return QuietCard::Rank(b.family>=Roles&&b.ownedId?b.ownedGrade+1:b.level);}
+void portraitRankBadge(int level,const Box& box,int rarity){
+ const float s=DX/640.f;
+ const int tint=QuietCard::Color(rarity),w=(int)(32*s),h=(int)(18*s);
  const Box badge={box.x+box.w-w-(int)(3*s),box.y-box.h+h+(int)(3*s),w,h};
  bevel(badge,tint,std::max(1,(int)(3*s)));bevel(inset(badge,std::max(1,(int)s)),0x0B1A25,std::max(1,(int)(2*s)));
  static const char* star[9]={"000010000","000111000","111111111","011111110","001111100","011111110","011101110","110000011","100000001"};
@@ -1150,15 +1152,16 @@ void drawBlock(const Block& b,const Box& box,bool ghost=false) {
     // Restored blocks wait for the floor tiles to finish landing as well.
     if(entering())return;
     int lv=std::max(1,std::min((int)MaxLevel,b.level));
-    SetAlpha(ghost?16:32);gradePad(lv,box);SetAlpha(32);
+    const int rarity=gridRarity(b);
+    SetAlpha(ghost?16:32);gradePad(rarity,box);SetAlpha(32);
     Box artwork=inset(box,std::max(1,(int)(4*DX/640.f)));
     //돌려 놓은 동료(2×1)는 칸이 낮아 발을 바닥 가까이 둔다 - 선 동료의 12px 들어올림을 그대로 주면 그림이 칸 가운데 떠 보인다.
     const bool lowTile=b.family<Roles&&b.rot&&Wide(b)!=Tall(b);
     if(b.family<Roles)artwork.y+=(int)((lowTile?2:12)*DX/640.f);
     else artwork.y+=0;
     icon(b.family,artwork,b.family<Roles?.90f:.96f,false,b.level,b.crew,b.family<Roles?(int)((lowTile?2:6)*DX/640.f):0,&b);
-    if(b.ownedId)MemRectFrameThick(box.x+2,box.y-2,box.w-4,box.h-4,0x8CCCA8,1);
-    portraitRankBadge(lv,box);
+    if(b.ownedId)MemRect(box.x+4,box.y-4,5,2,0xE7E1CF);
+    portraitRankBadge(lv,box,rarity);
 }
 Box blockBox(const Block& b,const Layout& l) {
     return {l.board.x+b.x*l.cell,l.board.y-b.y*l.cellH,Wide(b)*l.cell,Tall(b)*l.cellH};
@@ -4899,14 +4902,14 @@ void MergeRouletteDraw() {
         const int grow=(int)(pulse*7*s);
         if(accent.age<18)drawBlock(accent.block,{box.x-grow,box.y+grow,box.w+grow*2,box.h+grow*2});
         SetAlpha((int)(32*(1-t)));
-        const int color=accent.block.level>=5?0x9DEDE2:0x70C7C1;
+        const int color=QuietCard::Color(gridRarity(accent.block));
         MemRectFrameThick(box.x-grow,box.y+grow,box.w+2*grow,box.h+2*grow,color,std::max(1,(int)(3*s)));
         for(int j=0;j<6;++j){
             const float angle=j*6.2831853f/6+t*.8f,radius=(20+38*t)*s;
             const int px=(int)(box.x+box.w*.5f+std::cos(angle)*radius),py=(int)(box.y-box.h*.5f+std::sin(angle)*radius);
             const int spark=std::max(1,(int)(2*s));
-            mergeRect(px-spark,py,spark*2,spark,0x8DE6DA);
-            mergeRect(px,py+spark,spark,spark*3,0x8DE6DA);
+            mergeRect(px-spark,py,spark*2,spark,color);
+            mergeRect(px,py+spark,spark,spark*3,color);
         }
         SetAlpha(32);
     }

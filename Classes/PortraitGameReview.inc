@@ -30,6 +30,14 @@ void portraitReviewFixture(){
   run.board.clear();
   for(int i=0;i<2;++i){Block b;b.family=i;b.level=i+1;b.crew=MergeTrees::CrewAt(i,b.level,0);b.x=i;b.y=0;run.board.push_back(b);}
  }
+ if(std::getenv("CS_GRID_RARITY_REVIEW")){
+  run.shape={6,4};for(int y=0;y<Height;++y)run.shape.rows[y]=y<4?63:0;run.board.clear();
+  for(int i=0;i<6;++i){
+   Block gear;gear.family=Sword;gear.level=1;gear.ownedId=9900+i;gear.ownedDetail=0;gear.ownedGrade=i;gear.ownedW=1;gear.ownedH=2;gear.x=i;gear.y=0;run.board.push_back(gear);
+   Block crew;crew.family=0;crew.level=i+1;crew.crew=MergeTrees::CrewAt(0,i+1,0);crew.x=i;crew.y=2;run.board.push_back(crew);
+  }
+  shownGrades=run.board;gradeAccents.clear();
+ }
  heroHealthDisplay.set(run.lives);heroHealthDisplay.advance(1);enemyHealthDisplay.set(run.enemyHp);enemyHealthDisplay.advance(1);
  guardDisplay.set(run.guard);guardDisplay.advance(1);
 }
@@ -223,6 +231,12 @@ bool portraitReviewLobby(){
 bool portraitReviewStep(const Layout& l){
  if(!portraitReviewEnabled())return false;static int hold=0;static bool done=false;if(done)return true;
  if(reviewCapturePending)return true;
+ if(std::getenv("CS_GRID_RARITY_REVIEW")){
+  static int phase=0;if(phase++==2){reviewCapture("grid-rarity");
+   for(const auto& b:run.board){const Box box=blockBox(b,l);char line[120];std::snprintf(line,sizeof(line),"RIM %d %06X %d %d",gridRarity(b),QuietCard::Color(gridRarity(b)),box.x+1,DY-box.y+5);reviewTrace(line);}
+   reviewTrace(run.shape.valid()?"PASS owned gear grade and companion star rank share six rarity rims":"FAIL invalid rarity fixture");}
+  if(phase==5)reviewTrace("DONE portrait review");return true;
+ }
  if(std::getenv("CS_BASE_CAMP_REVIEW")){
   if(baseCampReviewStage==1&&!entering()&&!introActive()){reviewTrace(friendlyStatCount==3&&hostileStatCount==1?"PASS battle arrives with compact friendly trio and enemy HP":"FAIL arrival HUD");reviewCapture("base-battle");baseCampReviewStage=2;}
   else if(baseCampReviewStage==2){reviewTrace("DONE portrait review");baseCampReviewStage=3;}
