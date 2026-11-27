@@ -1,0 +1,34 @@
+[
+  {
+    "height": 850,
+    "scrolled": false,
+    "ground": 336,
+    "rail_to_region_panel_gap": 21,
+    "stages": 19,
+    "captures": 38
+  },
+  {
+    "height": 850,
+    "scrolled": true,
+    "ground": 336,
+    "rail_to_region_panel_gap": 21,
+    "stages": 19,
+    "captures": 38
+  },
+  {
+    "height": 1408,
+    "scrolled": false,
+    "ground": 456,
+    "rail_to_region_panel_gap": 141,
+    "stages": 19,
+    "captures": 38
+  },
+  {
+    "height": 1408,
+    "scrolled": true,
+    "ground": 456,
+    "rail_to_region_panel_gap": 141,
+    "stages": 19,
+    "captures": 38
+  }
+]

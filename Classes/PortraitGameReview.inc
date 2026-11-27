@@ -48,6 +48,7 @@ bool portraitReviewLobby(){
   if(reviewCapturePending)return true;
   if(motifReviewStage<19){
    run.stage=robin.castle=gMobileCastleVisual=motifReviewStage;
+   portraitCameraY=std::getenv("CS_FIXED_RAIL_SCROLL_REVIEW")?-83.f*DX/640.f:0.f;
    robin.castleProgress.version=3;robin.castleProgress.owned=(1u<<(motifReviewStage+1))-1;
    active=false;drawHandle=MD_LOBBY;starterInteriorReveal=0;titleLobbyClock=-1;
    MergeRouletteLobbySceneDraw();
@@ -58,8 +59,12 @@ bool portraitReviewLobby(){
    const int axle=body.x+(int)(body.w*PortraitCastleArt::FrontWheelAt(motifReviewStage));
    const bool mount=std::abs(gun.x+(int)(portraitCannonFootX(motifReviewStage)*z)-axle)<=1;
    reviewTrace(aspect&&mount?"PASS motif native aspect and shared front-wheel turret socket":"FAIL motif assembly");
-   const auto scene=layout();const int minimum=(int)(336*scene.scale);
-   reviewTrace(body.y<=DY-78*scene.scale+2||scene.ground-(int)portraitCameraY<=minimum+1?"PASS lobby spends headroom on castle before bridge":"FAIL bridge hides lobby castle");
+   const auto scene=layout();const auto fixed=PortraitGame::lobby(DX,DY);
+   const int expectedGap=(int)(21*scene.scale)+PortraitGame::railLift(DX,DY);
+   const int gap=portraitRailBottom-fixed.stageTop-(int)(16*scene.scale);
+   const bool fixedRail=portraitRailGround==fixed.ground&&std::abs(gap-expectedGap)<=2;
+   reviewTrace(fixedRail?"PASS lobby rail fixed by resolution across castle stages and scroll":"FAIL lobby rail depends on castle");
+   char railLine[120];std::snprintf(railLine,sizeof(railLine),"RAIL lobby stage=%d height=%d ground=%d lowerUiGap=%d camera=%d",motifReviewStage+1,DY,portraitRailGround,gap,(int)portraitCameraY);reviewTrace(railLine);
    ++motifReviewStage;active=true;drawHandle=MD_PLAY;return true;
   }
   if(motifReviewStage>=38)return true;
@@ -260,8 +265,8 @@ bool portraitReviewStep(const Layout& l){
   const bool aspect=std::abs(hull.w*size.h-hull.h*size.w)<=size.h;
   const bool visible=std::min(gun.y,(int)(DY-78*l.scale))-std::max(gun.y-gun.h,l.arenaBottom)>16*l.scale;
   reviewTrace(aspect&&visible?"PASS motif battle keeps aspect and visible weapon above board":"FAIL motif battle clipping");
-  const int minimum=PortraitGame::battle(DX,DY,run.shape.height,run.shape.width).statsTop+(int)(18*l.scale);
-  reviewTrace(hull.y<=DY-78*l.scale+2||l.ground-(int)portraitCameraY<=minimum+1?"PASS battle spends headroom on castle before bridge":"FAIL bridge hides battle castle");
+  const auto fixed=PortraitGame::battle(DX,DY,run.shape.height,run.shape.width);
+  reviewTrace(portraitRailGround==fixed.ground?"PASS battle rail follows fixed UI layout, never castle height":"FAIL battle rail depends on castle");
   if(++motifReviewStage==38)reviewTrace("DONE motif series review");
   return true;
  }

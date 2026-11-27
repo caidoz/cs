@@ -1,0 +1,134 @@
+PASS motif native aspect and shared front-wheel turret socket
+PASS lobby rail fixed by resolution across castle stages and scroll
+RAIL lobby stage=1 height=850 ground=336 lowerUiGap=21 camera=-83
+PASS capture C:/Users/polyp/Desktop/CP/cs/output/item-series/runtime/fixed-rail-850-scrolled/motif-lobby-01.png
+PASS motif native aspect and shared front-wheel turret socket
+PASS lobby rail fixed by resolution across castle stages and scroll
+RAIL lobby stage=2 height=850 ground=336 lowerUiGap=21 camera=-83
+PASS capture C:/Users/polyp/Desktop/CP/cs/output/item-series/runtime/fixed-rail-850-scrolled/motif-lobby-02.png
+PASS motif native aspect and shared front-wheel turret socket
+PASS lobby rail fixed by resolution across castle stages and scroll
+RAIL lobby stage=3 height=850 ground=336 lowerUiGap=21 camera=-83
+PASS capture C:/Users/polyp/Desktop/CP/cs/output/item-series/runtime/fixed-rail-850-scrolled/motif-lobby-03.png
+PASS motif native aspect and shared front-wheel turret socket
+PASS lobby rail fixed by resolution across castle stages and scroll
+RAIL lobby stage=4 height=850 ground=336 lowerUiGap=21 camera=-83
+PASS capture C:/Users/polyp/Desktop/CP/cs/output/item-series/runtime/fixed-rail-850-scrolled/motif-lobby-04.png
+PASS motif native aspect and shared front-wheel turret socket
+PASS lobby rail fixed by resolution across castle stages and scroll
+RAIL lobby stage=5 height=850 ground=336 lowerUiGap=21 camera=-83
+PASS capture C:/Users/polyp/Desktop/CP/cs/output/item-series/runtime/fixed-rail-850-scrolled/motif-lobby-05.png
+PASS motif native aspect and shared front-wheel turret socket
+PASS lobby rail fixed by resolution across castle stages and scroll
+RAIL lobby stage=6 height=850 ground=336 lowerUiGap=21 camera=-83
+PASS capture C:/Users/polyp/Desktop/CP/cs/output/item-series/runtime/fixed-rail-850-scrolled/motif-lobby-06.png
+PASS motif native aspect and shared front-wheel turret socket
+PASS lobby rail fixed by resolution across castle stages and scroll
+RAIL lobby stage=7 height=850 ground=336 lowerUiGap=21 camera=-83
+PASS capture C:/Users/polyp/Desktop/CP/cs/output/item-series/runtime/fixed-rail-850-scrolled/motif-lobby-07.png
+PASS motif native aspect and shared front-wheel turret socket
+PASS lobby rail fixed by resolution across castle stages and scroll
+RAIL lobby stage=8 height=850 ground=336 lowerUiGap=21 camera=-83
+PASS capture C:/Users/polyp/Desktop/CP/cs/output/item-series/runtime/fixed-rail-850-scrolled/motif-lobby-08.png
+PASS motif native aspect and shared front-wheel turret socket
+PASS lobby rail fixed by resolution across castle stages and scroll
+RAIL lobby stage=9 height=850 ground=336 lowerUiGap=21 camera=-83
+PASS capture C:/Users/polyp/Desktop/CP/cs/output/item-series/runtime/fixed-rail-850-scrolled/motif-lobby-09.png
+PASS motif native aspect and shared front-wheel turret socket
+PASS lobby rail fixed by resolution across castle stages and scroll
+RAIL lobby stage=10 height=850 ground=336 lowerUiGap=21 camera=-83
+PASS capture C:/Users/polyp/Desktop/CP/cs/output/item-series/runtime/fixed-rail-850-scrolled/motif-lobby-10.png
+PASS motif native aspect and shared front-wheel turret socket
+PASS lobby rail fixed by resolution across castle stages and scroll
+RAIL lobby stage=11 height=850 ground=336 lowerUiGap=21 camera=-83
+PASS capture C:/Users/polyp/Desktop/CP/cs/output/item-series/runtime/fixed-rail-850-scrolled/motif-lobby-11.png
+PASS motif native aspect and shared front-wheel turret socket
+PASS lobby rail fixed by resolution across castle stages and scroll
+RAIL lobby stage=12 height=850 ground=336 lowerUiGap=21 camera=-83
+PASS capture C:/Users/polyp/Desktop/CP/cs/output/item-series/runtime/fixed-rail-850-scrolled/motif-lobby-12.png
+PASS motif native aspect and shared front-wheel turret socket
+PASS lobby rail fixed by resolution across castle stages and scroll
+RAIL lobby stage=13 height=850 ground=336 lowerUiGap=21 camera=-83
+PASS capture C:/Users/polyp/Desktop/CP/cs/output/item-series/runtime/fixed-rail-850-scrolled/motif-lobby-13.png
+PASS motif native aspect and shared front-wheel turret socket
+PASS lobby rail fixed by resolution across castle stages and scroll
+RAIL lobby stage=14 height=850 ground=336 lowerUiGap=21 camera=-83
+PASS capture C:/Users/polyp/Desktop/CP/cs/output/item-series/runtime/fixed-rail-850-scrolled/motif-lobby-14.png
+PASS motif native aspect and shared front-wheel turret socket
+PASS lobby rail fixed by resolution across castle stages and scroll
+RAIL lobby stage=15 height=850 ground=336 lowerUiGap=21 camera=-83
+PASS capture C:/Users/polyp/Desktop/CP/cs/output/item-series/runtime/fixed-rail-850-scrolled/motif-lobby-15.png
+PASS motif native aspect and shared front-wheel turret socket
+PASS lobby rail fixed by resolution across castle stages and scroll
+RAIL lobby stage=16 height=850 ground=336 lowerUiGap=21 camera=-83
+PASS capture C:/Users/polyp/Desktop/CP/cs/output/item-series/runtime/fixed-rail-850-scrolled/motif-lobby-16.png
+PASS motif native aspect and shared front-wheel turret socket
+PASS lobby rail fixed by resolution across castle stages and scroll
+RAIL lobby stage=17 height=850 ground=336 lowerUiGap=21 camera=-83
+PASS capture C:/Users/polyp/Desktop/CP/cs/output/item-series/runtime/fixed-rail-850-scrolled/motif-lobby-17.png
+PASS motif native aspect and shared front-wheel turret socket
+PASS lobby rail fixed by resolution across castle stages and scroll
+RAIL lobby stage=18 height=850 ground=336 lowerUiGap=21 camera=-83
+PASS capture C:/Users/polyp/Desktop/CP/cs/output/item-series/runtime/fixed-rail-850-scrolled/motif-lobby-18.png
+PASS motif native aspect and shared front-wheel turret socket
+PASS lobby rail fixed by resolution across castle stages and scroll
+RAIL lobby stage=19 height=850 ground=336 lowerUiGap=21 camera=-83
+PASS capture C:/Users/polyp/Desktop/CP/cs/output/item-series/runtime/fixed-rail-850-scrolled/motif-lobby-19.png
+PASS motif battle keeps aspect and visible weapon above board
+PASS battle rail follows fixed UI layout, never castle height
+PASS capture C:/Users/polyp/Desktop/CP/cs/output/item-series/runtime/fixed-rail-850-scrolled/motif-battle-01.png
+PASS motif battle keeps aspect and visible weapon above board
+PASS battle rail follows fixed UI layout, never castle height
+PASS capture C:/Users/polyp/Desktop/CP/cs/output/item-series/runtime/fixed-rail-850-scrolled/motif-battle-02.png
+PASS motif battle keeps aspect and visible weapon above board
+PASS battle rail follows fixed UI layout, never castle height
+PASS capture C:/Users/polyp/Desktop/CP/cs/output/item-series/runtime/fixed-rail-850-scrolled/motif-battle-03.png
+PASS motif battle keeps aspect and visible weapon above board
+PASS battle rail follows fixed UI layout, never castle height
+PASS capture C:/Users/polyp/Desktop/CP/cs/output/item-series/runtime/fixed-rail-850-scrolled/motif-battle-04.png
+PASS motif battle keeps aspect and visible weapon above board
+PASS battle rail follows fixed UI layout, never castle height
+PASS capture C:/Users/polyp/Desktop/CP/cs/output/item-series/runtime/fixed-rail-850-scrolled/motif-battle-05.png
+PASS motif battle keeps aspect and visible weapon above board
+PASS battle rail follows fixed UI layout, never castle height
+PASS capture C:/Users/polyp/Desktop/CP/cs/output/item-series/runtime/fixed-rail-850-scrolled/motif-battle-06.png
+PASS motif battle keeps aspect and visible weapon above board
+PASS battle rail follows fixed UI layout, never castle height
+PASS capture C:/Users/polyp/Desktop/CP/cs/output/item-series/runtime/fixed-rail-850-scrolled/motif-battle-07.png
+PASS motif battle keeps aspect and visible weapon above board
+PASS battle rail follows fixed UI layout, never castle height
+PASS capture C:/Users/polyp/Desktop/CP/cs/output/item-series/runtime/fixed-rail-850-scrolled/motif-battle-08.png
+PASS motif battle keeps aspect and visible weapon above board
+PASS battle rail follows fixed UI layout, never castle height
+PASS capture C:/Users/polyp/Desktop/CP/cs/output/item-series/runtime/fixed-rail-850-scrolled/motif-battle-09.png
+PASS motif battle keeps aspect and visible weapon above board
+PASS battle rail follows fixed UI layout, never castle height
+PASS capture C:/Users/polyp/Desktop/CP/cs/output/item-series/runtime/fixed-rail-850-scrolled/motif-battle-10.png
+PASS motif battle keeps aspect and visible weapon above board
+PASS battle rail follows fixed UI layout, never castle height
+PASS capture C:/Users/polyp/Desktop/CP/cs/output/item-series/runtime/fixed-rail-850-scrolled/motif-battle-11.png
+PASS motif battle keeps aspect and visible weapon above board
+PASS battle rail follows fixed UI layout, never castle height
+PASS capture C:/Users/polyp/Desktop/CP/cs/output/item-series/runtime/fixed-rail-850-scrolled/motif-battle-12.png
+PASS motif battle keeps aspect and visible weapon above board
+PASS battle rail follows fixed UI layout, never castle height
+PASS capture C:/Users/polyp/Desktop/CP/cs/output/item-series/runtime/fixed-rail-850-scrolled/motif-battle-13.png
+PASS motif battle keeps aspect and visible weapon above board
+PASS battle rail follows fixed UI layout, never castle height
+PASS capture C:/Users/polyp/Desktop/CP/cs/output/item-series/runtime/fixed-rail-850-scrolled/motif-battle-14.png
+PASS motif battle keeps aspect and visible weapon above board
+PASS battle rail follows fixed UI layout, never castle height
+PASS capture C:/Users/polyp/Desktop/CP/cs/output/item-series/runtime/fixed-rail-850-scrolled/motif-battle-15.png
+PASS motif battle keeps aspect and visible weapon above board
+PASS battle rail follows fixed UI layout, never castle height
+PASS capture C:/Users/polyp/Desktop/CP/cs/output/item-series/runtime/fixed-rail-850-scrolled/motif-battle-16.png
+PASS motif battle keeps aspect and visible weapon above board
+PASS battle rail follows fixed UI layout, never castle height
+PASS capture C:/Users/polyp/Desktop/CP/cs/output/item-series/runtime/fixed-rail-850-scrolled/motif-battle-17.png
+PASS motif battle keeps aspect and visible weapon above board
+PASS battle rail follows fixed UI layout, never castle height
+PASS capture C:/Users/polyp/Desktop/CP/cs/output/item-series/runtime/fixed-rail-850-scrolled/motif-battle-18.png
+PASS motif battle keeps aspect and visible weapon above board
+PASS battle rail follows fixed UI layout, never castle height
+DONE motif series review
+PASS capture C:/Users/polyp/Desktop/CP/cs/output/item-series/runtime/fixed-rail-850-scrolled/motif-battle-19.png

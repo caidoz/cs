@@ -11,7 +11,7 @@ int main(){
   const auto b=PortraitGame::battle(width,tallHeight,rows,cols);
   assert(a.cell==a.cellHeight&&a.cell==64*width/640);
   assert(b.ground>a.ground&&a.statsTop==b.statsTop);
-  assert(b.headerBottom-b.ground>=int(300*b.scale));
+  assert(b.ground-b.statsTop==int(18*b.scale)+PortraitGame::railLift(width,tallHeight));
   assert(a.cell==b.cell&&a.boardBottom==b.boardBottom&&a.boardTop==b.boardTop);
   assert(a.slotTop==b.slotTop&&a.slotWidth==b.slotWidth&&a.slotHeight==b.slotHeight);
   assert(a.energyTop==b.energyTop&&a.actionTop==b.actionTop&&a.actionHeight==b.actionHeight);
@@ -27,6 +27,12 @@ int main(){
    const auto l=PortraitGame::lobby(width,height);
    assert(l.ground>=previous&&l.navTop==base.navTop&&l.startTop==base.startTop&&l.stageTop==base.stageTop);previous=l.ground;
   }
+  const float s=width/640.f;
+  const auto tall=PortraitGame::lobby(width,width*1408/640);
+  const int compactGap=base.ground-int(19*s)-(base.stageTop+int(16*s));
+  const int tallGap=tall.ground-int(19*s)-(tall.stageTop+int(16*s));
+  assert(std::abs(compactGap/s-21)<3&&tallGap/s>=120&&tallGap/s<=160);
+  assert(PortraitGame::railLift(width,width*1800/640)==int(120*s+.5f));
  }
  for(int count:{16,20,24,28,32,36,40,44,46,48}){
   for(int i=0;i<count;++i){
@@ -37,5 +43,5 @@ int main(){
    if(i)assert(start>MergeCastleTransition::TileLaunch(i-1,count));
   }
  }
- std::cout<<"PASS square cells, fixed bottom stack, source aspect and complete staggered grid assembly\n";
+ std::cout<<"PASS square cells, fixed bottom stack, resolution-only rail clearances, source aspect and complete staggered grid assembly\n";
 }

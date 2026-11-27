@@ -390,11 +390,8 @@ Layout layout() {
         l.ground=(int)(l.ground*(1-t)+(p.ground+portraitCameraY)*t);
         l.arenaBottom=(int)(l.arenaBottom*(1-t)+p.statsTop*t);
     }
-    const int castle=std::max(0,std::min(18,siegeHullStage>=0?siegeHullStage:run.stage));
-    float minimum=active?p.statsTop+18*s:336*s;
-    if(!active&&lobbyDepartureAge>=0){const float t=BaseCamp::travel(lobbyDepartureAge);minimum=minimum*(1-t)+(p.statsTop+18*s)*t;}
-    const float assembly=(PortraitCastleArt::Sizes[castle].h+PortraitCastleArt::WheelSize(castle)*.58f)*portraitCastleZoom(l);
-    l.ground=PortraitGame::castleGround(l.ground-(int)portraitCameraY,(int)minimum,p.headerBottom,assembly)+(int)portraitCameraY;
+    // Castle height never moves the rail. Oversized hulls use the existing
+    // vertical viewport; only the title/lobby-to-battle transition interpolates.
     l.exit={DX-(int)(54*s),DY-(int)(8*s),(int)(42*s),(int)(40*s)};
     l.left={(int)(28*s),p.slotTop,(int)(40*s),p.slotHeight};
     l.right={DX-(int)(68*s),p.slotTop,(int)(40*s),p.slotHeight};

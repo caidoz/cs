@@ -5,12 +5,11 @@
 // maximum inventory before fitting the battlefield, including on 4:3 devices.
 namespace PortraitGame {
 inline int railLift(int width,int height){
- const float s=width/640.f;return (int)(std::max(0.f,height-850*s)*.60f);
-}
-// Spend tall-screen headroom on the castle before decorative bridge clearance.
-inline int castleGround(int desired,int minimum,int ceiling,float assemblyHeight){
- const float overflow=std::max(0.f,desired+assemblyHeight-ceiling);
- return desired-(int)std::min((float)std::max(0,desired-minimum),overflow+.5f);
+ const float s=width/640.f;
+ // Resolution alone fixes the rail. At 640-wide, its lower edge clears the
+ // region panel by 21px at 850-high and 141px at 1408-high.
+ const float t=std::max(0.f,std::min(1.f,(height/s-850.f)/(1408.f-850.f)));
+ return (int)(120.f*s*t+.5f);
 }
 struct Battle {
     float scale;

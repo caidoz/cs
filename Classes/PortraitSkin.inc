@@ -71,6 +71,7 @@ Box portraitBackdropBox(int ground){
   fixedGround+(int)(size.height*.825f*z),(int)(size.width*z),(int)(size.height*z)};
 }
 int portraitBridgeTop=0,portraitBridgeBottom=0;
+int portraitRailGround=0,portraitRailTop=0,portraitRailBottom=0;
 void portraitArchBridge(int top,int bottom){
  portraitBridgeTop=portraitBridgeBottom=0;if(top<=bottom)return;
  const int region=std::max(0,std::min(14,StageBg::s_region)),img=StageBg::Img(StageBg::SlotRail);
@@ -109,6 +110,8 @@ void portraitArchBridge(int top,int bottom){
 
 void portraitNight(int ground,float worldZoom=0,int bridgeBottom=0){
  portraitBridgeTop=portraitBridgeBottom=0;
+ portraitRailGround=ground-(int)portraitCameraY;
+ portraitRailTop=portraitRailBottom=portraitRailGround;
  const float s=DX/640.f;MemRect(0,DY,DX,DY,0x030A13);
  const int img=PORTRAIT_NIGHT_IMG;const Box bg=portraitBackdropBox(ground);
  if(!sprite[img])return;const auto size=sprite[img]->getTexture()->getContentSizeInPixels();
@@ -116,9 +119,10 @@ void portraitNight(int ground,float worldZoom=0,int bridgeBottom=0){
  {
   const bool sample=review&&std::getenv("CS_PORTRAIT_SAMPLE_ASSETS")&&std::getenv("CS_PORTRAIT_SAMPLE_ASSEMBLED")&&std::getenv("CS_PORTRAIT_SAMPLE_GROUND");
   const int road=sample?PORTRAIT_WHEEL_FIRST_IMG:PORTRAIT_RAIL_IMG;if(!sprite[road])LoadImg(road);
-  if(sprite[road]){const auto q=sprite[road]->getTexture()->getContentSizeInPixels();const float rz=!sample&&worldZoom>0?worldZoom:DX/q.width;
+  if(sprite[road]){const auto q=sprite[road]->getTexture()->getContentSizeInPixels();const float rz=sample?DX/q.width:s;
    const char* rail=sample?std::getenv("CS_PORTRAIT_SAMPLE_RAIL_Y"):nullptr;
-   const int top=ground+(int)((rail?std::atof(rail):sample?q.height*.70f:26.f)*rz);
+   const int top=portraitRailGround+(int)((rail?std::atof(rail):sample?q.height*.70f:26.f)*rz);
+   portraitRailTop=top;portraitRailBottom=top-(int)(q.height*rz);
    if(!sample)portraitArchBridge(top-(int)(q.height*rz)+1,bridgeBottom);
    const int period=std::max(1,(int)(q.width*rz));
    const int offset=(int)std::fmod(castleScrollSeconds*110.f*s,(float)period);
