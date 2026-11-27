@@ -1,0 +1,56 @@
+{
+  "status": "EXTERIOR APPROVAL ONLY — no runtime import, interiors deferred until approval",
+  "date": "2026-11-27",
+  "generator": "built-in image_gen",
+  "scale_note": "Each sheet independently framed. Compare design progression across sheets, not displayed pixel heights. Native per-stage sizing and separate gun/wheel export follow exterior approval.",
+  "progression": [
+    {
+      "stages": "01–02",
+      "material": "목재 → 철제 보강 목재",
+      "engine": "기계식 투석기"
+    },
+    {
+      "stages": "03–04",
+      "material": "사암 기초 → 석재 성벽·청동 보강",
+      "engine": "강화 투석기 → 중형 노포"
+    },
+    {
+      "stages": "05–06",
+      "material": "사암·철 골조 → 절삭 석재·철 골조",
+      "engine": "호박색 소형 화로 확대, 초기 포격"
+    },
+    {
+      "stages": "07–09",
+      "material": "철골 → 강철 장갑",
+      "engine": "단일 호박금색 코어, 점진 확대"
+    },
+    {
+      "stages": "10–12",
+      "material": "강철 → 은청색 마력 합금",
+      "engine": "2단 호박금색 코어, 점진 확대"
+    },
+    {
+      "stages": "13–14",
+      "material": "마력 합금·금장 확대",
+      "engine": "2단 코어 확대·장갑 보강"
+    },
+    {
+      "stages": "15–18",
+      "material": "금장 복합 장갑 비중 증가",
+      "engine": "3단 코어, 기관·포신·장갑 확대"
+    },
+    {
+      "stages": "19",
+      "material": "황금 장갑 중심·흑청 합금 프레임",
+      "engine": "최대 3단 코어·상부 에너지 척추·최대 주포"
+    }
+  ],
+  "invariants": [
+    "기존 확정 외형/실내/런타임 리소스를 덮어쓰지 않음",
+    "동력기관의 코어 단수와 전체 규모를 상위 단계에서 줄이지 않음",
+    "호박금색 에너지 계열 유지, 하위 단계처럼 보이는 냉색 전환 금지",
+    "금속은 기존 성처럼 넓은 명암면의 무광 채색",
+    "포는 성 오른쪽 앞 테라스 바닥에 직접 안착",
+    "실내는 외형 승인 이후, 농가 반복 대신 성의 소재·기능·기술 수준에 맞춰 별도 재설계"
+  ]
+}
