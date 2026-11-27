@@ -1,0 +1,28 @@
+{
+  "status": "Exterior concept review only; no runtime modifications.",
+  "generator": "built-in image_gen",
+  "direction": "Use19 as final width anchor; distribute earlier growth continuously by adding architectural floor bays, not stretching art.",
+  "relative_hull_width_targets": [
+    100,
+    108,
+    117,
+    125,
+    133,
+    142,
+    150,
+    158,
+    167,
+    175,
+    183,
+    192,
+    200,
+    208,
+    217,
+    225,
+    233,
+    242,
+    250
+  ],
+  "target_note": "Planning targets, not certified measurements of generated raster. Stage18 target97% of19. Exact hull geometry requires separated final assets.",
+  "prompt": "Edit this nineteen-stage SINGLE ROW inhabited mobilecastle EXTERIOR progression. USERCHANGE: Keep stage19 as the final maximum-width visual anchor. Make stage01–18 widths increase MUCH MORE CONTINUOUSLY toward19. Do NOT shrink19tofitoldnarrow18. REDRAW/RELAYOUT earlier building districts wider throughadditivearchitecture, NEVER horizontalstretching. Target relative hullwidths01..19 = 100,108,117,125,133,142,150,158,167,175,183,192,200,208,217,225,233,242,250. Thus18already~97%of19width,15~87%,10~70%,05~53%,01~40%. Every stage adds a smallbelievable sidebay and floorarea, especially middle/late, no18to19widejump. Theseareworldwidthratios nottexttogenerate. Maintain common groundbaseline and SAMEabsolute scale, heightsgraduallyriseandstillverticaldominant. Re-space whole row so larger widths don't overlap, hugewidepanorama. 19architecture/height/materialtone stays recognizable, final impressiveworldtreelion inhabitedcity. Stage18buildings atnear-finalwidthwithonlyonebayless;17almostsamebutlessdenseandlower, etc. Do NOT normalizesprites tosamewidth.\nHousevolumes retain normal proportions and door/window sizes as floorareaexpands. Put workshopsandhousing across LOWER/MIDDLE/UPPERfacades, manyhouses andstairs,battlements, balconies; NOflatwallslabs. All currentBUILD painttone: matte broad3tonechunky sprites, mutedwood, greyvioletstone, warmwindows, darkoutline, no phototexture/glitter. Materialtimeline MUSTKEEP:01–02woodencabinwagons,03firstBRONZEfittings,05firstIRONbraces,07firstALUMINUMsilverpanels,10firstselectiveGOLDtrim,13firstvioletCRYSTAL,theseaddtomixedpreviousdistrictsnotreplaceeverything. No crystals01–12. Early01a singleinhabitablebrown cabin withsmallcatapult,02SAMEcabinwithtinyatticONLY15%tallerthan01,notabrupttown. Roofcolors followmaterials,norandompaintedrainbow.\nWeapontechkeepdistinct:01–03wood/bronze catapults,04bronzeballista,05ironcompoundballista,06ironbombard,07heavyironmortarwithaluminumbraces,08breechgun,09steampressuregun,10goldbandpressuregun,11doublechambergun,12armoredrifledsiegegun,13firstcrystalfocus,14ringfocus,15thundercoil,16phoenixfurnacegun,17starfocus,18dragonjawcannon,19reactorsiegeaccelerator. Gunpower/caliberandmechanicalvolumealwaysincrease, gunsrestLOWERRIGHTFRONTfloorwithintegratedbreech. No floatingguns. Visibleamberengineonecell07–09,twocells10–14,threecells15–19,smalldistrictnotmainblankwall. Fullnineteencastlesonecontinuousbaseline,01..19labelsONLY,nodimensions,notable,NOsecondrow. Flatnavybackground. Samecameraallstages. Prioritize smootherwidthdistributiontowardsfixed19 and slightlywiderinhabitedmiddlecastles."
+}
