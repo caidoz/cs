@@ -1,0 +1,73 @@
+{
+  "both_axes_strictly_increasing": true,
+  "anchor_source_unchanged": true,
+  "uniform_scaling_only": true,
+  "runtime_changed": false,
+  "measurement": "Full visible alpha bounding box including weapon/roof, not separately segmented hull width; review dimensions only",
+  "stages": [
+    {
+      "stage": 1,
+      "review_dimensions": [
+        348,
+        263
+      ],
+      "anchor_unmodified": true
+    },
+    {
+      "stage": 2,
+      "source_alpha_bounds": [
+        17,
+        32,
+        1362,
+        1094
+      ],
+      "uniform_scale": 0.26765799256505574,
+      "review_dimensions": [
+        360,
+        284
+      ]
+    },
+    {
+      "stage": 3,
+      "source_alpha_bounds": [
+        8,
+        109,
+        1348,
+        1160
+      ],
+      "uniform_scale": 0.2783582089552239,
+      "review_dimensions": [
+        373,
+        293
+      ]
+    },
+    {
+      "stage": 4,
+      "source_alpha_bounds": [
+        28,
+        62,
+        1309,
+        1167
+      ],
+      "uniform_scale": 0.3013270882123341,
+      "review_dimensions": [
+        386,
+        333
+      ]
+    },
+    {
+      "stage": 5,
+      "source_alpha_bounds": [
+        33,
+        11,
+        1304,
+        1172
+      ],
+      "uniform_scale": 0.3147128245476003,
+      "review_dimensions": [
+        400,
+        365
+      ]
+    }
+  ]
+}
