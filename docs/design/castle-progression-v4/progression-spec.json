@@ -1,0 +1,134 @@
+{
+  "status": "Concept review; not dimension-certified final assets. No runtime changes.",
+  "generator": "built-in image_gen",
+  "targets": [
+    {
+      "stage": 1,
+      "hullWidth": 256,
+      "totalHeight": 190,
+      "weapon": "wooden sling catapult"
+    },
+    {
+      "stage": 2,
+      "hullWidth": 260,
+      "totalHeight": 226,
+      "weapon": "reinforced torsion catapult"
+    },
+    {
+      "stage": 3,
+      "hullWidth": 264,
+      "totalHeight": 262,
+      "weapon": "counterweight stone thrower"
+    },
+    {
+      "stage": 4,
+      "hullWidth": 268,
+      "totalHeight": 298,
+      "weapon": "bronze-bowed ballista"
+    },
+    {
+      "stage": 5,
+      "hullWidth": 272,
+      "totalHeight": 334,
+      "weapon": "steel compound ballista"
+    },
+    {
+      "stage": 6,
+      "hullWidth": 276,
+      "totalHeight": 370,
+      "weapon": "short iron stone bombard"
+    },
+    {
+      "stage": 7,
+      "hullWidth": 280,
+      "totalHeight": 406,
+      "weapon": "bronze ribbed heavy mortar"
+    },
+    {
+      "stage": 8,
+      "hullWidth": 284,
+      "totalHeight": 442,
+      "weapon": "steel breech-loading cannon"
+    },
+    {
+      "stage": 9,
+      "hullWidth": 288,
+      "totalHeight": 478,
+      "weapon": "copper-jacketed rifled cannon"
+    },
+    {
+      "stage": 10,
+      "hullWidth": 292,
+      "totalHeight": 514,
+      "weapon": "steam-pressure cannon with piston"
+    },
+    {
+      "stage": 11,
+      "hullWidth": 296,
+      "totalHeight": 550,
+      "weapon": "bronze twin pressure-chamber cannon"
+    },
+    {
+      "stage": 12,
+      "hullWidth": 300,
+      "totalHeight": 586,
+      "weapon": "crystal lens cannon with focusing rings"
+    },
+    {
+      "stage": 13,
+      "hullWidth": 304,
+      "totalHeight": 622,
+      "weapon": "reinforced crystal accelerator cannon"
+    },
+    {
+      "stage": 14,
+      "hullWidth": 308,
+      "totalHeight": 658,
+      "weapon": "sun-lens energy howitzer"
+    },
+    {
+      "stage": 15,
+      "hullWidth": 312,
+      "totalHeight": 694,
+      "weapon": "triple-coil thunder cannon"
+    },
+    {
+      "stage": 16,
+      "hullWidth": 316,
+      "totalHeight": 730,
+      "weapon": "phoenix-furnace plasma cannon"
+    },
+    {
+      "stage": 17,
+      "hullWidth": 320,
+      "totalHeight": 766,
+      "weapon": "star-ring focused cannon"
+    },
+    {
+      "stage": 18,
+      "hullWidth": 324,
+      "totalHeight": 802,
+      "weapon": "dragon-jaw armored siege cannon"
+    },
+    {
+      "stage": 19,
+      "hullWidth": 328,
+      "totalHeight": 838,
+      "weapon": "world-tree lion reactor siege accelerator"
+    }
+  ],
+  "prompt": "Create ONE very wide panoramic EXTERIOR game art comparison, EXACTLY NINETEEN full mobile fortress castles in ONE SINGLE horizontal row labeled01 through19. This is a SCALE AUDIT, no page breaks, no second row, no skipped or duplicate numbers. Common ground baseline at wheel bottoms, SAME orthographic camera and absolute world scale throughout, do NOT individually fit/normalize. Target world hull widths256,260,264,268,272,276,280,284,288,292,296,300,304,308,312,316,320,324,328 (only+4 each step, especially18to19). Target total heights190,226,262,298,334,370,406,442,478,514,550,586,622,658,694,730,766,802,838, +36 every step. Width19only1.28x first; final NOT sudden widejump. Empty navy aboveearlystages intentional. Use very wide composition at least6:1 if possible with crisp sprites, not separated pages.\nSTYLE REFERENCE: first supplied picture is current BUILD sprite painting style. Match matte grey-purple stone, warm brown timber, broad 3-tone shading, dark clean outlines, amberwindows, lighttop/darkright, modest low-resolution game density, no realistic texture. Second reference is settlement DIRECTION only: population increases in attached houses/workshops across lower/middle/upper facades. Retain inhabited architecture covering most facade, asymmetrical stacked attached individual pitchedroofs, balconies,stairs, watchtowers. Not giant flat wallplate, not housesonlytop. Materials accumulate districtbydistrict: wood stone copper bronze steel crystals goldaccents. Gold never entirely replaceshousing. No flags/crowns/realpeople/UI/interior cutaways. Closed facades.\nWEAPON EVOLUTION MUST BE STRUCTURAL, not same tube scaled. Eachstage targetweapon:\n01 wooden sling catapult; 02 reinforced torsion catapult; 03 counterweight stone thrower; 04 bronze-bowed ballista; 05 steel compound ballista; 06 short iron stone bombard; 07 bronze ribbed heavy mortar; 08 steel breech-loading cannon; 09 copper-jacketed rifled cannon; 10 steam-pressure cannon with piston; 11 bronze twin pressure-chamber cannon; 12 crystal lens cannon with focusing rings; 13 reinforced crystal accelerator cannon; 14 sun-lens energy howitzer; 15 triple-coil thunder cannon; 16 phoenix-furnace plasma cannon; 17 star-ring focused cannon; 18 dragon-jaw armored siege cannon; 19 world-tree lion reactor siege accelerator.\nWeapons at lower RIGHT FRONT terrace, resting ON floor betweenwall/parapet, breech integrated atbody, barrel pointsRIGHT. Every newweapon has at least predecessor's overallweaponvolume, barrel/caliber grows throughtechchanges. Earlycatapults large chunky rock. Later pressurepistons, focusingrings,coils, chamberhousing distinguish mechanically without mere recolor. Maintain readable silhouette ofeach cannon. Gunwidth progression32,35,38,41,44,47,50,53,56,59,62,65,68,71,74,77,80,83,86worldunits. Finalgunpower throughcoils/thickhousing, NOT enormousovershootwidth. Reactor visible atmidright smallintegrated: stages7–9one ambercell,10–14two cells,15–19three, total engineheight continuouslyincreases. Violet crystals are separate focusingequipment notreplacementamberreactor. Lastcity legendary throughdenselylayered habitation, impressive gold-accent liongate/worldtreestructuralarch, tall skyline, not broadgoldwall.\nCRITICAL 06<07,12<13,18<19 in height; width18->19 ONLY1.2%. Do not restart scaleevery6items. Number19 uses SAMEscale as18. ONE continuous baseline. Actual visualgrowth matters more than decoration. No dimensiontext; only19stage labels.",
+  "corrections": [
+    "Precisely edit this 19-castle SINGLE ROW comparison sheet. Preserve castles02 through18 EXACTLY as they are, their positions, paint style, baseline and labels. Two localized corrections ONLY:\n1. CASTLE19, far right: it is oversized in WIDTH and HEIGHT. REDRAW it (do NOT stretch/squash) as a tall narrow densely inhabited fortress, visible HULL WIDTH virtually equal to18 (only2% wider), tallest roof only25px higher than18's tallest roof in this exact image. Current19top is aroundy90; bring its top DOWN toabouty145, since18toparoundy170. Current19hullwidth~230px should be~145px like18. Keep19center where itis, leave extraemptyspace toitsright. Preserve its legendary tree arch and diverse houses compressed ARCHITECTURALLY by fewer lateral wings, not by scaling axes. All volumes keepcorrectperspective andproportions. Preserve powerful ring-braced cannon atlowright; gun19atmost5%larger than18. Remove extra giantupperstoreys to avoid growthjump. It must look like ONE upgrade beyond18, not five. Same groundlinewheelbottom.\n2.CASTLE01 far left: replace tallminiaturizedtown with ONLY humble one-room timber cabin on wagon with smallcatapult and twowheels. Height about70%of02, hullwidth about97%of02. No watchtower or second house. Label01 unchanged.\nNo changes to02..18. All nineteen labels remain correct, same mattepaint tone andnavybackground. No newtext.",
+    "Edit ONLY the tiny castle01 at far LEFT of this sheet. Keep02through19 and all numbers/background absolutelyunchanged. 01must be a humble CLOSED one-room timber cabin wagon with a clearly visible brown sloped roof, frontdoor and one amberwindow, wooden catapult onright terrace. NOT an open platform or tower. Its roof top at approximatelyy520 (image724pxhigh), groundwheelbottomy625; thus about105px tall, between current01height and02height. Hullwidthsameascurrent01. Show cabin front facade sufficiently large to readinhabitable. Keep currentmattegamepainting tone. No flag. Do not change any othercastle, especially final19width.",
+    "Edit ONLY far right castle19 in this image, all01through18mustremainuntouched. Castle19still too WIDE at its wheeled base. Its base currently spans approximatelyx1890to2080 and width190pixels, whereas18basewidthabout135pixels. Redraw19's base, habitation and upper architecture inside x1920to2055 (135pixels) WITHOUT squashing shapes; remove sidewing houses and make skinny vertically layered fortress. Roofheightkeepcurrenty145, wheelgroundkeepcurrenty625. Gunmayextendonly10pixelsbeyondrightwall. Totalcastle19 silhouettewidth<=145px. Keep19legendary treearch/liongate/crystal cannon but compact THEIR LAYOUT. Correctstrongwholevolumedepth,notstretchart. Stage19must be only2%widerthan18wheeledhull. This narrowcastle still tall. Do not alter height or02..18 orlabels. Samepaintcolors.",
+    "Redraw ONLY castle19 far right. Keep01–18unchanged. Use CASTLE18 immediatelytoitsleft as direct structuralparent: COPY ITS SAME wheeledhullwidth, house sizes, staircasewidth, wall perspective and towerproportions. Add ONE modest newupperhouse level ~25pixels high, replace18dragoncannon with a slightlyheavier crystalring siegecannon and add gold-inlaidtreeGATE incenteramongstillvisiblehouses. Final19mustbe similarwidthto18 and onlyonestoreytaller. NO skinnytube tower, no stretchedparts. Atleastfive housefacades across its visiblewidth, exactsameindividualhousesizes as18. Position19centerfar right unchanged. Keepbuildmattepainttone, baseline,label19. Do NOT make19a hugewidecity. Do NOT make19a thinneedle. Its overall silhouette aspectratio should be nearlysameas18,onlyslightlytaller. All othercastlesEXACTLYunchanged."
+  ],
+  "review": [
+    "One continuous baseline removes independent sheet scale resets; visual heights increase across06→07 and12→13.",
+    "Weapon mechanisms vary across progression, rather than merely scaling the same barrel.",
+    "Final19 is reduced relative to initial draft, but width step still needs controlled per-asset production; do not claim numeric target widths are measured achieved geometry.",
+    "First cabin is under-resolved at this overview scale and is not approved as new stage01 runtime art.",
+    "Interiors deferred. Existing game assets unchanged."
+  ]
+}
