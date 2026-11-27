@@ -1745,33 +1745,6 @@ int PvpCrewSkillIdx(int type, int level)
 	return -1;
 }
 
-//---- 이 동료가 쏜 것이 아직 날아다니는가 ----
-//
-//차례를 넘기는 기준이다. 쏘는 자세만 보고 넘기면 총알이 채 닿기도 전에
-//다음 사람이 나서서, 데미지 숫자가 누구 것인지 알 수 없게 된다.
-bool PvpCrewBulletAlive(int obj)
-{
-	//아군 동료의 총알은 공용 총알 칸에 산다.
-	if (obj >= CREW && obj < CREW + MAXCREW) {
-		for (int i = BULLET; i < ENEMYUSEROBJ; ++i) {
-			if (ao[i].active && ao[i].mom == obj)
-				return true;
-		}
-
-		return false;
-	}
-
-	//수비 동료의 총알은 제 뒤 칸에 산다.
-	if (obj >= ENEMY && obj < NEUTRAL) {
-		for (int i = obj + 1; i < obj + MAXENEMYOBJ && i < NEUTRAL; ++i) {
-			if (ao[i].active)
-				return true;
-		}
-	}
-
-	return false;
-}
-
 //---- PVP 수비측 총알 ----
 //
 //성벽에서 우리 히어로에게 곧장 날아가 맞으면 사라진다.
@@ -1810,64 +1783,6 @@ void PvpFoeBulletMove(OBJECT* pObj)
 	//안 일어난다.
 	AttackRobin(pObj->mom, PVP_ATTACKER_ROBIN);
 	memset(pObj, 0, sizeof(OBJECT));
-}
-
-//---- 수비 동료 하나가 한 발 쏜다 ----
-//
-//총알은 그 동료의 뒤 칸(MAXENEMYOBJ - 1 자리)에만 넣는다. 남의 칸을 쓰면
-//다른 동료를 덮어쓴다.
-void PvpFoeShoot(int obj, int level)
-{
-	if (obj < ENEMY || obj >= NEUTRAL)
-		return;
-
-	OBJECT* mom = &ao[obj];
-	const int crewIdx = GetCrewIdxFromType(mom->type);
-
-	if (crewIdx < 0)
-		return;
-
-	//총알 모양도 피해도 이 스킬을 따른다. AddObject 가 currentSkill 을 보고
-	//총알을 고르고, 피해 쪽은 AttackRobin 이 같은 값을 읽는다.
-	mom->currentSkill = PvpCrewSkillIdx(mom->type, level);
-
-	if (mom->currentSkill < 0 || mom->currentSkill >= gTotalSkill)
-		return;
-
-	for (int i = obj + 1; i < obj + MAXENEMYOBJ && i < NEUTRAL; ++i) {
-		if (ao[i].active)
-			continue;
-
-		//생김새는 아군 총알과 같은 길로 만든다. 스킬별 그림과 아이콘을
-		//고르는 규칙이 거기 다 들어 있어서, 손으로 채우면 그것을 두 벌
-		//유지하게 된다.
-		AddObject(&ao[i], mom, ADDOBJ_CREWBULLET);
-		StageAllyProjectileSpawned(i);
-
-		//가는 길만 우리 것으로 바꾼다. FOLLOWMOVE 는 "아군 -> 적" 이다.
-		ao[i].moveHandler = PVPFOEBULLETMOVE;
-		ao[i].mom = obj;
-		ao[i].target = PVP_ATTACKER_ROBIN;
-		ao[i].dirX = ao[i].dirF = LEFT;
-
-		//성벽 위에서 쏜다. 몸 한가운데가 아니라 조금 위에서 나가야
-		//던지는 것으로 보인다.
-		ao[i].y = mom->y - PVP_BULLET_UP;
-		ao[i].zoom *= PVP_FOEBULLET_ZOOM;
-		break;
-	}
-}
-
-//---- 아군 동료 한 명이 한 발 쏜다 ----
-//
-//수비측과 같은 방식이다. 제자리에 서서 상대 히어로에게 총알을 보낸다.
-//
-//다만 총알은 기존 동료 총알(ADDOBJ_CREWBULLET)을 그대로 쓴다. 이쪽은
-//"아군 -> 적" 방향이라 AttackEnemyCheck 가 알아서 적 칸을 때린다.
-//수비측만 반대 방향이 없어서 따로 만들었다.
-void PvpAllyShoot(int obj, int level)
-{
-	AllyShootAt(obj, level, PVP_DEFENDER_ROBIN);
 }
 
 //---- 아군 동료 한 명이 표적에게 한 발 쏜다 ----
@@ -2098,22 +2013,6 @@ void PlayerMove(OBJECT* pObj)
 	}
 
 	//스킬 모션 한 프레임 진행 테스트. 정상 전투에서는 시간에 따라 계속 갱신한다.
-#if 0
-	if (gDemoForceRoulette && gDemoSkillFrameStepActive) {
-		callerSkill = (turn >= CREW && turn < CREW + MAXCREW)
-			? ao[turn].currentSkill : -1;
-
-		if (callerSkill >= 0 && callerSkill < gTotalSkill
-			&& SkillKind(callerSkill) == HEROSKILL
-			&& SkillHostObj(callerSkill) == obj) {
-			if (gDemoSkillFrameStepPermit <= 0)
-				return;
-
-			gDemoSkillFrameStepPermit--;
-		}
-	}
-#endif
-
 	//if (pObj->invincible)
 	//	pObj->invincible--;
 
@@ -15348,13 +15247,6 @@ void CrewMove(OBJECT* pObj)
 								objPtr->currentSkill = SkillHeroSkill(pObj->currentSkill);
 
 								//스킬 모션 한 프레임 진행 테스트. 정상 전투에서는 켜지 않는다.
-#if 0
-								if (gDemoForceRoulette) {
-									gDemoSkillFrameStepActive = true;
-									gDemoSkillFrameStepPermit = 0;
-								}
-#endif
-
 								SetHotKey(objPtr, HOTKEY_SKILL, objPtr->currentSkill, 0);
 								HotKeyPress(objPtr, 0);
 								break;

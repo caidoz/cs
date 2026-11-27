@@ -318,7 +318,6 @@ int GetBoxCandidateCountByStar(int itemType, int star);
 int GetBoxCandidateDetailByStar(int itemType, int star, int candidateIndex);
 struct SHOP_BOX_CANDIDATE {int type,detail,grade,weight;double chance;};
 std::vector<SHOP_BOX_CANDIDATE> ShopBoxCandidates(int tier);
-double ShopBoxStarChance(int tier,int star);
 bool GenerateShopBoxReward(int tier);
 bool ShopBoxLootReview();
 int BoxRandomRange(int minValue, int maxValue);
@@ -375,14 +374,6 @@ int GetWeightedNormalizedReward(
 
 void GachaDraw(void);
 void GachaBackdropDraw(void);
-
-bool IsGachaBigReward(const ITEM* item);
-
-void DrawGachaItemEffect(
-	const ITEM* item,
-	float x,
-	float y,
-	int effectFrame);
 
 void GachaKey(void);
 

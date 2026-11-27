@@ -30,35 +30,6 @@ void GiftDraw(int x, int y, float zoom)
 
 }
 
-//친구와의 전투 드로우
-void GuildEventDraw(int x, int y, float zoom)
-{
-	int i;
-
-
-	switch (menuDepth) {
-
-	case 0:
-		//여기서는 그냥 리스트를 그려준다.
-		//하루에 세가지
-		for (i = 0; i < 3; i++) {
-			MemRectRound(x + (float)(32 * _2X) * zoom, y - (float)(48 * _2X + 80 * _2X * i) * zoom, (float)(256 * _2X) * zoom, (float)(72 * _2X) * zoom, COLOR_BROWN, 2);
-
-			//DrawFrame(x + (float)32 * _2X * zoom, y - (float)(48 * _2X + 80 * _2X * i) * zoom, (float)256 * _2X * zoom, (float)72 * _2X * zoom, COLOR_LIGHTBROWN, )
-		}
-	case 1:
-		//여기서 각종 획득 이펙트를 그려준다.
-
-		break;
-	}
-
-
-	//현재 데일리 이벤트까지 남는 시간
-	DrawTime(x + (float)(POPUPWINDOWSIZE_X) / 2 * zoom, y + (float)(-440 * _2X) * zoom, Max(0, 86400 - (MC_knlCurrentTimeStamp() - robin.calendarTimeStamp)), TIME_HOUR_MINUTE, CENTER, zoom);
-
-
-}
-
 void DailyQuestDraw(int x, int y, float zoom)
 {
 	int i, j;
@@ -487,61 +458,6 @@ static void DrawWin9(int sx, int sy, int sw, int sh, int cap,
 	DrawImageScale(cap, cap, rx, by, xr, yb, false, false, false, false, false, scr, scb, sprite[WIN_IMG], WIN_IMG);
 }
 
-//9조각이되 가운데는 안 그린다. 이미 그려 놓은 그림 위에 테두리만 올릴 때
-//쓴다. 가운데까지 그리면 그림을 덮어 버린다.
-static void DrawWin9Frame(int sx, int sy, int sw, int sh, int cap,
-	float x, float y, float w, float h, float z)
-{
-	if(PixelEquipmentUi()) {MemRectFrame((int)x,(int)y,(int)w,(int)h,0x43859B);return;}
-	float c = (float)cap * z;
-	int sm = sw - cap * 2;
-	int tm = sh - cap * 2;
-
-	if (sm <= 0 || tm <= 0)
-		return;
-
-	if (w < c * 2) c = w / 2;
-	if (h < c * 2) c = h / 2;
-
-	//경계를 픽셀에 맞춘다. 까닭은 DrawWin3 에 적어 두었다.
-	float xl = floorf(x + 0.5f);
-	float xm = floorf(x + c + 0.5f);
-	float xr = floorf(x + w - c + 0.5f);
-	float xe = floorf(x + w + 0.5f);
-
-	float yt = floorf(y + 0.5f);
-	float ym = floorf(y - c + 0.5f);
-	float yb = floorf(y - (h - c) + 0.5f);
-	float ye = floorf(y - h + 0.5f);
-
-	if (xm > xr) xm = xr;
-	if (ym < yb) ym = yb;
-
-	float kx = (xr - xm) / (float)sm;
-	float ky = (ym - yb) / (float)tm;
-	float scl = (xm - xl) / (float)cap;
-	float scr = (xe - xr) / (float)cap;
-	float sct = (yt - ym) / (float)cap;
-	float scb = (yb - ye) / (float)cap;
-
-	int rx = sx + sw - cap, by = sy + sh - cap;
-
-	DrawImageScale(cap, cap, sx, sy, xl, yt, false, false, false, false, false, scl, sct, sprite[WIN_IMG], WIN_IMG);
-	DrawImageScale(cap, cap, rx, sy, xr, yt, false, false, false, false, false, scr, sct, sprite[WIN_IMG], WIN_IMG);
-	DrawImageScale(cap, cap, sx, by, xl, yb, false, false, false, false, false, scl, scb, sprite[WIN_IMG], WIN_IMG);
-	DrawImageScale(cap, cap, rx, by, xr, yb, false, false, false, false, false, scr, scb, sprite[WIN_IMG], WIN_IMG);
-
-	if (kx > 0.0f) {
-		DrawImageScale(sm, cap, sx + cap, sy, xm, yt, false, false, false, false, false, kx, sct, sprite[WIN_IMG], WIN_IMG);
-		DrawImageScale(sm, cap, sx + cap, by, xm, yb, false, false, false, false, false, kx, scb, sprite[WIN_IMG], WIN_IMG);
-	}
-
-	if (ky > 0.0f) {
-		DrawImageScale(cap, tm, sx, sy + cap, xl, ym, false, false, false, false, false, scl, ky, sprite[WIN_IMG], WIN_IMG);
-		DrawImageScale(cap, tm, rx, sy + cap, xr, ym, false, false, false, false, false, scr, ky, sprite[WIN_IMG], WIN_IMG);
-	}
-}
-
 //가로로만 늘리는 3조각. 리본과 버튼처럼 높이가 정해진 것에 쓴다.
 static void DrawWin3(int sx, int sy, int sw, int sh, int cap,
 	float x, float y, float w, float h, float z)
@@ -581,46 +497,6 @@ static void DrawWin3(int sx, int sy, int sw, int sh, int cap,
 		DrawImageScale(sm, sh, sx + cap, sy, xm, y, false, false, false, false, false, kx, sc, sprite[WIN_IMG], WIN_IMG);
 
 	DrawImageScale(cap, sh, sx + sw - cap, sy, xr, y, false, false, false, false, false, (xe - xr) / (float)cap, sc, sprite[WIN_IMG], WIN_IMG);
-}
-
-void DrawPvpCrewPanel(int x, int y, int w, int h)
-{
-	DrawWin9(WP_INNER_X, WP_INNER_Y, WP_INNER_W, WP_INNER_H,
-		WP_INNER_CAP, (float)x, (float)y, (float)w, (float)h, 1.0f);
-}
-
-void DrawPvpHeroPanel(int x, int y, int w, int h,
-	int profileIdx, const char* nickname, bool defender)
-{
-	//보라색 리본 창을 바깥 판으로 먼저 그리고 중앙만 왼쪽 금장 창의
-	//베이지 질감으로 채운다. 슬롯 테두리를 썼을 때 나오던 파란 보석과
-	//금색 모서리는 히어로 창의 테두리가 아니므로 사용하지 않는다.
-	//DrawWin3(WP_RIBBON_X, WP_RIBBON_Y, WP_RIBBON_W, WP_RIBBON_H,
-	//	WP_RIBBON_CAP, (float)x, (float)y, (float)w, (float)h, 1.0f);
-
-	const int insetX = 9 * _2X;
-	const int insetY = 7 * _2X;
-	const int fillSx = WP_INNER_X + WP_INNER_CAP;
-	const int fillSy = WP_INNER_Y + WP_INNER_CAP;
-	const int fillSw = WP_INNER_W - WP_INNER_CAP * 2;
-	const int fillSh = WP_INNER_H - WP_INNER_CAP * 2;
-	DrawImageScale(fillSw, fillSh, fillSx, fillSy,
-		x + insetX, y - insetY, false, false, false, false, false,
-		(float)(w - insetX * 2) / fillSw,
-		(float)(h - insetY * 2) / fillSh, sprite[WIN_IMG], WIN_IMG);
-
-	const float profileSize = 28.0f * _2X;
-	const int profileY = y - 9 * _2X;
-	if (defender) {
-		const int profileX = x + w - 5 * _2X - (int)profileSize;
-		UserProfileNameDraw(profileIdx, nickname, profileX, profileY, profileSize,
-			(float)(profileX - 6 * _2X), y - 8 * _2X, 0.88f, RIGHT);
-	}
-	else {
-		const int profileX = x + 5 * _2X;
-		UserProfileNameDraw(profileIdx, nickname, profileX, profileY, profileSize,
-			(float)(profileX + profileSize + 6 * _2X), y - 8 * _2X, 0.88f, LEFT);
-	}
 }
 
 //---- 글자 ----
@@ -934,44 +810,6 @@ static void DrawCdRibbon(int textIdx, float cx, float topY, float plateW,
 	DrawCdRibbonStr(textId[textIdx], cx, topY, plateW, plateH, z, dy);
 }
 
-static void DrawCrewRibbon(int textIdx, float cx, float topY, float plateW)
-{
-	DrawCdRibbon(textIdx, cx, topY, plateW, 62.0f, 1.56f, 0.0f);
-}
-
-//이 동료가 이미 편성표에 들어가 있는지. 들어가 있으면 또 넣을 이유가 없다.
-//같은 동료가 두 칸을 차지하면 SetBattleCrew()가 같은 놈을 둘 세운다.
-static bool IsCrewInSlot(int crewType)
-{
-	int i;
-
-	for (i = 0; i < MAXCREW; i++)
-		if (robin.slotCrew[i] == crewType)
-			return true;
-
-	return false;
-}
-
-//색 변종의 밑바탕이 되는 몬스터 번호.
-//
-//몬스터는 기본 한 줄(3~53) 뒤에 색만 다른 여섯 벌이 51 칸 간격으로 붙어
-//있다. 아르곤이든 아르곤레드든 부르는 이름은 "아르곤"이어야 한다.
-//
-//이름표를 그대로 쓰면 안 되는 까닭이 하나 더 있다. 변종 줄의 이름표가
-//번호와 어긋나 있어서, 아르곤레드 자리에 "토드뮤턴트레드"가, 마도합성수
-//검정 자리에 "카툼블랙"이 들어 있다. 밑바탕에서 가져오면 그 표를 안 탄다.
-static int EnemyBaseType(int enemyIdx)
-{
-	const int first = ENEMY_SNAIL;			//기본 줄의 첫 몬스터
-	const int band = ENEMY_SNAIL_RED - ENEMY_SNAIL;	//한 색이 차지하는 칸수
-	const int last = ENEMY_SNAIL_RED + band * 5;	//마지막 색의 첫 칸
-
-	if (enemyIdx < ENEMY_SNAIL_RED || enemyIdx >= last + band)
-		return enemyIdx;
-
-	return (enemyIdx - first) % band + first;
-}
-
 //총탄과 소환수는 그림에 여백이 거의 없어 스킬 아이콘보다 작아 보인다.
 //같은 칸에 나란히 놓이므로 눈에 같은 크기로 보이게 조금 키운다.
 #define CD_LIVE_ZOOM	1.10f
@@ -979,119 +817,6 @@ static int EnemyBaseType(int enemyIdx)
 //소환수를 칸 안에서 조금 내린다. 발을 칸 바닥에 딱 붙이면 테두리에 눌린 것
 //처럼 보인다. 화면 픽셀 기준이라 배율과 무관하게 같은 만큼 내려간다.
 #define CD_SUMMON_DROP	4.0f
-
-//동료 스킬 한 칸의 아이콘. 룰렛 카드(DrawSkillCard)와 같은 그림이 나와야 해서
-//고르는 규칙과 그리는 식을 그쪽과 똑같이 맞춘다.
-static void DrawCrewSkillSlotIcon(int skillIdx, float px, float py, float iconSize)
-{
-	//스킬 아이콘은 그림이 네모난 판이라 테두리에 닿으면 답답하다. 그것만
-	//12% 를 물린다. 총탄과 소환수는 룰렛 카드처럼 칸을 꽉 쓴다.
-	float pad = iconSize * 0.12f;
-	float flatZoom = (iconSize - pad * 2) / (float)SKILLICONSIZE * sCdU;
-	float box = iconSize * sCdU;
-	int enemyIdx;
-
-	//살아 있는 것(총탄, 소환수)은 흰 바탕 위에 놓는다.
-	//
-	//스킬 아이콘은 그림 자체가 네모난 판이라 칸을 채우지만, 총탄과 몬스터는
-	//잘라낸 그림이라 뒤가 비어 팝업의 베이지가 그대로 비친다. 룰렛 카드가
-	//같은 까닭으로 흰 판을 먼저 깐다.
-	switch (SkillKind(skillIdx)) {
-	case CREWBULLET:
-	case CREWSUMMON:
-	case SUMMON:
-	{
-		float inset = 2.0f * _2X * sCdU;
-
-		MemRect(Loc(px) + inset, LocY(py) - inset,
-			box - inset * 2.0f, box - inset * 2.0f, COLOR_WHITE);
-	}
-	break;
-	}
-
-	switch (SkillKind(skillIdx)) {
-	case CREWBULLET:
-	case CREWSUMMON:
-	{
-		//날아가는 총탄 그림. AddObject()가 총탄의 icon을 SKILLDATA_TARGET에서
-		//가져오므로 여기서도 같은 자리를 본다.
-		float z = box / (float)SKILLICONSIZE * CD_LIVE_ZOOM;
-		float off = (box - (float)SKILLICONSIZE * z) / 2;
-
-		DrawCrewBulletIcon(SkillBulletIcon(skillIdx),
-			Loc(px) + off, LocY(py) - off, z);
-	}
-	break;
-
-	case SUMMON:
-		//소환될 몬스터.
-		//
-		enemyIdx = SkillSummonEnemy(skillIdx);
-
-		if (enemyIdx >= 0 && enemyIdx < gTotalEnemy) {
-			//룰렛 카드(DrawSkillCardSummonMonster)와 같은 식이다. 우리 칸을
-			//카드 한 장으로 치면 그쪽 값을 그대로 쓸 수 있다.
-			//
-			//자리 표(enemyBigIconPos)를 배율(mz)로 곱하는 것이 핵심이다. 앞서
-			//칸 배율로 곱했더니 큰 몬스터가 칸 밖으로 밀려나고 슬라임처럼
-			//작은 놈은 바닥에 깔렸다. 표의 값은 몬스터를 그리는 배율과 같은
-			//자에 재어 둔 것이라 그 배율로 곱해야 맞는다.
-			float inset = 2.0f * _2X * sCdU;
-			float cz = box / (float)SKILLCARDSIZE_X;
-			float iconZoom = cz * 4.0f * CD_LIVE_ZOOM;
-			//색 변종은 밑바탕의 자리표를 쓴다. 변종 줄은 값이 안 채워져 있어
-			//(아르곤은 모션 9, 아르곤레드는 0) 색만 바꿔도 그림이 튄다.
-			int pi = EnemyBaseType(enemyIdx);
-			float mz = iconZoom * ENEMYICONZOOM * enemyIconZoom[pi];
-			float footY = LocY(py) - box + (float)(12 * _2X) * cz
-				- CD_SUMMON_DROP;
-
-			//칸을 넘는 몸통은 잘라 낸다. 얼굴이 크게 남는다.
-			SetSectionClip((int)(Loc(px) + inset), (int)(LocY(py) - inset),
-				(int)(box - inset * 2.0f), (int)(box - inset * 2.0f), false);
-
-			DrawCmfDetail(enemyData[enemyIdx * ENEMYDATASIZE + ENEMYDATA_CMF],
-				enemyBigIconPos[3 * pi + 0],
-				Loc(px) + box / 2.0f
-					+ (float)enemyBigIconPos[3 * pi + 1] * mz,
-				footY + (float)(enemyBigIconPos[3 * pi + 2] + 4 * _2X) * mz,
-				RIGHT, mz, false, false);
-
-			UnSectionClip(false);
-		}
-		break;
-
-	case HEROSKILL:
-	{
-		//발동시킬 히어로 스킬 번호는 OBJECTINFO 칸에 있다.
-		//TARGET 칸은 "어느 히어로가 쓰는가"(ROBIN/DIANA/MAXX)라서 그걸 읽으면
-		//늘 0~2번 스킬 아이콘이 나온다. Func_Graphics 쪽은 처음부터 맞게
-		//읽고 있었고 여기만 틀려서, 룰렛 카드와 상세창 아이콘이 달랐다.
-		int heroSkill = SkillHeroSkill(skillIdx);
-
-		if (heroSkill < 0 || heroSkill >= gTotalSkill)
-			heroSkill = skillIdx;
-
-		//히어로 줄의 아이콘은 27번이 아니라 5번 칸이다.
-		DrawSkillIcon(GetHeroSkillIcon(heroSkill),
-			Loc(px + pad), LocY(py + pad), flatZoom);
-	}
-	break;
-
-	case SUMMONHERO:
-		//SUMMONHERO 는 OBJECTINFO 가 "어느 히어로"라서 스킬 번호가
-		//OBJECTDETAILINFO 로 한 칸 밀려 있다.
-		DrawSkillIcon(GetHeroSkillIcon(
-			SkillHeroSkill(skillIdx)),
-			Loc(px + pad), LocY(py + pad), flatZoom);
-		break;
-
-	default:
-		DrawSkillIcon(SkillIcon(skillIdx),
-			Loc(px + pad), LocY(py + pad), flatZoom);
-		break;
-	}
-}
 
 //스킬 아이콘을 사각틀에 넣어 그린다. 시안의 스킬 칸 모양이다.
 static void DrawCrewSkillIconFramed(int skillIdx, float px, float py, float box)
@@ -1102,109 +827,6 @@ static void DrawCrewSkillIconFramed(int skillIdx, float px, float py, float box)
 	DrawSkillCard(skillIdx, 1, Loc(px), LocY(py), cardZoom, 0);
 }
 
-
-//슬롯에 몇 명 뜨느냐에 따라 붙는 효능 이름.
-//총탄이면 몇 명이 겹쳤는지로 세기가 갈리고, 그 밖이면 스킬 종류가 이름이 된다.
-static int GetCrewSkillTitle(int skillIdx, int slot)
-{
-	switch (SkillKind(skillIdx)) {
-	case SUMMON:
-		return TEXT_CREW_SKILL_SUMMON;
-	case HEROSKILL:
-		return TEXT_CREW_SKILL_HERO;
-	case ACTIVE:
-	case PASSIVE:
-		return TEXT_CREW_SKILL_BUFF;
-	default:
-		if (slot == 0)
-			return TEXT_CREW_SKILL_ATTACK;
-		return slot == 1 ? TEXT_CREW_SKILL_STRONG : TEXT_CREW_SKILL_ULTIMATE;
-	}
-}
-
-//효능 설명을 tempStr에 만든다. 수치는 전투가 쓰는 값 그대로다.
-static void SetCrewSkillDesc(int skillIdx, int crewDetail, int lv)
-{
-	int value;
-	int sub;
-
-	//전투가 쓰는 그 함수로 값을 낸다.
-	//
-	//전에는 skillData 의 LV1+레벨 칸을 직접 읽었다. 그런데 전투는 그 칸을
-	//안 보고 LV1 에 곡선을 곱한다. 213 행 중 210 행이 서로 달라서, 화면에
-	//적힌 수가 실제와 다른 상태였다. 보여주는 자리와 값을 내는 자리는 같아야
-	//한다.
-	value = (int)GetCrewPower(crewDetail, lv);
-
-	//스킬마다 기본 공격의 몇 %인지가 다르다. 전투는 데미지를 다 낸 뒤
-	//마지막에 이 값을 곱한다(Func_Combat.cpp). 여기서도 곱해야 화면에
-	//적힌 수와 실제로 들어가는 수가 같아진다.
-	//
-	//안 곱하면 세 줄이 전부 같은 수로 나온다. 2 번 스킬이 3 배인데도
-	//1 번과 똑같이 보여서, 왜 센지 화면에서 알 수가 없었다.
-	value = (int)RoundDiv((long long)value * SkillDamagePct(skillIdx), 100);
-
-	if (value < 1)
-		value = 1;
-
-	memset(&tempStr, 0, sizeof(tempStr));
-
-	switch (SkillKind(skillIdx)) {
-	case SUMMON:
-		sub = EnemyBaseType(SkillSummonEnemy(skillIdx));
-
-		if (sub >= 0 && sub < gTotalEnemy)
-			sprintf(tempStr, TEXTPTR(TEXT_CREW_DESC_SUMMON),
-				TEXTPTR(TEXT_MONSTERNAME_START + sub), value);
-		else
-			sprintf(tempStr, TEXTPTR(TEXT_CREW_DESC_DAMAGE), value);
-		break;
-
-	case HEROSKILL:
-		sub = SkillHeroSkill(skillIdx);
-
-		//히어로 스킬 이름표는 SKILL_ 열거와 같은 순서로 붙어 있다.
-		if (sub >= 0 && sub < gTotalSkill)
-			sprintf(tempStr, TEXTPTR(TEXT_CREW_DESC_HERO),
-				TEXTPTR(TEXT_SKILLNAME_COMMON_ROBIN1 + sub), value);
-		else
-			sprintf(tempStr, TEXTPTR(TEXT_CREW_DESC_DAMAGE), value);
-		break;
-
-	case ACTIVE:
-	case PASSIVE:
-		sprintf(tempStr, TEXTPTR(TEXT_CREW_DESC_BUFF), value);
-		break;
-
-	default:
-		sprintf(tempStr, TEXTPTR(TEXT_CREW_DESC_DAMAGE), value);
-		break;
-	}
-}
-
-//설명을 이름 줄과 수치 줄로 가른다.
-//
-//글은 "이름@수치" 꼴이다. 전에는 이 통짜 문자열을 두 줄짜리 칸에 넣었는데,
-//이름이 길면 이름만으로 두 줄을 다 먹어 수치가 잘려 나갔다. "용사님의
-//멸살연참"이 그랬다. 이름은 반드시 한 줄이어야 그 밑에 수치가 놓인다.
-//
-//'@' 가 없으면 수치만 있는 글이다. 그때 이름은 스킬 종류에서 가져온다.
-static void SplitCrewSkillDesc(int skillIdx, int slot, char* name, char* value)
-{
-	const char* sep = strchr(tempStr, '@');
-
-	if (sep != NULL) {
-		int n = (int)(sep - tempStr);
-
-		memcpy(name, tempStr, n);
-		name[n] = 0;
-		strcpy(value, sep + 1);
-	}
-	else {
-		strcpy(name, TEXTPTR(GetCrewSkillTitle(skillIdx, slot)));
-		strcpy(value, tempStr);
-	}
-}
 
 //한 줄로 앉힌다. 칸보다 넓으면 배율을 줄인다.
 //
@@ -1220,35 +842,6 @@ static void CdOneLine(const char* s, float px, float py, float w, float z, int c
 	SetFontColor(col);
 	DrawTextStrSystem(s, Loc(px), LocY(py), z * sCdU, LEFT, false);
 	SetFontColor(COLOR_WHITE);
-}
-
-//슬롯에 이 동료가 cnt명 떴을 때의 룰렛 그림. 실제 룰렛과 같은 판(SLOT_IMG)에
-//같은 릴 자리(reelPostion)로 세워서, 전투에서 보는 것과 같은 그림이 나오게 한다.
-static void DrawCrewSlotReel(int crewCmf, int crewType, int cnt, float px, float py, float w)
-{
-	//판을 원하는 폭에 맞춘다. 릴 자리와 캐릭터 배율이 전부 이 배율을 따른다.
-	float slotSc = w / (float)SLOTSIZE_X;
-	float sc = slotSc * sCdU;
-	int i;
-
-	DrawImage(SLOTSIZE_X, SLOTSIZE_Y, 0, 0,
-		Loc(px), LocY(py),
-		false, false, false, false, false,
-		sc, sprite[SLOT_IMG], SLOT_IMG);
-
-	for (i = 0; i < cnt && i < TOTALREEL; i++) {
-		//reelPostion은 판 왼쪽 위 기준이고 y는 위로 갈수록 커진다.
-		float cx = Loc(px) + (float)reelPostion[i * 2 + 0] * sc;
-		float cy = LocY(py) + (float)reelPostion[i * 2 + 1] * sc;
-
-		//그림자와 배율은 RouletteDrawSimple3Slots()와 같은 식이다.
-		ShadowImage(24 * _2X, 16 * _2X, 1 * _2X, 1 * _2X,
-			cx - 12 * _2X * 2.5f * sc, cy + 8 * _2X * 2.5f * sc,
-			SHADOW_IMG, 2.5f * sc);
-
-		DrawCmfDetail(crewCmf, crewPos[crewType * 5 + 0],
-			cx, cy, RIGHT, 2.5f * sc * enemyIconZoom[crewType], false, false);
-	}
 }
 
 //==========================================================================
@@ -1801,11 +1394,11 @@ void ItemDetailDraw(ITEM* it, int x, int y, float zoom, bool equipped, bool only
 	long long combatPowerGap = CompareCombatPower(&robin.newItem, &ao[robin.newItem.type % 3].equip[itemEquipSlot[robin.newItem.type]]);
 
 	int arrowDirY = DOWN;
-	
+
 	if (combatPowerGap >= 0)
 		arrowDirY = UP;
 
-	
+
 	//equipped가 true면 장착중, false면 
 	switch (it->type) {
 		//장비
@@ -4091,34 +3684,6 @@ void DoubleGoldDraw(int x, int y, float zoom)
 
 
 
-int GetBoxCurrency(int detail, int grade)
-{
-	switch (detail) {
-	case BOX_CASTLE0:
-	case BOX_CASTLE1:
-	case BOX_CASTLE2:
-	case BOX_CASTLE3:
-	case BOX_CASTLE4:
-	case BOX_CASTLE5:
-		return CURRENCY_GOLD;
-	case BOX_CASTLE6:
-	case BOX_CASTLE7:
-	case BOX_CASTLE8:
-	case BOX_CASTLE9:
-		return CURRENCY_STAR;
-	case BOX_CASTLE10:
-	case BOX_CASTLE11:
-	case BOX_CASTLE12:
-	case BOX_CASTLE13:
-	case BOX_CASTLE14:
-	case BOX_CASTLE15:
-		return CURRENCY_GOLD;
-	}
-
-	//목록에 없는 상자. 없으면 쓰레기값이 재화 종류가 된다.
-	return CURRENCY_GOLD;
-}
-
 int GetBoxGold(int boxType)
 {
 	//박스의 코인을 구하는 방법
@@ -5542,7 +5107,7 @@ void CrewMenuDraw(int x, int y, float zoom)
 		itemGrade = robin.inven[itemInvenIdxList[i]].grade;
 		itemLv = robin.inven[itemInvenIdxList[i]].lv;
 		itemCnt = robin.inven[itemInvenIdxList[i]].count;
-		
+
 		DrawCompactCrewCard(&robin.inven[itemInvenIdxList[i]],cardX,cardY,zoom,menuDepth==0?TOUCH_FUNC_ITEMDETAIL+itemInvenIdxList[i]:0);
 
 		//튜토리얼: 새로 얻은 동료 카드만 밝게 남기고 나머지를 어둡게 덮는다.
@@ -5807,7 +5372,7 @@ void DrawItemCard(
 				else
 					CenterTextStr("?", x + (float)(120) * zoom, y - (float)(146) * zoom, 2.7f * zoom);
 			}
-		
+
 			//SetAlpha(24);
 			//SetAlpha(32);
 			memset(&tempStr, 0, sizeof(tempStr));
@@ -5882,10 +5447,10 @@ void DrawItemCard(
 					1.0f * zoom);
 				break;
 		}
-		
+
 	}
 
-	
+
 	if (cardTouchFunc) {
 		SetRectPoint(x + (float)equipBgData[(itemStar - 1) * 6 + 4] * zoom,
 			y - (float)equipBgData[(itemStar - 1) * 6 + 5] * zoom,
@@ -6545,7 +6110,7 @@ void CollectionsDraw(int x, int y, float zoom)
 	float WINX = (float)DX * zoom;
 	// Keep the persistent lobby navigation completely outside this window.
 	float WINY = (float)y * zoom;
-	
+
 	int repItem = 0;
 	int setItemCnt = 0;
 	int itemType, itemDetail, itemGrade, itemLv, itemCnt = 0, itemSlot;
@@ -6566,7 +6131,7 @@ void CollectionsDraw(int x, int y, float zoom)
 		HeroSelectButtonList(x + (float)(4 * _2X) * zoom, y - (float)8 * _2X * zoom,
 			zoom, curHero, menuDepth == 0, true);
 		EquipTabDraw(zoom);
-		
+
 		return;
 	}
 
@@ -6576,7 +6141,7 @@ void CollectionsDraw(int x, int y, float zoom)
 		HeroSelectButtonList(x + (float)(4 * _2X) * zoom, y - (float)8 * _2X * zoom,
 			zoom, curHero, menuDepth == 0, true);
 		EquipTabDraw(zoom);
-		
+
 
 		//상세는 맨 위다. 탭과 골드바를 그린 뒤라야 그 위에 얹힌다.
 		CodexPopupDraw();
@@ -6593,7 +6158,7 @@ void CollectionsDraw(int x, int y, float zoom)
 		HeroSelectButtonList(x + (float)(4 * _2X) * zoom, y - (float)8 * _2X * zoom,
 			zoom, curHero, menuDepth == 0, true);
 		EquipTabDraw(zoom);
-		
+
 		return;
 	}
 
@@ -6688,7 +6253,7 @@ void CollectionsDraw(int x, int y, float zoom)
 	itemDetail = ao[ROBIN].equip[EQUIP_WEAPON].detail;
 	itemGrade = ao[ROBIN].equip[EQUIP_WEAPON].grade;
 	DrawImageScale(64, 64, 455, 709, x + (float)(476 + 8) * zoom, y - (float)(220 + 16 + 70) * zoom, false, false, false, false, false, 0.6f * zoom, 0.6f * zoom, sprite[UI_NEW_IMG], UI_NEW_IMG);
-	
+
 	SetFontColor(0xBCD6DF);
 	memset(&tempStr, 0, sizeof(tempStr));
 	sprintf(tempStr, "%s@+%d", textId[TEXT_ATK], ao[ROBIN].ps[PS_DMG]);
@@ -6707,7 +6272,7 @@ void CollectionsDraw(int x, int y, float zoom)
 	SetFontColor(COLOR_WHITE);
 	//체력
 	DrawImageScale(64, 64, 390, 709, x + (float)(476 + 8) * zoom, y - (float)(220 + 16 + 70 * 3) * zoom, false, false, false, false, false, 0.6f * zoom, 0.6f * zoom, sprite[UI_NEW_IMG], UI_NEW_IMG);
-	
+
 	SetFontColor(0xBCD6DF);
 	memset(&tempStr, 0, sizeof(tempStr));
 	sprintf(tempStr, "%s@+%d", textId[TEXT_HERO_PARAM_HP], ao[ROBIN].ps[PS_HP]);
@@ -6715,7 +6280,7 @@ void CollectionsDraw(int x, int y, float zoom)
 	SetFontColor(COLOR_WHITE);
 
 	// 2. 아이템 카테고리 리스트
-	
+
 	for (i = 0; i < EQUIP_NECK; i++) {
 		itemType = ITEM_SWORD + i * 3;
 		itemDetail = ao[ROBIN].equip[i].detail;
@@ -6830,7 +6395,7 @@ void CollectionsDraw(int x, int y, float zoom)
 	//최외각 테두리
 	MemRectFrame(x,y,(int)WINX,(int)WINY,0x43859B);
 	//그안에 테두리
-	
+
 
 	switch (menuDepth) {
 		case 1:
@@ -6892,10 +6457,10 @@ void CollectionsDraw(int x, int y, float zoom)
 	//골드바. 동료 메뉴(CrewMenuDraw)는 그리는데 여기만 빠져 있었다.
 	//상세 팝업이 위쪽 띠를 파고들어 앉으므로, 팝업을 그린 뒤에 다시 올려야
 	//돈이 얼마인지 보면서 강화를 누를 수 있다.
-	
+
 
 	return;
-	
+
 	//Top menu
 	//if (menuCur < EQUIP_NECK)
 
@@ -7233,28 +6798,6 @@ enum {
 	TOTALSHOPTAB,
 };
 
-//배너에 띄울 상품.
-//
-//나중에 서버가 정하게 하려면 이 함수만 바꾸면 된다 - 카탈로그에 "지금 미는
-//상품" 한 줄을 두고 그것을 읽으면 그만이다.
-static int ShopBannerIndex(void)
-{
-	//playtime이 초기화 전이거나 int overflow 뒤 음수가 되어도 배열과 이미지
-	//인덱스가 범위를 벗어나지 않게 한다.
-	int banner = (robin.playtime / (FPS * 4)) % 4;
-	return banner < 0 ? banner + 4 : banner;
-}
-
-static int ShopBannerProduct(int banner)
-{
-	switch (banner) {
-	case 0: return IAP_COIN_06;
-	case 1: return IAP_HEART_06;
-	case 2: return IAP_CASH_06;
-	default: return IAP_STARTER;
-	}
-}
-
 static void DrawShopGemBundle(int tier,int x,int top,int size){
  if(tier<0||tier>=6||size<=0)return;
  const int img=SHOP_GEM_BUNDLE_FIRST_IMG+tier;
@@ -7285,8 +6828,6 @@ static const char* ShopPriceText(int product, bool* storeReady)
 	*storeReady=IapCanPurchase(product)&&price&&price[0];
 	return *storeReady?price:"스토어 연결 준비 중";
 }
-
-static void ShopRibbon(const char* title, float cx, float y, float w, float zoom);
 
 //동료 상세보기와 같은 프레임 계열을 사용하는 구매 확인창.
 static void DrawTreasurePrice(int detail,int cx,int top,int width){
@@ -7556,17 +7097,6 @@ void GachaRatesDraw(int boxDetail){
  DrawScroll((int)Loc(1060),(int)LocY(top),(int)((bottom-top)*sCdU),MENU_SHOP);
 }
 
-//구역 제목 리본.
-static void ShopRibbon(const char* title, float cx, float y, float w, float zoom)
-{
-	const int h=(int)(32*zoom);
-	MemRect((int)(cx-w/2), (int)(y-h/2), (int)w, Max(1,_2X),0xB69145);
-	DrawPixelPanel((int)(cx-w/2),(int)y,(int)w,h);
-	SetFontColor(0xF4D778);
-	CenterTextStr(title,cx,y-5*zoom,zoom);
-	SetFontColor(COLOR_WHITE);
-}
-
 //카드 하나. 이름 / 그림 / 값 버튼.
 //
 //살 수 없으면(스토어가 아직이거나 다른 결제가 도는 중) 버튼을 회색으로 두고
@@ -7684,184 +7214,6 @@ static void ShopBoxCard(int i, float x, float y, float w, float h, float zoom)
 }
 
 //이전 탭 방식. 필요하면 비교할 수 있도록 소스만 남겨 둔다.
-#if 0
-static void ShopIapDrawTabbed(float x, float y, float w, float h, float zoom)
-{
-	float pad = 12.0f * zoom;
-	float innerW = w - pad * 2;
-	float cy = y - 112.0f * zoom;
-	float bottom = y - h + pad;
-	char buf[128];
-	int i;
-
-	//---- 아직 못 받은 결제 ----
-	//
-	//값을 치렀는데 화면이 조용한 것이 제일 나쁘다. 무엇보다 먼저 알린다.
-	if (IapPendingCount() > 0) {
-		float bh = 26.0f * zoom;
-
-		MemRectRound(x + pad, cy, innerW, bh, COLOR_RED, 2);
-		SetFontColor(COLOR_WHITE);
-		sprintf(buf, "받는 중입니다 (%d건)", IapPendingCount());
-		CenterTextStr(buf, x + w / 2, cy - bh / 2 + (float)FONT_HEIGHT * zoom / 2, zoom);
-
-		cy -= bh + 4.0f * zoom;
-	}
-
-	//---- 배너 ----
-	{
-		int banner = ShopBannerIndex();
-		int bannerImg = SHOP_BANNER_GOLD_IMG + banner;
-		int p = ShopBannerProduct(banner);
-		const char* price = IapPriceText(p);
-		bool can = (price && price[0]) && !IapIsBusy();
-		//원본 배너를 납작하게 찌그러뜨리지 않도록 최소 128px 높이를 확보한다.
-		float bh = 128.0f * zoom;
-		static const int bannerW[4] = { 1983, 1774, 1983, 1983 };
-		static const int bannerH[4] = { 793, 887, 793, 793 };
-		//골드와 상자 배너는 생성 이미지 속 임시 상품을 쓰지 않는다.
-		//빈 왼쪽 배경만 늘려 깔고 실제 게임 리소스를 아래에서 겹친다.
-		int cropW = (banner == 0 || banner == 3) ? bannerW[banner] / 2 : bannerW[banner];
-		int cropH = Min(bannerH[banner],
-			(int)((float)cropW * bh / innerW));
-		int cropY = (bannerH[banner] - cropH) / 2;
-
-		MemRectRound(x + pad, cy, innerW, bh, COLOR_NAVY, 2);
-		DrawImageScale(cropW, cropH, 0, cropY, x + pad, cy,
-			false, false, false, false, false,
-			innerW / (float)cropW, bh / (float)cropH,
-			sprite[bannerImg], bannerImg);
-
-		if (banner == 0)
-			DrawIcon(ICON_GOLD, x + pad + innerW - 35.0f * zoom,
-				cy - 5.0f * zoom, 1.7f * zoom, false, false, true, 1);
-		else if (banner == 3)
-			DrawCastleBoxXY(BOX_PAID5, false, LEFT,
-				x + pad + innerW - 70.0f * zoom, cy - 5.0f * zoom,
-				COLOR_WHITE, 0.075f * zoom);
-
-		DrawIcon(IapProductIcon(p), x + pad + 28.0f * zoom, cy - 10.0f * zoom,
-			1.6f * zoom, false, false, true, 1);
-
-		SetFontColor(COLOR_YELLOW);
-		DrawTextStrSystem("추천 상품", x + pad + 56.0f * zoom,
-			cy - 16.0f * zoom, zoom * 0.8f, LEFT, true);
-
-		SetFontColor(COLOR_WHITE);
-		DrawTextStrSystem(IapProductName(p), x + pad + 56.0f * zoom,
-			cy - 36.0f * zoom, zoom, LEFT, true);
-
-		CenterTextStr((price && price[0]) ? price : "준비 중",
-			x + w - pad - 44.0f * zoom, cy - 32.0f * zoom, zoom);
-
-		if (can)
-			SetRectPoint(x + pad, cy, innerW, bh, TOUCH_FUNC_SHOP_IAP + p);
-
-		cy -= bh + 6.0f * zoom;
-	}
-
-	//---- 탭 ----
-	{
-		float th = 28.0f * zoom;
-		float tw = (innerW - 4.0f * zoom * (TOTALSHOPTAB - 1)) / TOTALSHOPTAB;
-
-		for (i = 0; i < TOTALSHOPTAB; i++) {
-			float tx = x + pad + (tw + 4.0f * zoom) * i;
-
-			MemRectRound(tx, cy, tw, th,
-				i == shopTab ? COLOR_ORANGE : COLOR_BROWN, 2);
-
-			SetFontColor(COLOR_WHITE);
-			CenterTextStr(shopTabName[i], tx + tw / 2,
-				cy - th / 2 + (float)FONT_HEIGHT * zoom / 2, zoom);
-
-			SetRectPoint(tx, cy, tw, th, TOUCH_FUNC_SHOP_TAB + i);
-		}
-
-		cy -= th + 6.0f * zoom;
-	}
-
-	//---- 카드 ----
-	{
-		const int COL = 3;
-		float cw = (innerW - 8.0f * zoom * (COL - 1)) / COL;
-		float ch = 92.0f * zoom;
-		int first = 0, count = 0, box = 0;
-
-		switch (shopTab) {
-		case SHOPTAB_GOLD:
-			ShopRibbon("골드 상품", x + w / 2, cy, 140.0f * zoom, zoom);
-			first = IAP_COIN_01;
-			count = 6;
-			break;
-
-		case SHOPTAB_HEART:
-			ShopRibbon("하트 상품", x + w / 2, cy, 140.0f * zoom, zoom);
-			first = IAP_HEART_01;
-			count = 6;
-			break;
-
-		case SHOPTAB_CASH:
-			ShopRibbon("캐시 상품", x + w / 2, cy, 140.0f * zoom, zoom);
-			first = IAP_CASH_01;
-			count = 6;
-			break;
-
-		case SHOPTAB_BOX:
-			ShopRibbon("상자", x + w / 2, cy, 120.0f * zoom, zoom);
-			box = 6;
-			break;
-
-		default:
-			ShopRibbon("스페셜 패스", x + w / 2, cy, 150.0f * zoom, zoom);
-			first = IAP_PASS_HEART;
-			count = 4;
-			break;
-		}
-
-		cy -= 30.0f * zoom;
-
-		for (i = 0; i < box; i++) {
-			float cx = x + pad + (cw + 8.0f * zoom) * (i % COL);
-			float ry = cy - (ch + 8.0f * zoom) * (i / COL);
-
-			if (ry - ch < bottom)
-				break;
-
-			ShopBoxCard(i, cx, ry, cw, ch, zoom);
-		}
-
-		for (i = 0; i < count; i++) {
-			float cx = x + pad + (cw + 8.0f * zoom) * (i % COL);
-			float ry = cy - (ch + 8.0f * zoom) * (i / COL);
-
-			//아래로 넘치면 그만 그린다. 스크롤은 아직 없다.
-			if (ry - ch < bottom)
-				break;
-
-			ShopCard(first + i, cx, ry, cw, ch, zoom);
-		}
-	}
-
-	//---- 패스가 켜져 있으면 남은 날 ----
-	for (i = 0; i < 2; i++) {
-		bool on = i == 0 ? IapHeartPass() : IapGrowthPass();
-		long until = IapPassUntil(i != 0);
-
-		if (!on)
-			continue;
-
-		SetFontColor(COLOR_YELLOW);
-		sprintf(buf, "%s 남은 %d일", i == 0 ? "하트 패스" : "성장 패스",
-			(int)((until - (long)MC_knlCurrentTimeStamp()) / 86400) + 1);
-		DrawTextStrSystem(buf, x + pad, bottom + (18.0f * zoom) * (i + 1),
-			zoom * 0.8f, LEFT, true);
-	}
-
-	SetFontColor(COLOR_WHITE);
-}
-#endif
-
 static int sShopIapJumpSection = -1;
 static int sShopIapScrollTarget = -1;
 static int sShopIapScrollDelay = 0;

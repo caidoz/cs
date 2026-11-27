@@ -85,12 +85,6 @@ void ContentBoot(void);
 // 제일 나쁘다 - 왜 안 고쳐지는지 한참 헤매게 된다.
 void ContentOverrideBoot(void);
 
-//덮어쓰기 폴더가 켜져 있는가. 화면에 표시하고 싶을 때 쓴다.
-bool ContentOverrideOn(void);
-
-//지금 갖고 있는 콘텐츠 판번호. 0이면 앱에 딸려온 것 그대로다.
-long long ContentVersion(void);
-
 //---- 뒤에서 받기 ----
 
 enum ContentState {
@@ -112,12 +106,6 @@ void ContentUpdateStep(void);
 
 //진행 상태. doneFiles/totalFiles 는 화면에 띄울 때 쓴다.
 ContentState ContentPoll(int* doneFiles, int* totalFiles);
-
-//무슨 일이 있었는지 한 줄. 화면에 띄우거나 로그로 남긴다.
-const char* ContentLastMessage(void);
-
-//다 받아서 다음 부팅 때 반영될 것이 있는가.
-bool ContentHasStaged(void);
 
 //끝날 때 부른다. 받던 중이면 그만둔다.
 void ContentShutdown(void);

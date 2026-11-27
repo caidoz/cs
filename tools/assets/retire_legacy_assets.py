@@ -47,6 +47,21 @@ RULES = [
     ('res/castle_functional_sectors_v2/*', 'CASTLE_FUNCTIONAL_FIRST_IMG has no drawing callers; current facility art is castle_room_integrated_v4.'),
     ('res/castle_upgrades_v1/*', 'DrawIndividualUpgradeWheel is used only when SoftCastle::Enabled() is false; default wheels use CASTLE_SOFT_WHEELS_IMG.'),
     ('res/castle_mobility/*', 'Old modular chassis/engines are below the successful DrawIndividualCastle return in DrawCastle.'),
+    # 2026-11-26 full audit (image index -> file map + live call sites after dead-function removal).
+    ('res/item_boots_*.png', 'DrawBootsInBox/Rot return from DrawGridItemInBox first; GridItems::FromItem covers every boots type/detail 0-7 and all 225 grid_items exist, so the ITEM_BOOTS_* fallback is never reached.'),
+    ('res/item_pants_*.png', 'DrawPantsInBox returns from DrawGridItemInBox first; the ITEM_PANTS_* fallback is never reached.'),
+    ('res/item_glove_*.png', 'DrawGloveInBox returns from DrawGridItemInBox first; the ITEM_GLOVE_* fallback is never reached.'),
+    ('res/item_armor_*.png', 'DrawArmorInBox returns from DrawGridItemInBox first; the ITEM_ARMOR_* fallback is never reached.'),
+    ('res/item_vest_*.png', 'DrawArmorInBox returns from DrawGridItemInBox first; the ITEM_VEST_* fallback is never reached.'),
+    ('res/item_coat_*.png', 'DrawArmorInBox returns from DrawGridItemInBox first; the ITEM_COAT_* fallback is never reached.'),
+    ('res/inventory_helm-*.png', 'GridTest item draw returns from DrawGridItemInBox for ITEM_SWORD..ITEM_BOOTS before the INVENTORY_HELM_* branch.'),
+    ('res/inventory_gun-*.png', 'GridTest item draw returns from DrawGridItemInBox before the INVENTORY_GUN_* branch; the two *_art files have no image index or filename reference at all.'),
+    ('res/inventory_boomerang-*.png', 'GridTest item draw returns from DrawGridItemInBox before the INVENTORY_BOOMERANG_* branch.'),
+    ('res/button.png', 'BUTTON_IMG has no reference outside ImgDef.h.'),
+    ('res/cloud.png', 'CLOUD_IMG has no reference outside ImgDef.h.'),
+    ('res/gacha.png', 'GACHA_IMG has no reference outside ImgDef.h.'),
+    ('res/shop_cash_coin.png', 'SHOP_CASH_COIN_IMG is only inside the boot preload range; nothing draws it.'),
+    ('res/num.png', 'NUM_IMG was only loaded; every number draw uses NUM2_IMG (num2.png).'),
 ]
 
 

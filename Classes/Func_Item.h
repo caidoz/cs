@@ -24,7 +24,7 @@ bool IsEquipItemType(int type);		//무기 ~ 반지. 한 점씩 따로 들어간�
 int GetMaxInven(void);				//성이 정하는 가방 칸 수
 void ItemToggleLock(int invenIdx);	//자물쇠를 걸고 푼다
 int CastleBonusOf(int effectType);	//성 파츠가 주는 값(CPE_*)
-long long CastleIncomePerMin(void);	//1분에 쌓이는 골드
+//1분에 쌓이는 골드
 long long CastleIncomePerHour(void);
 int CastleEnergyRecoverySeconds(void);
 void CastleProductionRebase(long long oldGoldPerHour,int oldEnergySeconds,long long oldGoldCap);
@@ -75,7 +75,6 @@ int SkillSummonHeroType(int skillIdx);
 int SkillBulletObj(int skillIdx);
 int SkillStar(int skillIdx);
 int SkillIcon(int skillIdx);
-int SkillIconKind(int skillIdx);
 int SkillCooldown(int skillIdx);
 int SkillDamagePct(int skillIdx);
 
@@ -102,15 +101,13 @@ int CrewLevelMul(int star, int lv);
 //부르는 쪽이 배율을 직접 곱하지 않게 한다. 곱하는 자리가 여럿이면 한 곳을
 //고치고 다른 곳을 잊는다 - 실제로 무기와 방어구가 그렇게 갈라져 있었다.
 long long GetEquipValue(ITEM* it);
-long long GetEquipUpgradeCost(ITEM* it, int what);//what: 0=조각, 1=골드
-bool CanEquipLevelUp(ITEM* it);
+//what: 0=조각, 1=골드
 
 //이 장비를 그 레벨에서 썼을 때의 공격력.
 long long GetEquipPower(ITEM* it, int lv);
 
 //가지고 있는 장비인가. 안 가진 것은 상세보기로 안 들어간다.
 bool IsEquipOwned(ITEM* it);
-int GetCurWeaponCollectionsIndex(void);
 int GetHighestCollections(int);
 int GetItemCount(int, int, int);
 int GetItemLv(int, int, int);

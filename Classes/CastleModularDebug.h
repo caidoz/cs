@@ -224,25 +224,11 @@ static inline float MirrorX(float x,float drawW) {
  return gMirror ? (gMirrorAxis*2.0f-x-drawW) : x;
 }
 
-static void DrawRoomV4(int floor,int stage,float x,float yTop,float scale) {
- const int img=StarterAssemblyImage(RoomV4AssetId(floor,stage));
- if(!sprite[img]) LoadImg(img);
- if(!sprite[img]) { missingAsset=true; return; }
- DrawImage(512,128,0,0,(int)std::lround(MirrorX(x,512.0f*scale)),(int)std::lround(yTop),gMirror,0,0,0,0,scale,sprite[img],img);
-}
 static void DrawFixedAsset(int img,int sourceW,int sourceH,float x,float yTop,float scale) {
  img=StarterAssemblyImage(img);
  if(!sprite[img]) LoadImg(img);
  if(!sprite[img]) { missingAsset=true; return; }
  DrawImage(sourceW,sourceH,0,0,(int)std::lround(MirrorX(x,(float)sourceW*scale)),(int)std::lround(yTop),gMirror,0,0,0,0,scale,sprite[img],img);
-}
-static void DrawFixedAssetRegion(int img,int sourceW,int sourceH,int sourceY,
-                                 float x,float yTop,float scale) {
- img=StarterAssemblyImage(img);
- if(!sprite[img]) LoadImg(img);
- if(!sprite[img]) { missingAsset=true; return; }
- DrawImage(sourceW,sourceH,0,sourceY,(int)std::lround(MirrorX(x,(float)sourceW*scale)),(int)std::lround(yTop),
-           gMirror,0,0,0,0,scale,sprite[img],img);
 }
 static void DrawFixedAssetScale(int img,int sourceW,int sourceH,int x,int yTop,float scaleX,float scaleY) {
  img=StarterAssemblyImage(img);
@@ -284,9 +270,6 @@ static void DrawWheelAsset(int img,float centerX,float centerY,float scale,float
  RotateImage(128,128,0,0,(int)centerX,(int)centerY,false,angle,0,0,scale,
              cocos2d::Vec2(.5f,.5f),sprite[img],img);
 }
-static int BaseAssetId(int castle,int stage) {
- return CASTLE_BASE_FIRST_IMG+castle*6+stage;
-}
 static int WheelAssetId(int castle,int stage) {
  return CASTLE_WHEEL_FIRST_IMG+castle*6+stage;
 }
@@ -298,25 +281,10 @@ static int WallAssetId(int castle,int stage) {
  if(castle==1) return CASTLE_WALL_02_FIRST_IMG+stage;
  return CASTLE_EXTERIOR_03_FIRST_IMG+(castle-2)*18+stage;
 }
-static int BalconyAssetId(int castle,int stage) {
- if(castle==0) return CASTLE_BALCONY_01_FIRST_IMG+stage;
- if(castle==1) return CASTLE_BALCONY_02_FIRST_IMG+stage;
- return CASTLE_EXTERIOR_03_FIRST_IMG+(castle-2)*18+6+stage;
-}
 static int RoofAssetId(int castle,int stage) {
  if(castle==0) return CASTLE_ROOF_01_FIRST_IMG+stage;
  if(castle==1) return CASTLE_ROOF_02_FIRST_IMG+stage;
  return CASTLE_EXTERIOR_03_FIRST_IMG+(castle-2)*18+12+stage;
-}
-static int HollowAssetId(int castle,int stage) {
- static const int first[9]={
-  CASTLE_02_HOLLOW_FIRST_IMG,CASTLE_03_HOLLOW_FIRST_IMG,
-  CASTLE_04_HOLLOW_FIRST_IMG,CASTLE_05_HOLLOW_FIRST_IMG,
-  CASTLE_06_HOLLOW_FIRST_IMG,CASTLE_07_HOLLOW_FIRST_IMG,
-  CASTLE_08_HOLLOW_FIRST_IMG,CASTLE_09_HOLLOW_FIRST_IMG,
-  CASTLE_10_HOLLOW_FIRST_IMG
- };
- return first[castle-1]+stage;
 }
 //옛 모듈러 조각을 그리던 DrawAsset 도 같이 지웠다. AssetId 와 마찬가지로
 //부르는 데가 없었다.
@@ -1183,108 +1151,10 @@ bool CastleCrewDeckPoint(int slot,float* x,float* y) {
  *y=p.deckSurface;
  return true;
 }
-//---- 성을 돌려 세운다 ----
-//
-//on 이면 다음 CastlePartsDrawRect 가 axisX 를 축으로 접힌 성을 그린다.
-//한 장면 안에서 한쪽만 돌려 세우므로, 그린 뒤에는 반드시 다시 꺼야 한다.
-void CastlePartsSetMirror(bool on,float axisX) {
- CastleParts::gMirror=on;
- CastleParts::gMirrorAxis=axisX;
-}
-
-//켜면 다음 CastlePartsDrawRect 가 준 네모를 그대로 쓴다. 성이 화면
-//왼쪽에 붙지 않아야 하는 화면(PVP 격돌)에서만 켠다.
-void CastlePartsSetFreePlace(bool on) {
- CastleParts::gFreePlace=on;
-}
-
-//---- 이 배율로 그리면 화면에서 몇 픽셀인가 ----
-//
-//조립표가 주는 제 크기(CastlePartsNaturalSize)는 옛 조립 좌표계의 값이고,
-//실제로 그려지는 것은 SD 그림 한 장이다. 두 비율이 성마다 다르다 - 성 1
-//의 그림은 1536x1024(납작)이고 성 10 은 270x1024(홀쭉)이다.
-//
-//그래서 폭만 맞추면 성 10 은 화면 높이의 네 배가 되어 밑동만 보인다.
-//부르는 쪽이 높이도 보고 배율을 정할 수 있어야 한다.
-//
-//폭은 성과 상관없이 960 * 1.10 * scale 이다. 높이는 그림의 가로세로비를
-//따른다. SD 조립이 아닌 성이면 false.
-//---- 로비와 전투가 성을 그리는 폭 ----
-//
-//SD 조립이 세상 화면(worldView)에서 쓰는 값이다. 성 단계와 상관없이
-//늘 같아서, 성을 올리면 폭은 그대로고 위로만 자란다.
-//
-//다른 화면도 "로비에서 보던 그 크기" 로 그리려면 이 값을 물어보면 된다.
-float CastlePartsWorldWidth(void) {
- return (float)DX*CastleParts::kStarterViewportRatio;
-}
-
-//---- 이 네모로 그리면 바퀴가 어느 줄에 닿는가 ----
-//
-//조립은 준 네모 안에서 제 배율을 다시 고르고(128 분의 1 단위로 반올림)
-//남는 높이를 위아래로 나눠 가운데에 맞춘다. 그래서 네모의 밑변과 바퀴가
-//닿는 줄이 성마다 몇 픽셀씩 어긋난다.
-//
-//두 성이 나란히 서는 화면(PVP 격돌)에서는 그 몇 픽셀이 눈에 띈다 - 한
-//쪽만 선로에서 떠 보인다. 그리기 전에 여기서 재 보고 그만큼 올리면 된다.
-//
-//DrawCastle 과 DrawSdCastle 이 하는 셈을 그대로 따라간다. 둘 중 한쪽을
-//고치면 여기도 같이 고쳐야 한다.
-float CastlePartsWheelLine(int castleLevel,int yTop,int w,int h) {
- using namespace CastleParts;
- const int castle=Max(1,Min(CastleCount,castleLevel))-1;
- const float lowerH=NaturalLowerH(castle),upperH=NaturalUpperH(castle);
- const int floorCount=castle+1;
- const float naturalH=128.0f*floorCount+lowerH+upperH;
- float scale=Min((float)w/NaturalCastleW(castle),(float)h/naturalH);
- scale=Max(1.0f,std::floor(scale*128.0f+0.5f))/128.0f;
- const float assemblyBottom=(float)yTop-h+(h-naturalH*scale)*0.5f;
- if(!SdEnabled(castle)) return assemblyBottom+CastlePartsGroundOffset(castleLevel)*scale;
- const float bottom=assemblyBottom+(lowerH+NaturalBodyLift(castle))*scale;
- return bottom-252.0f*scale+(castle?54.0f:StarterLegacyGroundOffset())*scale
-   +StageCastleGroundingPx()-kStarterRailOverlapPx;
-}
-
-bool CastlePartsDrawSize(int castleLevel,float scale,float* w,float* h) {
- using namespace CastleParts;
- const int castle=Max(1,Min(CastleCount,castleLevel))-1;
- if(IndividualArtEnabled()) {
-  const auto& r=IndividualCastleV4::Rigs[castle];
-  const float width=1056.0f*scale*r.width/342.0f;
-  if(w) *w=width;
-  if(h) *h=width*r.h/r.w;
-  return true;
- }
- if(!SdEnabled(castle)) return false;
- const float sw=(float)(castle==9?TenthSdParts::Width:castle==8?NinthSdParts::Width:castle==7?EighthSdParts::Width:castle==6?SeventhSdParts::Width:castle==5?SixthSdParts::Width:castle==4?FifthSdParts::Width:castle==3?FourthSdParts::Width:castle==2?ThirdSdParts::Width:castle?SecondSdParts::Width:StarterSdParts::Width);
- const float sh=(float)(castle==9?TenthSdParts::Height:castle==8?NinthSdParts::Height:castle==7?EighthSdParts::Height:castle==6?SeventhSdParts::Height:castle==5?SixthSdParts::Height:castle==4?FifthSdParts::Height:castle==3?FourthSdParts::Height:castle==2?ThirdSdParts::Height:castle?SecondSdParts::Height:StarterSdParts::Height);
- const float unit=960.0f*1.10f/sw*scale;
- if(w) *w=sw*unit;
- if(h) *h=sh*unit;
- return true;
-}
 
 void CastlePartsDrawRect(int castleLevel,int x,int yTop,int w,int h) {
  using namespace CastleParts;
  missingAsset=false; DrawCastle(Max(1,Min(CastleCount,castleLevel))-1,x,yTop,w,h,100000.0f);
-}
-// Menu previews fit the rendered rig, rather than the legacy room assembly box.
-bool CastlePartsDrawMenuPreview(int level,int x,int top,int w,int h) {
- using namespace CastleParts;
- const int c=Max(0,Min(9,level-1));
- const bool freePlace=gFreePlace,previousPreview=menuFacilityPreview;
- gFreePlace=true;menuFacilityPreview=true;missingAsset=false;bool rendered=true;
- if(IndividualArtEnabled()) {
-  const auto& r=IndividualCastleV4::Rigs[c];
-  const float baseWidth=1056.0f*r.width/342.0f;
-  const float aspect=r.h/(float)r.w;
-  const float scale=Min(w/baseWidth,h/(baseWidth*aspect));
-  const float height=baseWidth*aspect*scale;
-  const float ground=top-(h-height)*.5f-height;
-  const float bottom=ground+252*scale-(c?54.0f:StarterLegacyGroundOffset())*scale-StageCastleGroundingPx()+kStarterRailOverlapPx;
-  rendered=DrawIndividualCastle(c,x+(w-baseWidth*scale)*.5f,bottom,scale);
- } else DrawCastle(c,x,top,w,h,100000.0f);
- gFreePlace=freePlace;menuFacilityPreview=previousPreview;return rendered&&!missingAsset;
 }
 bool CastlePartsUpgradePlacementStable(int castle,int variant) {
  using namespace CastleParts;
@@ -1307,18 +1177,11 @@ bool CastlePartsCannonMuzzle(int castleLevel,float* x,float* y) {
  *x=CastleParts::cannonMuzzleX[castle]; *y=CastleParts::cannonMuzzleY[castle];
  return true;
 }
-float CastlePartsCannonBaseY(int castleLevel) {
- return CastleParts::cannonBaseY[Max(0,Min(9,castleLevel-1))];
-}
 void CastlePartsNaturalSize(int castleLevel,float* w,float* h) {
  using namespace CastleParts;
  const int castle=Max(1,Min(CastleCount,castleLevel))-1;
  if(w) *w=NaturalCastleW(castle);
  if(h) *h=(castle+1)*128.0f+NaturalLowerH(castle)+NaturalUpperH(castle);
-}
-float CastlePartsRoomInset(int castleLevel) {
- using namespace CastleParts;
- return (float)LeftArmorW(Max(1,Min(CastleCount,castleLevel))-1);
 }
 //성 1 은 조립할 때 왼쪽으로 96 만큼 들여 놓는다(DrawCastle 의 left).
 //대포 뱃머리가 오른쪽으로 길어서, 방을 기준으로 삼으려고 왼쪽에 같은
@@ -1355,23 +1218,6 @@ float CastlePartsRoomScale(void) { using namespace CastleParts; return RoomDrawW
 //지휘대에 선 히어로의 화면 가로 자리. 아직 한 번도 안 그렸으면 -1 이다.
 //성이 몬스터에게 다가갈 거리를 이것으로 잰다(BattleMobileCastle).
 float CastlePartsCommanderX(void) { using namespace CastleParts; return sdPlacement.valid ? sdPlacement.commanderX : -1.0f; }
-void CastlePartsVisualBounds(int level,float scale,float* outLeft,float* outRight) {
- using namespace CastleParts;
- const int c=Max(0,Min(9,level-1));
- const int lv=active?roomStage[c]:CastleVisualPartLevel(c,3);
- const auto& gun=InventoryCannons::Get(c,lv);
- float left=c==0?0.0f:64.0f-LeftArmorW(c);
- if(c==8) left=Min(left,-100.0f);
- const float gunRight=600.0f+32.0f/Max(.01f,scale)+gun.bw*CannonGrowth(c,lv);
- const float right=Max(c==0?736.0f:Max(736.0f,576.0f+RightArmorW(c)),gunRight+8.0f);
- if(outLeft) *outLeft=left;
- if(outRight) *outRight=right;
-}
-void CastlePartsPartAnchor(int level,int part,float* x,float* y) {
- const int c=Max(0,Min(9,level-1)),i=Max(0,Min(4,part));
- if(x) *x=CastleParts::partAnchor[c][i][0];
- if(y) *y=CastleParts::partAnchor[c][i][1];
-}
 //조립 네모의 밑변이 곧 땅에 닿는 줄이다. 바퀴가 딱 그 자리까지 내려오게
 //그려지므로(DrawCastle) 따로 파묻을 값이 없다.
 //
@@ -1393,10 +1239,6 @@ bool TitleCastleDebugCommand(int command) {
  else if(command==TOUCH_FUNC_TITLE_CASTLE_PAUSE) state.nextCastle();
  else if(command==TOUCH_FUNC_TITLE_CASTLE_CLOSE) active=false;
  return true;
-}
-void TitleCastleDebugButton() {
- const float u=(float)DX/640.0f;
- CastleParts::Button(xOffset+DX-(int)(190*u),DY-(int)(12*u),(int)(178*u),(int)(40*u),"성 파츠 테스트",TOUCH_FUNC_TITLE_CASTLE_OPEN,.9f*u);
 }
 bool TitleCastleDebugActive() {
  using namespace CastleParts;

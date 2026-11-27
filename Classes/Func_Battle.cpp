@@ -198,14 +198,6 @@ bool IsBossRaidWaitingForControl(void)
 	return bossRaidMode && drawHandle == MD_BOSSRAID && !bossRaidStarted;
 }
 
-bool IsBossRaidCrewActing(int crewSlot)
-{
-	if (crewSlot < 0 || crewSlot >= MAXCREW)
-		return false;
-
-	return bossRaidCrewActing[crewSlot];
-}
-
 bool BossRaidNotifyControlInput(void)
 {
 	if (!bossRaidMode || drawHandle != MD_BOSSRAID || !bossRaidWaitingForControl)
@@ -222,18 +214,6 @@ bool BossRaidNotifyControlInput(void)
 	systemKey = null;
 	PlayMusic(M_BOSS);
 	return true;
-}
-
-static int GetBossRaidFundY(void)
-{
-	const int fundFrame = Max(0, bossRaidIntroFrame - FPS * 2);
-	const float fundT = Min(1.0f, (float)fundFrame / (float)(FPS * 2));
-	const float back = 1.70158f;
-	const float entered = 1.0f + (back + 1.0f) * powf(fundT - 1.0f, 3.0f)
-		+ back * powf(fundT - 1.0f, 2.0f);
-	const float targetY = DY - 8.0f * _2X;
-	return (int)(DY + 80.0f * _2X
-		+ (targetY - (DY + 80.0f * _2X)) * entered);
 }
 
 static void DrawBossRaidStartButterfly(int titleFrame, int moveFrames,
@@ -475,78 +455,6 @@ bool BossRaidActivateCrewSkill(int crewSlot, int skillLevel)
 	ActionPlanBegin(CREW + crewSlot, skill);
 	PlayMusic(M_POWERUP);
 	return true;
-}
-
-void BossRaidFinishCrewSkill(OBJECT* pObj)
-{
-	if (!bossRaidMode || drawHandle != MD_BOSSRAID)
-		return;
-
-	//---- 몸이 나가 있으면 아직 못 끝낸다 ----
-	//
-	//CREWSUMMON 은 전장으로 걸어 나간다. 그런데 끝맺음을 부르는 자리는
-	//여럿이다 - 총알 판정, 데미지 갱신(DMGUPDATE) 쪽에서도 들어온다.
-	//
-	//나가 있는데 여기서 끝내 버리면 두 가지가 한꺼번에 어긋난다.
-	//
-	//    복귀 연출이 통째로 잘린다. 전장 한복판에서 사라진다.
-	//    제자리도 아닌 곳에서 HERE 가 되어 다음 프레임에 다시 나간다.
-	//
-	//끝내는 대신 집으로 보낸다. 도착하면 그쪽에서 다시 부른다. 끝맺음을
-	//아는 자리는 제자리 도착 한 곳뿐이어야 한다.
-	//
-	//COMING(걸어 돌아오는 중)도 아직 끝이 아니다. 복귀를 시작한 자리에서
-	//곧바로 여기를 부르면 판이 다시 돌아, 동료가 걸어 올라오는 동안 전투가
-	//재개된다.
-	//
-	//끝난 것은 오직 제자리에 도착했을 때(HERE)다. 복귀 완료 자리가 HERE 로
-	//바꿔 놓고 부르므로, 그 한 번만 이 줄을 통과한다.
-	if (pObj->currentSkill >= 0 && pObj->currentSkill < gTotalSkill
-		&& SkillKind(pObj->currentSkill) == CREWSUMMON
-		&& pObj->turnPosition != HERE) {
-		//이미 집으로 가는 중이면 건드리지 않는다. 부를 때마다 frame 을 0 으로
-		//되돌리면 영영 도착하지 못한다.
-		if (pObj->turnPosition != COMING) {
-			pObj->apx = pObj->x;
-			pObj->apy = pObj->y;
-			pObj->target = 0;
-			pObj->dirX = pObj->dirF = RIGHT;
-			pObj->turnPosition = COMING;
-			pObj->frame = 0;
-			pObj->mainFrame = 0;
-			pObj->attackFrame = 0;
-		}
-
-		return;
-	}
-
-	{
-		const int slot = GetObjFromPtr(pObj) - CREW;
-
-		if (slot >= 0 && slot < MAXCREW)
-			bossRaidCrewActing[slot] = false;
-
-		//판을 세운 그 동료가 끝났을 때만 푼다. 다른 동료의 기본공격이
-		//끝난 것으로 풀면 스킬이 아직 나가는 중에 판이 다시 돈다.
-		if (slot == bossRaidSkillFreezeOwner) {
-			bossRaidSkillFreezeOwner = -1;
-			bossRaidSkillFreezeFrame = 0;
-		}
-	}
-	pObj->attack = 0;
-	pObj->target = 0;
-	pObj->turnPosition = HERE;
-	pObj->frame = pObj->mainFrame = pObj->attackFrame = 0;
-	bossRaidCrewSkillRunning = false;
-
-	//이번 액션의 계획은 여기서 끝난다. 일반 전투는 WhoIsNextTurn() 이
-	//닫아 주는데, 보스전은 그 함수를 안 부르므로 아무도 안 닫고 있었다.
-	//
-	//남겨 두면 다음 타격이 지난 액션의 잔액을 보고 0 을 맞는다.
-	ActionPlanEnd();
-
-	//전역 값은 애초에 안 건드렸으므로 되돌릴 것도 없다.
-	turn = PLAYER;
 }
 
 //지금 스킬 때문에 판이 멈춰 있는가. 멈춘 동료의 자리 번호를 준다.
@@ -1298,10 +1206,6 @@ bool StageAllyLinkCharge(int type,float* charge,int* flash,const char** label)
     else if(type==NPC_CAPTAIN) {effect=SupportShot;*label="연계";}
     else return false;
     *charge=stageAllyLinks.Progress(effect);*flash=stageAllyLinks.flash[effect];return true;
-}
-void StageAllyProjectileSpawned(int obj)
-{
-    if(obj>=0 && obj<TOTALOBJECT) {stageAllySupportBullet[obj]=false;stageBalancedBulletPower[obj]=0;}
 }
 void StageAllyProjectileHit(int obj,bool damaged)
 {

@@ -179,9 +179,6 @@ void DrawUiButtonIcon(int x,int top,int w,int h,int icon,const char* text,int fu
  else DrawIcon(icon,left,iconTop,size/(float)ITEMICONSIZE,0x07101B,false,false,1.f);
  if(!lines.empty())DrawUiTextBox(text,left+size+gap,top,captionWidth,h,enabled?style.text:0xBDC9C9,zoom);
 }
-void DrawUiButtonText(int x,int top,int w,int h,int textIdx,int func,bool on,bool enabled){
- DrawUiButton(x,top,w,h,TEXTPTR(textIdx),func,on,enabled);
-}
 void DrawUiButton(int x,int top,int w,int h,const char* text,int func,bool on,bool enabled){
  DrawUiButton(x,top,w,h,text,func,on,enabled,UiButtonStyle());
 }

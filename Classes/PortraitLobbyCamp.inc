@@ -50,7 +50,7 @@ bool campRoomClip(const Layout& l,Box& room,int slot){
  const int c=std::max(0,std::min(18,run.stage));const Box window=portraitHabitatBounds(c,portraitCastleBox(l));const int floors=portraitHabitatFloors(c);
  const int floor=slot%floors,rank=slot/floors;
  room={window.x+(int)(window.w*(rank%2?.62f:.30f)),window.y-(floor+1)*window.h/floors+(int)(5*l.scale),window.w,window.h/floors};
- if(c==0)room.x=window.x+(int)(window.w*(.20f+.20f*(slot%4)));
+ if(c==0)room.x=window.x+(int)(window.w*(.30f+.20f*(slot%4)));
  clipX=std::max(clipX,window.x);clipX2=std::min(clipX2,window.x+window.w);
  clipY=std::min(clipY,window.y-window.h+(int)(window.h*starterInteriorReveal));clipY2=std::max(clipY2,window.y-window.h);
  return clipX2>clipX&&clipY>clipY2&&starterInteriorReveal>0;
@@ -91,14 +91,14 @@ void drawPortraitLobbyCamp(const Layout& l){
   const int dir=departing?(lobbyRecallX[0]>doorX?LEFT:RIGHT):(std::cos(ticks/60.f*.62f)<0?LEFT:RIGHT);
   SetAlpha(departing?(int)(32*(1-BaseCamp::ease(heroRecall,.84f,1.f))):32);
   campHeroSprite(campHeroX,y,88*s*(1-.5f*heroRecall),departing,dir);SetAlpha(32);
- }else{Box room;if(campRoomClip(l,room,3)){campHeroSprite(room.x,room.y,std::min(34*s,room.h*.78f),false,RIGHT);campHeroInside=true;}restore();}
+ }else{Box room;if(campRoomClip(l,room,3)){campHeroSprite(room.x,room.y,2*std::min(34*s,room.h*.78f),false,RIGHT);campHeroInside=true;}restore();}
  for(int i=0;i<(int)selected.size();++i){
   const int id=selected[i].id;const bool resident=i<indoor;const float q=resident?1.f:BaseCamp::recall(lobbyDepartureAge,i+1);
   const bool entered=resident||(departing&&q>=.995f);
   if(entered){
    Box room;if(campRoomClip(l,room,i)){
     const float x=room.x+std::sin(ticks/70.f+i)*5*s;
-    campCrewSprite(id,crewIdleMotion(id,ticks/8+i*3),x,room.y,std::min(32*s,room.h*.75f),RIGHT);
+    campCrewSprite(id,crewIdleMotion(id,ticks/8+i*3),x,room.y,2*std::min(32*s,room.h*.75f),RIGHT);
     ++campInteriorCount;campDrawnCrew[campDrawnCrewCount++]=id;
    }restore();
   }else{

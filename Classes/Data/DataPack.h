@@ -183,9 +183,6 @@ int DataPackCheck(const unsigned char* buf, long size,
 //실패하면 아무것도 바꾸지 않는다. 포인터는 내장 기본값을 계속 가리킨다.
 bool DataPackLoad(const char* fileName);
 
-//지금 읽어 쓰고 있는 팩이 있는지. 없으면 내장본으로 도는 중이다.
-bool DataPackInUse(void);
-
 //읽어둔 팩에서 배열의 칸 수를 돌려준다. 팩이 없거나 그 배열이 없으면 -1.
 //콘텐츠 개수를 여기서 얻는다(DataCount.cpp).
 int DataPackCount(const char* name);

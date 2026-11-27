@@ -10,6 +10,11 @@ void portraitShortAmount(char* out,size_t size,long long value){
  while(n>=999.5&&unit<3){n/=1000.;++unit;}
  std::snprintf(out,size,n<10?"%.1f%c":"%.0f%c",n,units[unit]);
 }
+void portraitCommaAmount(char* out,size_t size,long long value){
+ char digits[24];const int n=std::snprintf(digits,sizeof(digits),"%lld",std::max(0LL,value));size_t at=0;
+ for(int i=0;i<n&&at+2<size;++i){if(i&&(n-i)%3==0)out[at++]=',';out[at++]=digits[i];}
+ out[at]=0;
+}
 void portraitStat(const Box& b,int kind,long long value,long long maximum,bool enemy=false){
  int& count=enemy?hostileStatCount:friendlyStatCount;
  if(count<3){(enemy?hostileStatBounds:friendlyStatBounds)[count]=b;(enemy?hostileStatKind:friendlyStatKind)[count]=kind;(enemy?hostileStatValue:friendlyStatValue)[count]=value;}++count;
@@ -17,7 +22,10 @@ void portraitStat(const Box& b,int kind,long long value,long long maximum,bool e
  portraitSkin(enemy?3:4,b);
  const int size=(int)((compact?16:26)*s),x=b.x+(int)(5*s),y=b.y-(int)(6*s);
  portraitGlyph(kind==0?1:kind==1?4:5,{x,y,size,size});
- char a[32],z[32],number[80];portraitShortAmount(a,sizeof(a),value);portraitShortAmount(z,sizeof(z),maximum);
+ char a[32],z[32],number[80];
+ //적 체력은 K/M 으로 줄이지 않고 콤마 숫자 그대로 보인다.
+ void(*amount)(char*,size_t,long long)=enemy&&kind==2?portraitCommaAmount:portraitShortAmount;
+ amount(a,sizeof(a),value);amount(z,sizeof(z),maximum);
  if(kind==2)std::snprintf(number,sizeof(number),"%s/%s",a,z);else std::snprintf(number,sizeof(number),"%s",a);
  if(compact&&StringWidth(number,UiMinimumTextZoom())>b.w-size-14*s)std::snprintf(number,sizeof(number),"%s",a);
  const float zoom=std::max(.28f,std::min(compact?.48f:.66f,(b.w-size-16*s)/std::max(1.f,StringWidth(number,s))));

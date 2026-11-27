@@ -19,5 +19,4 @@ inline float SlotX(const Area& area,int slot,int count){
  count=count<1?1:count;slot=slot<0?0:slot>=count?count-1:slot;
  return area.left+(area.right-area.left)*(slot+1)/(count+1.0f);
 }
-inline bool ContainsFoot(const Area& area,float x,float y){return x>=area.left&&x<=area.right&&y>=area.foot-area.depth&&y<=area.foot;}
 }

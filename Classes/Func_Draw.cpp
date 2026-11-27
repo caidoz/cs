@@ -1924,9 +1924,6 @@ static void DrawSdInventoryGrid(int castle,int left,int top,int cell)
  DrawImage((int)size.width,(int)size.height,0,0,left-pad,top+pad,false,0,0,0,0,zoom,sprite[img],img);
 }
 
-void CastleInventoryGridDraw(int castle,int left,int top,int cell) {
- DrawSdInventoryGrid(castle,left,top,cell);
-}
 bool SceneGridReviewCheck(void){
  const int c=GridLayoutCastleStage(),img=GRID_FRAME_FIRST_IMG+c;
  if(!sprite[img])return false;
@@ -2078,36 +2075,6 @@ enum { GRID_ITEM_CANNON = ITEM_CANNON, GRID_SHOP_CANNON=GRIDTEST_SHOPCNT, GRID_S
 //움직이므로 표에서 한눈에 보고 고쳐야 한다.
 #include "Data/ShopPartTable.inc"
 
-//---- 검마다 잔상 색 ----
-//
-//실제 전투에서는 _EDGE_YELLOW / RED / BLUE / VIOLET 잔상이 이미 그려져
-//있어서 그 넷에 배당하면 된다(Def/SkillDef.h). 여기서는 미리보기라
-//색만 흉내 낸다.
-//
-//표에 없는 검은 은빛으로 둔다. 검을 더 넣어도 조용히 어긋나지 않는다.
-static int GridSwordTrail(int detail)
-{
-	switch (detail) {
-	case 10: return 0xE0603C;	//플레임 - 붉은 잔상
-	case 11: return 0x4FA3D9;	//아이스 - 푸른 잔상
-	case 21: return 0xD9A441;	//엑스칼리버 - 금빛
-	case 23: return 0x8A4787;	//다크소드 - 보랏빛
-	}
-
-	return 0xDFD9C0;	//은빛
-}
-
-//검 길이가 타격 감각을 정한다. 칸 수를 그대로 쓴다.
-static const char* GridSwordFeel(int h)
-{
-	if (h <= 3)
-		return "빠름";
-	if (h == 4)
-		return "보통";
-
-	return "묵직";
-}
-
 
 //등급마다 액자 색. 아이콘만으로는 좋은 것과 나쁜 것이 구별이 안 된다.
 static const int kGradeColor[TOTALGRADE] = {
@@ -2232,9 +2199,7 @@ static bool gOfferFilled = false;
 //1st Wave 진입 시 기본값 10골드로 시작하며, 상점 구매/판매/새로고침에 쓰인다.
 static int gStageGold = 10;
 
-int StageGold(void) { return gStageGold; }
 void StageGoldSet(int g) { gStageGold = g; }
-void StageGoldAdd(int delta) { gStageGold += delta; if (gStageGold < 0) gStageGold = 0; }
 
 //---- 룰렛 ----
 //
@@ -2424,7 +2389,6 @@ static void StageUiSlideStep(void)
 
 static int StageShopBtnTop(void)	{ return 4 * _2X + STAGE_SHOP_BTNH - StageUiDrop()+(int)gStageEntranceOffset; }
 static int StageShopGoldTop(void)	{ return StageShopBtnTop() + 14 * _2X; }
-static int StageShopPctTop(void)	{ return StageShopGoldTop() + 19 * _2X; }
 static int StageShopSlotTop(void)	{ return StageShopGoldTop() + 8 + STAGE_SHOP_CARDH + STAGE_SHOP_PRICEH; }
 static int StageShopTop(void)		{ return StageShopSlotTop() + 4 * _2X; }
 
@@ -2623,108 +2587,6 @@ static void GridTrashRect(int* x, int* y, int* w, int* h)
 #define UICHAIN_Y	438
 #define UICHAIN_W	479
 #define UICHAIN_H	215
-
-//한 조각을 늘리지 않고 같은 배율로 이어 붙인다. 마지막 장은 원본을
-//잘라서 폭을 맞춘다.
-//
-//늘려 그리지 않는 까닭: 가로 세로 배율이 달라진 스프라이트를 누가
-//getScale() 로 읽으면 엔진이 "어느 쪽을 줘야 하나" 하고 단언에 걸려
-//게임이 멈춘다(CCNode.cpp 의 getScale). 같은 배율로 여러 번 찍으면
-//그 길을 아예 피한다.
-static void UiTileX(int img, int sx, int sy, int sw, int sh,
-                    int x, int y, int w, float sc)
-{
-	const int step = Max(1, (int)(sw * sc));
-
-	for (int at = 0; at < w; at += step) {
-		const int left = w - at;
-		const int cut = left >= step ? sw : Max(1, (int)(left / sc));
-
-		DrawImage(cut, sh, sx, sy, x + at, y, false, false, false, false, false,
-		          sc, sprite[img], img);
-	}
-}
-
-static void UiTileY(int img, int sx, int sy, int sw, int sh,
-                    int x, int y, int h, float sc)
-{
-	const int step = Max(1, (int)(sh * sc));
-
-	for (int at = 0; at < h; at += step) {
-		const int left = h - at;
-		const int cut = left >= step ? sh : Max(1, (int)(left / sc));
-
-		DrawImage(sw, cut, sx, sy, x, y - at, false, false, false, false, false,
-		          sc, sprite[img], img);
-	}
-}
-
-//아홉 조각 틀. 가운데는 비운다 - 안에 아이템 그림이 들어간다.
-static void UiFrameDraw(int img, int sx, int sy, int sw, int sh, int cap,
-                        int x, int y, int w, int h, float sc)
-{
-	if (!sprite[img]) LoadImg(img);
-	if (!sprite[img]) return;
-
-	const int c = Max(1, (int)(cap * sc));
-
-	if (w < c * 2 || h < c * 2) {
-		MemRectFrame(x, y, w, h, 0xC9A227);
-		return;
-	}
-
-	const int mw = w - c * 2;
-	const int mh = h - c * 2;
-	const int sm = sw - cap * 2;
-	const int tm = sh - cap * 2;
-	const int sr = sx + sw - cap;
-	const int sb = sy + sh - cap;
-
-	//네 모서리
-	DrawImage(cap, cap, sx, sy, x, y, false, false, false, false, false, sc, sprite[img], img);
-	DrawImage(cap, cap, sr, sy, x + w - c, y, false, false, false, false, false, sc, sprite[img], img);
-	DrawImage(cap, cap, sx, sb, x, y - h + c, false, false, false, false, false, sc, sprite[img], img);
-	DrawImage(cap, cap, sr, sb, x + w - c, y - h + c, false, false, false, false, false, sc, sprite[img], img);
-
-	//네 변
-	UiTileX(img, sx + cap, sy, sm, cap, x + c, y, mw, sc);
-	UiTileX(img, sx + cap, sb, sm, cap, x + c, y - h + c, mw, sc);
-	UiTileY(img, sx, sy + cap, cap, tm, x, y - c, mh, sc);
-	UiTileY(img, sr, sy + cap, cap, tm, x + w - c, y - c, mh, sc);
-}
-
-//가로로만 늘어나는 띠. 값표와 버튼 바탕에 쓴다.
-static void UiBarDraw(int img, int sx, int sy, int sw, int sh, int cap,
-                      int x, int y, int w, float sc)
-{
-	if (!sprite[img]) LoadImg(img);
-	if (!sprite[img]) return;
-
-	const int c = Max(1, (int)(cap * sc));
-
-	if (w < c * 2) {
-		MemRectFrame(x, y, w, (int)(sh * sc), 0xC9A227);
-		return;
-	}
-
-	DrawImage(cap, sh, sx, sy, x, y, false, false, false, false, false, sc, sprite[img], img);
-	DrawImage(cap, sh, sx + sw - cap, sy, x + w - c, y, false, false, false, false, false, sc, sprite[img], img);
-	UiTileX(img, sx + cap, sy, sw - cap * 2, sh, x + c, y, w - c * 2, sc);
-}
-
-//그림 한 조각을 네모 안에 가운데 맞춰 넣는다.
-static void UiPieceFit(int img, int sx, int sy, int sw, int sh,
-                       int x, int y, int w, int h, int alpha)
-{
-	if (!sprite[img]) LoadImg(img);
-	if (!sprite[img]) return;
-
-	const float sc = Min((float)w / sw, (float)h / sh);
-
-	DrawImage(sw, sh, sx, sy,
-	          x + (w - (int)(sw * sc)) / 2, y - (h - (int)(sh * sc)) / 2,
-	          false, false, false, false, alpha, sc, sprite[img], img);
-}
 
 static void GridOfferRect(int n, int* x, int* y, int* w, int* h)
 {
@@ -2988,12 +2850,6 @@ void StageGearApplyStat(OBJECT* pObj)
 	}
 }
 
-//지금 서 있는 몬스터의 장비. 적 가방을 그릴 때 쓴다.
-int StageFoeGearList(StageSword* out, int max)
-{
-	return StageGearList(StageRtFoe(), out, max);
-}
-
 
 //---- 방어구 ----
 //
@@ -3246,28 +3102,6 @@ static void StageFoeInvenDraw(int alpha)
 
 	SetFontColor(COLOR_GREY);
 	CenterTextStrSolid("적의 장비", DX / 2, y + 3 * _2X + 12 * _2X, 0.46f);
-}
-
-//---- 룰렛 칸 아래 값표 ----
-//
-//값을 카드 안에 적으면 그림이 가려진다. 카드 밑에 띠로 따로 붙인다.
-//price 가 음수면 아직 값이 없는 칸(잠김 또는 회전 중)이다.
-//---- 칸 안에 글자를 맞춰 넣는다 ----
-//
-//내미는 칸이 늘면 칸 하나가 그만큼 좁아진다. 배율을 박아 두면 긴 이름이
-//칸 밖으로 삐져나가 옆 칸 글자와 붙는다. 들어갈 만큼만 줄인다.
-static void GridOfferLabel(const char* text, int x, int w, int y, float zoom)
-{
-	if (!text || !text[0])
-		return;
-
-	const float room = (float)(w - 4 * _2X);
-	const float full = StringWidth(text, 1.0f);
-
-	if (full > 0.0f && full * zoom > room)
-		zoom = room / full;
-
-	CenterTextStrSolid(text, x + w / 2, y, zoom);
 }
 
 static void StageGoldAmountDraw(int amount,int centerX,int top) {
@@ -3766,115 +3600,6 @@ static void GridDrawShapedCard(const GridPart* p, int x, int y, int w, int h, in
 }
 
 
-
-//---- 검 미리보기 ----
-//
-// [무엇을 보여주는가]
-// 격자에 놓인 검을 늘어놓고, 저마다 몇 초마다 치는지를 적는다.
-//
-// [검은 저마다 따로 친다]
-// 템빨용사와 같은 구조다. 장착 무기와 가방에 넣은 무기가 각자 제
-// 쿨타임으로 공격한다. 여기서도 장착 검(히어로의 휘두름)과 격자의 검이
-// 서로 기다리지 않는다(Func_Battle 의 스테이지 실시간 전투).
-//
-// 한 자루가 한 대씩 그 검의 값만큼 넣으므로 검을 모을수록 총량이 는다.
-// 격자가 좁아서 검만 쌓을 수 없다는 것이 그 대가다.
-//
-// [빠르기는 길이에서 온다]
-// 긴 검일수록 늦게 친다(StageSwordCooldown). 칸을 많이 먹는 대검은 한 방이
-// 무겁고 드물게, 짧은 검은 가볍고 자주 나간다.
-//
-// [늘어놓는 순서는 약 -> 강]
-// 칸이 모자라 다 못 그리면 약한 쪽을 뺀다. 좋은 검이 그림에서 빠지면
-// 격자에 무엇이 있는지 잘못 읽힌다.
-static void GridTestDrawCombo(int topY)
-{
-	char str[96];
-	int i, j, n = 0;
-	int sword[GRIDTEST_MAXITEM];
-
-	//격자에서 검만 걷는다.
-	for (i = 0; i < GRIDTEST_MAXITEM; i++) {
-		if (gGridItem[i].used == false)
-			continue;
-
-		if (gGridItem[i].part.type != ITEM_SWORD)
-			continue;
-
-		sword[n++] = i;
-	}
-
-	SetFontColor(COLOR_WHITE);
-
-	if (n == 0) {
-		SetFontColor(COLOR_GREY);
-		CenterTextStrSolid("격자에 검을 놓으면 연참이 생긴다",
-			DX / 2, topY, 0.7f);
-		return;
-	}
-
-	//약한 것부터. detail 이 클수록 좋은 검이다.
-	//자루가 많아야 열 몇 개라 단순 삽입정렬로 충분하다.
-	for (i = 1; i < n; i++) {
-		const int key = sword[i];
-
-		for (j = i - 1;
-			j >= 0 && gGridItem[sword[j]].part.detail > gGridItem[key].part.detail;
-			j--)
-			sword[j + 1] = sword[j];
-
-		sword[j + 1] = key;
-	}
-
-	//다 치면 한 번의 공격 슬롯을 넘긴다. 넘치는 자루는 위력으로만 간다.
-	//
-	//★ 넘칠 때 잘라내는 것은 "약한 쪽"이다. 정렬이 약 -> 강 이므로 앞에서
-	//끊으면 제일 좋은 검이 연참에서 빠진다. 실제로 그렇게 짰다가 여섯
-	//자루를 놓았을 때 엑스칼리버가 "나머지"로 밀려나는 것을 보고 잡았다.
-	//
-	//뒤에서 hit 개를 쓰고, 그 안에서는 여전히 약 -> 강 이라 마무리가
-	//가장 좋은 검이다.
-	const int hit = Min(n, (int)GRIDTEST_MAXCOMBO);
-	const int from = n - hit;
-
-	//왼쪽에서 오른쪽으로. 뒤로 갈수록 좋은 검이다.
-	const int cw = 52 * _2X;
-	const int ch = 40 * _2X;
-	const int startX = DX / 2 - cw * hit / 2;
-	const int cardY = topY - 12 * _2X;
-
-	for (i = 0; i < hit; i++) {
-		const GridPart* p = &gGridItem[sword[from + i]].part;
-		const int x = startX + i * cw;
-		const int trail = GridSwordTrail(p->detail);
-
-		SetAlpha(22);
-		MemRect(x + 2 * _2X, cardY, cw - 4 * _2X, ch, 0x1B1B2E);
-		SetAlpha(ALPHA_MAX);
-		MemRectFrame(x + 2 * _2X, cardY, cw - 4 * _2X, ch, kGradeColor[p->grade]);
-
-
-		DrawIcon(GetItemIcon(p->type, p->detail, p->grade),
-			x + cw / 2 - ITEMICONSIZE / 2, cardY - 3 * _2X,
-			1.0f, false, false, false, true);
-
-		//잔상 색. 검의 성격이 한 줄로 보인다.
-		MemRect(x + 6 * _2X, cardY - ch + 14 * _2X, cw - 12 * _2X, 2 * _2X, trail);
-
-		//크기와 빠르기. 몇 초마다 치는지가 그 검의 성격이다.
-		SetFontColor(COLOR_WHITE);
-		sprintf(str, "%d칸 %.1f초", GridPartCellCount(p),
-			StageSwordCooldown(p->detail) / (float)FPS);
-		CenterTextStrSolid(str, x + cw / 2, cardY - ch + 10 * _2X, 0.45f);
-	}
-
-	//넘치는 자루.
-	if (n > hit) {
-		SetFontColor(COLOR_GREY);
-		sprintf(str, "약한 %d자루는 그림에서만 뺐다", n - hit);
-		CenterTextStrSolid(str, DX / 2, cardY - ch - 4 * _2X, 0.6f);
-	}
-}
 
 //==========================================================================
 // 바깥이 부르는 것들
@@ -4382,29 +4107,6 @@ static void GridCrewPart(const OfferCard* c, GridPart* out)
 	out->name = textId[TEXT_MONSTERNAME_START + c->crewType];
 }
 
-static void GridOfferBuyCrew(const OfferCard* c)
-{
-	if (gStageGold < GridShopPrice(c->price)) {
-		GridTestSay("골드가 모자란다");
-		return;
-	}
-
-	//자리가 없으면 값을 받지 않는다. 받고 못 세우면 골드만 사라진다.
-	if (StageRtAddCrew(c->crewType) == false) {
-		GridTestSay("더 설 자리가 없다");
-		return;
-	}
-
-	gStageGold -= GridShopPrice(c->price);
-	PlayMusic(M_BUTTON);CastleTutorialEvent(CastleTutorial::Bought);
-
-	snprintf(gGridMsg, sizeof(gGridMsg), "%s 합류  -%d",
-		textId[TEXT_MONSTERNAME_START + c->crewType], GridShopPrice(c->price));
-	gGridMsgFrame = FPS * 2;
-
-	GridOfferResume();
-}
-
 //---- 격자에 놓인 검 ----
 //
 //검은 저마다 제 쿨타임으로 친다(Func_Battle 의 스테이지 실시간 전투).
@@ -4612,20 +4314,6 @@ static const char* kCrewClassTitleEn[64] = {
 	"Royal Executive Chef", "Flagship Captain", "Crimson Paladin", "Adjudicator Count", "Grand Barrier Mage", "Phantom Blade Saint", "Radiant Saintess", "Sovereign High King"
 };
 
-const char* GetCrewClassTitle(int crewIdx)
-{
-	if (crewIdx >= 0 && crewIdx < 64)
-		return kCrewClassTitle[crewIdx];
-	return "";
-}
-
-const char* GetCrewClassTitleEn(int crewIdx)
-{
-	if (crewIdx >= 0 && crewIdx < 64)
-		return kCrewClassTitleEn[crewIdx];
-	return "";
-}
-
 CrewRole GetCrewRole(int crewType)
 {
 	int idx = crewType;
@@ -4638,28 +4326,6 @@ CrewRole GetCrewRole(int crewType)
 	if (crewType >= 0)
 		return (CrewRole)(crewType % TOTAL_CREW_ROLES);
 	return CREW_ROLE_COMMANDER;
-}
-
-const char* GetCrewRoleName(CrewRole role)
-{
-	switch (role) {
-	case CREW_ROLE_COMMANDER:  return "지휘형";
-	case CREW_ROLE_ARTILLERY:  return "포격형";
-	case CREW_ROLE_BLACKSMITH: return "지원형";
-	case CREW_ROLE_STRIKER:    return "공격형";
-	default:                   return "일반";
-	}
-}
-
-int GetCrewRoleColor(CrewRole role)
-{
-	switch (role) {
-	case CREW_ROLE_COMMANDER:  return 0xB066FF;
-	case CREW_ROLE_ARTILLERY:  return 0xFF5533;
-	case CREW_ROLE_BLACKSMITH: return 0x33DD77;
-	case CREW_ROLE_STRIKER:    return 0x33AAFF;
-	default:                   return 0xDFD9C0;
-	}
 }
 
 GearCategory GetItemGearCategory(int itemType)
@@ -4858,10 +4524,6 @@ void GridTestResetStage(void)
 	GridTestRefresh();
 }
 
-bool GridTestIsOpen(void)
-{
-	return gGridOpen;
-}
 void StageRunGridClear(void) {
  memset(gGridItem,0,sizeof(gGridItem));memset(gStore,0,sizeof(gStore));
  gOfferOn=false;gOfferFilled=false;gGridGearPending=false;
@@ -4871,17 +4533,6 @@ void StageRunGridClear(void) {
 bool GridTestOfferOpen(void)
 {
 	return gOfferOn;
-}
-
-//격자 위 한 줄(연참 / 골드)의 윗변. 그 위는 전투 버튼과 세 갈래가 쓴다.
-//
-//격자를 한 번도 안 그렸으면 칸 크기가 0 이다. 그때는 바닥 메뉴 위를 준다.
-int GridTestDockTop(void)
-{
-	if (gGridCell <= 0)
-		return BOTTOMMENUHEIGHT + GRIDTEST_HUDH;
-
-	return GridTopY() + GRIDTEST_HUDH;
 }
 
 //누르는 순간. fromShop 이면 n 은 세 갈래 중 몇 번째인가, 아니면
@@ -5686,13 +5337,6 @@ void LoadoutScrollRow(int dir)
 
 	if (gLoadoutRow < 0)
 		gLoadoutRow = 0;
-}
-
-//고른 것이 목록 앞으로 올라오므로, 탭을 바꾸거나 화면을 열 때는
-//처음으로 돌린다.
-void LoadoutScrollReset(void)
-{
-	gLoadoutRow = 0;
 }
 
 //누른 칸이 가방 몇 번인가. 없으면 -1 이다.
@@ -6953,105 +6597,6 @@ static bool LoadoutSpot(unsigned char* occ, int colsMax, int w, int h,
 // 들고 있고(MakeAiHouse), power 하나로 세기를 견줄 수 있다.
 //======================================================================
 
-//내 세기. 상대 표(HOUSE.power)와 같은 식이어야 견줄 수 있다.
-int PvpMyPower(void)
-{
-	int sum = 0;
-
-	CastleProgressEnsure();
-
-	const int castle = CastleMenuModel::Clamp(robin.castle);
-
-	for (int i = 0; i < CASTLE_PART_SLOT; ++i)
-		sum += robin.castleProgress.parts[castle][i];
-
-	//---- 동료 몫 ----
-	//
-	//상대 쪽은 동료 별(crewCurStar)을 더한다. 내 쪽에는 그 별을 담는 칸이
-	//없다 - 동료는 가방에 실린 물건이고, 별은 그 물건이 들고 있다.
-	//
-	//그래서 편성한 칸의 물건 별을 그대로 쓴다. 칸이 비면 0 이다.
-	for (int i = 0; i < MAXCREW; ++i) {
-		if (robin.slotCrew[i] >= 0)
-			sum += Max(1, GetItemStar(ITEM_CREW, robin.slotCrew[i], GRADE_NORMAL));
-	}
-
-	return (castle + 1) * 100 + sum * 3;
-}
-
-//지금 도전할 단계. 0 부터 깨 왔으므로 다음 단계는 그 다음 수다.
-int PvpStageNow(void)
-{
-	return Min(PVP_STAGE_CNT, (int)robin.pvpStage + 1);
-}
-
-//---- 이번 단계의 상대 ----
-//
-//내 세기에 단계만큼을 더한 자리에서 가장 가까운 사람을 고른다. 표를 그냥
-//훑으면 늘 같은 사람이 나오므로, 가까운 쪽 몇을 모아 그중 하나를 뽑는다.
-bool PvpStageOpponent(int stage, HOUSE* out)
-{
-	const int want = PvpMyPower()
-		+ Max(1, Min(PVP_STAGE_CNT, stage)) * PVP_STAGE_POWER_STEP;
-	int pick[8];
-	int picked = 0;
-	int bestGap = 0x7FFFFFFF;
-
-	if (out == NULL)
-		return false;
-
-	//한 바퀴 돌며 가장 가까운 차이를 찾는다.
-	for (int i = 0; i < TOTALAI; ++i) {
-		const int gap = Abs((int)aiUserHouse[i].power - want);
-
-		if (gap < bestGap)
-			bestGap = gap;
-	}
-
-	//그 차이에서 멀지 않은 사람들을 모은다. 한 명만 고르면 같은 상대가
-	//계속 나와 열 단계가 같은 얼굴 열 번이 된다.
-	for (int i = 0; i < TOTALAI && picked < 8; ++i) {
-		if (Abs((int)aiUserHouse[i].power - want) <= bestGap + PVP_STAGE_POWER_STEP / 2)
-			pick[picked++] = i;
-	}
-
-	if (picked <= 0)
-		return false;
-
-	*out = aiUserHouse[pick[Random(picked)]];
-
-	return true;
-}
-
-//---- 단계를 깼다 ----
-//
-//보상을 주고 한 칸 올린다. 이미 깬 단계를 다시 이겨도 올라가지 않는다 -
-//같은 단계를 되풀이해 보상을 긁는 길이 생긴다.
-void PvpStageClear(int stage)
-{
-	if (stage <= 0 || stage > PVP_STAGE_CNT)
-		return;
-
-	if (stage <= (int)robin.pvpStage)
-		return;
-
-	robin.pvpStage = (unsigned char)stage;
-
-	GetItem(ITEM_GOLD, false, false, false,
-		(long long)PVP_STAGE_GOLD * stage, false);
-
-	//---- 끝까지 깼다 ----
-	//
-	//열 단계를 다 깬 사람에게 한 번만 준다.
-	if (stage >= PVP_STAGE_CNT && robin.pvpGrandTaken == 0) {
-		robin.pvpGrandTaken = 1;
-		GetItem(ITEM_GOLD, false, false, false, (long long)PVP_GRAND_GOLD, false);
-		GetItem(ITEM_HEART, false, false, false, (long long)PVP_GRAND_HEART, false);
-	}
-
-	SaveGame();
-}
-
 //---- 가방에 실린 대포 ----
 //
 //전에는 성에 붙은 포가 혼자 쏘았다(gMobileCastleVisual). 이제 포는 가방에
@@ -7805,8 +7350,6 @@ void LoadoutRelease(bool cancelled)
 // Uses the same packed geometry and collision checks as the real drag handler.
 //튜토리얼이 밝힐 자리는 합성 전투판이 안다(MergeTutorialRuntime.inc). 옛 출정 준비·전투 상점 분기는 뺐다.
 int CastleTutorialFocus(int rectangles[2][4]){return MergeTutorialFocus(rectangles);}
-//옛 실시간 전투 튜토리얼의 리뷰 동작. 지금 튜토리얼은 전투판 리뷰(MergeTutorialReviewDrive)가 운전한다.
-bool CastleTutorialReviewAction(int){return false;}
 
 //---- 히어로 고르기 ----
 //
@@ -10280,32 +9823,6 @@ static const int kCastleBtnW = 17 * _2X;
 static const int kCastleBtnH = 18 * _2X;
 static const int kCastleBtnGap = 1 * _2X;
 
-static int LobbyCastleBtnY(void)
-{
-	return BOTTOMMENUHEIGHT + 4 * _2X;
-}
-
-static int LobbyCastleBtnX(int n)
-{
-	(void)n;
-	return 3 * _2X;
-}
-
-static int LobbyCastleBtnItemY(int n)
-{
-	return LobbyCastleBtnY() + (n + 1) * (kCastleBtnH + kCastleBtnGap);
-}
-
-static int LobbyCastleBtnHit(float x, float y)
-{
-	for (int n = 0; n < 10; n++) {
-		if (GetRectPoint((int)x, (int)y, LobbyCastleBtnX(n), LobbyCastleBtnItemY(n),
-			kCastleBtnW, kCastleBtnH))
-			return n;
-	}
-	return -1;
-}
-
 static const int kCastleArrowW = 28 * _2X;
 static const int kCastleArrowH = 48 * _2X;
 
@@ -10341,63 +9858,12 @@ static void LobbyCastleArrowsDraw(void)
 	}
 }
 
-//---- 성 토글 버튼 ----
-//누를 때마다 castle0 -> castle1 -> ... -> castle9 -> castle0 으로 넘긴다.
-//확대/축소 버튼 왼쪽에 같은 크기로 둔다.
-static int LobbyCastleToggleX(void);
-static int LobbyCastleToggleY(void);
 static const int kCastleToggleW = 28 * _2X;
 static const int kCastleToggleH = 18 * _2X;
-
-static bool LobbyCastleToggleHit(float x, float y)
-{
-	return GetRectPoint((int)x, (int)y, LobbyCastleToggleX(), LobbyCastleToggleY(),
-		kCastleToggleW, kCastleToggleH) != 0;
-}
-
-static void LobbyCastleToggleDraw(void)
-{
-	char str[16];
-	const int x = LobbyCastleToggleX();
-	const int y = LobbyCastleToggleY();
-
-	sprintf(str, "성 %d", Max(0, Min(robin.castle, 9)));
-	DrawUiButton(x, y, kCastleToggleW, kCastleToggleH, str, 0);
-}
-
-static void LobbyCastleButtonsDraw(void)
-{
-	const int curCastle = Max(0, Min(gMobileCastleVisual, CASTLE_STAGE_CNT - 1));
-	char str[16];
-
-	for (int n = 0; n < 10; n++) {
-		const int btnX = LobbyCastleBtnX(n);
-		const int btnY = LobbyCastleBtnItemY(n);
-		const bool selected = (curCastle == n);
-
-		sprintf(str, "%d", n);
-		DrawUiButton(btnX, btnY, kCastleBtnW, kCastleBtnH, str, 0, selected);
-	}
-}
 
 //디버그 버튼 자리. 그리는 곳과 누르는 곳이 같은 값을 쓴다.
 static const int kLobbyZoomBtnW = 28 * _2X;
 static const int kLobbyZoomBtnH = 18 * _2X;
-
-static int LobbyZoomBtnY(void)
-{
-	return BOTTOMMENUHEIGHT + 12 * _2X;
-}
-
-static int LobbyCastleToggleX(void)
-{
-	return LobbyCastleBtnX(10) + 2 * _2X;
-}
-
-static int LobbyCastleToggleY(void)
-{
-	return LobbyZoomBtnY();
-}
 
 static int LobbyZoomBtnX(int n)
 {
@@ -10651,17 +10117,6 @@ static StageBg::Camera LobbyCamera(void)
 	cam.menuLift=gLoadoutWorldLift;
 
 	return cam;
-}
-
-float DrawCastleLobbyBackground(int wheelGroundY)
-{
-	LobbyCastlePrepare();
-	auto camera=StageBg::FixedCam(wheelGroundY);
-	// Keep the existing region, art, parallax and camera zoom/pan. The resized
-	// room chassis has its own axle; its wheels must still contact the rail.
-	camera.groundY=wheelGroundY;
-	StageBg::Draw(camera, 0);
-	return StageBg::kSpeedRail*StageBg::s_travel*StageBg::LayerScale(camera,StageBg::kDepthRail);
 }
 
 static void LobbyCastleDraw(void)
@@ -11614,16 +11069,6 @@ bool CrewWalkMotion(int cmf, int type, int& outFrames, const signed short*& outM
 	outFrames = frames;
 	outMotions = &st[2];
 	return true;
-}
-
-bool CastlePartsCombatAnchors(float* commanderX,float* commanderY,float* deckY)
-{
-    const auto& p=CastleParts::sdPlacement;
-    if(!p.valid)return false;
-    if(commanderX)*commanderX=p.commanderX;
-    if(commanderY)*commanderY=p.commanderY;
-    if(deckY)*deckY=p.deckSurface;
-    return true;
 }
 
 void CastleCrewDrawAt(float left, float top, float w, float h, float scale,
@@ -13534,72 +12979,6 @@ void GoldQuestMenuDraw(int x, int y, float zoom)
 
 	BossRaidDetailDraw();
 	return;
-#if 0
-	int i, j;
-	gEvent = &robin.gameEvent[GetEventMenuIdx(EVENTTYPE_BOSSRAID)];
-	float gapX = (float)8 * _2X * zoom;
-	float gapY = -(float)5 * _2X * zoom;
-
-	float degree = 90.0f - atan((float)(goldQuestPositionData[(int)(gEvent->barStatus) * BOSSRAIDSIZE * 2 + 1 * 2 + 1] - goldQuestPositionData[(int)(gEvent->barStatus) * BOSSRAIDSIZE * 2 + 0 * 2 + 1]) / (float)(goldQuestPositionData[(int)(gEvent->barStatus) * BOSSRAIDSIZE * 2 + 1 * 2 + 0] - goldQuestPositionData[(int)(gEvent->barStatus) * BOSSRAIDSIZE * 2 + 0 * 2 + 0])) * 180 / M_PI;
-
-
-
-	CenterText(TEXT_BOSSRAID, x + (float)(POPUPWINDOWSIZE_X / 2) * zoom, y - (float)(4 * _2X) * zoom, zoom);
-
-	for (i = BOSSRAIDSIZE - 1; i >= 0; i--) {
-		if (i != BOSSRAIDSIZE - 1) {
-			for (j = 0; j < 3; j++) {
-				DrawImage(17 * _2X, 24 * _2X, 0 * _2X, 112 * _2X, x + (float)goldQuestDotPosition[(int)(gEvent->barStatus) * BOSSRAIDSIZE * 3 * 2 + i * 3 * 2 + j * 2 + 0] * zoom, y + (float)goldQuestDotPosition[(int)(gEvent->barStatus) * BOSSRAIDSIZE * 3 * 2 + i * 3 * 2 + j * 2 + 1] * zoom, false, false, false, false, false, zoom / 2, sprite[MAP_OBJ_IMG + MAPTYPE_DEVILCASTLE], MAP_OBJ_IMG + MAPTYPE_DEVILCASTLE);
-				DrawImage(17 * _2X, 24 * _2X, 0 * _2X, 112 * _2X, x + (float)goldQuestDotPosition[(int)(gEvent->barStatus) * BOSSRAIDSIZE * 3 * 2 + i * 3 * 2 + j * 2 + 0] * zoom + (float)17 * _2X * zoom / 2, y + (float)goldQuestDotPosition[(int)(gEvent->barStatus) * BOSSRAIDSIZE * 3 * 2 + i * 3 * 2 + j * 2 + 1] * zoom, true, false, false, false, false, zoom / 2, sprite[MAP_OBJ_IMG + MAPTYPE_DEVILCASTLE], MAP_OBJ_IMG + MAPTYPE_DEVILCASTLE);
-
-				//Ŭ�����ϸ� ���긦 ���ش�.
-				if ((int)(gEvent->barStatus) > i) {
-					SetAlpha(32 - Abs(frame / MOTIONDIV % 32 - 16));
-					DrawImage(10 * _2X, 20 * _2X, 28 * _2X, 136 * _2X, x + (float)goldQuestDotPosition[(int)(gEvent->barStatus) * BOSSRAIDSIZE * 3 * 2 + i * 3 * 2 + j * 2 + 0] * zoom - (float)10 * _2X * zoom / 2 + gapX, y + (float)goldQuestDotPosition[(int)(gEvent->barStatus) * BOSSRAIDSIZE * 3 * 2 + i * 3 * 2 + j * 2 + 1] * zoom + (float)10 * _2X * zoom / 2 + gapY, false, false, false, false, false, zoom / 2, sprite[MAP_OBJ_IMG + MAPTYPE_DEVILCASTLE], MAP_OBJ_IMG + MAPTYPE_DEVILCASTLE);
-					DrawImage(10 * _2X, 20 * _2X, 28 * _2X, 136 * _2X, x + (float)goldQuestDotPosition[(int)(gEvent->barStatus) * BOSSRAIDSIZE * 3 * 2 + i * 3 * 2 + j * 2 + 0] * zoom + gapX, y + (float)goldQuestDotPosition[(int)(gEvent->barStatus) * BOSSRAIDSIZE * 3 * 2 + i * 3 * 2 + j * 2 + 1] * zoom + (float)10 * _2X * zoom / 2 + gapY, true, false, false, false, false, zoom / 2, sprite[MAP_OBJ_IMG + MAPTYPE_DEVILCASTLE], MAP_OBJ_IMG + MAPTYPE_DEVILCASTLE);
-					SetAlpha(32);
-
-					DrawImage(8 * _2X, 16 * _2X, 106 * _2X, 0 + 16 * _2X * (IMG_BG_REDORB + i % 5 - IMG_BG_REDORB), x + (float)goldQuestDotPosition[(int)(gEvent->barStatus) * BOSSRAIDSIZE * 3 * 2 + i * 3 * 2 + j * 2 + 0] * zoom - (float)8 * _2X * zoom / 2 + gapX, y + (float)goldQuestDotPosition[(int)(gEvent->barStatus) * BOSSRAIDSIZE * 3 * 2 + i * 3 * 2 + j * 2 + 1] * zoom + (float)8 * _2X * zoom / 2 + gapY, false, false, false, false, false, zoom / 2, sprite[MAP_OBJ_IMG + MAPTYPE_DEVILCASTLE], MAP_OBJ_IMG + MAPTYPE_DEVILCASTLE);
-					DrawImage(8 * _2X, 16 * _2X, 106 * _2X, 0 + 16 * _2X * (IMG_BG_REDORB + i % 5 - IMG_BG_REDORB), x + (float)goldQuestDotPosition[(int)(gEvent->barStatus) * BOSSRAIDSIZE * 3 * 2 + i * 3 * 2 + j * 2 + 0] * zoom + gapX, y + (float)goldQuestDotPosition[(int)(gEvent->barStatus) * BOSSRAIDSIZE * 3 * 2 + i * 3 * 2 + j * 2 + 1] * zoom + (float)8 * _2X * zoom / 2 + gapY, true, false, false, false, false, zoom / 2, sprite[MAP_OBJ_IMG + MAPTYPE_DEVILCASTLE], MAP_OBJ_IMG + MAPTYPE_DEVILCASTLE);
-
-				}
-				//goldQuestDotPosition
-			}
-		}
-	}
-
-	for (i = BOSSRAIDSIZE - 1; i >= 0; i--) {
-
-		switch (i) {
-		default:
-			DrawBox(goldQuestBox[(int)(gEvent->barStatus) * BOSSRAIDSIZE + (int)(i)], x + (float)(goldQuestPositionData[(int)(gEvent->barStatus) * BOSSRAIDSIZE * 2 + i * 2 + 0]) * zoom - (float)16 * _2X * zoom - (float)(BOXSIZE_X) * 2 / 3 * zoom / 2 * 2 / 3 + (i / 2 % 2 == 0 ? -(float)18 * _2X * zoom : (float)20 * _2X * zoom), y + (float)(goldQuestPositionData[(int)(gEvent->barStatus) * BOSSRAIDSIZE * 2 + i * 2 + 1]) * zoom + (float)10 * _2X * zoom + (float)10 * _2X * zoom, LEFT, false, false, true, i >= i ? false : true, true, zoom * 2 / 3 * 2 / 3);
-
-			DrawCmfDetailShadow(enemyData[goldQuestNpc[(int)(gEvent->barStatus) * BOSSRAIDSIZE + i] * ENEMYDATASIZE + ENEMYDATA_CMF], crewPos[goldQuestNpc[(int)(gEvent->barStatus) * BOSSRAIDSIZE + i] * 5 + 0], x + (float)(goldQuestPositionData[(int)(gEvent->barStatus) * BOSSRAIDSIZE * 2 + i * 2 + 0]) * zoom - (float)16 * _2X * zoom, y + (float)(goldQuestPositionData[(int)(gEvent->barStatus) * BOSSRAIDSIZE * 2 + i * 2 + 1]) * zoom - (float)(24 * _2X) * zoom, i / 2 % 2 == 0 ? RIGHT : LEFT, LOBBYZOOM * zoom);
-
-			break;
-		}
-
-		SetRectPoint(x + (float)(goldQuestPositionData[(int)(gEvent->barStatus) * BOSSRAIDSIZE * 2 + i * 2 + 0]) * zoom - (float)(BOXSIZE_X)*zoom + (float)8 * _2X * zoom, y + (float)(goldQuestPositionData[(int)(gEvent->barStatus) * BOSSRAIDSIZE * 2 + i * 2 + 1]) * zoom + (float)24 * _2X * zoom, (float)BOXSIZE_X * zoom, (float)BOXSIZE_Y * zoom, TOUCH_FUNC_EVENT_BOSSRAID_REWARDINFO + i);
-	}
-	
-	DrawText(TEXT_REMAINTIME, x + (float)64 * _2X * zoom, y - (float)452 * _2X * zoom, zoom);
-
-	DrawTime(x + (float)(128 * _2X) * zoom, y - (float)(450 * _2X) * zoom, Max(gEvent->limitTime - (MC_knlCurrentTimeStamp() - gEvent->timeStamp), 0), TIME_HOUR_MINUTE, LEFT, zoom);
-
-	DrawTextButton(x + (POPUPWINDOWSIZE_X / 2 - 80 * _2X / 2) * zoom, y - (POPUPWINDOWSIZE_Y - 4 * ITEMICONSIZE) * zoom, (float)(80 * _2X) * zoom, (float)(28 * _2X) * zoom, FRAME_GREEN, false, zoom, false, TEXT_ADVENTURE);
-
-	switch (menuDepth) {
-	case 0:
-		SetRectPoint(x + (POPUPWINDOWSIZE_X / 2 - 80 * _2X / 2) * zoom, y - (POPUPWINDOWSIZE_Y - 4 * ITEMICONSIZE) * zoom, (float)(80 * _2X) * zoom, (float)(28 * _2X) * zoom, TOUCH_FUNC_GOTOBOSSRAID);
-		break;
-	case 1:
-		ResetRectPoint();
-		if (curtainFrame == 0) {
-			GotoBoss();
-		}
-		break;
-	}
-#endif
 }
 
 void GameOverDraw(int x, int y, float zoom)

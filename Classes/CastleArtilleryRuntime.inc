@@ -67,16 +67,6 @@ void ArtilleryHit(int target) {
     }
     return;
 }
-void OldArtilleryHit(int target) {
-    OBJECT* hero=&ao[PLAYER];
-    const long long damage=hero->ps[PS_DMG];
-    const int attackFrame=hero->attackFrame,attackLv=hero->attackLv;
-    hero->ps[PS_DMG]=Max(1LL,damage*CastleCannonDamagePercent(stageArtillery.grade)
-        /100*STAGE_CANNON_SUPPORT_PCT/100);
-    AttackObj(PLAYER,target,true);
-    hero->ps[PS_DMG]=damage;
-    hero->attackFrame=attackFrame; hero->attackLv=attackLv;
-}
 void ArtillerySprite(int group,int animation,float x,float y,float size,float angle=0,int opacity=ALPHA_MAX) {
     const CastleArtilleryFrame& f=kCastleArtilleryFrames[group*8+(animation%8)];
     const float z=size/Max(f.w,f.h);

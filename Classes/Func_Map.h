@@ -45,9 +45,6 @@ enum {
 
 int GetStageCycleIdx(void);
 int GetStageDay(void);
-bool IsStageNight(void);
-bool IsFinalDayStage(void);
-int GetStagesUntilFinalDay(void);
 int GetSkillCnt(int acquiredSkills[MAXCHARSKILL]);
 int selectRandomSkill(int characterID, int acquiredSkills[MAXCHARSKILL]);
 void ObjectSkillSetting(OBJECT * pObj);

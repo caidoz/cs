@@ -1,5 +1,4 @@
 int castleRoomLevel(int c,int room);
-int castleMaterial(int c);
 // Facilities remain independently upgradeable behind the chassis' alpha holes.
 #include "MergeCastleOriginal.inc"
 #include "MergeCastleMist.inc"
@@ -41,14 +40,6 @@ void drawWorld(const Layout& l,bool combat);
 int castleRoomLevel(int c,int room){
  const int preview=LobbyCastleDebugFacilityLevel(c,room);
  return std::min(5,preview>=0?preview:(int)robin.castleProgress.rooms[c][room]);
-}
-int castleMaterial(int c) {
- static const int colors[10]={0x8B582D,0xC7AB77,0x7F94AF,0x366E70,0x333D56,0xA7CCC2,0x612D38,0xBACEDF,0x463251,0xC4D0D6};
- return colors[std::max(0,std::min(9,c))];
-}
-Box interiorBox(const Layout& l){
- const int w=std::min(DX-(int)(48*l.scale),l.board.w+(int)(64*l.scale));
- return {(DX-w)/2,l.board.y+(int)(26*l.scale),w,l.board.h+(int)(26*l.scale)};
 }
 //---- 대포가 놓인 자리 ----
 //
@@ -213,8 +204,6 @@ void drawCastleCannon(const Layout& l,int c,bool mirror){
 
 Box lobbyStart(const Layout& l){const auto p=PortraitGame::lobby(DX,DY);const int w=(int)(360*l.scale);return {(DX-w)/2,p.startTop-(int)(10*l.scale),w,(int)(64*l.scale)};}
 
-Box lobbyContinue(const Layout& l){return OriginalCastle::box(411,1196,274,52);}
-Box lobbyManage(const Layout& l){return OriginalCastle::box(404,1005,276,49);}
 //원정 단추: 옛 "이어서" 줄의 오른쪽. 왼쪽은 행동력 게이지다.
 //PVP 디버그(공성전) 버튼. 오른쪽 위, 나가기 자리 아래.
 Box lobbyPvp(const Layout& l){const float s=l.scale;return {DX-(int)(80*s),l.ground+(int)(125*s),(int)(64*s),(int)(28*s)};}
@@ -243,10 +232,6 @@ Box roomBox(const Layout& l,int room){
  const auto p=OriginalCastle::rooms()[room];
  return OriginalCastle::box((int)p[0].x,(int)p[0].y,(int)(p[1].x-p[0].x),(int)(p[2].y-p[0].y));
 }
-Box residentRoomBox(const Layout& l,int floor){
- const auto& r=CastleFiveFloors::Rooms[OriginalCastle::widthStage()][floor];
- return OriginalCastle::box(r.x,r.y,r.w,r.h);
-}
 Box lobbyBottomNav();
 bool lobbyDebugTouch(const Layout& l,float x,float y){
  if(!DebugControlsOpen() || !LobbyCastleDebugActive())return false;
@@ -271,133 +256,7 @@ bool lobbyDebugTouch(const Layout& l,float x,float y){
  else StageBgDebugNextBackdrop();
  return true;
 }
-//---- 방 안의 식솔 ----
-//
-//[왜 전부인가]
-//방마다 한 사람만 서 있으면, 동료를 몇을 모았든 성은 늘 똑같이 비어
-//보인다. 모은 것이 보이는 자리가 여기뿐이므로 가진 동료를 전부 세운다.
-//
-//[나누는 방법]
-//다섯 방에 번갈아 넣는다(0,5,10번째가 첫 방). 역할·★ 순으로 모은
-//명단을 그대로 돌리므로 한 방에 같은 역할만 몰리지 않는다.
-//
-//[좁으면 같이 작아진다]
-//사람이 늘면 방을 넘친다. 방 하나의 가로폭에 맞춰 그 방 사람들만
-//한꺼번에 줄인다 - 한 명씩 줄이면 같은 방 안에서 키가 들쭉날쭉해진다.
-//
-//[움직임]
-//저마다 다른 박자로 제자리 주변을 오간다. 가는 쪽을 보고(dir), 걷는
-//동안 쉬는 모션을 돌린다. 방 밖으로는 안 나간다 - 방 상자로 잘린다.
-void drawRoomResidents(const Layout& l){
- int crews[64],n=0;
- for(int role=0;role<Roles;++role)for(int star=1;star<=MaxLevel;++star)
-  for(int k=0;k<roster.count[role][star]&&n<64;++k){
-   const int id=roster.crew[role][star][k];
-   // Deployed companions leave the castle rooms for the battle deck.
-   bool deployed=false;
-   if(active)for(int index=0;index<(int)run.board.size();++index){
-    const auto& block=run.board[index];
-    if(gridBlockLanded(index)&&block.family<Roles&&block.crew==id){deployed=true;break;}
-   }
-   if(deployed)continue;
-   bool dup=false;for(int j=0;j<n;++j)if(crews[j]==id)dup=true;
-   if(!dup)crews[n++]=id;
-  }
- if(n==0&&active)return;
- if(n==0){
-  //아직 한 명도 없다. 예전처럼 역할 대표를 한 방에 하나씩 세워 둔다.
-  for(int i=0;i<5;++i){
-   const Box b=residentRoomBox(l,i);const int h=(int)(.84f*std::min(72*l.scale,b.h*.84f)),w=(int)(h*.85f);
-   SetSectionClip(b.x,b.y,b.w,b.h,false);
-   icon(i%Roles,{b.x+(int)(b.w*.70f)-w/2,b.y-b.h+(int)(9*l.scale)+h,w,h},1.f,false,1,-1);
-   UnSectionClip(false);
-  }
-  return;
- }
- for(int i=0;i<5;++i){
-  const Box b=residentRoomBox(l,i);
-  int mine[64],cnt=0;
-  for(int k=i;k<n;k+=5)mine[cnt++]=crews[k];
-  if(cnt==0)continue;
-
-  //---- 크기부터 지킨다 ----
-  //
-  //전에는 사람이 늘면 다 들어갈 때까지 키를 줄였다. 열 몇이 한 방에
-  //들면 점처럼 작아져서 누가 있는지 알아볼 수가 없었다.
-  //
-  //알아볼 수 있는 크기가 먼저다. 한 줄에 다 못 서면 **뒷줄을 만든다** -
-  //뒷줄은 조금 위에, 조금 작게 서서 방이 깊어 보인다(최대 3줄).
-  //그래도 넘치면 간격만 좁혀 어깨를 겹친다.
-  //.70 → .84: 방 안 사람을 20% 키운다(2026-11-16). 뒷줄은 그대로 12% 씩 줄어든다.
-  const int h0=(int)(.84f*std::min(72*l.scale,b.h*.84f));
-  const int span=std::max(1,(int)(b.w*.84f));
-  const int left=b.x+(b.w-span)/2;
-  const int floorY=b.y-b.h+(int)(9*l.scale);
-  const int lane=std::max(1,(int)(h0*.56f));         //한 사람이 쓰는 가로
-  const int perRank=std::max(1,span/lane);
-  const int ranks=std::max(1,std::min(3,(cnt+perRank-1)/perRank));
-
-  SetSectionClip(b.x,b.y,b.w,b.h,false);
-  //뒷줄부터 그린다 - 앞줄이 뒷줄을 가려야 깊이가 산다.
-  for(int r=ranks-1;r>=0;--r){
-   int first=cnt*r/ranks,last=cnt*(r+1)/ranks,mates=last-first;
-   if(mates<=0)continue;
-   const float shrink=1.f-r*.12f;
-   const int h=std::max((int)(28*.84f*l.scale),(int)(h0*shrink));
-   const int w=std::max(1,(int)(h*.85f));
-   const int lift=(int)(r*h0*.22f);
-   for(int k=0;k<mates;++k){
-    const int idx=first+k;
-    //걷는 그림이 없는 사람은 제자리에 선다. 선 그림을 옆으로 옮기면
-    //걷는 게 아니라 미끄러지는 것으로 보인다. 걷는지는 cmf 이동표가
-    //정한다(crewWalkMotion) - 대기 장수로는 64명이 다 통과해 버린다.
-    //제자리인 사람도 대기 그림이 여러 장이면 그 자리에서 숨을 쉰다.
-    const int walkMotion=crewWalkMotion(mine[idx],frame/6+idx*3);
-    const bool walks=walkMotion>=0;
-    const int motion=walks?walkMotion:crewIdleMotion(mine[idx],frame/8+idx);
-    const float t=frame*(.010f+(idx%3)*.004f)+(i*7+idx*3)*.9f;
-    const int home=mates==1?left+span/2:left+k*span/(mates-1);
-    const int cx=walks?home+(int)(std::sin(t)*h*.26f):home;
-    crewArt(mine[idx],{cx-w/2,floorY+lift+h,w,h},1.f,0,motion,
-     walks&&std::cos(t)<0.f?LEFT:RIGHT);
-    if(entering()&&entryElapsed<MergeCastleTransition::CoverEnd){
-     const unsigned hash=panicSeed+(unsigned)mine[idx]*2654435761u;
-     const float delay=(hash%18)/100.f;
-     if(entryElapsed>=delay){
-      const int icons[3]={EMOTICON_SURPRISE,EMOTICON_QUESTION,EMOTICON_SWEAT};
-      DrawEmoticon(icons[hash%3],0,4+(int)((entryElapsed-delay)*24),cx,
-       std::min(b.y-(int)(8*l.scale),floorY+lift+h),.65f*l.scale);
-     }
-    }
-   }
-  }
-  UnSectionClip(false);
- }
-}
-Box battleFrontOuter(const Layout& l,int c){
- const auto& r=CastleFiveFloors::Covers[c];
- Box b=OriginalCastle::box(r.x,r.y,r.w,r.h);
- if(siegeActive)b.x=DX-b.x-b.w;
- return b;
-}
 int drawnFrontRimParts=0;
-void measureFrontInner(const Layout& l,int c){
- const auto& r=CastleFiveFloors::Covers[c];
- drawnFrontInnerBounds=OriginalCastle::box(r.x,r.y,r.w,r.h);
- if(siegeActive)drawnFrontInnerBounds.x=DX-drawnFrontInnerBounds.x-drawnFrontInnerBounds.w;
-}
-void drawBattleCover(const Layout& l){
- drawnFrontCover=-1;drawnFrontRimParts=0;
- const float progress=entryElapsed<0?1.f:MergeCastleTransition::CoverProgress(entryElapsed);
- if(progress<=0)return;
- const int c=siegeHullStage>=0?siegeHullStage:std::max(0,std::min(9,run.stage));
- const Box outer=battleFrontOuter(l,c);drawnFrontCover=MistCastle::image(c,8);drawnFrontCoverBounds=outer;
- const auto& r=CastleFiveFloors::Covers[c];
- Box moving=OriginalCastle::box(r.x,r.y,r.w,r.h);moving.y+=(int)((1-progress)*moving.h);
- SetSectionClip(outer.x,outer.y,outer.w,outer.h,false);
- MistCastle::part(c,8,moving,siegeActive);
- UnSectionClip(false);measureFrontInner(l,c);
-}
 Box portraitHabitatBounds(int castle,const Box& hull){
  if(castle==0)return {hull.x+(int)(15*hull.w/256.f),hull.y-(int)(85*hull.h/190.f),(int)(135*hull.w/256.f),(int)(72*hull.h/190.f)};
  return {hull.x+(int)(hull.w*.16f),hull.y-(int)(hull.h*.25f),(int)(hull.w*.62f),(int)(hull.h*.57f)};

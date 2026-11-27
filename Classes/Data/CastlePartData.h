@@ -212,13 +212,6 @@ inline int CastlePartBonus(int castle, int part, int lv)
 	return p ? p->bonusPerLv * lv : 0;
 }
 
-//---- 증축 조건 ----
-//
-//파츠 합계만으로는 부족하다. 골드만 부으면 넘어가는 성장이 되기 때문이다.
-//판을 깨고 동료를 모으는 것도 같이 본다.
-inline int CastleNeedStage(int castle)	{ return (castle + 1) * 3; }
-inline int CastleNeedCrew(int castle)	{ return 2 + castle; }
-
 //즉시 완성 값. 남은 골드를 이 비율로 캐시로 바꾼다(올림).
 #define CASTLE_CASH_PER_GOLD	1000
 

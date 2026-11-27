@@ -2170,11 +2170,6 @@ bool NetTermsPending(void)
 	return sTermsWaiting;
 }
 
-long long NetTermsVersion(void)
-{
-	return sTermsNow;
-}
-
 const char* NetTermsUrl(bool privacy)
 {
 	const std::string& got = privacy ? sTermsPrivacy : sTermsService;
@@ -2616,14 +2611,6 @@ void NetInit(void)
 	//gNetTimeOffset 은 일부러 안 지운다. 한 번 서버와 맞춘 시각은 통신 상태와
 	//무관하게 계속 맞다. 여기서 0으로 되돌리면 재연결 사이에 시각이 기기
 	//시계로 튀었다가 다시 돌아온다. 그 사이에 일일 초기화가 걸리면 곤란하다.
-}
-
-bool NetTakeConflictNotice(void)
-{
-	bool had = sConflictNotice;
-
-	sConflictNotice = false;
-	return had;
 }
 
 bool NetIsBusy(void)

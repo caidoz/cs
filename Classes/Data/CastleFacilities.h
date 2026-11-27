@@ -28,7 +28,6 @@ inline int Output(int castle,int room,int level){
 }
 inline bool Food(int castle,int room){return castle>=0&&castle<PortraitCastleArt::Count&&room==FoodRoom;}
 inline bool Armory(int castle,int room){return castle>=0&&castle<PortraitCastleArt::Count&&room==WeaponRoom;}
-inline int AttackUpgrade(int castle,int room,int level){return Armory(castle,room)?Output(castle,room,level):0;}
 inline const char* Effect(int castle,int room){return room==FoodRoom?"골드 생산량":room==WeaponRoom?"히어로 공격력":room==MedicalRoom?"히어로 최대 체력":"히어로 방어력";}
 template<class Progress> inline int Bonus(const Progress& p,int castle,bool energy){
  if(castle<0||castle>=PortraitCastleArt::Count||!(p.owned&(1u<<castle))||energy)return 0;

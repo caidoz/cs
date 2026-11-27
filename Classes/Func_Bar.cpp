@@ -688,12 +688,6 @@ static void DrawBossHpBarBody(long long count, long long max, int x, int y,
 			true, 0.6f * zoom, false, 2 * _2X);
 }
 
-void VsHpBarDraw(long long count, long long max, int x, int y, int color,
-	float zoom)
-{
-	DrawBossHpBarBody(count, max, x, y, color, zoom);
-}
-
 void BossHpBarDraw(long long count, long long max, int x, int y, float zoom)
 {
 	float width = StringWidth(textId[TEXT_STAGE], zoom) + (float)(4 * _2X) * zoom + GetNumDx(robin.stage + 1, false, NUM_FONT_NORMAL, false, false, zoom, false) + GetNumDx(robin.room + 1, MINUS, NUM_FONT_NORMAL, false, false, zoom, false);

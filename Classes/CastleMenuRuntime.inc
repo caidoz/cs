@@ -10,24 +10,11 @@ int castleUpgradeCastle=0,castleUpgradePart=0,castleUpgradeLevel=0,castleUpgrade
 int castleMessageUntil=0; float castlePanY=0;
 const char* castleMessage="";
 int CastleInventoryUsed() { int n=0; for(int i=0;i<GetMaxInven();++i) if(robin.inven[i].type!=EMPTY&&robin.inven[i].count>0) ++n; return n; }
-long long CastleProjectedStat(const CastleMenuModel::Progress& p,int c,int stat) {
-    const int kind=stat==PS_DMG?0:stat==PS_HP?1:2;
-    const int bonus=(kind==0?CastleMenuModel::Attack(p,c):kind==1?CastleMenuModel::Health(p,c):CastleMenuModel::Defense(p,c))+CastleMenuModel::All(p,c);
-    return ao[PLAYER].ps[stat]*(100+bonus)/(100+CastleTeamBonus(kind));
-}
-long long CastleProjectedPower(const CastleMenuModel::Progress& p,int c) {
-    return GetCombatPower(&ao[PLAYER])-ao[PLAYER].ps[PS_DMG]-ao[PLAYER].ps[PS_HP]-ao[PLAYER].ps[PS_ARMOR]
-        +CastleProjectedStat(p,c,PS_DMG)+CastleProjectedStat(p,c,PS_HP)+CastleProjectedStat(p,c,PS_ARMOR);
-}
 void CastleLabel(const char* s,int x,int y,int width,float z=0.7f) {
     SetFontColor(COLOR_WHITE);
     CenterTextStrSolid(s,x,y,Min(z,width/Max(1.0f,StringWidth(s,1.0f))));
 }
 void CastlePanel(int x,int y,int w,int h) { MemRect(x,y,w,h,0x111F33); MemRectFrame(x,y,w,h,0xB99343); }
-void CastleButton(const char* s,int x,int y,int w,int h,int cmd,bool enabled=true,int color=BUTTON_COLOR_BLUE) {
-    MenuButton(x,y,w,h,s,enabled?color:BUTTON_COLOR_BROWN,enabled,enabled?cmd:0,
-        Min(0.75f*_2X,(w-8.0f*_2X)/Max(1.0f,StringWidth(s,1.0f))));
-}
 void CastleSaveChanges() {
     gMobileCastleVisual=robin.castle;
     robin.maxInven=(unsigned short)GetMaxInven();
@@ -176,44 +163,6 @@ bool CastleMenuCommand(int func) {
 bool CastleMenuSwipe(float,float,float,float) { return false; }
 
 namespace {
-long long CastleTotalPower(const CastleMenuModel::Progress& p,int c) {
-    long long total=CastleMenuModel::StructuralPower(p,c,GridTestCellCnt(c))+Max(1LL,CastleProjectedPower(p,c));
-    for(int i=CREW;i<CREW+MAXCREW;++i) if(ao[i].active&&!ao[i].dead) {
-        long long crew=GetCombatPower(&ao[i]);
-        const int stats[3]={PS_DMG,PS_HP,PS_ARMOR};
-        const int bonus[3]={CastleMenuModel::Attack(p,c),CastleMenuModel::Health(p,c),CastleMenuModel::Defense(p,c)};
-        for(int k=0;k<3;++k) crew+=ao[i].ps[stats[k]]*(100+bonus[k]+CastleMenuModel::All(p,c))/(100+CastleTeamBonus(k))-ao[i].ps[stats[k]];
-        total+=Max(0LL,crew);
-    }
-    const auto& profile=CastleArtillery::Of(c);
-    const long long damage=Max(1LL,CastleProjectedStat(p,c,PS_DMG)*profile.damagePercent*(100+10*p.parts[c][3])/10000);
-    const int cooldown=Max(1,profile.cooldown*(100-3*p.parts[c][3])/100);
-    return total+damage*profile.hits*FPS/cooldown;
-}
-void CastleMenuGrid(int c,int x,int top,int width,int height,float u) {
-    const int start=castleGridCellStart[c],count=GridTestCellCnt(c);
-    int cols=0,rows=0;
-    for(int i=0;i<count;++i) { cols=Max(cols,(int)castleGridCell[(start+i)*2]+1); rows=Max(rows,(int)castleGridCell[(start+i)*2+1]+1); }
-    const float cell=Min(width/(float)Max(1,cols),height/(float)Max(1,rows));
-    const int left=x+(width-(int)(cols*cell))/2;
-    for(int i=0;i<count;++i) {
-        const int gx=left+(int)(castleGridCell[(start+i)*2]*cell);
-        const int gy=top-(int)((rows-1-castleGridCell[(start+i)*2+1])*cell);
-        // Runtime limits total occupied cells, not individual grid positions.
-        MemRect(gx,gy,Max(1,(int)cell-1),Max(1,(int)cell-1),0x163E61);
-        MemRectFrame(gx,gy,Max(1,(int)cell-1),Max(1,(int)cell-1),0x5CC9F0);
-    }
-}
-void CastleMenuAssembly(int c,int top,int bottom) {
-    float nw,nh; CastlePartsNaturalSize(c+1,&nw,&nh);
-    const float scale=CastlePartsRoomScale();
-    float visualLeft,visualRight; CastlePartsVisualBounds(c+1,scale,&visualLeft,&visualRight);
-    const int x=(int)(DX*.5f-(visualLeft+visualRight)*scale*.5f-CastlePartsLeftInset(c+1)*scale);
-    const int y=(int)(DY*.5f+nh*scale*.5f+castlePanY);
-    SetSectionClip(0,top,DX,top-bottom,false);
-    CastlePartsDrawRect(c+1,x,y,(int)(nw*scale),(int)(nh*scale));
-    UnSectionClip(false);
-}
 void CastleMenuToast(float u) {
     if(!*castleMessage||frame>=castleMessageUntil) return;
     const int width=DX-32*u,top=DY/2+24*u;

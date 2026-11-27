@@ -940,26 +940,6 @@ long long NextExp(int lv)
 //- 이미 슬롯이 가득차 있을때 선택마크가 없는 장비를 선택하면 들어갈 곳이 없기 때문에 아무 반응을 하지 않는다.
 //- 이미 슬롯이 가득차 있을 때 선택마크가 있는 장비를 선택하면 해당 장비를 비우고 뒤에서부터 땡겨서 채워준다.
 
-//장비의 특정 레벨까지 필요한 경험치를 합산해서 반환
-int NextExpEquip(ITEM* it, int lv)
-{
-	int i, needExp = 0;
-
-	for (i = 0; i < lv - 1; i++) {
-		switch (it->type) {
-		case ITEM_RING:
-		case ITEM_NECK:
-			needExp += itemExpAcce[i];
-			break;
-		default:
-			needExp += itemExp[itemLevelLimit[it->detail * 2 + 1] + i];
-			break;
-		}
-	}
-
-	return needExp;
-}
-
 int GetLevelUpRewardLv(int type, int userLv)
 {
 	int i;
@@ -2236,18 +2216,6 @@ long long int CalcArmorBetSkill(long long int damage, const DMGINPUT* in)
 	//0 이 되기 때문이다.
 	if (damage < 1)
 		damage = 1;
-
-	return damage;
-}
-
-//셋을 차례로 밟는다. 룰렛 시점에 결과를 미리 재는 쪽은 중간에 낄 일이
-//없으므로 이것만 부르면 된다.
-long long int CalcDamage(const DMGINPUT* in)
-{
-	long long int damage = CalcBaseDamage(in, NULL);
-
-	damage = CalcGuardReduction(damage, in);
-	damage = CalcArmorBetSkill(damage, in);
 
 	return damage;
 }
@@ -5108,57 +5076,6 @@ int GetCardMarkCnt(void)
 
 }
 
-int SetCardMark(int startPosX, int startPosY, int targetX, int targetY, int targetX2, int targetY2, float speed, float speedIncrement, float speed2, float speedIncrement2, int waitingFrame, int waitingFrame2, int iconIdx, int moveAngle, int amount,
-	int attackType, int attackStr, float zoom, float zoomEnd, float zoomIncrement, float zoom2, float zoomEnd2, float zoomIncrement2, int alpha, bool text, bool value, bool ani, int owner, bool openFrame)
-{
-	int i;
-
-	for (i = 0; i < TOTALCARDMARK; i++) {
-		if (cardMark[i].frame == 0) {
-			cardMark[i].x = startPosX;
-			cardMark[i].y = startPosY;
-			cardMark[i].targetX = targetX;
-			cardMark[i].targetY = targetY;
-			cardMark[i].targetX2 = targetX2;
-			cardMark[i].targetY2 = targetY2;
-			cardMark[i].speed = speed;
-			cardMark[i].speedIncrement = speedIncrement;
-			cardMark[i].speed2 = speed2;
-			cardMark[i].speedIncrement2 = speedIncrement2;
-			cardMark[i].waitingFrame = waitingFrame;
-			cardMark[i].waitingFrame2 = waitingFrame2;
-			cardMark[i].frame = 1;
-			cardMark[i].imageDx = 16 * _2X;
-			cardMark[i].imageDy = 16 * _2X;
-			cardMark[i].imageOffX = (iconIdx & 0x07) * 16 * _2X;
-			cardMark[i].imageOffY = ((iconIdx & 0x3F) >> 3) * 16 * _2X;
-			cardMark[i].resNum = ITEM_IMG + (iconIdx >> 6);
-			cardMark[i].moveAngle = moveAngle;
-			cardMark[i].amount = amount;
-			cardMark[i].icon = iconIdx;
-
-			cardMark[i].attackType = attackType;
-			cardMark[i].attackStr = attackStr;
-			cardMark[i].zoom = zoom;
-			cardMark[i].zoomEnd = zoomEnd;
-			cardMark[i].zoomIncrement = zoomIncrement;
-			cardMark[i].zoom2 = zoom2;
-			cardMark[i].zoomEnd2 = zoomEnd2;
-			cardMark[i].zoomIncrement2 = zoomIncrement2;
-			cardMark[i].alpha = alpha;
-			cardMark[i].text = text;
-			cardMark[i].value = value;
-			cardMark[i].ani = false; //cardMark[i].ani = ani;
-			cardMark[i].owner = owner;
-			cardMark[i].openFrame = openFrame;
-
-			PlayMusic(M_CARDSPLIT);
-
-			return i;
-		}
-	}
-}
-
 int SetBoxMark(int startPosX, int startPosY, int targetX, int targetY, int targetX2, int targetY2, float speed, float speedIncrement, float speed2, float speedIncrement2, int waitingFrame, int waitingFrame2, int moveAngle, int detail, int grade, float zoom, float zoomEnd, float zoomIncrement, float zoom2, float zoomEnd2, float zoomIncrement2)
 {
 	int i;
@@ -6566,25 +6483,6 @@ void ActivateBuff(OBJECT* pObj, int buffIdx, int value)
 		pObj->buffRemainUse[buffIdx] = 1;
 }
 
-// 횟수형 버프가 실제 효과를 냈을 때 호출한다. 현재 설정은 전부 턴형이므로
-// 당장은 소모되지 않지만, 추후 설정만 바꾸면 이 경로를 사용할 수 있다.
-bool ConsumeBuffUse(OBJECT* pObj, int buffIdx)
-{
-	if (pObj == NULL || buffIdx < 0 || buffIdx >= TOTALBUFF
-		|| pObj->buff[buffIdx] <= 0)
-		return false;
-	if (GetBuffDurationMode(buffIdx) != BUFF_DURATION_USE_COUNT)
-		return true;
-
-	if (pObj->buffRemainUse[buffIdx] > 0)
-		pObj->buffRemainUse[buffIdx]--;
-	if (pObj->buffRemainUse[buffIdx] == 0) {
-		pObj->buff[buffIdx] = 0;
-		RefreshStat(pObj);
-	}
-	return true;
-}
-
 // 한 번의 전체 행동 순서가 끝났을 때만 호출된다. 발동 당시 2에서 시작하므로
 // 현재 턴 종료에는 1, 다음 턴 종료에는 0이 되어 해제된다.
 void AdvanceTurnBuffs(void)
@@ -7026,37 +6924,4 @@ bool AdvanceActorDebuffs(int obj)
 		RequestFocusZoom(obj, FOCUSPRI_STATUS);
 	}
 	return wasStunned;
-}
-
-void AdvanceTurnDebuffs(void)
-{
-	for (int obj = 0; obj < TOTALOBJECT; obj++) {
-		OBJECT* pObj = &ao[obj];
-		if (!pObj->active || pObj->dead)
-			continue;
-
-		for (int i = 0; i < TOTALDEBUF; i++) {
-			//넉백은 위치를 밀어내는 짧은 물리 연출이므로 기존 프레임 처리를 유지한다.
-			if (i == KNOCKBACK || pObj->debuf[i] <= 0)
-				continue;
-
-			if (pObj->debufRemainTurn[i] == 0)
-				pObj->debufRemainTurn[i] = (unsigned char)GetDebufTurnCount(i);
-
-			//부여된 바로 그 턴에는 독 피해를 주지 않고, 다음 턴부터 1회씩 준다.
-			if (i == POISON && pObj->debufRemainTurn[i] <= GetDebufTurnCount(i)) {
-				if (obj < PLAYERALL)
-					AttackRobin(ATTACKTYPE_POISON, obj);
-				else
-					AttackObj(ATTACKTYPE_POISON, obj);
-			}
-
-			if (pObj->debufRemainTurn[i] > 0)
-				pObj->debufRemainTurn[i]--;
-			if (pObj->debufRemainTurn[i] == 0) {
-				pObj->debuf[i] = 0;
-				pObj->debufOwner[i] = 0;
-			}
-		}
-	}
 }

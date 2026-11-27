@@ -1110,26 +1110,6 @@ int GetStageDay(void)
 	return GetStageCycleIdx() / STAGE_PER_DAY + 1;
 }
 
-//마지막 날에는 낮도 밤도 없다. 그 하루는 통째로 하나다.
-bool IsStageNight(void)
-{
-	if (IsFinalDayStage())
-		return false;
-
-	return (GetStageCycleIdx() % STAGE_PER_DAY) != 0;
-}
-
-bool IsFinalDayStage(void)
-{
-	return GetStageCycleIdx() == STAGE_PER_CYCLE - 1;
-}
-
-//마지막 날까지 몇 판 남았는가. 마지막 날이면 0 이다.
-int GetStagesUntilFinalDay(void)
-{
-	return (STAGE_PER_CYCLE - 1) - GetStageCycleIdx();
-}
-
 int GetMaxWaveCnt(void)
 {
 	int i;

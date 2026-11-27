@@ -162,9 +162,6 @@ int NetBootstrapPoll(void);
 //약관 동의를 기다리며 멈춰 있는가.
 bool NetTermsPending(void);
 
-//지금 약관 판. 화면에 "제1판" 같은 것을 띄울 때 쓴다.
-long long NetTermsVersion(void);
-
 //약관 전문 주소. privacy 가 true 면 개인정보 처리방침.
 const char* NetTermsUrl(bool privacy);
 
@@ -203,9 +200,6 @@ bool NetLoginProviderAvailable(int provider);
 // 사라진다는 것을 사용자가 알아야 한다. 아래 둘로 알린다.
 //   - NetIndicatorDraw()가 잠시 문구를 띄운다.
 //   - 게임 쪽에서 제대로 된 팝업을 띄우고 싶으면 NetTakeConflictNotice()를 쓴다.
-
-//충돌로 서버 것을 다시 받았는가. 한 번 물으면 지워진다(같은 것을 두 번 안 띄우게).
-bool NetTakeConflictNotice(void);
 
 //---- 화면 ----
 //통신 중이라는 것을 구석에 표시한다. 지연이 눈에 보여야 한다.

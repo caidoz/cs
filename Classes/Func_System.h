@@ -37,29 +37,11 @@ void OutOfNewCard(void);
 void GotoHouse(int house, int userIdx);
 void GotoBoss(void);
 void OutOfHouse(void);
-static int CrewIdToCrewDataKey(int crewId);
-static int CrewDataKeyToCmf(int crewDataKey);
-static int RemoveIdFromArray(int* arr, int n, int removeId);
-static void ShuffleIntArray(int* arr, int n);
-static int GetBgFrameForCrewKey(int crewDataKey);
-static int GetCrewStar(int crewId);
 static int GetCrewRegion(int crewId);
-static int GetRegionCount(void);
 static int ModI(int a, int m);
 static void DrawCrewGridBackground(void);
 static void DrawFilmOverlay(void);
-static double Rand01();
-static int RollStar1to9();
-static int RollRegion(int regionCount);
-static int PopFromBucket(std::vector<int>& bucket);
-static int PickOneCrewIdByRegionStar(
-	std::vector<std::vector<std::vector<int>>>& buckets,
-	int regionCount,
-	int r, int s);
-static inline float BL_Next01();
-static inline int RegionFromCastlePos(int castlePos);
 void BattleLoadingDraw(void);
-static uint32_t BL_NextU32();
 void BattleLoadingUpdate(void);
 void GotoBattle(void);
 void SetRaidBox(bool activeVal);
@@ -81,7 +63,6 @@ void LoadGame(void);
 //서버가 robin을 채운 뒤의 마무리(LoadGame에서 파일 읽기만 뺀 것)
 void LoadGameAfterNet(void);
 void SaveOption(void);
-void LoadHeroObj(int type);
 void LoadHeroObjAt(int slot, int type);
 int PlayerHeroType(void);
 void SetPlayerHero(int hero);

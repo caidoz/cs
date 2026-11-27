@@ -121,13 +121,6 @@ bool Core::onTouchBegan(Touch* touch, Event* unused_event)
 	startTouchY = touchPoint.y;
 
 	//스킬 모션 한 프레임 진행 테스트. 정상 전투에서는 터치를 가로채지 않는다.
-#if 0
-	if (gDemoSkillFrameStepActive) {
-		gDemoSkillFrameStepPermit = 1;
-		return true;
-	}
-#endif
-
 	if (touch) {
 		touchX = touchPoint.x;
 		touchY = touchPoint.y;

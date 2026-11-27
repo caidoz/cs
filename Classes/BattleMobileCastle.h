@@ -66,9 +66,6 @@ inline float ClashCastleWidth(void) {
 //한 프레임에 다가가는 거리. 멀면 빠르게, 가까우면 느리게 붙는다.
 #define STAGE_CLASH_SPEED 0.14f
 
-//다가간 몫. 성 · 히어로 · 동료가 이만큼 같이 오른쪽으로 간다.
-inline float ClashAdvance(void) { return s_advance; }
-
 inline bool IsMoving() {
 	//---- 몬스터가 서면 멈춘다 ----
 	//
@@ -107,16 +104,6 @@ static const SlotUV kCastleWeaponSlots[10][8] = {
 	{ { 0.15f, 0.55f }, { 0.85f, 0.55f }, { 0.28f, 0.62f }, { 0.72f, 0.62f },
 	  { 0.50f, 0.42f }, { 0.12f, 0.64f }, { 0.88f, 0.64f }, { 0.50f, 0.70f } },
 };
-
-inline int GetSwordColor(int detail) {
-	switch (detail) {
-	case 10: return 0xE0603C;
-	case 11: return 0x4FA3D9;
-	case 21: return 0xD9A441;
-	case 23: return 0x8A4787;
-	}
-	return 0xDFD9C0;
-}
 
 inline void Update(float delta) {
 	if (!std::isfinite(delta) || delta <= 0.0f) return;

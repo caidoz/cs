@@ -159,6 +159,7 @@ bool AllRegionBackgroundReviewAt(int sample){
 }
 void StageBgDebugDrawButton(void)
 {
+ if(getenv("CS_HIDE_DEBUG"))return;
  if(drawHandle!=MD_LOBBY && drawHandle!=MD_PLAY && !getenv("CS_DEBUG_CONTROLS"))return;
  //손가락으로 누르는 크기다. 높이 24단위(48px) 아래로 내려가면 터치가 자주 빗나간다.
  const int y=DY-30*_2X,h=24*_2X;
@@ -1332,16 +1333,6 @@ bool DrawGridItemInBox(int type,int detail,int x,int y,int w,int h,int alpha,boo
     if(rotate)RotateImage((int)size.width,(int)size.height,0,0,x+w/2,y-h/2,false,90,0,alpha,z,Vec2(.5f,.5f),sprite[img],img);
     else DrawImage((int)size.width,(int)size.height,0,0,x+(int)((w-size.width*z)*.5f),y-(int)((h-size.height*z)*.5f),false,0,0,0,alpha,z,sprite[img],img);
     return true;
-}
-
-bool DrawSwordInBoxRot(int detail,int x,int y,int w,int h,int alpha)
-{
-    return DrawGridItemInBox(ITEM_SWORD,detail,x,y,w,h,alpha,true);
-}
-
-bool DrawSwordInBox(int detail,int x,int y,int w,int h,int alpha)
-{
-    return DrawGridItemInBox(ITEM_SWORD,detail,x,y,w,h,alpha,false);
 }
 
 bool DrawBootsInBox(int type, int detail, int x, int y, int w, int h, int alpha)
@@ -2812,21 +2803,6 @@ void DrawStageLabel(int x, int y, int textIdx, int stage, int room, bool label, 
 
 }
 
-
-//�ϳ��� ����󸶸�?�׸��� �Լ�
-//����󸶾���?������Ʈ�� �޾Ƽ� �׷��ִµ�, ��ġ�� �ٸ���. 
-//
-float GetStageGroundZoom(void)
-{
-	if (!sprite[BATTLE_BG_GROUND_IMG]) LoadImg(BATTLE_BG_GROUND_IMG);
-	//그림이 없을 수도 있다. 없으면 1 배로 둔다 - 여기서 터지면 전투가
-	//시작되지 않는다.
-	if (!sprite[BATTLE_BG_GROUND_IMG]) return 1.0f;
-	const auto size = sprite[BATTLE_BG_GROUND_IMG]->getContentSize();
-	//가로를 꽉 채운다. 높이에 맞추면 발판이 화면 한가운데에 작게 떠서
-	//싸우는 자리가 좁아 보인다. 넘치는 위쪽은 전투 장면이 덮는다.
-	return (float)DX / size.width;
-}
 
 int GetStageGroundY(void)
 {
@@ -4542,97 +4518,6 @@ float GetNumDxTTF(long long int num, int sign, int font, int digit, bool comma, 
 	return width;
 }
 
-float GetBigNumDxTTF(long long int num, int sign, int font, int digit, bool comma, float width, float zoom, bool fixed)
-{
-	int i;
-	int alphaArray[] = { TEXT_ALPHA_K, TEXT_ALPHA_M, TEXT_ALPHA_B, TEXT_ALPHA_T, TEXT_ALPHA_Q, TEXT_ALPHA_Z, TEXT_ALPHA_Y };
-
-	int gap = 0;//줄여야 되는 자리수
-	float gapWidth;
-	long long gapNum = num;
-	int alphaIdx;
-	float dotWidth = (float)(3 * _2X) * zoom;// = StringWidthTTF(".", zoom);//소수점 도트의 넓이
-	int figureNum = GetNumFigure(num);
-	int num2;
-	int widthNum = 0;
-	int widestNum = 5;//이미지 숫자중에 가장 넓이가 넓은 것은 5
-
-	return GetBigNumDx(num, sign, NUM_FONT_NORMAL, false, comma, width, zoom, fixed);
-
-	if (fixed) {
-		for (i = 0; i < figureNum; i++)
-			widthNum += widestNum * pow(10, i);
-	}
-
-	if (GetNumDxTTF(num, sign, font, digit, comma, zoom, fixed) <= width || width == false || num == 0) {
-		return GetNumDxTTF(num, sign, font, digit, comma, zoom, fixed);
-	}
-
-	if (fixed) {
-		do {
-			gapNum /= 10;
-			widthNum /= 10;
-			gap++;//줄여야 되는 자리수
-			gapWidth = GetNumDxTTF(gapNum, sign, font, digit, comma, zoom, fixed);
-		} while (gapWidth > width);
-
-
-		//3������ �ڸ��� ���� ���?���ڸ��� �ٿ��� �Ǵ� �� �����Ѵ�.
-		if (gap % 3) {
-			do {
-				gap++;
-				if (gapNum >= 10) {
-					gapNum /= 10;
-					widthNum /= 10;
-				}
-				gapWidth = GetNumDxTTF(gapNum, sign, font, digit, comma, zoom, fixed);
-			} while (gap % 3);
-		}
-	}
-	else {
-		do {
-			gapNum /= 10;
-			gap++;//줄여야 되는 자리수
-			gapWidth = GetNumDxTTF(gapNum, sign, font, digit, comma, zoom, fixed);
-		} while (gapWidth > width);
-
-
-		//3������ �ڸ��� ���� ���?���ڸ��� �ٿ��� �Ǵ� �� �����Ѵ�.
-		if (gap % 3) {
-			do {
-				gap++;
-				if (gapNum >= 10) {
-					gapNum /= 10;
-				}
-				gapWidth = GetNumDxTTF(gapNum, sign, font, digit, comma, zoom, fixed);
-			} while (gap % 3);
-		}
-	}
-
-	figureNum -= gap;
-
-	alphaIdx = alphaArray[(gap - 3) / 3];
-	gapWidth += StringWidthTTF(textId[alphaIdx], zoom);
-
-	if (figureNum == 0) {
-		num2 = gapNum;
-		gapNum = 0;
-
-		gapWidth = GetNumDxTTF(num2, sign, font, digit, comma, zoom, fixed) + dotWidth + GetNumDx(gapNum, false, font, digit, false, zoom, fixed) + GetAlphaWidth(alphaIdx, font, zoom);
-	}
-	else if (figureNum == 1) {
-
-		temp = num - gapNum * pow(10, GetNumFigure(num) - 1);//소수위 자리수들을 제거한 나머지 숫자를 구한다.
-		num2 = temp / pow(10, GetNumFigure(num) - 2);
-
-		gapWidth += dotWidth + GetNumDxTTF(num2, sign, font, digit, comma, zoom, fixed);
-	}
-	else
-		num2 = 0;
-
-	return gapWidth;
-}
-
 float GetBigNumDx(long long int num, int sign, int font, int digit, bool comma, float width, float zoom, bool fixed)
 {
 	int i;
@@ -5733,16 +5618,6 @@ int GetHeartAmount(void)
 	return amount;
 }
 
-void LoadingBarDraw(int x, int y, int loadingBarFrame)
-{
-	DrawImage(165, 21, 180, 519, x, y, false, false, false, false, false, 2.0f, sprite[BOTTOMMENU_IMG], BOTTOMMENU_IMG);
-	MemRect(x + 3 * _2X, y - 3 * _2X, Min(159 * _2X, loadingBarFrame * 5 * _2X), 16 * _2X, COLOR_ORANGE);
-
-	//SetFontColor(COLOR_DARKGREY);
-	CenterText(Min(TEXT_LOADING_5, TEXT_LOADING_1 + frame / 5), x + 165 * _2X / 2, y - 6 * _2X, 1.0f);
-	//SetFontColor(COLOR_WHITE);
-}
-
 float DrawGoldAmount(long long amount,int x,int top,int maxWidth,int align,float scale){
  amount=Max(0LL,amount);scale=Min(1.0f,Max(.05f,scale));
  const bool compact=maxWidth>0 && GetGoldNumDx(amount,0,0,true,.6f*scale)+ITEMICONSIZE*.55f*scale+4*_2X*scale>maxWidth;
@@ -5798,11 +5673,6 @@ void DrawTextButton(int x, int y, int w, int h, int fra, int gray, float zoom, b
 void DrawMaxButton(int x, int y, int w, int h, int alphaIdx, float zoom)
 {
  DrawUiButton(x,y,w,h,"MAX",0,false,false);
-}
-
-void DrawTouchButton(int x, int y, const char* text, int func)
-{
- DrawUiButton(x,y,(int)StringWidth(text,UiMinimumTextZoom())+24,(int)(48*DX/640.f),text,func);
 }
 
 
@@ -7115,43 +6985,6 @@ void DrawTime(int x, int y, int atime, int type, int align, float zoom)
 	DrawTextStr(tempStr, x, y, zoom);
 }
 
-void DrawRemainTime(int x, int y, long long remainSec, int align, float zoom)
-{
-	if (remainSec < 0) remainSec = 0;
-
-	long long totalSec = remainSec / 1000;
-
-	int day = totalSec / 86400;
-	int hour = (totalSec / 3600) % 24;
-	int min = (totalSec / 60) % 60;
-	int sec = totalSec % 60;
-	int ms = remainSec % 1000;
-
-	char str[32];
-
-	if (day > 0)
-	{
-		sprintf(str, "%dD:%2dH", day, hour);
-	}
-	else if (hour > 0)
-	{
-		sprintf(str, "%2dH:%2dM", hour, min);
-	}
-	else if (min > 0)
-	{
-		sprintf(str, "%2dM:%2dS", min, sec);
-	}
-	else if (sec > 0)
-	{
-		sprintf(str, "%2dS:%2d", sec, ms);
-	}
-	else {
-		sprintf(str, "%2d", ms);
-	}
-
-	DrawTextStrSystem(str, x, y, zoom, align, true);
-}
-
 void PushButtonDraw(int betType, int x, int y, int motion, float zoom, bool autoPlayText)
 {
 
@@ -7187,22 +7020,6 @@ void DrawHandAtTarget(int x, int y, int frame, float zoom)
 		(int)roundf(x-tip[hand][0]*_2X*zoom),
 		(int)roundf(y+tip[hand][1]*_2X*zoom),
 		false,false,false,false,false,zoom,sprite[COMMON_IMG],COMMON_IMG);
-}
-void YesNoDraw(int x, int y)
-{
-	DrawTouchLargeButton(x - 80 * _2X, y, 64 * _2X, 32 * _2X, textId[TEXT_YES], false, FRAME_GREEN, 1.0f);
-	DrawTouchLargeButton(x + 16 * _2X, y, 64 * _2X, 32 * _2X, textId[TEXT_NO], false, FRAME_RED, 1.0f);
-
-	switch (alert) {
-	case ALERT_INVENFULL:
-		SetRectPoint(x - 80 * _2X, y, 64 * _2X, 32 * _2X, TOUCH_ALERT_INVENTORYFULL_YES);
-		SetRectPoint(x + 16 * _2X, y, 64 * _2X, 32 * _2X, TOUCH_ALERT_NO);
-		break;
-	case ALERT_SELL:
-		SetRectPoint(x - 80 * _2X, y, 64 * _2X, 32 * _2X, TOUCH_ALERT_ITEMSELL);
-		SetRectPoint(x + 16 * _2X, y, 64 * _2X, 32 * _2X, TOUCH_ALERT_NO);
-		break;
-	}
 }
 
 void DrawEmptyBox(int x, int y, int w, int h)
@@ -7347,15 +7164,6 @@ void DrawBox(int boxType, int x, int y, int dirX, int motion, int solid, bool an
 	*/
 		DrawCastleBoxXY(boxType, motion == BOXSTATUS_OPENED ? true : false, dirX, x - (float)512 * zoom / 2, y + (float)512 * zoom, itemColor[frame % 6], zoom);
 		break;
-	}
-}
-
-void OpenBox(OBJECT* pObj)
-{
-	if (pObj->motion == BOXSTATUS_CLOSED)
-	{
-		pObj->motion = BOXSTATUS_OPENING;
-		pObj->frame = 0;
 	}
 }
 

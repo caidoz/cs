@@ -77,14 +77,6 @@ bool IapCanPurchase(int product);
 //지금 결제가 도는 중인가. 도는 동안에는 상점 버튼을 잠가야 한다.
 bool IapIsBusy(void);
 
-//---- 결과 보기 ----
-//
-//한 번 물으면 지워진다. 같은 것을 두 번 띄우지 않게.
-int IapTakeResult(void);
-
-//그 결과가 어떤 상품이었는지. IapTakeResult() 와 같이 쓴다.
-int IapLastProduct(void);
-
 //---- 대기 ----
 //
 //아직 못 받은 결제가 몇 건인가. 0 이 아니면 "받는 중입니다" 를 띄워야 한다.
@@ -100,9 +92,6 @@ int IapPendingCount(void);
 // 맞춰진 시각이라(Func_Net.h 의 gNetTimeOffset), 기기 시계를 돌려도 안 늘어난다.
 bool IapHeartPass(void);
 bool IapGrowthPass(void);
-
-//패스가 언제까지인지. 화면에 "n일 남음" 을 띄울 때 쓴다. 없으면 0.
-long IapPassUntil(bool growth);
 
 //상품의 스토어 ID. 로그와 서버에 보낼 때 쓴다.
 const char* IapProductId(int product);

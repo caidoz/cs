@@ -11,7 +11,6 @@ std::chrono::steady_clock::time_point lastPurchaseTime;
 std::string message;
 struct Candidate {int type,detail;};
 std::vector<ITEM> granted;
-const char* HeroName(int h) {static const char* names[]={"로빈","디아나","맥스"};return names[Max(0,Min(2,h))];}
 const char* KindName(int k) {static const char* names[]={"무기 보급","방어구 보급","동료 모집","특수 아이템 보급"};return names[Max(0,Min(3,k))];}
 void Label(const char* text,int x,int y,int width,float size=.75f,int color=COLOR_WHITE) {
  SetFontColor(color);CenterTextStrSolid(text,x,y,Min(size,width/Max(1.0f,StringWidth(text,1))));
@@ -55,17 +54,6 @@ void GoldCard(int tier,int x,int y,int w,int h){
  snprintf(text,sizeof(text),"%lld",(long long)ShopGold::Price(tier));
  UiButtonStyle buyStyle;buyStyle.fill=0x208C46;
  DrawUiButtonIcon(x+6,by,w-12,48,ITEM_PREMIUM_DIAMOND_ICON,text,TOUCH_FUNC_SHOP_GOLD+tier,false,can,buyStyle);
-}
-void SupplyCard(int kind,int x,int y,int w,int h) {
- const auto product=ShopCatalog::Supply(kind,hero);
- DrawPixelPanel(x,y,w,h,0x142E43);
- char name[96];sprintf(name,product.hero<0?"공용 %s":"%s %s",product.hero<0?KindName(kind):HeroName(hero),KindName(kind));
- Label(name,x+w/2,y-10,w-16,.82f);
- const auto pool=Pool(kind,hero);
- if(!pool.empty())DrawIcon(GetItemIcon(pool[0].type,pool[0].detail,GRADE_NORMAL),x+w/2-24,y-45,
-  48.0f/ITEMICONSIZE,false,false,false,true);
- Label("영구 보관함 지급",x+w/2,y-102,w-12,.6f,0x8FE0BA);
- Button("구성 보기 · 준비 중",x+8,y-h+42,w-16,34,TOUCH_FUNC_SHOP_SUPPLY_DETAIL+kind);
 }
 void Overlay(int top) {
  if(detail<0&&!resultOpen)return;

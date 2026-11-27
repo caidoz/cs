@@ -89,7 +89,6 @@ const int equipBgData[] = {
 // Menu & UI 관련 함수
 void NewsDraw(int x, int y, float zoom);
 void GiftDraw(int x, int y, float zoom);
-void GuildEventDraw(int x, int y, float zoom);
 void DailyQuestDraw(int x, int y, float zoom);
 void ShopDraw(int, int, float zoom);
 
@@ -116,9 +115,6 @@ void ItemDetailDraw(ITEM * it, int x, int y, float zoom, bool equipped, bool onl
 //동료 상세보기. winH는 (x, y)부터 아래로 쓸 수 있는 높이(픽셀)다.
 void CrewDetailDraw(ITEM* it, int x, int y, float zoom, float winH);
 void BossRaidDetailDraw(void);
-void DrawPvpCrewPanel(int x, int y, int w, int h);
-void DrawPvpHeroPanel(int x, int y, int w, int h,
-	int profileIdx, const char* nickname, bool defender);
 
 //장비 상세보기(팝업). 동료 상세와 같은 틀을 쓴다.
 //얻지 않은 장비는 여기까지 오지 않는다(Func_Input.cpp에서 막는다).
@@ -174,7 +170,6 @@ void LevelUpMenuDraw(int lv, int status, int x, int y, float zoom);
 void DeptDiscountDraw(int x, int y, float zoom);
 void DoubleGoldDraw(int x, int y, float zoom);
 
-int GetBoxCurrency(int, int);
 int GetBoxGold(int boxType);
 int GetBoxQuestItem(int boxType);
 int GetBoxHeartItem(int boxType);

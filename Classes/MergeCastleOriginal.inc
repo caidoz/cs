@@ -118,20 +118,4 @@ void draw(int kind,float drop=0,float angle=0,float overrideZoom=0,float originX
  AfterSpriting(sp);
 }
 void cut(int x,int y,int w,int h,int dx,int dy){int img=MERGE_ORIGINAL_REFERENCE_IMG;if(!sprite[img])LoadImg(img);float z=zoom();DrawImageScale(w,h,x,y,(int)(dx*z),(int)((H-dy)*z+lift()),false,0,0,0,0,z,z,sprite[img],img);}
-void wood(int x,int y,int w,int h){for(int n=0;n<h;n+=28)cut(300,1252,w,std::min(28,h-n),x,y+n);}
-// Pixel castle parts share the existing castle coordinate system; UI remains original.
-void pixelPart(int part,int x,int y,int w,int h,float drop=0){
- const int img=CASTLE_PIXEL_FIRST_IMG+part;if(!sprite[img])LoadImg(img);if(!sprite[img])return;
- auto* texture=sprite[img]->getTexture();texture->setAliasTexParameters();
- const auto size=texture->getContentSizeInPixels();const Box b=box(x,y,w,h,drop);
- DrawImageScale((int)size.width,(int)size.height,0,0,b.x,b.y,false,0,0,0,0,b.w/size.width,b.h/size.height,sprite[img],img);
-}
-void pixelHull(bool closed,float angle){
- if(!closed){const auto rr=visualRooms();for(int i=0;i<5;++i){const auto& p=rr[i];pixelPart(i+1,(int)p[0].x,(int)p[0].y,(int)(p[1].x-p[0].x),(int)(p[2].y-p[0].y));}}
- pixelPart(0,0,0,1089,1445);
- for(int side=0;side<2;++side){const int img=CASTLE_PIXEL_FIRST_IMG+6+side;if(!sprite[img])LoadImg(img);if(!sprite[img])continue;
-  sprite[img]->getTexture()->setAliasTexParameters();const auto sz=sprite[img]->getTexture()->getContentSizeInPixels();const float z=zoom();
-  RotateImage((int)sz.width,(int)sz.height,0,0,(int)((side?962:134)*z),(int)((H-1268)*z+lift()),false,angle,0,0,184*z/sz.width,cocos2d::Vec2(.5f,.5f),sprite[img],img);
- }
-}
 }

@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include "Data/CastleFacilities.h"
 namespace CastleMenuModel {
 enum { Count=10, VisualCount=19, Categories=5, MaxLevel=5 };
@@ -78,11 +78,4 @@ inline int CannonCooldownMultiplier(const Progress& p,int c) { return 100-3*Turr
 //턴 포격 계수(2026-11-22 ×4): 포 한 발 = 히어로 공격력 × 이 값. 번개 1개를 써서 쏘는 것이라 룰렛 한 번(블록 셋)을
 //포기하는 값이어야 한다 - Lv0 200% 는 ★1 블록 셋 한 번 공격, Lv5 850% 는 검 Lv2 세 장 값. 옛 50~250% 는 ★1 블록 반 개였다.
 inline int CannonTurnPercent(int level){static const int pct[6]={200,280,380,500,650,850};return pct[level<0?0:level>5?5:level];}
-// Castle rating: chassis baseline, installed upgrades and usable combat cells.
-// This score complements hero/crew stats and cannon DPS; it is not damage.
-inline long long StructuralPower(const Progress& p,int c,int physical) {
- c=Clamp(c); long long value=(c+1)*1000LL+Equipment(p,c,physical)*25LL;
- for(int i=0;i<Categories;++i) value+=(c+1)*(p.parts[c][i]*100LL+p.rooms[c][i]*80LL);
- return value;
-}
 }

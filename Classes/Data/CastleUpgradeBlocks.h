@@ -9,7 +9,6 @@ static const Block Items[5]={
 };
 enum { Gap=12, TouchHeight=48 };
 inline int CardHeight(int){return 232;}
-inline int TurretHeight(int){return 232;}
 inline int PreviewHeight(int height){return height*65/100;}
 inline int ContentHeight(int height){return PreviewHeight(height)+12+60+5*(CardHeight(height)+Gap)+16;}
 }

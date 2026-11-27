@@ -40,22 +40,14 @@ inline int GearCells(int slot, int level) { return GearW(slot, level) * GearH(sl
 inline int BlockWOf(int kind, int level) { return kind == LINEAGE_CREW ? (level >= 1 && level <= BLOCK_LV_MAX ? 1 : 0) : GearW(kind - LINEAGE_SWORD, level); }
 inline int BlockHOf(int kind, int level) { return kind == LINEAGE_CREW ? (level >= 1 && level <= BLOCK_LV_MAX ? 2 : 0) : GearH(kind - LINEAGE_SWORD, level); }
 inline int BlockCellsOf(int kind, int level) { return BlockWOf(kind, level) * BlockHOf(kind, level); }
-//호환용: 종류를 모르는 호출부는 무기(줄 0) 크기로 본다.
-inline int BlockW(int level) { return GearW(0, level); }
-inline int BlockH(int level) { return GearH(0, level); }
-inline int BlockCells(int level) { return GearCells(0, level); }
 //Lv n 하나를 만드는 데 드는 Lv1 장수 = 2^(n-1)
 inline int BlockCards(int level) { return level < 1 ? 0 : 1 << (level - 1); }
 //한 방의 배수. 동료 ×2(1+1 → 1칸). 장비는 칸이 느는 단만 ×3, 그대로인 단은 ×2.
 inline long long CrewMul(int level) { return level < 1 ? 0 : 1LL << (level - 1); }
 inline long long GearMulOf(int slot, int level) { if (level < 1) return 0; long long m = 1; for (int i = 2; i <= level; i++) m *= GearCells(slot, i) > GearCells(slot, i - 1) ? 3 : 2; return m; }
 inline long long LevelMulOf(int kind, int level) { return kind == LINEAGE_CREW ? CrewMul(level) : GearMulOf(kind - LINEAGE_SWORD, level); }
-inline long long LevelMul(int level) { return CrewMul(level); }	//호환용
+//호환용
 
-//---- 수치 (§16) ----
-//한 방 = base × 배수(종류별). base 는 그 칸에 선 동료/장비의 값(★ 이 오르면 동료가 바뀌어 base 도 오른다).
-//ult 는 더 쓰지 않는다 — 호출부 호환으로 남겨 둔다. 종류를 모르는 호출부는 동료 배수.
-inline long long BlockDamage(int level, long long base, long long /*ult*/) { return base * CrewMul(level); }
 inline long long BlockDamageOf(int kind, int level, long long base) { return base * LevelMulOf(kind, level); }
 //표식: 이후 타격 +20/40/60/80/100/120 %
 inline int ExposePct(int level) { static const int p[BLOCK_LV_MAX + 1] = { 0, 20, 40, 60, 80, 100, 120 }; return (level < 1 || level > BLOCK_LV_MAX) ? 0 : p[level]; }

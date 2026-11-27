@@ -99,12 +99,6 @@ void dressFoe(){
     foeStats.weapon=std::max(20LL,std::min(GetEquipPower(&gun,lv),100000000LL));
     for(int g=0;g<GearCount;++g)foeCostumeLevels[g]=0;
 }
-//상대의 세이브(encode 문자열)로 상대 판을 받는다. 실패하면 false - 표본을 쓴다.
-bool loadFoe(const std::string& saved){
-    Run r;r.roster=&roster;
-    if(saved.empty()||!r.decode(saved))return false;
-    foe=r;return true;
-}
 void reset(){
     foe=Run();phase=0;swapped=false;timer=turnNo=spinsDone=0;foeDamage=0;step=Idle;actedThisTurn=false;
     dragFrom=-1;dragFrame=0;handVisible=expanded=false;

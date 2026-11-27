@@ -69,7 +69,7 @@ static void Caption(const float circles[2][3],int count){
  case CastleTutorial::Depart:title="출정";instruction="전투 시작을 누르세요";break;
  case CastleTutorial::Spin:title="룰렛";instruction="룰렛을 돌리세요. 번개 1개";break;
  case CastleTutorial::Land:title="착지";instruction="룰렛 결과가 판에 내려앉습니다";break;
- case CastleTutorial::Merge:title="합성";instruction="같은 블록은 저절로 합쳐집니다";break;
+ case CastleTutorial::Merge:title="합성";instruction=MERGE_AUTO_MERGE?"같은 블록은 저절로 합쳐집니다":"같은 것끼리 끌어 겹치세요";break;
  case CastleTutorial::Attack:title="공격";instruction="공격! 판의 블록이 전부 나갑니다";break;
  case CastleTutorial::Reward:title="보상";instruction="잡았습니다. 보상을 받으세요";break;
  case CastleTutorial::Energy:title="번개";instruction="몬스터 하나에 번개 5개";break;

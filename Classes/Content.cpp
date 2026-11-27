@@ -80,16 +80,6 @@ static void Say(const char* fmt, ...)
 	CCLOG("Content: %s", buf);
 }
 
-const char* ContentLastMessage(void)
-{
-	return sMessage;
-}
-
-long long ContentVersion(void)
-{
-	return sVersion;
-}
-
 unsigned long long ContentHash(const void* buf, unsigned int len)
 {
 	const unsigned char* p = (const unsigned char*)buf;
@@ -459,13 +449,6 @@ static void FetchClearAll(void)
 // 네트워크를 안 탄다. 그래서 부팅이 안 느려진다.
 //=============================================================================
 
-//staging 에 매니페스트가 있으면 다 받은 것이다.
-bool ContentHasStaged(void)
-{
-	std::string dummy;
-	return ReadWhole(StageDir() + CONTENT_MANIFEST, &dummy);
-}
-
 //staging 의 파일들을 지금 쓰는 폴더로 옮긴다.
 static void CommitStaged(void)
 {
@@ -560,11 +543,6 @@ static void ClearLive(const std::vector<ContentFile>& fs)
 // 내려받은 콘텐츠(LiveDir)보다도 앞이다. 손으로 넣은 것이 서버가 준 것에
 // 지면 덮어쓰기라고 할 수가 없다.
 static bool sOverrideOn = false;
-
-bool ContentOverrideOn(void)
-{
-	return sOverrideOn;
-}
 
 void ContentOverrideBoot(void)
 {

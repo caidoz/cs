@@ -31,11 +31,6 @@ static bool sInUse = false;
 static const unsigned char* sDir = NULL;
 static int sDirCount = 0;
 
-bool DataPackInUse(void)
-{
-	return sInUse;
-}
-
 bool DataPackLoad(const char* fileName)
 {
 	std::string path = FileUtils::getInstance()->fullPathForFilename(fileName);

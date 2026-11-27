@@ -11,10 +11,8 @@ void RefreshSkill(OBJECT *);
 void RefreshBuff(OBJECT *);
 int GetBuffDurationMode(int buffIdx);
 void ActivateBuff(OBJECT *pObj, int buffIdx, int value);
-bool ConsumeBuffUse(OBJECT *pObj, int buffIdx);
 void AdvanceTurnBuffs(void);
 void ActivateDebuf(OBJECT* pObj, int debufIdx, int frameValue, int owner);
-void AdvanceTurnDebuffs(void);
 bool AdvanceActorDebuffs(int obj);
 void ClearAllDebuffs(void);
 void RefreshQuestTime(void);
@@ -23,7 +21,6 @@ void RefreshEnemyTime(void);
 
 // Combat Formula
 long long NextExp(int);
-int NextExpEquip(ITEM *, int);
 int GetLevelUpRewardLv(int type, int userLv);
 void AccountLevelGain(int getExp,bool persist);
 void LevelUp(int getExp);
@@ -62,8 +59,6 @@ int GetControlMark(int owner);
 int SetControlMark(int startPosX, int startPosY, int targetX, int targetY, int targetX2, int targetY2, float speed, float speedIncrement, float speed2, float speedIncrement2, int waitingFrame, int waitingFrame2, int iconIdx, int moveAngle, int amount,
 	int attackType, int attackStr, float zoom, float zoomEnd, float zoomIncrement, float zoom2, float zoomEnd2, float zoomIncrement2, int alpha, bool text, bool value, bool ani, int owner, bool openFrame, bool screenSpace);
 int GetCardMarkCnt(void);
-int SetCardMark(int startPosX, int startPosY, int targetX, int targetY, int targetX2, int targetY2, float speed, float speedIncrement, float speed2, float speedIncrement2, int waitingFrame, int waitingFrame2, int iconIdx, int moveAngle, int amount,
-	int attackType, int attackStr, float zoom, float zoomEnd, float zoomIncrement, float zoom2, float zoomEnd2, float zoomIncrement2, int alpha, bool text, bool value, bool ani, int owner, bool openFrame);
 int SetBoxMark(int startPosX, int startPosY, int targetX, int targetY, int targetX2, int targetY2, float speed, float speedIncrement, float speed2, float speedIncrement2, int waitingFrame, int waitingFrame2, int moveAngle, int detail, int grade, float zoom, float zoomEnd, float zoomIncrement, float zoom2, float zoomEnd2, float zoomIncrement2);
 int SetBoxCardMark(int startPosX, int startPosY, int targetX, int targetY, int targetX2, int targetY2, float speed, float speedIncrement, float speed2, float speedIncrement2, int waitingFrame, int waitingFrame2, int iconIdx, int moveAngle, int amount,
 	int type, int detail, int grade, int cooldown, bool text, bool value, bool ani, int owner, bool star, bool cardFrame, bool newItem, float zoom, float zoomEnd, float zoomIncrement, float zoom2, float zoomEnd2, float zoomIncrement2);
@@ -112,9 +107,6 @@ typedef struct _dmgInput {
 	int betMul;			//betHeart[bet]
 	int skillPct;			//동료 스킬 배수. 없으면 100
 } DMGINPUT;
-
-//셋을 차례로 밟는다. 중간에 낄 일이 없는 쪽(룰렛 시점 예측)은 이것만 부른다.
-long long int CalcDamage(const DMGINPUT* in);
 
 long long int CalcBaseDamage(const DMGINPUT* in, long long int* outBeforeRange);
 long long int CalcGuardReduction(long long int damage, const DMGINPUT* in);

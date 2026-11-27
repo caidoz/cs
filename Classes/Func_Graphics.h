@@ -30,8 +30,6 @@ void DrawBuffer(int x, int y, int w, int h, cocos2d::RenderTexture*);
 void DrawArray(int, int, int, float zoom);
 void RotateImage(int w, int h, int xs, int ys, int x, int y, bool flipX, float rotation, int effect, int alpha, float zoom, Vec2 anchorPoint, cocos2d::Sprite * src, int srcIdx);
 void DrawSwordAtHand(int detail, float x, float y, float rotation, bool flipX, float zoom, int alpha, int effect);
-bool DrawSwordInBox(int detail, int x, int y, int w, int h, int alpha);
-bool DrawSwordInBoxRot(int detail, int x, int y, int w, int h, int alpha);
 bool DrawBootsInBox(int type, int detail, int x, int y, int w, int h, int alpha);
 bool DrawBootsInBoxRot(int type, int detail, int x, int y, int w, int h, int alpha);
 bool DrawPantsInBox(int type, int detail, int x, int y, int w, int h, int alpha);
@@ -81,7 +79,6 @@ float DrawRouletteNumIcon(long long, int, int, int, bool, int align, float zoom)
 void DrawLabelStr(int x, int y, char* str, float zoom);
 void DrawLabel(int, int, int, float zoom);
 void DrawStageLabel(int x, int y, int textIdx, int stage, int room, bool label, float zoom);
-float GetStageGroundZoom(void);
 int GetStageGroundY(void);
 void DrawDiorama(int x, int y, int type, float zoom);
 void DrawDioramaEnemy(int x, int y, int stage, int room, float zoom, int dropFrame);
@@ -107,7 +104,6 @@ float GetNumDx2(long long int num, int sign, int digit, bool comma, float zoom, 
 float GetNumDx(long long int num, int sign, int font, int digit, bool comma, float zoom, bool fixed);
 float GetGoldNumDx(long long int, int, int, bool, float);
 float GetBigNumGoldDx(long long int num, int sign, int font, int digit, bool comma, float width, float zoom);
-float GetBigNumDxTTF(long long int num, int sign, int font, int digit, bool comma, float width, float zoom, bool fixed);
 float GetBigNumDx(long long int num, int sign, int font, int digit, bool comma, float width, float zoom, bool fixed);
 void DrawXNumGold(long long int num, int x, int y, bool ani, float zoom, int align, int digit);
 void DrawSlashNum(int min, int max, int x, int y, float width, float zoom);
@@ -135,11 +131,9 @@ void DrawJumpButton(int cnt, int x, int y, float zoom, bool ani, bool betFrame, 
 int GetMaxShield(void);
 int GetInitHeart(void);
 int GetHeartAmount(void);
-void LoadingBarDraw(int, int, int);
 void DrawBuyButton(int x, int y, int w, int h, int fra, int frameColor, long long amount, int currency, float zoom, bool ani, int sign, float discount);
 void DrawTextButton(int x, int y, int w, int h, int fra, int gray, float zoom, bool ani, int textIdx);
 void DrawMaxButton(int x, int y, int w, int h, int alphaIdx, float zoom);
-void DrawTouchButton(int, int, const char*, int);
 void DrawTouchLargeButton(int, int, int, int, const char*, int, int, float zoom);
 
 //---- 글자가 꽉 차는 네모 버튼 ----
@@ -175,8 +169,6 @@ void DrawUiDialog(const char* title,const char* message,const char* note,int but
 void DrawUiButton(int x, int y, int w, int h, const char* text, int func,
 	bool on = false, bool enabled = true);
 void DrawUiButton(int x,int y,int w,int h,const char* text,int func,bool on,bool enabled,const UiButtonStyle& style);
-void DrawUiButtonText(int x, int y, int w, int h, int textIdx, int func,
-	bool on = false, bool enabled = true);
 
 //아이콘이 왼쪽에 붙는 같은 버튼. 글자를 비우면 아이콘만 한가운데에 놓는다.
 void DrawUiButtonIcon(int x, int y, int w, int h, int icon, const char* text,
@@ -218,7 +210,6 @@ void HitCountCheck(OBJECT* pObj);
 void DrawHitCount(OBJECT* pObj, int x, int y, float zoom);
 void DrawCycle(int x, int y, int w, int h, int cycle, int full, float zoom);
 void DrawTime(int x, int y, int atime, int type, int align, float zoom);
-void DrawRemainTime(int x, int y, long long remainSec, int align, float zoom);
 void PushButtonDraw(int betType, int x, int y, int motion, float zoom, bool autoPlayText);
 void DrawHand(int, int, int, float);
 void DrawHandAtTarget(int x, int y, int frame, float zoom);
@@ -227,11 +218,9 @@ void DrawMenuPlaque(const char* text,int x,int top,int w,int h,float size=1.f);
 void DrawMenuReferencePanel(int x,int top,int w,int h,int kind=0,int fill=0x10383D,int edge=0xF1C47E);
 void DrawMenuBackdropCrop(cocos2d::Texture2D* texture,int sx,int sy,int sw,int sh,int x,int top,int w,int h);
 void DrawScroll(int x, int y, int h, int type);
-void YesNoDraw(int, int);
 void DrawEmptyBox(int, int, int, int);
 void BoxInfoDraw(int boxType, int x, int y, float zoom);
 void DrawBox(int boxType, int x, int y, int dirX, int motion, int solid, bool ani, bool opened, bool shadow, float zoom);
-void OpenBox(OBJECT* pObj);
 void DrawCastleBoxXY(int index, bool opened, int dirX, int x, int y, int color, float zoom);
 void DrawCastleBox(OBJECT* pObj);
 void BoxDraw(OBJECT* pObj);

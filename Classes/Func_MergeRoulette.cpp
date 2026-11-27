@@ -699,7 +699,6 @@ void updateGuardDisplay(float dt) {
     enemyHealthDisplay.set(run.enemyHp);enemyHealthDisplay.advance(dt);
 }
 void imageNumber(long long value,int x,int y,float zoom,bool sign=false) {
-    if(!sprite[NUM_IMG])LoadImg(NUM_IMG);
     const float signWidth=sign?24*zoom:0;
     const float width=GetNumDx(value,false,NUM_FONT_LARGE,0,false,zoom,false);
     DrawImageNum(value,x+(int)(signWidth*.5f),y,NUM_FONT_LARGE,CENTER,0,false,false,zoom,false);
@@ -1171,7 +1170,7 @@ void drawBlock(const Block& b,const Box& box,bool ghost=false) {
 Box blockBox(const Block& b,const Layout& l) {
     return {l.board.x+b.x*l.cell,l.board.y-b.y*l.cellH,Wide(b)*l.cell,Tall(b)*l.cellH};
 }
-bool automaticMergesEnabled(){return (!siegeActive||!Siege::swapped)&&(!review||std::getenv("CS_AUTO_MERGE_REVIEW"));}
+bool automaticMergesEnabled(){return (!siegeActive||!Siege::swapped)&&(review?std::getenv("CS_AUTO_MERGE_REVIEW")!=nullptr:MERGE_AUTO_MERGE!=0);}
 bool beginAutomaticMerge(){
     if(!automaticMergesEnabled()||automaticMerge.active()||picked>=0)return false;
     AutomaticMerge next;
@@ -4204,7 +4203,6 @@ void reviewStep(const Layout& l) {
 }
 }
 
-int MergeCrewOwnerHero(int crew) {return MergeTrees::OwnerHero(crew);}
 bool MergeCrewAvailable(int crew) {const int h=MergeTrees::OwnerHero(crew);return h<0||IsGetHero(h);}
 void SharedRewardShow(const ITEM* items,int count){
  std::vector<RewardPopup::Entry> entries;

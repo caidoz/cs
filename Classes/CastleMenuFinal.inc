@@ -60,17 +60,6 @@ bool CastleMenuFinalDrag(int startX,int startY,int x,int y,int previousY){
 }
 
 namespace CastleFinal {
-static void EffectText(char* out,size_t size,const CastleMenuModel::Progress& p,int c,int part){
- auto baseline=p;baseline.parts[c][part]=0;
- switch(part){
- case 0:snprintf(out,size,"아군 공격력 +%d%%",CastleMenuModel::Attack(p,c)-CastleMenuModel::Attack(baseline,c));break;
- case 1:snprintf(out,size,"아군 방어력 +%d%%",CastleMenuModel::Defense(p,c)-CastleMenuModel::Defense(baseline,c));break;
- case 2:snprintf(out,size,"아군 체력 +%d%%",CastleMenuModel::Health(p,c)-CastleMenuModel::Health(baseline,c));break;
- case 3:snprintf(out,size,"포 피해 %d%% / 쿨타임 %.1f초 / 공격 +%d%%",CastleArtillery::Of(c).damagePercent*CastleMenuModel::CannonDamageMultiplier(p,c)/100,CastleArtillery::Of(c).cooldown*CastleMenuModel::CannonCooldownMultiplier(p,c)/(100.0f*FPS),CastleMenuModel::Attack(p,c)-CastleMenuModel::Attack(baseline,c));break;
- case 4:snprintf(out,size,"아군 전체 능력치 +%d%%",CastleMenuModel::All(p,c)-CastleMenuModel::All(baseline,c));break;
- default:snprintf(out,size,"효과 정보 없음");break;
- }
-}
 static void Text(const char* s,int x,int y,int width,float z=.7f,int color=COLOR_WHITE){
  SetFontColor(color);LineTextStrSolid(s,x,y,width,-1,-1,z);
 }

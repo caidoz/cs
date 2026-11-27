@@ -112,29 +112,12 @@ bool IapGrowthPass(void)
 	return IapPassOn(robin.growthPassTs);
 }
 
-long IapPassUntil(bool growth)
-{
-	return growth ? robin.growthPassTs : robin.heartPassTs;
-}
-
 const char* IapProductId(int product)
 {
 	if (product < 0 || product >= TOTALIAPPRODUCT)
 		return "";
 
 	return sProductId[product];
-}
-
-static int IapProductByIdStr(const std::string& id)
-{
-	int i;
-
-	for (i = 0; i < TOTALIAPPRODUCT; i++) {
-		if (id == sProductId[i])
-			return i;
-	}
-
-	return -1;
 }
 
 //---- 파일 ----
@@ -447,20 +430,6 @@ bool IapIsBusy(void)
 int IapPendingCount(void)
 {
 	return sPendingCnt;
-}
-
-int IapTakeResult(void)
-{
-	int got = sResult;
-
-	sResult = IAPRESULT_NONE;
-
-	return got;
-}
-
-int IapLastProduct(void)
-{
-	return sResultProduct;
 }
 
 bool IapCanPurchase(int product)

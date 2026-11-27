@@ -21,20 +21,14 @@ inline int trayMate(int* boardIndex){
     }
     return -1;
 }
-//트레이 첫 블록이 들어갈 빈 자리. 같은 계열 블록 옆을 먼저 고른다(다음 단계 합성을 미리 보여 준다).
-inline bool placeTarget(const Layout& l,Box* out){
-    if(run.tray.empty())return false;
-    Block b=run.tray[0];b.rot=false;
-    int bestX=-1,bestY=-1,bestScore=-1;
-    for(int y=0;y<run.shape.height;++y)for(int x=0;x<run.shape.width;++x){
-        b.x=x;b.y=y;if(!run.fits(b,-1,-1,false))continue;
-        int score=0;
-        for(const Block& o:run.board)if(o.family==b.family&&std::abs(o.x-x)+std::abs(o.y-y)==1)score=2;
-        if(score>bestScore){bestScore=score;bestX=x;bestY=y;if(score==2)break;}
-        if(bestScore==2)break;
-    }
-    if(bestX<0)return false;
-    b.x=bestX;b.y=bestY;*out=blockBox(b,l);return true;
+//자동 합성이 꺼져 있으면 합성은 판에서 직접 끌어서 한다 - 그때 밝힐 짝(끌 것, 받을 것).
+inline bool boardPair(int* from,int* to){
+    if(!run.tray.empty()||automaticMergesEnabled())return false;
+    Run plan;bool fromTray=false;int a=-1,b=-1;
+    if(!run.automaticMergePlan(plan,fromTray,a,b)||fromTray)return false;
+    if(from)*from=a;
+    if(to)*to=b;
+    return true;
 }
 //---- 어디를 밝힐지 ----
 int focus(int rects[2][4]){
@@ -53,7 +47,11 @@ int focus(int rects[2][4]){
     case Spin:put(rects[0],l.spin);return 1;
     case Land:put(rects[0],l.board);return 1;   //결과가 내려앉고 자동 합성이 끝난 판을 2초 본다
     case Merge:{
-        if(run.tray.empty()){put(rects[0],l.spin);return 1;}
+        if(run.tray.empty()){
+            int a=-1,b=-1;
+            if(!boardPair(&a,&b)){put(rects[0],l.spin);return 1;}
+            if(picked>=0)return 0;
+            put(rects[0],blockBox(run.board[a],l));put(rects[1],blockBox(run.board[b],l));return 2;}
         int k=-1;const int t=trayMate(&k);if(t<0||picked>=0)return 0;
         put(rects[0],traySlot(l,t));put(rects[1],blockBox(run.board[k],l));return 2;}
     case Attack:put(rects[0],l.attack);return 1;
@@ -84,7 +82,11 @@ bool gate(int phase,float x,float y){
     if(phase!=0)return false;   //이미 시작한 드래그는 그대로 간다
     switch(step()){
     case Spin:return !l.spin.has(x,y);
-    case Merge:return run.tray.empty()?!l.spin.has(x,y):!l.slot.has(x,y);
+    case Merge:{
+        if(!run.tray.empty())return !l.slot.has(x,y);
+        int a=-1,b=-1;
+        if(!boardPair(&a,&b))return !l.spin.has(x,y);
+        return !blockBox(run.board[a],l).has(x,y)&&!blockBox(run.board[b],l).has(x,y);}
     case Attack:return !l.attack.has(x,y);
     case Cannon:return !l.cannon.has(x,y);
     default:return false;   //Guard(반격을 기다림)·Reward 는 자유
@@ -176,15 +178,15 @@ bool reviewDrive(void (*trace)(const char*),void (*capture)(const char*)){
     case 100: if(step()==Spin&&n==1){tapBox(box(0));reviewPhase=1;reviewWait=6;}return false;
     case 1: if(step()==Land&&n==1){capture("tutorial-02-land");reviewPhase=2;reviewWait=150;}   //착지 관찰은 시간으로 지나간다
             return false;
-    case 2: if(step()==Merge&&n==1&&run.tray.empty()){
+    case 2: if(step()==Merge&&n>=1&&run.tray.empty()){
                 trace("PASS landing observation advances by time");
                 const Layout l=layout();tapBox(l.attack);   //막힌 단추: 아무 일도 없어야 한다
                 if(run.attacking){trace("FAIL tutorial gate let attack through during merge");return true;}
                 capture("tutorial-03-merge");reviewPhase=200;reviewWait=110;}
             return false;
-    case 200: if(step()==Merge&&n==1&&run.tray.empty()){tapBox(box(0));reviewPhase=21;reviewWait=6;}return false;
-    case 21: if(step()==Merge&&n==2){int k=-1;const int t=trayMate(&k);trace(t>=0?"PASS second spin carries exactly one merge partner":"FAIL merge fixture");dragBox(box(0),box(1));reviewWait=20;}   //판이 꽉 차 손으로 놓는 경우
-             if(step()==Attack){trace("PASS automatic merge of the fixed duplicate advances to attack");reviewPhase=3;reviewWait=30;}
+    case 200: if(step()==Merge&&n>=1&&run.tray.empty()){if(n==1)tapBox(box(0));reviewPhase=21;reviewWait=6;}return false;
+    case 21: if(step()==Merge&&n==2){int k=-1;const bool paired=run.tray.empty()?boardPair(nullptr,nullptr):trayMate(&k)>=0;trace(paired?"PASS second spin carries exactly one merge partner":"FAIL merge fixture");dragBox(box(0),box(1));reviewWait=20;}   //판이 꽉 차 손으로 놓는 경우
+             if(step()==Attack){trace("PASS merging the fixed duplicate advances to attack");reviewPhase=3;reviewWait=30;}
              return false;
     case 3: if(step()==Attack&&n==1){capture("tutorial-04-attack");reviewPhase=300;reviewWait=110;}return false;
     case 300: {if(step()!=Attack||n!=1)return false;

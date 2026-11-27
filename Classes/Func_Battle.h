@@ -68,7 +68,6 @@ bool StageRtCrewCharge(int type,float* charge,int* flash);
 void StageHeroAttackLink(int obj,int target,int weaponType);
 bool StageAllyLinkCharge(int type,float* charge,int* flash,const char** label);
 bool StageAllyLinkReview(int operation);
-void StageAllyProjectileSpawned(int obj);
 void StageAllyProjectileHit(int obj,bool damaged);
 long long StageAllyBalancedShotBegin(int obj);
 void StageAllyBalancedShotEnd(int obj,long long previousDamage);
@@ -96,7 +95,6 @@ int GetBossRaidEarnedHeart(void);
 long long GetBossRaidHeartMax(void);
 bool BossRaidConsumeBasicShot(int crewSlot);
 bool BossRaidActivateCrewSkill(int crewSlot, int skillLevel);
-void BossRaidFinishCrewSkill(OBJECT* pObj);
 int GetBossRaidSkillFreezeOwner(void);
 void DrawBossRaidMercenaryUI(void);
 //보스 난입 때 기존 HUD 가 빠져나가는 데 걸리는 프레임.
@@ -114,10 +112,6 @@ bool BossRaidNotifyControlInput(void);
 
 //보스전이 첫 터치를 기다리는 중인가. TAP TO START 가 떠 있는 동안 참이다.
 bool IsBossRaidWaitingForControl(void);
-
-//그 동료가 지금 실제로 공격 동작을 돌리고 있는가.
-//보스전은 턴이 없어 전역 turn 하나로 여섯을 가릴 수 없다.
-bool IsBossRaidCrewActing(int crewSlot);
 
 void DebugControlsToggle(void);
 bool DebugControlsOpen(void);

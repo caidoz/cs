@@ -6,14 +6,10 @@
 // Utility 함수들
 void GetMarkHeadPos(int obj, int* outX, int* outY);
 void GetMarkHeadPosAt(int footX, int footY, float zoom, int* outX, int* outY);
-void MoveControlMarkTo(int ownerObj, int skillIdx, int hx, int hy);
-void MoveControlMarkToObj(int ownerObj, int skillIdx, int destObj);
-void MoveControlMarkToSpot(int ownerObj, int skillIdx, int footX, int footY);
 int GetPersistentBuffBySkill(int skillIdx);
 void MoveControlMarkToBuffStack(int ownerObj, int skillIdx);
 void UpdatePersistentBuffControlMarkStack(void);
 void UpdateHeroSkillControlMarkStack(void);
-int GetUnitScore(OBJECT* pObj);
 void DecideRouletteResult();
 void InitRouletteJump(void);
 void RouletteAttackStart(void);

@@ -15,6 +15,4 @@ static const Rig Rigs[10]={
  {58,12,885,1532,1370,865,930,1015,140,1370,630,4,414.0f,{{223,1488,51},{397,1489,50},{575,1488,51},{752,1489,51}}},
  {45,37,876,1507,1360,860,905,1115,110,1360,665,4,480.0f,{{176,1484,55},{370,1487,53},{563,1486,53},{757,1485,54}}},
 };
-// Keep interior rows scaled with the enlarged royal exterior.
-inline float RoomReferenceWidth(int castle){return castle==9?422.0f:Rigs[castle].width;}
 }

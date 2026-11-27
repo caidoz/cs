@@ -51,7 +51,6 @@ void CastleTutorialUpdate(void);
 void CastleTutorialDraw(void);
 bool CastleTutorialCommand(int command);
 void CastleTutorialEvent(int event);
-bool CastleTutorialReviewAction(int action);
 int CastleTutorialPacked(void);          //저장용: 단계 | 힌트<<8
 bool CastleTutorialLive(void);           //안내가 살아 있는가(리뷰 중이면 꺼진다)
 bool CastleTutorialHintSeen(int bit);    //CastleTutorial::Hint
@@ -63,34 +62,11 @@ void MergeTutorialStepChanged(void);     //단계가 바뀐 직후(픽스처가 
 bool TitleCastleDebugDraw(void);
 bool TitleCastleDebugActive(void);
 void CastlePartsDrawRect(int level, int x, int yTop, int w, int h);
-float DrawCastleLobbyBackground(int wheelGroundY);
-bool CastlePartsCombatAnchors(float* commanderX,float* commanderY,float* deckY);
-void CastleInventoryGridDraw(int castle,int left,int top,int cell);
-bool CastlePartsDrawMenuPreview(int level,int x,int top,int w,int h);
 bool CastlePartsUpgradePlacementStable(int,int);
 
-//성을 세로선(axisX)을 축으로 접어 그린다. 켠 뒤에는 반드시 다시 끈다 -
-//한 장면 안에서 한쪽만 돌려 세우는 용도다.
-void CastlePartsSetMirror(bool on, float axisX);
-
-//켜면 성이 화면 왼쪽으로 붙지 않고 준 자리에 그대로 선다.
-void CastlePartsSetFreePlace(bool on);
-
-//이 배율로 그렸을 때 화면에서 차지하는 폭과 높이. 성마다 그림의
-//가로세로비가 달라, 폭만 맞추면 홀쭉한 성이 화면을 넘는다.
-bool CastlePartsDrawSize(int castleLevel, float scale, float* w, float* h);
-
-//로비와 전투가 성을 그리는 폭. 성 단계와 상관없이 늘 같다.
-float CastlePartsWorldWidth(void);
-
-//이 네모로 그렸을 때 바퀴가 닿을 화면 y. 두 성을 같은 줄에 세울 때 쓴다.
-float CastlePartsWheelLine(int castleLevel, int yTop, int w, int h);
 void CastlePartsNaturalSize(int level, float* w, float* h);
 float CastlePartsRoomScale(void);
-void CastlePartsVisualBounds(int level, float scale, float* left, float* right);
-void CastlePartsPartAnchor(int level, int part, float* x, float* y);
 float CastlePartsFloatOffset(int level);
-void TitleCastleDebugButton(void);
 bool TitleCastleDebugCommand(int command);
 bool LobbyCastleDebugCommand(int command);
 bool LobbyCastleDebugActive(void);
@@ -154,10 +130,6 @@ enum CrewRole {
 	TOTAL_CREW_ROLES
 };
 CrewRole GetCrewRole(int crewType);
-const char* GetCrewRoleName(CrewRole role);
-int GetCrewRoleColor(CrewRole role);
-const char* GetCrewClassTitle(int crewIdx);
-const char* GetCrewClassTitleEn(int crewIdx);
 void GridEnsureTacticScroll(void);
 
 //히어로 장비 6대 부위 카테고리
@@ -213,7 +185,6 @@ bool LoadoutToggle(int invenIdx);
 void LoadoutSetTab(int tab);		//전체 / 무기 / 방어구 / 장신구
 int LoadoutList(int* out, int max);	//지금 탭에 보이는 가방 칸
 void LoadoutScrollRow(int dir);		//목록을 한 줄씩 밀어 본다
-void LoadoutScrollReset(void);
 void LoadoutToggleView(void);		//목록 <-> 격자
 void LoadoutAuto(void);				//점수 안에서 좋은 것부터 담는다
 void LoadoutClear(void);
@@ -235,7 +206,6 @@ void DrawFortressStatusCard(int x,int y,int width,long long hp,long long maxHp,l
 void DrawInventoryCannonIcon(int castle,int level,int x,int y,int width,int height);
 void DrawInventoryCannonThumbnail(int castle,int level,int x,int y,int width,int height);
 void StageShopPreviewOpen(void);
-float CastlePartsCannonBaseY(int castleLevel);
 bool StageShopPreviewPurchaseChecks(void);
 //성 안의 히어로와 동료. 로비와 전투가 같이 쓴다.
 bool CastleRoomCoverPreview(int operation);
@@ -312,9 +282,8 @@ void GridTestSkipOffer(void);
 void GridTestReroll(void);
 void GridTestRefresh(void);			//시험용. 값 없이 세 칸을 다시 돌린다
 int GridShopPrice(int base);		//성 할인을 거친 값				//값을 치르고 룰렛을 다시 돌린다
-int StageGold(void);				//인게임 전투 재화
+//인게임 전투 재화
 void StageGoldSet(int g);
-void StageGoldAdd(int delta);
 void GridTestShopSide(bool book);		//하단 지도 / 도감 자리
 void StageShopBtnRect(int* x, int* y, int* w, int* h);	//전투 시작 버튼 자리
 bool GridTestBeginOffer(int killedType);
@@ -334,7 +303,7 @@ int GridTestShields(StageSword* out, int maxCnt);
 int GridTestTactics(StageSword* out, int maxCnt);
 int GridTestTotalItemCount(void);
 int StageGearList(int obj, StageSword* out, int maxCnt);	//누구든 장비 목록
-int StageFoeGearList(StageSword* out, int maxCnt);	//지금 몬스터 장비
+//지금 몬스터 장비
 
 //적이 멘 것을 적 체력 칸 아래에 깔아 준다. 보고 내 가방을 짜라는 자리다.
 long long StageGearArmor(int obj);					//방어구 값의 합
@@ -346,17 +315,10 @@ int CastleEquippedCells(void);
 int LoadoutCellUsed(void);
 void GridTestResetStage(void);
 bool GridTestOfferOpen(void);
-int GridTestDockTop(void);
 void GridTestAdvanceWave(void);
-bool GridTestIsOpen(void);
 void DrawCmfPopUp(int, int, int, int, int, int, int, int, int, float zoom, int dir = LEFT);
 void GNBDraw(int, int);
 void BattleMinimapDraw(int x, int y, float zoom);
-// PVP stage progression data; live siege rendering is in MergeSiege.inc.
-int PvpMyPower(void);
-int PvpStageNow(void);
-bool PvpStageOpponent(int stage, HOUSE* out);
-void PvpStageClear(int stage);
 void ActiveHelpDraw();
 void LogDraw(LOG *);
 void KeepLogFromDarken(LOG *);
@@ -381,8 +343,6 @@ void SetPopUp(int type, int x, int y, int w, int h,
 void DrawPopUp(int idx);
 void GameMenuDraw(int, int, float zoom);
 void BossHpBarDraw(long long count, long long max, int x, int y, float zoom);
-void VsHpBarDraw(long long count, long long max, int x, int y, int color,
-	float zoom);
 void WaveBadgeDrawBeforeBars(void);
 
 void LobbyCastleMenuCommand(int func);

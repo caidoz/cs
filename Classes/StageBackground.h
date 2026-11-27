@@ -244,21 +244,6 @@ inline const char* RegionName(int region) {
 	return names[Max(0, Min(region, STAGEBG_REGION_CNT - 1))];
 }
 
-inline const char* DebugRegionLabel(void) {
-	static const char* const kNames[STAGEBG_REGION_CNT] = {
-		"1.늪지대", "2.금단의계곡", "3.아틀란티스", "4.지하수로",
-		"5.아델라인평원", "6.화염지대", "7.얼음지대", "8.번개지대", "9.빛의지대", "10.골렘협곡",
-		"11.어둠의협곡", "12.드래곤협곡", "13.망자의도시", "14.마왕성", "15.우주"
-	};
-	if (s_regionPick >= 0 && s_regionPick < STAGEBG_REGION_CNT) {
-		return kNames[s_regionPick];
-	}
-	return "자동(스테이지)";
-}
-inline void CycleDebugRegion(void) {
-	DebugNextRegion();
-}
-
 inline void Update(float dt, bool moving) {
 	if (!std::isfinite(dt) || dt <= 0.0f) return;
 	if (dt > 0.1f) dt = 0.1f;
@@ -479,11 +464,6 @@ inline void Draw(const Camera& cam, int arenaBottom, bool withBoss = true) {
 	Layer(Img(SlotRail), kRailW, kRailTopY, kSpeedRail, cam, kDepthRail);
 
 	SetColor(savedColor);
-}
-
-//선로만 그린다 (우주맵 등 다른 배경 위에 선로를 얹을 때 쓴다)
-inline void DrawRail(const Camera& cam) {
-	Layer(Img(SlotRail), kRailW, kRailTopY, kSpeedRail, cam, kDepthRail);
 }
 
 //카메라를 안 쓰는 화면(전투)용.

@@ -1433,27 +1433,6 @@ int MakeItemId(void)
     }
 }
 
-//---- 합성 ----
-//
-//같은 것(종류 · 번호 · 등급)이 ITEM_MERGE_COUNT 점 모이면 한 등급 위
-//한 점이 된다. 옵션은 새로 굴린다 - 등급이 오르면 붙을 수 있는 옵션의
-//폭도 달라지기 때문이다.
-//
-//착용 중인 것은 재료로 쓰지 않는다. 합성하고 나서 맨몸이 되면 안 된다.
-//전설은 더 올라갈 데가 없으므로 건드리지 않는다.
-//
-//doMerge 가 false 면 세지기만 한다. 버튼에 "몇 번 할 수 있는가" 를 적는
-//데 쓴다 - 눌러 보기 전에 알 수 있어야 한다.
-static bool ItemWorn(const ITEM* it)
-{
-	for (int h = 0; h < TOTALCHAR; h++)
-		for (int e = 0; e < TOTALEQUIP; e++)
-			if (ao[h].equip[e].type != EMPTY && ao[h].equip[e].id == it->id)
-				return true;
-
-	return false;
-}
-
 //---- 재료로 쓸 수 있는가 ----
 //
 //세는 쪽(메뉴의 "같은 장비 N / 3")과 합치는 쪽이 규칙을 따로 들고 있었다.
@@ -1723,14 +1702,6 @@ int CastleBonusOf(int effectType)
 	return sum;
 }
 
-//---- 성 수금 ----
-//
-//1분에 쌓이는 양. 백성이 곧 동료라, 모은 동료가 많을수록 빨리 찬다.
-//집무실 · 의회실이 그 위에 비율로 얹힌다.
-long long CastleIncomePerMin(void)
-{
- return CastleIncomePerHour()/60;
-}
 long long CastleIncomePerHour(void)
 {
 	int crew = 0;
@@ -2694,15 +2665,6 @@ int SkillCooldown(int skillIdx)
 	return skillData[skillIdx * SKILLDATASIZE + SKILLDATA_COOLDOWN];
 }
 
-//아이콘이 어느 그림판에서 오는가. ICONKIND_* 다.
-int SkillIconKind(int skillIdx)
-{
-	if (skillIdx < 0 || skillIdx >= gTotalSkill)
-		return ICONKIND_SKILL;
-
-	return skillData[skillIdx * SKILLDATASIZE + SKILLDATA_ICONKIND];
-}
-
 //스킬 카드의 별.
 int SkillStar(int skillIdx)
 {
@@ -2826,40 +2788,6 @@ long long GetEquipValue(ITEM* it)
 	return Max(base + it->cooldown, scaled);
 }
 
-//이번 레벨업에 드는 값. what이 0이면 조각 수, 1이면 골드다.
-//올릴 수 없는 상태면 0을 준다.
-long long GetEquipUpgradeCost(ITEM* it, int what)
-{
-	int star;
-
-	if (it == NULL)
-		return 0;
-
-	if (it->lv <= 0 || it->lv >= GetEquipMaxLevel())
-		return 0;
-
-	star = GetItemStar(it->type, it->detail, it->grade);
-
-	//표는 1성부터 6성까지다. 데이터가 어긋나면 표 밖을 읽는다.
-	if (star < 1 || star > upgradeCostEquip_ROWS)
-		return 0;
-
-	return upgradeCostEquip[star - 1][it->lv * 2 + (what ? 1 : 0)];
-}
-
-//조각과 골드가 둘 다 모였는지.
-bool CanEquipLevelUp(ITEM* it)
-{
-	long long needPiece = GetEquipUpgradeCost(it, 0);
-	long long needGold = GetEquipUpgradeCost(it, 1);
-
-	//올릴 수 없는 상태(최대 레벨/미보유)면 비용이 0으로 온다.
-	if (needPiece == 0 && needGold == 0)
-		return false;
-
-	return (long long)it->count >= needPiece && robin.gold >= needGold;
-}
-
 //이 장비를 그 레벨에서 썼을 때의 공격력.
 //
 //사본에 레벨을 갈아끼워 물어보고 되돌린다. 원본은 안 바뀐다.
@@ -2944,20 +2872,6 @@ int GetItemStar(int type, int detail, int grade)
 	//case ITEM_RING:
 	//	return (detail / 3) + 3;
 	//}
-}
-
-int GetCurWeaponCollectionsIndex(void)
-{
-	int i;
-	ITEM* it = &ao[PLAYER].equip[EQUIP_WEAPON];
-
-	for (i = 0; i < TOTAL_COLLECTIONS; i++) {
-		if (collectionData[i * COLLECTIONSITEMCNT * COLLECTIONSDATASIZE + 0 * COLLECTIONSDATASIZE + 0] == it->type
-			&& collectionData[i * COLLECTIONSITEMCNT * COLLECTIONSDATASIZE + 0 * COLLECTIONSDATASIZE + 1] == it->detail
-			&& collectionData[i * COLLECTIONSITEMCNT * COLLECTIONSDATASIZE + 0 * COLLECTIONSDATASIZE + 2] == it->grade) {
-			return i;
-		}
-	}
 }
 
 int GetHighestCollections(int index)

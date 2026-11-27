@@ -34,11 +34,6 @@ inline Product Supply(int index,int hero) {
  if(index==2) return {"SHOP_COMPANION",Companion,-1,0,BalancePending,true,30,Persistent,Shop};
  return {"SHOP_SPECIAL",Special,-1,0,BalancePending,true,40,Persistent,Shop};
 }
-inline Product DailySlot() {return {"SHOP_DAILY_FREE",Daily,-1,0,BalancePending,true,0,Persistent,Shop};}
-inline Product GenericBox(int i) {
- static const char* ids[]={"BOX_PAID0","BOX_PAID1","BOX_PAID2","BOX_PAID3","BOX_PAID4","BOX_PAID5"};
- i=i<0?0:i>5?5:i;return {ids[i],ExistingBox,-1,i,Ready,true,50+i,Persistent,Shop};
-}
 inline bool MatchesHero(const Product& p,int hero) {return p.hero<0||p.hero==hero;}
 inline bool Forbidden(const char* id) {
  const char* names[]={"SHOP_CASTLE_MATERIAL","SHOP_REPAIR_PART","SHOP_GRID_SLOT","SHOP_CASTLE_LEVEL_UP","SHOP_FLOOR_UNLOCK","SHOP_BUILDING_TICKET","inven_20"};

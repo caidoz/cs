@@ -248,15 +248,6 @@ void SocialProfileImageDraw(int profileIdx, int x, int y, float size)
 		sprite[PROFILE_IMG], PROFILE_IMG);
 }
 
-void UserProfileNameDraw(int profileIdx, const char* nickname,
-	int imageX, int imageY, float imageSize,
-	float nameX, float nameY, float textZoom, int align)
-{
-	SocialProfileImageDraw(profileIdx, imageX, imageY, imageSize);
-	SetFontColor(COLOR_WHITE);
-	DrawTextStrSystem(nickname, nameX, nameY, textZoom, align, true);
-}
-
 void EffectDrawOnlyBg(int yPos, float zoom)
 {
 	int i, j, y;
