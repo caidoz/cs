@@ -1,0 +1,25 @@
+{
+  "source": "docs\\design\\castle-lineage-three-v1\\lineage-01-10-19.png",
+  "sha256": "45af99618c1246bab8da6d9a2e18d9b10c528411964b5b65bfe5743e3ea9e9a7",
+  "crop_boxes": {
+    "1": [
+      32,
+      650,
+      380,
+      913
+    ],
+    "10": [
+      400,
+      270,
+      850,
+      913
+    ],
+    "19": [
+      880,
+      4,
+      1528,
+      913
+    ]
+  },
+  "policy": "Approval source is immutable; crops for comparison only; no repaint or axis scaling"
+}

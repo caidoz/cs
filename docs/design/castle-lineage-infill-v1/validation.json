@@ -1,0 +1,183 @@
+{
+  "anchor_hash_unchanged": true,
+  "intermediate_count": 16,
+  "runtime_imported": false,
+  "aspect_ratio_policy": "Uniform scaling only. Contact-sheet scale is illustrative; final native registration pending.",
+  "stages": [
+    {
+      "stage": 1,
+      "locked_anchor": true,
+      "scale": 1.0
+    },
+    {
+      "stage": 2,
+      "locked_anchor": false,
+      "review_visible_size": [
+        341,
+        258
+      ],
+      "uniform_scale": 0.25018341892883345,
+      "source_sha256": "97bae878999071a0af7d1b7f103c447ddbc7f2b55cbc5ea54953dd5a6cce4855"
+    },
+    {
+      "stage": 3,
+      "locked_anchor": false,
+      "review_visible_size": [
+        352,
+        308
+      ],
+      "uniform_scale": 0.2948073701842546,
+      "source_sha256": "e36e22385e9e358ef6211de7facb3ad864046ef640d1651703fed76a19bfac1a"
+    },
+    {
+      "stage": 4,
+      "locked_anchor": false,
+      "review_visible_size": [
+        363,
+        345
+      ],
+      "uniform_scale": 0.308936170212766,
+      "source_sha256": "e95b35aa6e01036721854d452bdeb635aa28fd7910246264632473af6ed904c6"
+    },
+    {
+      "stage": 5,
+      "locked_anchor": false,
+      "review_visible_size": [
+        374,
+        332
+      ],
+      "uniform_scale": 0.29472025216706066,
+      "source_sha256": "17f91cd503163979202d13be7319e5d9c2ab9f1d1cf81056de863b9e043e0e18"
+    },
+    {
+      "stage": 6,
+      "locked_anchor": false,
+      "review_visible_size": [
+        324,
+        417
+      ],
+      "uniform_scale": 0.3703374777975133,
+      "source_sha256": "d4b23563817830fedd79d850532f038997e95583b9ae99ef3c8a1849c34220a0"
+    },
+    {
+      "stage": 7,
+      "locked_anchor": false,
+      "review_visible_size": [
+        397,
+        449
+      ],
+      "uniform_scale": 0.3717228464419476,
+      "source_sha256": "d673ab80135f1c3d5f01ddc6ffda47c11520ce9087ab58b5982870072e8e1984"
+    },
+    {
+      "stage": 8,
+      "locked_anchor": false,
+      "review_visible_size": [
+        358,
+        487
+      ],
+      "uniform_scale": 0.36810279667422524,
+      "source_sha256": "9f90b8a85e182a7bf35d15ad87a12273b3eea894b5f7e0333d1e46836254027a"
+    },
+    {
+      "stage": 9,
+      "locked_anchor": false,
+      "review_visible_size": [
+        371,
+        525
+      ],
+      "uniform_scale": 0.4111198120595145,
+      "source_sha256": "f4cb98a49f2ecff0d1157402d5f03040961c4dca20f770e0fa0c33038ac11850"
+    },
+    {
+      "stage": 10,
+      "locked_anchor": true,
+      "scale": 1.0
+    },
+    {
+      "stage": 11,
+      "locked_anchor": false,
+      "review_visible_size": [
+        448,
+        596
+      ],
+      "uniform_scale": 0.4722662440570523,
+      "source_sha256": "e45d0b8284148cbaab21fb634ffa100c5e85c3a83257df09234137520b2d5c8f"
+    },
+    {
+      "stage": 12,
+      "locked_anchor": false,
+      "review_visible_size": [
+        474,
+        575
+      ],
+      "uniform_scale": 0.46745562130177515,
+      "source_sha256": "f10d1d6bc1b7d24fecc4ffa3992881b7cf965dd48221ae8f06a3bca15d2746f9"
+    },
+    {
+      "stage": 13,
+      "locked_anchor": false,
+      "review_visible_size": [
+        495,
+        625
+      ],
+      "uniform_scale": 0.4833984375,
+      "source_sha256": "8a7d1a241400dcba69a7dc538b8ed1e7eaeb4a750203ae596fa20d31f1ded0a1"
+    },
+    {
+      "stage": 14,
+      "locked_anchor": false,
+      "review_visible_size": [
+        516,
+        704
+      ],
+      "uniform_scale": 0.5153733528550513,
+      "source_sha256": "2a91bb8a8f93e602f2bcf4e025982056bfca61d2a0ef0f2edaf98d2c8cb9d7ee"
+    },
+    {
+      "stage": 15,
+      "locked_anchor": false,
+      "review_visible_size": [
+        525,
+        740
+      ],
+      "uniform_scale": 0.5149617258176757,
+      "source_sha256": "b7d0c1a20e2b91550729434b92cce4ef52b85581809da96f674acfbfd44adcc9"
+    },
+    {
+      "stage": 16,
+      "locked_anchor": false,
+      "review_visible_size": [
+        545,
+        776
+      ],
+      "uniform_scale": 0.5582733812949641,
+      "source_sha256": "bf3c227a30ba0c85a99ed63bcdf211c91dee425a9cf17f5da01384af7c2a3c30"
+    },
+    {
+      "stage": 17,
+      "locked_anchor": false,
+      "review_visible_size": [
+        580,
+        814
+      ],
+      "uniform_scale": 0.5785358919687278,
+      "source_sha256": "7f5c1ccddc0c7bb35f3acaf599265abfdc8f3b179f3e07583072e7e55b001059"
+    },
+    {
+      "stage": 18,
+      "locked_anchor": false,
+      "review_visible_size": [
+        604,
+        853
+      ],
+      "uniform_scale": 0.6182190378710338,
+      "source_sha256": "f4c3b7ac4ab7262dc9a128693316b5ba50cdf27bf2d7ebc4e1ed8f21e344c7ea"
+    },
+    {
+      "stage": 19,
+      "locked_anchor": true,
+      "scale": 1.0
+    }
+  ]
+}

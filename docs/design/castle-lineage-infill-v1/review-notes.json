@@ -1,0 +1,14 @@
+{
+  "status": "First remodeling pass for review, not approved production art",
+  "locked": [1, 10, 19],
+  "complete_intermediate_concept_count": 16,
+  "known_followups": [
+    {"stages": [4, 5], "issue": "Stage05 catapult regresses from04 boltthrower; retain stronger weapon and refine cumulative upper housing."},
+    {"stages": [5, 6], "issue": "Foundry and housing gain is abrupt; smooth transition while preserving locked10."},
+    {"stages": [7, 11], "issue": "Violet energy/crystal weapon details appear before intended13 unlock; revise to physical alloy/iron mechanisms."},
+    {"stages": [10, 11, 12], "issue": "Some dwelling and door sizes vary compared with locked10; final common human-scale registration pending."},
+    {"stages": [15, 16, 17], "issue": "Large observatory dome appears too early; reserve approved19 dome and use intermediate civic roof forms."}
+  ],
+  "runtime_changes": false,
+  "review_layout": "Anchor crops remain unscaled. Intermediate sprites are uniformly fit to conceptual bounds; this is not validated production geometry."
+}
