@@ -1,0 +1,1293 @@
+{
+  "status": "Interior visual design proposal only; no runtime changes",
+  "date": "2026-11-27",
+  "rooms_at_final": 16,
+  "indoor_actor_height_native": [
+    26,
+    30
+  ],
+  "scale_policy": "Merge 2–3 facade bays per room; roughly1.3–1.6x exterior implied interior space; hall merges multiple bays, no silhouette enlargement",
+  "facility_inheritance": "Stable facility IDs persist; machinery, furnishing and architecture evolve per castle; power cylinders remain one room",
+  "effect_policy": "Room roles are design proposals, not newly implemented stats or mechanics",
+  "stages": [
+    {
+      "stage": 1,
+      "rooms": 1,
+      "zones": 2,
+      "facilities": [
+        {
+          "id": "food",
+          "name": "식량 생산실",
+          "unlock": 1,
+          "role": "식량 가공·재화 생산 기반"
+        },
+        {
+          "id": "forge",
+          "name": "병기 공방",
+          "unlock": 1,
+          "role": "히어로 무기·공격력 강화"
+        }
+      ],
+      "epoch": 0,
+      "reference": "references/exterior-01.png",
+      "prompt": "Use case: precise-object-edit. EDIT TARGET: supplied image is CURRENT GAME EXTERIOR of one castle. Make a coherent inhabited CUTAWAY INTERIOR OF THIS EXACT BUILDING. Keep identical original OUTER silhouette, overall native width:height, roof outlines, upper-left light and dark right-side thickness, lower-right EMPTY cannon terrace and integrated chassis. No wheels,guns,extra wings,extra external floors,people,text,labels,UI,cardpanels. Front facade walls peel away to reveal actual ARCHITECTURAL SPACES behind current attached houses; retain roof edges, posts, thick floorboards, stone arch jambs, front floor lips and connecting stairs. Do not replace body with generic rectangular box. Exterior motif and rich detail density retained in structural arches, not huge opaque plaques blocking all rooms.\nPAINT STYLE LOCK: EXACT current matte handpainted game sprite tone, 3–4 broad values per material, crisp dark outlines, muted grey-purple stone and warm brown wood, clear large readable furniture. No realistic materials, tiny photographic texture, glossy 3D, ultra fine filigree, over-rendered interior or muddy dark voids. Match exterior level's MATERIAL TIMELINE: wood01–02, bronze03+, iron05+, silver aluminum07+, selective gold10+, crystals13+. No purple magic in early castles. Rooms develop dramatically in machinery/architecture as castle evolves, NOT every room a rustic farmhouse with identical shelves.\nSCALE: a normal late room combines TWO or THREE neighboring facade house-bays into one shared interior volume; interior modules modestly enlarged about1.3–1.6x implied exterior-house width, NEVER giant room with character-sized furniture dwarfing the whole exterior. Spaces meant for later game NPCs of26–30 native pixels high, consistent furniture scale throughout, clear walkable foreground floor strip. Big cultural halls can occupy two adjacent bays or double height, but do not grow building silhouette. No drawn characters or scale mannequins in this asset. A room is a functional space; windows/corridors/engine cylinders do NOT each count as another room. Rich warm inhabited depth without clutter.\nKeep early production-room identity as the same evolving grain/food processing facility; later advanced food equipment recognizable, not new random unrelated room. Persist every unlocked facility, no disappearing earlier functions. ONE connected engine room regardless of boiler cells. Transparent background, exactlyone whole cutaway castle.\nSTAGE 01. ONE shared room only: grain/food workzone LEFT and a TINY anvil/weapon workzone RIGHT, no dividing wall, no other rooms. Folded pallet is a prop not extra facility. Keep cottage modest, door facade removed insideexistingoutline.\nFunctions to visibly fit:\n1. 식량 생산실 (food): hand-cranked wooden grain mill, flour sack, seed trays, bread preparation table;\n2. 병기 공방 (forge): small anvil, hammer, wooden sword rack\nEvery function is a room except early shared spaces explicitlylisted. Make the technologyandluxury appropriate to THIS stage. Retain overallaspect and original empty weapon floor. Late scientific/cultural rooms get characteristic furnishing, not food crates."
+    },
+    {
+      "stage": 2,
+      "rooms": 2,
+      "zones": 3,
+      "facilities": [
+        {
+          "id": "food",
+          "name": "식량 생산실",
+          "unlock": 1,
+          "role": "식량 가공·재화 생산 기반"
+        },
+        {
+          "id": "forge",
+          "name": "병기 공방",
+          "unlock": 1,
+          "role": "히어로 무기·공격력 강화"
+        },
+        {
+          "id": "quarters",
+          "name": "생활·회복실",
+          "unlock": 2,
+          "role": "휴식·훈련·히어로 체력 강화"
+        }
+      ],
+      "epoch": 0,
+      "reference": "references/exterior-02.png",
+      "prompt": "Use case: precise-object-edit. EDIT TARGET: supplied image is CURRENT GAME EXTERIOR of one castle. Make a coherent inhabited CUTAWAY INTERIOR OF THIS EXACT BUILDING. Keep identical original OUTER silhouette, overall native width:height, roof outlines, upper-left light and dark right-side thickness, lower-right EMPTY cannon terrace and integrated chassis. No wheels,guns,extra wings,extra external floors,people,text,labels,UI,cardpanels. Front facade walls peel away to reveal actual ARCHITECTURAL SPACES behind current attached houses; retain roof edges, posts, thick floorboards, stone arch jambs, front floor lips and connecting stairs. Do not replace body with generic rectangular box. Exterior motif and rich detail density retained in structural arches, not huge opaque plaques blocking all rooms.\nPAINT STYLE LOCK: EXACT current matte handpainted game sprite tone, 3–4 broad values per material, crisp dark outlines, muted grey-purple stone and warm brown wood, clear large readable furniture. No realistic materials, tiny photographic texture, glossy 3D, ultra fine filigree, over-rendered interior or muddy dark voids. Match exterior level's MATERIAL TIMELINE: wood01–02, bronze03+, iron05+, silver aluminum07+, selective gold10+, crystals13+. No purple magic in early castles. Rooms develop dramatically in machinery/architecture as castle evolves, NOT every room a rustic farmhouse with identical shelves.\nSCALE: a normal late room combines TWO or THREE neighboring facade house-bays into one shared interior volume; interior modules modestly enlarged about1.3–1.6x implied exterior-house width, NEVER giant room with character-sized furniture dwarfing the whole exterior. Spaces meant for later game NPCs of26–30 native pixels high, consistent furniture scale throughout, clear walkable foreground floor strip. Big cultural halls can occupy two adjacent bays or double height, but do not grow building silhouette. No drawn characters or scale mannequins in this asset. A room is a functional space; windows/corridors/engine cylinders do NOT each count as another room. Rich warm inhabited depth without clutter.\nKeep early production-room identity as the same evolving grain/food processing facility; later advanced food equipment recognizable, not new random unrelated room. Persist every unlocked facility, no disappearing earlier functions. ONE connected engine room regardless of boiler cells. Transparent background, exactlyone whole cutaway castle.\nSTAGE 02. EXACTLY TWO rooms: main ground room retains separate food and weapon corners; small attic above becomes living/recovery room. Three functions across two physical rooms.\nFunctions to visibly fit:\n1. 식량 생산실 (food): hand-cranked wooden grain mill, flour sack, seed trays, bread preparation table;\n2. 병기 공방 (forge): small anvil, hammer, wooden sword rack;\n3. 생활·회복실 (quarters): wooden bunks and washbasin\nEvery function is a room except early shared spaces explicitlylisted. Make the technologyandluxury appropriate to THIS stage. Retain overallaspect and original empty weapon floor. Late scientific/cultural rooms get characteristic furnishing, not food crates."
+    },
+    {
+      "stage": 3,
+      "rooms": 3,
+      "zones": 4,
+      "facilities": [
+        {
+          "id": "food",
+          "name": "식량 생산실",
+          "unlock": 1,
+          "role": "식량 가공·재화 생산 기반"
+        },
+        {
+          "id": "forge",
+          "name": "병기 공방",
+          "unlock": 1,
+          "role": "히어로 무기·공격력 강화"
+        },
+        {
+          "id": "quarters",
+          "name": "생활·회복실",
+          "unlock": 2,
+          "role": "휴식·훈련·히어로 체력 강화"
+        },
+        {
+          "id": "armor",
+          "name": "방어 공방",
+          "unlock": 3,
+          "role": "방어구 제작·히어로 방어력 강화"
+        }
+      ],
+      "epoch": 1,
+      "reference": "references/exterior-03.png",
+      "prompt": "Use case: precise-object-edit. EDIT TARGET: supplied image is CURRENT GAME EXTERIOR of one castle. Make a coherent inhabited CUTAWAY INTERIOR OF THIS EXACT BUILDING. Keep identical original OUTER silhouette, overall native width:height, roof outlines, upper-left light and dark right-side thickness, lower-right EMPTY cannon terrace and integrated chassis. No wheels,guns,extra wings,extra external floors,people,text,labels,UI,cardpanels. Front facade walls peel away to reveal actual ARCHITECTURAL SPACES behind current attached houses; retain roof edges, posts, thick floorboards, stone arch jambs, front floor lips and connecting stairs. Do not replace body with generic rectangular box. Exterior motif and rich detail density retained in structural arches, not huge opaque plaques blocking all rooms.\nPAINT STYLE LOCK: EXACT current matte handpainted game sprite tone, 3–4 broad values per material, crisp dark outlines, muted grey-purple stone and warm brown wood, clear large readable furniture. No realistic materials, tiny photographic texture, glossy 3D, ultra fine filigree, over-rendered interior or muddy dark voids. Match exterior level's MATERIAL TIMELINE: wood01–02, bronze03+, iron05+, silver aluminum07+, selective gold10+, crystals13+. No purple magic in early castles. Rooms develop dramatically in machinery/architecture as castle evolves, NOT every room a rustic farmhouse with identical shelves.\nSCALE: a normal late room combines TWO or THREE neighboring facade house-bays into one shared interior volume; interior modules modestly enlarged about1.3–1.6x implied exterior-house width, NEVER giant room with character-sized furniture dwarfing the whole exterior. Spaces meant for later game NPCs of26–30 native pixels high, consistent furniture scale throughout, clear walkable foreground floor strip. Big cultural halls can occupy two adjacent bays or double height, but do not grow building silhouette. No drawn characters or scale mannequins in this asset. A room is a functional space; windows/corridors/engine cylinders do NOT each count as another room. Rich warm inhabited depth without clutter.\nKeep early production-room identity as the same evolving grain/food processing facility; later advanced food equipment recognizable, not new random unrelated room. Persist every unlocked facility, no disappearing earlier functions. ONE connected engine room regardless of boiler cells. Transparent background, exactlyone whole cutaway castle.\nSTAGE 03. EXACTLY THREE rooms: food processing room, living/recovery room, shared bronze weapon/shield workshop. Four functions across three rooms.\nFunctions to visibly fit:\n1. 식량 생산실 (food): bronze millstones, pulley and grain hopper feeding same food line;\n2. 병기 공방 (forge): bronze casting mold, bellows and anvil;\n3. 생활·회복실 (quarters): stone dormitory with proper beds and training mat;\n4. 방어 공방 (armor): bronze shield press and rivet station\nEvery function is a room except early shared spaces explicitlylisted. Make the technologyandluxury appropriate to THIS stage. Retain overallaspect and original empty weapon floor. Late scientific/cultural rooms get characteristic furnishing, not food crates."
+    },
+    {
+      "stage": 4,
+      "rooms": 4,
+      "zones": 4,
+      "facilities": [
+        {
+          "id": "food",
+          "name": "식량 생산실",
+          "unlock": 1,
+          "role": "식량 가공·재화 생산 기반"
+        },
+        {
+          "id": "forge",
+          "name": "병기 공방",
+          "unlock": 1,
+          "role": "히어로 무기·공격력 강화"
+        },
+        {
+          "id": "quarters",
+          "name": "생활·회복실",
+          "unlock": 2,
+          "role": "휴식·훈련·히어로 체력 강화"
+        },
+        {
+          "id": "armor",
+          "name": "방어 공방",
+          "unlock": 3,
+          "role": "방어구 제작·히어로 방어력 강화"
+        }
+      ],
+      "epoch": 1,
+      "reference": "references/exterior-04.png",
+      "prompt": "Use case: precise-object-edit. EDIT TARGET: supplied image is CURRENT GAME EXTERIOR of one castle. Make a coherent inhabited CUTAWAY INTERIOR OF THIS EXACT BUILDING. Keep identical original OUTER silhouette, overall native width:height, roof outlines, upper-left light and dark right-side thickness, lower-right EMPTY cannon terrace and integrated chassis. No wheels,guns,extra wings,extra external floors,people,text,labels,UI,cardpanels. Front facade walls peel away to reveal actual ARCHITECTURAL SPACES behind current attached houses; retain roof edges, posts, thick floorboards, stone arch jambs, front floor lips and connecting stairs. Do not replace body with generic rectangular box. Exterior motif and rich detail density retained in structural arches, not huge opaque plaques blocking all rooms.\nPAINT STYLE LOCK: EXACT current matte handpainted game sprite tone, 3–4 broad values per material, crisp dark outlines, muted grey-purple stone and warm brown wood, clear large readable furniture. No realistic materials, tiny photographic texture, glossy 3D, ultra fine filigree, over-rendered interior or muddy dark voids. Match exterior level's MATERIAL TIMELINE: wood01–02, bronze03+, iron05+, silver aluminum07+, selective gold10+, crystals13+. No purple magic in early castles. Rooms develop dramatically in machinery/architecture as castle evolves, NOT every room a rustic farmhouse with identical shelves.\nSCALE: a normal late room combines TWO or THREE neighboring facade house-bays into one shared interior volume; interior modules modestly enlarged about1.3–1.6x implied exterior-house width, NEVER giant room with character-sized furniture dwarfing the whole exterior. Spaces meant for later game NPCs of26–30 native pixels high, consistent furniture scale throughout, clear walkable foreground floor strip. Big cultural halls can occupy two adjacent bays or double height, but do not grow building silhouette. No drawn characters or scale mannequins in this asset. A room is a functional space; windows/corridors/engine cylinders do NOT each count as another room. Rich warm inhabited depth without clutter.\nKeep early production-room identity as the same evolving grain/food processing facility; later advanced food equipment recognizable, not new random unrelated room. Persist every unlocked facility, no disappearing earlier functions. ONE connected engine room regardless of boiler cells. Transparent background, exactlyone whole cutaway castle.\nSTAGE 04. EXACTLY 4 functional rooms, one per listed facility.\nFunctions to visibly fit:\n1. 식량 생산실 (food): bronze millstones, pulley and grain hopper feeding same food line;\n2. 병기 공방 (forge): bronze casting mold, bellows and anvil;\n3. 생활·회복실 (quarters): stone dormitory with proper beds and training mat;\n4. 방어 공방 (armor): bronze shield press and rivet station\nEvery function is a room except early shared spaces explicitlylisted. Make the technologyandluxury appropriate to THIS stage. Retain overallaspect and original empty weapon floor. Late scientific/cultural rooms get characteristic furnishing, not food crates."
+    },
+    {
+      "stage": 5,
+      "rooms": 5,
+      "zones": 5,
+      "facilities": [
+        {
+          "id": "food",
+          "name": "식량 생산실",
+          "unlock": 1,
+          "role": "식량 가공·재화 생산 기반"
+        },
+        {
+          "id": "forge",
+          "name": "병기 공방",
+          "unlock": 1,
+          "role": "히어로 무기·공격력 강화"
+        },
+        {
+          "id": "quarters",
+          "name": "생활·회복실",
+          "unlock": 2,
+          "role": "휴식·훈련·히어로 체력 강화"
+        },
+        {
+          "id": "armor",
+          "name": "방어 공방",
+          "unlock": 3,
+          "role": "방어구 제작·히어로 방어력 강화"
+        },
+        {
+          "id": "storage",
+          "name": "물류 창고",
+          "unlock": 5,
+          "role": "생산물 저장·운반"
+        }
+      ],
+      "epoch": 2,
+      "reference": "references/exterior-05.png",
+      "prompt": "Use case: precise-object-edit. EDIT TARGET: supplied image is CURRENT GAME EXTERIOR of one castle. Make a coherent inhabited CUTAWAY INTERIOR OF THIS EXACT BUILDING. Keep identical original OUTER silhouette, overall native width:height, roof outlines, upper-left light and dark right-side thickness, lower-right EMPTY cannon terrace and integrated chassis. No wheels,guns,extra wings,extra external floors,people,text,labels,UI,cardpanels. Front facade walls peel away to reveal actual ARCHITECTURAL SPACES behind current attached houses; retain roof edges, posts, thick floorboards, stone arch jambs, front floor lips and connecting stairs. Do not replace body with generic rectangular box. Exterior motif and rich detail density retained in structural arches, not huge opaque plaques blocking all rooms.\nPAINT STYLE LOCK: EXACT current matte handpainted game sprite tone, 3–4 broad values per material, crisp dark outlines, muted grey-purple stone and warm brown wood, clear large readable furniture. No realistic materials, tiny photographic texture, glossy 3D, ultra fine filigree, over-rendered interior or muddy dark voids. Match exterior level's MATERIAL TIMELINE: wood01–02, bronze03+, iron05+, silver aluminum07+, selective gold10+, crystals13+. No purple magic in early castles. Rooms develop dramatically in machinery/architecture as castle evolves, NOT every room a rustic farmhouse with identical shelves.\nSCALE: a normal late room combines TWO or THREE neighboring facade house-bays into one shared interior volume; interior modules modestly enlarged about1.3–1.6x implied exterior-house width, NEVER giant room with character-sized furniture dwarfing the whole exterior. Spaces meant for later game NPCs of26–30 native pixels high, consistent furniture scale throughout, clear walkable foreground floor strip. Big cultural halls can occupy two adjacent bays or double height, but do not grow building silhouette. No drawn characters or scale mannequins in this asset. A room is a functional space; windows/corridors/engine cylinders do NOT each count as another room. Rich warm inhabited depth without clutter.\nKeep early production-room identity as the same evolving grain/food processing facility; later advanced food equipment recognizable, not new random unrelated room. Persist every unlocked facility, no disappearing earlier functions. ONE connected engine room regardless of boiler cells. Transparent background, exactlyone whole cutaway castle.\nSTAGE 05. EXACTLY 5 functional rooms, one per listed facility.\nFunctions to visibly fit:\n1. 식량 생산실 (food): iron roller mill, belt-driven grinder, organized feed hoppers;\n2. 병기 공방 (forge): iron furnace and mechanical forge hammer;\n3. 생활·회복실 (quarters): iron-braced recovery beds, ventilation and exercise bench;\n4. 방어 공방 (armor): iron plate armor press and heavy shield rack;\n5. 물류 창고 (storage): iron goods lift and sorted crates\nEvery function is a room except early shared spaces explicitlylisted. Make the technologyandluxury appropriate to THIS stage. Retain overallaspect and original empty weapon floor. Late scientific/cultural rooms get characteristic furnishing, not food crates."
+    },
+    {
+      "stage": 6,
+      "rooms": 6,
+      "zones": 6,
+      "facilities": [
+        {
+          "id": "food",
+          "name": "식량 생산실",
+          "unlock": 1,
+          "role": "식량 가공·재화 생산 기반"
+        },
+        {
+          "id": "forge",
+          "name": "병기 공방",
+          "unlock": 1,
+          "role": "히어로 무기·공격력 강화"
+        },
+        {
+          "id": "quarters",
+          "name": "생활·회복실",
+          "unlock": 2,
+          "role": "휴식·훈련·히어로 체력 강화"
+        },
+        {
+          "id": "armor",
+          "name": "방어 공방",
+          "unlock": 3,
+          "role": "방어구 제작·히어로 방어력 강화"
+        },
+        {
+          "id": "storage",
+          "name": "물류 창고",
+          "unlock": 5,
+          "role": "생산물 저장·운반"
+        },
+        {
+          "id": "training",
+          "name": "동료 훈련소",
+          "unlock": 6,
+          "role": "동료 훈련·협공 준비"
+        }
+      ],
+      "epoch": 2,
+      "reference": "references/exterior-06.png",
+      "prompt": "Use case: precise-object-edit. EDIT TARGET: supplied image is CURRENT GAME EXTERIOR of one castle. Make a coherent inhabited CUTAWAY INTERIOR OF THIS EXACT BUILDING. Keep identical original OUTER silhouette, overall native width:height, roof outlines, upper-left light and dark right-side thickness, lower-right EMPTY cannon terrace and integrated chassis. No wheels,guns,extra wings,extra external floors,people,text,labels,UI,cardpanels. Front facade walls peel away to reveal actual ARCHITECTURAL SPACES behind current attached houses; retain roof edges, posts, thick floorboards, stone arch jambs, front floor lips and connecting stairs. Do not replace body with generic rectangular box. Exterior motif and rich detail density retained in structural arches, not huge opaque plaques blocking all rooms.\nPAINT STYLE LOCK: EXACT current matte handpainted game sprite tone, 3–4 broad values per material, crisp dark outlines, muted grey-purple stone and warm brown wood, clear large readable furniture. No realistic materials, tiny photographic texture, glossy 3D, ultra fine filigree, over-rendered interior or muddy dark voids. Match exterior level's MATERIAL TIMELINE: wood01–02, bronze03+, iron05+, silver aluminum07+, selective gold10+, crystals13+. No purple magic in early castles. Rooms develop dramatically in machinery/architecture as castle evolves, NOT every room a rustic farmhouse with identical shelves.\nSCALE: a normal late room combines TWO or THREE neighboring facade house-bays into one shared interior volume; interior modules modestly enlarged about1.3–1.6x implied exterior-house width, NEVER giant room with character-sized furniture dwarfing the whole exterior. Spaces meant for later game NPCs of26–30 native pixels high, consistent furniture scale throughout, clear walkable foreground floor strip. Big cultural halls can occupy two adjacent bays or double height, but do not grow building silhouette. No drawn characters or scale mannequins in this asset. A room is a functional space; windows/corridors/engine cylinders do NOT each count as another room. Rich warm inhabited depth without clutter.\nKeep early production-room identity as the same evolving grain/food processing facility; later advanced food equipment recognizable, not new random unrelated room. Persist every unlocked facility, no disappearing earlier functions. ONE connected engine room regardless of boiler cells. Transparent background, exactlyone whole cutaway castle.\nSTAGE 06. EXACTLY 6 functional rooms, one per listed facility.\nFunctions to visibly fit:\n1. 식량 생산실 (food): iron roller mill, belt-driven grinder, organized feed hoppers;\n2. 병기 공방 (forge): iron furnace and mechanical forge hammer;\n3. 생활·회복실 (quarters): iron-braced recovery beds, ventilation and exercise bench;\n4. 방어 공방 (armor): iron plate armor press and heavy shield rack;\n5. 물류 창고 (storage): iron goods lift and sorted crates;\n6. 동료 훈련소 (training): iron spring-loaded practice target\nEvery function is a room except early shared spaces explicitlylisted. Make the technologyandluxury appropriate to THIS stage. Retain overallaspect and original empty weapon floor. Late scientific/cultural rooms get characteristic furnishing, not food crates."
+    },
+    {
+      "stage": 7,
+      "rooms": 7,
+      "zones": 7,
+      "facilities": [
+        {
+          "id": "food",
+          "name": "식량 생산실",
+          "unlock": 1,
+          "role": "식량 가공·재화 생산 기반"
+        },
+        {
+          "id": "forge",
+          "name": "병기 공방",
+          "unlock": 1,
+          "role": "히어로 무기·공격력 강화"
+        },
+        {
+          "id": "quarters",
+          "name": "생활·회복실",
+          "unlock": 2,
+          "role": "휴식·훈련·히어로 체력 강화"
+        },
+        {
+          "id": "armor",
+          "name": "방어 공방",
+          "unlock": 3,
+          "role": "방어구 제작·히어로 방어력 강화"
+        },
+        {
+          "id": "storage",
+          "name": "물류 창고",
+          "unlock": 5,
+          "role": "생산물 저장·운반"
+        },
+        {
+          "id": "training",
+          "name": "동료 훈련소",
+          "unlock": 6,
+          "role": "동료 훈련·협공 준비"
+        },
+        {
+          "id": "trade",
+          "name": "교역·전리품실",
+          "unlock": 7,
+          "role": "전리품 정리·교역"
+        }
+      ],
+      "epoch": 3,
+      "reference": "references/exterior-07.png",
+      "prompt": "Use case: precise-object-edit. EDIT TARGET: supplied image is CURRENT GAME EXTERIOR of one castle. Make a coherent inhabited CUTAWAY INTERIOR OF THIS EXACT BUILDING. Keep identical original OUTER silhouette, overall native width:height, roof outlines, upper-left light and dark right-side thickness, lower-right EMPTY cannon terrace and integrated chassis. No wheels,guns,extra wings,extra external floors,people,text,labels,UI,cardpanels. Front facade walls peel away to reveal actual ARCHITECTURAL SPACES behind current attached houses; retain roof edges, posts, thick floorboards, stone arch jambs, front floor lips and connecting stairs. Do not replace body with generic rectangular box. Exterior motif and rich detail density retained in structural arches, not huge opaque plaques blocking all rooms.\nPAINT STYLE LOCK: EXACT current matte handpainted game sprite tone, 3–4 broad values per material, crisp dark outlines, muted grey-purple stone and warm brown wood, clear large readable furniture. No realistic materials, tiny photographic texture, glossy 3D, ultra fine filigree, over-rendered interior or muddy dark voids. Match exterior level's MATERIAL TIMELINE: wood01–02, bronze03+, iron05+, silver aluminum07+, selective gold10+, crystals13+. No purple magic in early castles. Rooms develop dramatically in machinery/architecture as castle evolves, NOT every room a rustic farmhouse with identical shelves.\nSCALE: a normal late room combines TWO or THREE neighboring facade house-bays into one shared interior volume; interior modules modestly enlarged about1.3–1.6x implied exterior-house width, NEVER giant room with character-sized furniture dwarfing the whole exterior. Spaces meant for later game NPCs of26–30 native pixels high, consistent furniture scale throughout, clear walkable foreground floor strip. Big cultural halls can occupy two adjacent bays or double height, but do not grow building silhouette. No drawn characters or scale mannequins in this asset. A room is a functional space; windows/corridors/engine cylinders do NOT each count as another room. Rich warm inhabited depth without clutter.\nKeep early production-room identity as the same evolving grain/food processing facility; later advanced food equipment recognizable, not new random unrelated room. Persist every unlocked facility, no disappearing earlier functions. ONE connected engine room regardless of boiler cells. Transparent background, exactlyone whole cutaway castle.\nSTAGE 07. EXACTLY 7 functional rooms, one per listed facility.\nFunctions to visibly fit:\n1. 식량 생산실 (food): aluminum-clad automatic grain processor and irrigation controls;\n2. 병기 공방 (forge): precision milling bench and alloy sword press;\n3. 생활·회복실 (quarters): clean adjustable recovery couches and mechanical medical lamp;\n4. 방어 공방 (armor): silver alloy forming press;\n5. 물류 창고 (storage): aluminum shelving and trolley;\n6. 동료 훈련소 (training): mechanical combat training frame;\n7. 교역·전리품실 (trade): mechanical bookkeeping machine and trade bins\nEvery function is a room except early shared spaces explicitlylisted. Make the technologyandluxury appropriate to THIS stage. Retain overallaspect and original empty weapon floor. Late scientific/cultural rooms get characteristic furnishing, not food crates."
+    },
+    {
+      "stage": 8,
+      "rooms": 8,
+      "zones": 8,
+      "facilities": [
+        {
+          "id": "food",
+          "name": "식량 생산실",
+          "unlock": 1,
+          "role": "식량 가공·재화 생산 기반"
+        },
+        {
+          "id": "forge",
+          "name": "병기 공방",
+          "unlock": 1,
+          "role": "히어로 무기·공격력 강화"
+        },
+        {
+          "id": "quarters",
+          "name": "생활·회복실",
+          "unlock": 2,
+          "role": "휴식·훈련·히어로 체력 강화"
+        },
+        {
+          "id": "armor",
+          "name": "방어 공방",
+          "unlock": 3,
+          "role": "방어구 제작·히어로 방어력 강화"
+        },
+        {
+          "id": "storage",
+          "name": "물류 창고",
+          "unlock": 5,
+          "role": "생산물 저장·운반"
+        },
+        {
+          "id": "training",
+          "name": "동료 훈련소",
+          "unlock": 6,
+          "role": "동료 훈련·협공 준비"
+        },
+        {
+          "id": "trade",
+          "name": "교역·전리품실",
+          "unlock": 7,
+          "role": "전리품 정리·교역"
+        },
+        {
+          "id": "power",
+          "name": "동력기관실",
+          "unlock": 8,
+          "role": "주포와 성을 구동하는 동력 관리"
+        }
+      ],
+      "epoch": 3,
+      "reference": "references/exterior-08.png",
+      "prompt": "Use case: precise-object-edit. EDIT TARGET: supplied image is CURRENT GAME EXTERIOR of one castle. Make a coherent inhabited CUTAWAY INTERIOR OF THIS EXACT BUILDING. Keep identical original OUTER silhouette, overall native width:height, roof outlines, upper-left light and dark right-side thickness, lower-right EMPTY cannon terrace and integrated chassis. No wheels,guns,extra wings,extra external floors,people,text,labels,UI,cardpanels. Front facade walls peel away to reveal actual ARCHITECTURAL SPACES behind current attached houses; retain roof edges, posts, thick floorboards, stone arch jambs, front floor lips and connecting stairs. Do not replace body with generic rectangular box. Exterior motif and rich detail density retained in structural arches, not huge opaque plaques blocking all rooms.\nPAINT STYLE LOCK: EXACT current matte handpainted game sprite tone, 3–4 broad values per material, crisp dark outlines, muted grey-purple stone and warm brown wood, clear large readable furniture. No realistic materials, tiny photographic texture, glossy 3D, ultra fine filigree, over-rendered interior or muddy dark voids. Match exterior level's MATERIAL TIMELINE: wood01–02, bronze03+, iron05+, silver aluminum07+, selective gold10+, crystals13+. No purple magic in early castles. Rooms develop dramatically in machinery/architecture as castle evolves, NOT every room a rustic farmhouse with identical shelves.\nSCALE: a normal late room combines TWO or THREE neighboring facade house-bays into one shared interior volume; interior modules modestly enlarged about1.3–1.6x implied exterior-house width, NEVER giant room with character-sized furniture dwarfing the whole exterior. Spaces meant for later game NPCs of26–30 native pixels high, consistent furniture scale throughout, clear walkable foreground floor strip. Big cultural halls can occupy two adjacent bays or double height, but do not grow building silhouette. No drawn characters or scale mannequins in this asset. A room is a functional space; windows/corridors/engine cylinders do NOT each count as another room. Rich warm inhabited depth without clutter.\nKeep early production-room identity as the same evolving grain/food processing facility; later advanced food equipment recognizable, not new random unrelated room. Persist every unlocked facility, no disappearing earlier functions. ONE connected engine room regardless of boiler cells. Transparent background, exactlyone whole cutaway castle.\nSTAGE 08. EXACTLY 8 functional rooms, one per listed facility. Power room is mechanical copper steam pressure machinery, one compact main boiler.\nFunctions to visibly fit:\n1. 식량 생산실 (food): aluminum-clad automatic grain processor and irrigation controls;\n2. 병기 공방 (forge): precision milling bench and alloy sword press;\n3. 생활·회복실 (quarters): clean adjustable recovery couches and mechanical medical lamp;\n4. 방어 공방 (armor): silver alloy forming press;\n5. 물류 창고 (storage): aluminum shelving and trolley;\n6. 동료 훈련소 (training): mechanical combat training frame;\n7. 교역·전리품실 (trade): mechanical bookkeeping machine and trade bins;\n8. 동력기관실 (power): mechanical pressure regulator and boiler\nEvery function is a room except early shared spaces explicitlylisted. Make the technologyandluxury appropriate to THIS stage. Retain overallaspect and original empty weapon floor. Late scientific/cultural rooms get characteristic furnishing, not food crates."
+    },
+    {
+      "stage": 9,
+      "rooms": 8,
+      "zones": 8,
+      "facilities": [
+        {
+          "id": "food",
+          "name": "식량 생산실",
+          "unlock": 1,
+          "role": "식량 가공·재화 생산 기반"
+        },
+        {
+          "id": "forge",
+          "name": "병기 공방",
+          "unlock": 1,
+          "role": "히어로 무기·공격력 강화"
+        },
+        {
+          "id": "quarters",
+          "name": "생활·회복실",
+          "unlock": 2,
+          "role": "휴식·훈련·히어로 체력 강화"
+        },
+        {
+          "id": "armor",
+          "name": "방어 공방",
+          "unlock": 3,
+          "role": "방어구 제작·히어로 방어력 강화"
+        },
+        {
+          "id": "storage",
+          "name": "물류 창고",
+          "unlock": 5,
+          "role": "생산물 저장·운반"
+        },
+        {
+          "id": "training",
+          "name": "동료 훈련소",
+          "unlock": 6,
+          "role": "동료 훈련·협공 준비"
+        },
+        {
+          "id": "trade",
+          "name": "교역·전리품실",
+          "unlock": 7,
+          "role": "전리품 정리·교역"
+        },
+        {
+          "id": "power",
+          "name": "동력기관실",
+          "unlock": 8,
+          "role": "주포와 성을 구동하는 동력 관리"
+        }
+      ],
+      "epoch": 3,
+      "reference": "references/exterior-09.png",
+      "prompt": "Use case: precise-object-edit. EDIT TARGET: supplied image is CURRENT GAME EXTERIOR of one castle. Make a coherent inhabited CUTAWAY INTERIOR OF THIS EXACT BUILDING. Keep identical original OUTER silhouette, overall native width:height, roof outlines, upper-left light and dark right-side thickness, lower-right EMPTY cannon terrace and integrated chassis. No wheels,guns,extra wings,extra external floors,people,text,labels,UI,cardpanels. Front facade walls peel away to reveal actual ARCHITECTURAL SPACES behind current attached houses; retain roof edges, posts, thick floorboards, stone arch jambs, front floor lips and connecting stairs. Do not replace body with generic rectangular box. Exterior motif and rich detail density retained in structural arches, not huge opaque plaques blocking all rooms.\nPAINT STYLE LOCK: EXACT current matte handpainted game sprite tone, 3–4 broad values per material, crisp dark outlines, muted grey-purple stone and warm brown wood, clear large readable furniture. No realistic materials, tiny photographic texture, glossy 3D, ultra fine filigree, over-rendered interior or muddy dark voids. Match exterior level's MATERIAL TIMELINE: wood01–02, bronze03+, iron05+, silver aluminum07+, selective gold10+, crystals13+. No purple magic in early castles. Rooms develop dramatically in machinery/architecture as castle evolves, NOT every room a rustic farmhouse with identical shelves.\nSCALE: a normal late room combines TWO or THREE neighboring facade house-bays into one shared interior volume; interior modules modestly enlarged about1.3–1.6x implied exterior-house width, NEVER giant room with character-sized furniture dwarfing the whole exterior. Spaces meant for later game NPCs of26–30 native pixels high, consistent furniture scale throughout, clear walkable foreground floor strip. Big cultural halls can occupy two adjacent bays or double height, but do not grow building silhouette. No drawn characters or scale mannequins in this asset. A room is a functional space; windows/corridors/engine cylinders do NOT each count as another room. Rich warm inhabited depth without clutter.\nKeep early production-room identity as the same evolving grain/food processing facility; later advanced food equipment recognizable, not new random unrelated room. Persist every unlocked facility, no disappearing earlier functions. ONE connected engine room regardless of boiler cells. Transparent background, exactlyone whole cutaway castle.\nSTAGE 09. EXACTLY 8 functional rooms, one per listed facility. Power room is mechanical copper steam pressure machinery, one compact main boiler.\nFunctions to visibly fit:\n1. 식량 생산실 (food): aluminum-clad automatic grain processor and irrigation controls;\n2. 병기 공방 (forge): precision milling bench and alloy sword press;\n3. 생활·회복실 (quarters): clean adjustable recovery couches and mechanical medical lamp;\n4. 방어 공방 (armor): silver alloy forming press;\n5. 물류 창고 (storage): aluminum shelving and trolley;\n6. 동료 훈련소 (training): mechanical combat training frame;\n7. 교역·전리품실 (trade): mechanical bookkeeping machine and trade bins;\n8. 동력기관실 (power): mechanical pressure regulator and boiler\nEvery function is a room except early shared spaces explicitlylisted. Make the technologyandluxury appropriate to THIS stage. Retain overallaspect and original empty weapon floor. Late scientific/cultural rooms get characteristic furnishing, not food crates."
+    },
+    {
+      "stage": 10,
+      "rooms": 9,
+      "zones": 9,
+      "facilities": [
+        {
+          "id": "food",
+          "name": "식량 생산실",
+          "unlock": 1,
+          "role": "식량 가공·재화 생산 기반"
+        },
+        {
+          "id": "forge",
+          "name": "병기 공방",
+          "unlock": 1,
+          "role": "히어로 무기·공격력 강화"
+        },
+        {
+          "id": "quarters",
+          "name": "생활·회복실",
+          "unlock": 2,
+          "role": "휴식·훈련·히어로 체력 강화"
+        },
+        {
+          "id": "armor",
+          "name": "방어 공방",
+          "unlock": 3,
+          "role": "방어구 제작·히어로 방어력 강화"
+        },
+        {
+          "id": "storage",
+          "name": "물류 창고",
+          "unlock": 5,
+          "role": "생산물 저장·운반"
+        },
+        {
+          "id": "training",
+          "name": "동료 훈련소",
+          "unlock": 6,
+          "role": "동료 훈련·협공 준비"
+        },
+        {
+          "id": "trade",
+          "name": "교역·전리품실",
+          "unlock": 7,
+          "role": "전리품 정리·교역"
+        },
+        {
+          "id": "power",
+          "name": "동력기관실",
+          "unlock": 8,
+          "role": "주포와 성을 구동하는 동력 관리"
+        },
+        {
+          "id": "library",
+          "name": "도서관",
+          "unlock": 10,
+          "role": "설계도·기술 기록·연구 기반"
+        }
+      ],
+      "epoch": 4,
+      "reference": "references/exterior-10.png",
+      "prompt": "Use case: precise-object-edit. EDIT TARGET: supplied image is CURRENT GAME EXTERIOR of one castle. Make a coherent inhabited CUTAWAY INTERIOR OF THIS EXACT BUILDING. Keep identical original OUTER silhouette, overall native width:height, roof outlines, upper-left light and dark right-side thickness, lower-right EMPTY cannon terrace and integrated chassis. No wheels,guns,extra wings,extra external floors,people,text,labels,UI,cardpanels. Front facade walls peel away to reveal actual ARCHITECTURAL SPACES behind current attached houses; retain roof edges, posts, thick floorboards, stone arch jambs, front floor lips and connecting stairs. Do not replace body with generic rectangular box. Exterior motif and rich detail density retained in structural arches, not huge opaque plaques blocking all rooms.\nPAINT STYLE LOCK: EXACT current matte handpainted game sprite tone, 3–4 broad values per material, crisp dark outlines, muted grey-purple stone and warm brown wood, clear large readable furniture. No realistic materials, tiny photographic texture, glossy 3D, ultra fine filigree, over-rendered interior or muddy dark voids. Match exterior level's MATERIAL TIMELINE: wood01–02, bronze03+, iron05+, silver aluminum07+, selective gold10+, crystals13+. No purple magic in early castles. Rooms develop dramatically in machinery/architecture as castle evolves, NOT every room a rustic farmhouse with identical shelves.\nSCALE: a normal late room combines TWO or THREE neighboring facade house-bays into one shared interior volume; interior modules modestly enlarged about1.3–1.6x implied exterior-house width, NEVER giant room with character-sized furniture dwarfing the whole exterior. Spaces meant for later game NPCs of26–30 native pixels high, consistent furniture scale throughout, clear walkable foreground floor strip. Big cultural halls can occupy two adjacent bays or double height, but do not grow building silhouette. No drawn characters or scale mannequins in this asset. A room is a functional space; windows/corridors/engine cylinders do NOT each count as another room. Rich warm inhabited depth without clutter.\nKeep early production-room identity as the same evolving grain/food processing facility; later advanced food equipment recognizable, not new random unrelated room. Persist every unlocked facility, no disappearing earlier functions. ONE connected engine room regardless of boiler cells. Transparent background, exactlyone whole cutaway castle.\nSTAGE 10. EXACTLY 9 functional rooms, one per listed facility. Power room has TWO connected amber boilers.\nFunctions to visibly fit:\n1. 식량 생산실 (food): royal-scale food processing machinery, copper steam sterilizer and grain emblem retained;\n2. 병기 공방 (forge): advanced induction-like furnace in bronze/gold braced housing;\n3. 생활·회복실 (quarters): comfortable infirmary and gym;\n4. 방어 공방 (armor): elite armor fitting stands with restrained gold edging;\n5. 물류 창고 (storage): royal vault shelving with solid strongbox;\n6. 동료 훈련소 (training): guild training arena and target equipment;\n7. 교역·전리품실 (trade): royal exchange counter, ledgers and vault drawers;\n8. 동력기관실 (power): two amber pressure chambers, not a nuclear spaceship;\n9. 도서관 (library): classical two-level library with drafting desk, no crystals before13\nEvery function is a room except early shared spaces explicitlylisted. Make the technologyandluxury appropriate to THIS stage. Retain overallaspect and original empty weapon floor. Late scientific/cultural rooms get characteristic furnishing, not food crates."
+    },
+    {
+      "stage": 11,
+      "rooms": 9,
+      "zones": 9,
+      "facilities": [
+        {
+          "id": "food",
+          "name": "식량 생산실",
+          "unlock": 1,
+          "role": "식량 가공·재화 생산 기반"
+        },
+        {
+          "id": "forge",
+          "name": "병기 공방",
+          "unlock": 1,
+          "role": "히어로 무기·공격력 강화"
+        },
+        {
+          "id": "quarters",
+          "name": "생활·회복실",
+          "unlock": 2,
+          "role": "휴식·훈련·히어로 체력 강화"
+        },
+        {
+          "id": "armor",
+          "name": "방어 공방",
+          "unlock": 3,
+          "role": "방어구 제작·히어로 방어력 강화"
+        },
+        {
+          "id": "storage",
+          "name": "물류 창고",
+          "unlock": 5,
+          "role": "생산물 저장·운반"
+        },
+        {
+          "id": "training",
+          "name": "동료 훈련소",
+          "unlock": 6,
+          "role": "동료 훈련·협공 준비"
+        },
+        {
+          "id": "trade",
+          "name": "교역·전리품실",
+          "unlock": 7,
+          "role": "전리품 정리·교역"
+        },
+        {
+          "id": "power",
+          "name": "동력기관실",
+          "unlock": 8,
+          "role": "주포와 성을 구동하는 동력 관리"
+        },
+        {
+          "id": "library",
+          "name": "도서관",
+          "unlock": 10,
+          "role": "설계도·기술 기록·연구 기반"
+        }
+      ],
+      "epoch": 4,
+      "reference": "references/exterior-11.png",
+      "prompt": "Use case: precise-object-edit. EDIT TARGET: supplied image is CURRENT GAME EXTERIOR of one castle. Make a coherent inhabited CUTAWAY INTERIOR OF THIS EXACT BUILDING. Keep identical original OUTER silhouette, overall native width:height, roof outlines, upper-left light and dark right-side thickness, lower-right EMPTY cannon terrace and integrated chassis. No wheels,guns,extra wings,extra external floors,people,text,labels,UI,cardpanels. Front facade walls peel away to reveal actual ARCHITECTURAL SPACES behind current attached houses; retain roof edges, posts, thick floorboards, stone arch jambs, front floor lips and connecting stairs. Do not replace body with generic rectangular box. Exterior motif and rich detail density retained in structural arches, not huge opaque plaques blocking all rooms.\nPAINT STYLE LOCK: EXACT current matte handpainted game sprite tone, 3–4 broad values per material, crisp dark outlines, muted grey-purple stone and warm brown wood, clear large readable furniture. No realistic materials, tiny photographic texture, glossy 3D, ultra fine filigree, over-rendered interior or muddy dark voids. Match exterior level's MATERIAL TIMELINE: wood01–02, bronze03+, iron05+, silver aluminum07+, selective gold10+, crystals13+. No purple magic in early castles. Rooms develop dramatically in machinery/architecture as castle evolves, NOT every room a rustic farmhouse with identical shelves.\nSCALE: a normal late room combines TWO or THREE neighboring facade house-bays into one shared interior volume; interior modules modestly enlarged about1.3–1.6x implied exterior-house width, NEVER giant room with character-sized furniture dwarfing the whole exterior. Spaces meant for later game NPCs of26–30 native pixels high, consistent furniture scale throughout, clear walkable foreground floor strip. Big cultural halls can occupy two adjacent bays or double height, but do not grow building silhouette. No drawn characters or scale mannequins in this asset. A room is a functional space; windows/corridors/engine cylinders do NOT each count as another room. Rich warm inhabited depth without clutter.\nKeep early production-room identity as the same evolving grain/food processing facility; later advanced food equipment recognizable, not new random unrelated room. Persist every unlocked facility, no disappearing earlier functions. ONE connected engine room regardless of boiler cells. Transparent background, exactlyone whole cutaway castle.\nSTAGE 11. EXACTLY 9 functional rooms, one per listed facility. Power room has TWO connected amber boilers.\nFunctions to visibly fit:\n1. 식량 생산실 (food): royal-scale food processing machinery, copper steam sterilizer and grain emblem retained;\n2. 병기 공방 (forge): advanced induction-like furnace in bronze/gold braced housing;\n3. 생활·회복실 (quarters): comfortable infirmary and gym;\n4. 방어 공방 (armor): elite armor fitting stands with restrained gold edging;\n5. 물류 창고 (storage): royal vault shelving with solid strongbox;\n6. 동료 훈련소 (training): guild training arena and target equipment;\n7. 교역·전리품실 (trade): royal exchange counter, ledgers and vault drawers;\n8. 동력기관실 (power): two amber pressure chambers, not a nuclear spaceship;\n9. 도서관 (library): classical two-level library with drafting desk, no crystals before13\nEvery function is a room except early shared spaces explicitlylisted. Make the technologyandluxury appropriate to THIS stage. Retain overallaspect and original empty weapon floor. Late scientific/cultural rooms get characteristic furnishing, not food crates."
+    },
+    {
+      "stage": 12,
+      "rooms": 10,
+      "zones": 10,
+      "facilities": [
+        {
+          "id": "food",
+          "name": "식량 생산실",
+          "unlock": 1,
+          "role": "식량 가공·재화 생산 기반"
+        },
+        {
+          "id": "forge",
+          "name": "병기 공방",
+          "unlock": 1,
+          "role": "히어로 무기·공격력 강화"
+        },
+        {
+          "id": "quarters",
+          "name": "생활·회복실",
+          "unlock": 2,
+          "role": "휴식·훈련·히어로 체력 강화"
+        },
+        {
+          "id": "armor",
+          "name": "방어 공방",
+          "unlock": 3,
+          "role": "방어구 제작·히어로 방어력 강화"
+        },
+        {
+          "id": "storage",
+          "name": "물류 창고",
+          "unlock": 5,
+          "role": "생산물 저장·운반"
+        },
+        {
+          "id": "training",
+          "name": "동료 훈련소",
+          "unlock": 6,
+          "role": "동료 훈련·협공 준비"
+        },
+        {
+          "id": "trade",
+          "name": "교역·전리품실",
+          "unlock": 7,
+          "role": "전리품 정리·교역"
+        },
+        {
+          "id": "power",
+          "name": "동력기관실",
+          "unlock": 8,
+          "role": "주포와 성을 구동하는 동력 관리"
+        },
+        {
+          "id": "library",
+          "name": "도서관",
+          "unlock": 10,
+          "role": "설계도·기술 기록·연구 기반"
+        },
+        {
+          "id": "restaurant",
+          "name": "고급 식당",
+          "unlock": 12,
+          "role": "동료 식사·출정 준비"
+        }
+      ],
+      "epoch": 4,
+      "reference": "references/exterior-12.png",
+      "prompt": "Use case: precise-object-edit. EDIT TARGET: supplied image is CURRENT GAME EXTERIOR of one castle. Make a coherent inhabited CUTAWAY INTERIOR OF THIS EXACT BUILDING. Keep identical original OUTER silhouette, overall native width:height, roof outlines, upper-left light and dark right-side thickness, lower-right EMPTY cannon terrace and integrated chassis. No wheels,guns,extra wings,extra external floors,people,text,labels,UI,cardpanels. Front facade walls peel away to reveal actual ARCHITECTURAL SPACES behind current attached houses; retain roof edges, posts, thick floorboards, stone arch jambs, front floor lips and connecting stairs. Do not replace body with generic rectangular box. Exterior motif and rich detail density retained in structural arches, not huge opaque plaques blocking all rooms.\nPAINT STYLE LOCK: EXACT current matte handpainted game sprite tone, 3–4 broad values per material, crisp dark outlines, muted grey-purple stone and warm brown wood, clear large readable furniture. No realistic materials, tiny photographic texture, glossy 3D, ultra fine filigree, over-rendered interior or muddy dark voids. Match exterior level's MATERIAL TIMELINE: wood01–02, bronze03+, iron05+, silver aluminum07+, selective gold10+, crystals13+. No purple magic in early castles. Rooms develop dramatically in machinery/architecture as castle evolves, NOT every room a rustic farmhouse with identical shelves.\nSCALE: a normal late room combines TWO or THREE neighboring facade house-bays into one shared interior volume; interior modules modestly enlarged about1.3–1.6x implied exterior-house width, NEVER giant room with character-sized furniture dwarfing the whole exterior. Spaces meant for later game NPCs of26–30 native pixels high, consistent furniture scale throughout, clear walkable foreground floor strip. Big cultural halls can occupy two adjacent bays or double height, but do not grow building silhouette. No drawn characters or scale mannequins in this asset. A room is a functional space; windows/corridors/engine cylinders do NOT each count as another room. Rich warm inhabited depth without clutter.\nKeep early production-room identity as the same evolving grain/food processing facility; later advanced food equipment recognizable, not new random unrelated room. Persist every unlocked facility, no disappearing earlier functions. ONE connected engine room regardless of boiler cells. Transparent background, exactlyone whole cutaway castle.\nSTAGE 12. EXACTLY 10 functional rooms, one per listed facility. Power room has TWO connected amber boilers.\nFunctions to visibly fit:\n1. 식량 생산실 (food): royal-scale food processing machinery, copper steam sterilizer and grain emblem retained;\n2. 병기 공방 (forge): advanced induction-like furnace in bronze/gold braced housing;\n3. 생활·회복실 (quarters): comfortable infirmary and gym;\n4. 방어 공방 (armor): elite armor fitting stands with restrained gold edging;\n5. 물류 창고 (storage): royal vault shelving with solid strongbox;\n6. 동료 훈련소 (training): guild training arena and target equipment;\n7. 교역·전리품실 (trade): royal exchange counter, ledgers and vault drawers;\n8. 동력기관실 (power): two amber pressure chambers, not a nuclear spaceship;\n9. 도서관 (library): classical two-level library with drafting desk, no crystals before13;\n10. 고급 식당 (restaurant): classical fine dining room with linen tables, copper kitchen and serving counter\nEvery function is a room except early shared spaces explicitlylisted. Make the technologyandluxury appropriate to THIS stage. Retain overallaspect and original empty weapon floor. Late scientific/cultural rooms get characteristic furnishing, not food crates."
+    },
+    {
+      "stage": 13,
+      "rooms": 11,
+      "zones": 11,
+      "facilities": [
+        {
+          "id": "food",
+          "name": "식량 생산실",
+          "unlock": 1,
+          "role": "식량 가공·재화 생산 기반"
+        },
+        {
+          "id": "forge",
+          "name": "병기 공방",
+          "unlock": 1,
+          "role": "히어로 무기·공격력 강화"
+        },
+        {
+          "id": "quarters",
+          "name": "생활·회복실",
+          "unlock": 2,
+          "role": "휴식·훈련·히어로 체력 강화"
+        },
+        {
+          "id": "armor",
+          "name": "방어 공방",
+          "unlock": 3,
+          "role": "방어구 제작·히어로 방어력 강화"
+        },
+        {
+          "id": "storage",
+          "name": "물류 창고",
+          "unlock": 5,
+          "role": "생산물 저장·운반"
+        },
+        {
+          "id": "training",
+          "name": "동료 훈련소",
+          "unlock": 6,
+          "role": "동료 훈련·협공 준비"
+        },
+        {
+          "id": "trade",
+          "name": "교역·전리품실",
+          "unlock": 7,
+          "role": "전리품 정리·교역"
+        },
+        {
+          "id": "power",
+          "name": "동력기관실",
+          "unlock": 8,
+          "role": "주포와 성을 구동하는 동력 관리"
+        },
+        {
+          "id": "library",
+          "name": "도서관",
+          "unlock": 10,
+          "role": "설계도·기술 기록·연구 기반"
+        },
+        {
+          "id": "restaurant",
+          "name": "고급 식당",
+          "unlock": 12,
+          "role": "동료 식사·출정 준비"
+        },
+        {
+          "id": "research",
+          "name": "마도기술 연구소",
+          "unlock": 13,
+          "role": "크리스탈·동력·무장 연구"
+        }
+      ],
+      "epoch": 5,
+      "reference": "references/exterior-13.png",
+      "prompt": "Use case: precise-object-edit. EDIT TARGET: supplied image is CURRENT GAME EXTERIOR of one castle. Make a coherent inhabited CUTAWAY INTERIOR OF THIS EXACT BUILDING. Keep identical original OUTER silhouette, overall native width:height, roof outlines, upper-left light and dark right-side thickness, lower-right EMPTY cannon terrace and integrated chassis. No wheels,guns,extra wings,extra external floors,people,text,labels,UI,cardpanels. Front facade walls peel away to reveal actual ARCHITECTURAL SPACES behind current attached houses; retain roof edges, posts, thick floorboards, stone arch jambs, front floor lips and connecting stairs. Do not replace body with generic rectangular box. Exterior motif and rich detail density retained in structural arches, not huge opaque plaques blocking all rooms.\nPAINT STYLE LOCK: EXACT current matte handpainted game sprite tone, 3–4 broad values per material, crisp dark outlines, muted grey-purple stone and warm brown wood, clear large readable furniture. No realistic materials, tiny photographic texture, glossy 3D, ultra fine filigree, over-rendered interior or muddy dark voids. Match exterior level's MATERIAL TIMELINE: wood01–02, bronze03+, iron05+, silver aluminum07+, selective gold10+, crystals13+. No purple magic in early castles. Rooms develop dramatically in machinery/architecture as castle evolves, NOT every room a rustic farmhouse with identical shelves.\nSCALE: a normal late room combines TWO or THREE neighboring facade house-bays into one shared interior volume; interior modules modestly enlarged about1.3–1.6x implied exterior-house width, NEVER giant room with character-sized furniture dwarfing the whole exterior. Spaces meant for later game NPCs of26–30 native pixels high, consistent furniture scale throughout, clear walkable foreground floor strip. Big cultural halls can occupy two adjacent bays or double height, but do not grow building silhouette. No drawn characters or scale mannequins in this asset. A room is a functional space; windows/corridors/engine cylinders do NOT each count as another room. Rich warm inhabited depth without clutter.\nKeep early production-room identity as the same evolving grain/food processing facility; later advanced food equipment recognizable, not new random unrelated room. Persist every unlocked facility, no disappearing earlier functions. ONE connected engine room regardless of boiler cells. Transparent background, exactlyone whole cutaway castle.\nSTAGE 13. EXACTLY 11 functional rooms, one per listed facility. Power room has TWO connected amber boilers.\nFunctions to visibly fit:\n1. 식량 생산실 (food): crystal-lit tiered crop trays and automatic nutrient mixer retaining grain emblem;\n2. 병기 공방 (forge): crystal forging chamber and suspended weapon clamp;\n3. 생활·회복실 (quarters): magical recovery bath and crystal diagnostic lamp;\n4. 방어 공방 (armor): crystal ward engraving bench;\n5. 물류 창고 (storage): crystal-indexed warehouse and loading hoist;\n6. 동료 훈련소 (training): crystal projection training target;\n7. 교역·전리품실 (trade): crystal trade registry and supply dispatch table;\n8. 동력기관실 (power): two amber chambers linked into crystal regulator;\n9. 도서관 (library): crystal-indexed library with maps and physical books;\n10. 고급 식당 (restaurant): magically warmed fine dining tables and open kitchen;\n11. 마도기술 연구소 (research): classical arched magical research lab, alchemy glass and crystal containment rig\nEvery function is a room except early shared spaces explicitlylisted. Make the technologyandluxury appropriate to THIS stage. Retain overallaspect and original empty weapon floor. Late scientific/cultural rooms get characteristic furnishing, not food crates."
+    },
+    {
+      "stage": 14,
+      "rooms": 12,
+      "zones": 12,
+      "facilities": [
+        {
+          "id": "food",
+          "name": "식량 생산실",
+          "unlock": 1,
+          "role": "식량 가공·재화 생산 기반"
+        },
+        {
+          "id": "forge",
+          "name": "병기 공방",
+          "unlock": 1,
+          "role": "히어로 무기·공격력 강화"
+        },
+        {
+          "id": "quarters",
+          "name": "생활·회복실",
+          "unlock": 2,
+          "role": "휴식·훈련·히어로 체력 강화"
+        },
+        {
+          "id": "armor",
+          "name": "방어 공방",
+          "unlock": 3,
+          "role": "방어구 제작·히어로 방어력 강화"
+        },
+        {
+          "id": "storage",
+          "name": "물류 창고",
+          "unlock": 5,
+          "role": "생산물 저장·운반"
+        },
+        {
+          "id": "training",
+          "name": "동료 훈련소",
+          "unlock": 6,
+          "role": "동료 훈련·협공 준비"
+        },
+        {
+          "id": "trade",
+          "name": "교역·전리품실",
+          "unlock": 7,
+          "role": "전리품 정리·교역"
+        },
+        {
+          "id": "power",
+          "name": "동력기관실",
+          "unlock": 8,
+          "role": "주포와 성을 구동하는 동력 관리"
+        },
+        {
+          "id": "library",
+          "name": "도서관",
+          "unlock": 10,
+          "role": "설계도·기술 기록·연구 기반"
+        },
+        {
+          "id": "restaurant",
+          "name": "고급 식당",
+          "unlock": 12,
+          "role": "동료 식사·출정 준비"
+        },
+        {
+          "id": "research",
+          "name": "마도기술 연구소",
+          "unlock": 13,
+          "role": "크리스탈·동력·무장 연구"
+        },
+        {
+          "id": "office",
+          "name": "성주 집무실",
+          "unlock": 14,
+          "role": "성 확장 계획·정책·지휘"
+        }
+      ],
+      "epoch": 5,
+      "reference": "references/exterior-14.png",
+      "prompt": "Use case: precise-object-edit. EDIT TARGET: supplied image is CURRENT GAME EXTERIOR of one castle. Make a coherent inhabited CUTAWAY INTERIOR OF THIS EXACT BUILDING. Keep identical original OUTER silhouette, overall native width:height, roof outlines, upper-left light and dark right-side thickness, lower-right EMPTY cannon terrace and integrated chassis. No wheels,guns,extra wings,extra external floors,people,text,labels,UI,cardpanels. Front facade walls peel away to reveal actual ARCHITECTURAL SPACES behind current attached houses; retain roof edges, posts, thick floorboards, stone arch jambs, front floor lips and connecting stairs. Do not replace body with generic rectangular box. Exterior motif and rich detail density retained in structural arches, not huge opaque plaques blocking all rooms.\nPAINT STYLE LOCK: EXACT current matte handpainted game sprite tone, 3–4 broad values per material, crisp dark outlines, muted grey-purple stone and warm brown wood, clear large readable furniture. No realistic materials, tiny photographic texture, glossy 3D, ultra fine filigree, over-rendered interior or muddy dark voids. Match exterior level's MATERIAL TIMELINE: wood01–02, bronze03+, iron05+, silver aluminum07+, selective gold10+, crystals13+. No purple magic in early castles. Rooms develop dramatically in machinery/architecture as castle evolves, NOT every room a rustic farmhouse with identical shelves.\nSCALE: a normal late room combines TWO or THREE neighboring facade house-bays into one shared interior volume; interior modules modestly enlarged about1.3–1.6x implied exterior-house width, NEVER giant room with character-sized furniture dwarfing the whole exterior. Spaces meant for later game NPCs of26–30 native pixels high, consistent furniture scale throughout, clear walkable foreground floor strip. Big cultural halls can occupy two adjacent bays or double height, but do not grow building silhouette. No drawn characters or scale mannequins in this asset. A room is a functional space; windows/corridors/engine cylinders do NOT each count as another room. Rich warm inhabited depth without clutter.\nKeep early production-room identity as the same evolving grain/food processing facility; later advanced food equipment recognizable, not new random unrelated room. Persist every unlocked facility, no disappearing earlier functions. ONE connected engine room regardless of boiler cells. Transparent background, exactlyone whole cutaway castle.\nSTAGE 14. EXACTLY 12 functional rooms, one per listed facility. Keep THREE amber engine chambers integrated into ONE power room; never downgrade or hide all power machinery.\nFunctions to visibly fit:\n1. 식량 생산실 (food): crystal-lit tiered crop trays and automatic nutrient mixer retaining grain emblem;\n2. 병기 공방 (forge): crystal forging chamber and suspended weapon clamp;\n3. 생활·회복실 (quarters): magical recovery bath and crystal diagnostic lamp;\n4. 방어 공방 (armor): crystal ward engraving bench;\n5. 물류 창고 (storage): crystal-indexed warehouse and loading hoist;\n6. 동료 훈련소 (training): crystal projection training target;\n7. 교역·전리품실 (trade): crystal trade registry and supply dispatch table;\n8. 동력기관실 (power): two amber chambers linked into crystal regulator;\n9. 도서관 (library): crystal-indexed library with maps and physical books;\n10. 고급 식당 (restaurant): magically warmed fine dining tables and open kitchen;\n11. 마도기술 연구소 (research): classical arched magical research lab, alchemy glass and crystal containment rig;\n12. 성주 집무실 (office): map desk\nEvery function is a room except early shared spaces explicitlylisted. Make the technologyandluxury appropriate to THIS stage. Retain overallaspect and original empty weapon floor. Late scientific/cultural rooms get characteristic furnishing, not food crates."
+    },
+    {
+      "stage": 15,
+      "rooms": 13,
+      "zones": 13,
+      "facilities": [
+        {
+          "id": "food",
+          "name": "식량 생산실",
+          "unlock": 1,
+          "role": "식량 가공·재화 생산 기반"
+        },
+        {
+          "id": "forge",
+          "name": "병기 공방",
+          "unlock": 1,
+          "role": "히어로 무기·공격력 강화"
+        },
+        {
+          "id": "quarters",
+          "name": "생활·회복실",
+          "unlock": 2,
+          "role": "휴식·훈련·히어로 체력 강화"
+        },
+        {
+          "id": "armor",
+          "name": "방어 공방",
+          "unlock": 3,
+          "role": "방어구 제작·히어로 방어력 강화"
+        },
+        {
+          "id": "storage",
+          "name": "물류 창고",
+          "unlock": 5,
+          "role": "생산물 저장·운반"
+        },
+        {
+          "id": "training",
+          "name": "동료 훈련소",
+          "unlock": 6,
+          "role": "동료 훈련·협공 준비"
+        },
+        {
+          "id": "trade",
+          "name": "교역·전리품실",
+          "unlock": 7,
+          "role": "전리품 정리·교역"
+        },
+        {
+          "id": "power",
+          "name": "동력기관실",
+          "unlock": 8,
+          "role": "주포와 성을 구동하는 동력 관리"
+        },
+        {
+          "id": "library",
+          "name": "도서관",
+          "unlock": 10,
+          "role": "설계도·기술 기록·연구 기반"
+        },
+        {
+          "id": "restaurant",
+          "name": "고급 식당",
+          "unlock": 12,
+          "role": "동료 식사·출정 준비"
+        },
+        {
+          "id": "research",
+          "name": "마도기술 연구소",
+          "unlock": 13,
+          "role": "크리스탈·동력·무장 연구"
+        },
+        {
+          "id": "office",
+          "name": "성주 집무실",
+          "unlock": 14,
+          "role": "성 확장 계획·정책·지휘"
+        },
+        {
+          "id": "opera",
+          "name": "오페라극장",
+          "unlock": 15,
+          "role": "문화·동료 사기"
+        }
+      ],
+      "epoch": 6,
+      "reference": "references/exterior-15.png",
+      "prompt": "Use case: precise-object-edit. EDIT TARGET: supplied image is CURRENT GAME EXTERIOR of one castle. Make a coherent inhabited CUTAWAY INTERIOR OF THIS EXACT BUILDING. Keep identical original OUTER silhouette, overall native width:height, roof outlines, upper-left light and dark right-side thickness, lower-right EMPTY cannon terrace and integrated chassis. No wheels,guns,extra wings,extra external floors,people,text,labels,UI,cardpanels. Front facade walls peel away to reveal actual ARCHITECTURAL SPACES behind current attached houses; retain roof edges, posts, thick floorboards, stone arch jambs, front floor lips and connecting stairs. Do not replace body with generic rectangular box. Exterior motif and rich detail density retained in structural arches, not huge opaque plaques blocking all rooms.\nPAINT STYLE LOCK: EXACT current matte handpainted game sprite tone, 3–4 broad values per material, crisp dark outlines, muted grey-purple stone and warm brown wood, clear large readable furniture. No realistic materials, tiny photographic texture, glossy 3D, ultra fine filigree, over-rendered interior or muddy dark voids. Match exterior level's MATERIAL TIMELINE: wood01–02, bronze03+, iron05+, silver aluminum07+, selective gold10+, crystals13+. No purple magic in early castles. Rooms develop dramatically in machinery/architecture as castle evolves, NOT every room a rustic farmhouse with identical shelves.\nSCALE: a normal late room combines TWO or THREE neighboring facade house-bays into one shared interior volume; interior modules modestly enlarged about1.3–1.6x implied exterior-house width, NEVER giant room with character-sized furniture dwarfing the whole exterior. Spaces meant for later game NPCs of26–30 native pixels high, consistent furniture scale throughout, clear walkable foreground floor strip. Big cultural halls can occupy two adjacent bays or double height, but do not grow building silhouette. No drawn characters or scale mannequins in this asset. A room is a functional space; windows/corridors/engine cylinders do NOT each count as another room. Rich warm inhabited depth without clutter.\nKeep early production-room identity as the same evolving grain/food processing facility; later advanced food equipment recognizable, not new random unrelated room. Persist every unlocked facility, no disappearing earlier functions. ONE connected engine room regardless of boiler cells. Transparent background, exactlyone whole cutaway castle.\nSTAGE 15. EXACTLY 13 functional rooms, one per listed facility. Cultural rooms are LARGE recognizable halls among compact service rooms, not rows of tiny identical workshops. Opera uses one broad bay/row and recognizably red stage curtains and seats. Aquarium if present uses ONE large glass pane and plumbing, not a small fishbowl. Keep THREE amber engine chambers integrated into ONE power room; never downgrade or hide all power machinery.\nFunctions to visibly fit:\n1. 식량 생산실 (food): enclosed climate-controlled growing chamber, automatic harvest mechanism and food conveyance;\n2. 병기 공방 (forge): rail/energy weapon component workshop;\n3. 생활·회복실 (quarters): advanced regeneration couches with warm timber lounge;\n4. 방어 공방 (armor): projected shield calibration frame;\n5. 물류 창고 (storage): automatic sorting storage;\n6. 동료 훈련소 (training): multi-target magical training equipment;\n7. 교역·전리품실 (trade): merchant council counter;\n8. 동력기관실 (power): THREE amber chambers with larger pumps and readable copper pipes;\n9. 도서관 (library): grand magical archive with rolling ladders and star maps;\n10. 고급 식당 (restaurant): luxurious restaurant with craft kitchen and stained glass;\n11. 마도기술 연구소 (research): advanced magical technology lab with calibrated rings and optical devices;\n12. 성주 집무실 (office): classical royal office with ornate wooden desk, large campaign map and chair;\n13. 오페라극장 (opera): classical red-curtain opera auditorium, small stage, balcony and seating\nEvery function is a room except early shared spaces explicitlylisted. Make the technologyandluxury appropriate to THIS stage. Retain overallaspect and original empty weapon floor. Late scientific/cultural rooms get characteristic furnishing, not food crates."
+    },
+    {
+      "stage": 16,
+      "rooms": 14,
+      "zones": 14,
+      "facilities": [
+        {
+          "id": "food",
+          "name": "식량 생산실",
+          "unlock": 1,
+          "role": "식량 가공·재화 생산 기반"
+        },
+        {
+          "id": "forge",
+          "name": "병기 공방",
+          "unlock": 1,
+          "role": "히어로 무기·공격력 강화"
+        },
+        {
+          "id": "quarters",
+          "name": "생활·회복실",
+          "unlock": 2,
+          "role": "휴식·훈련·히어로 체력 강화"
+        },
+        {
+          "id": "armor",
+          "name": "방어 공방",
+          "unlock": 3,
+          "role": "방어구 제작·히어로 방어력 강화"
+        },
+        {
+          "id": "storage",
+          "name": "물류 창고",
+          "unlock": 5,
+          "role": "생산물 저장·운반"
+        },
+        {
+          "id": "training",
+          "name": "동료 훈련소",
+          "unlock": 6,
+          "role": "동료 훈련·협공 준비"
+        },
+        {
+          "id": "trade",
+          "name": "교역·전리품실",
+          "unlock": 7,
+          "role": "전리품 정리·교역"
+        },
+        {
+          "id": "power",
+          "name": "동력기관실",
+          "unlock": 8,
+          "role": "주포와 성을 구동하는 동력 관리"
+        },
+        {
+          "id": "library",
+          "name": "도서관",
+          "unlock": 10,
+          "role": "설계도·기술 기록·연구 기반"
+        },
+        {
+          "id": "restaurant",
+          "name": "고급 식당",
+          "unlock": 12,
+          "role": "동료 식사·출정 준비"
+        },
+        {
+          "id": "research",
+          "name": "마도기술 연구소",
+          "unlock": 13,
+          "role": "크리스탈·동력·무장 연구"
+        },
+        {
+          "id": "office",
+          "name": "성주 집무실",
+          "unlock": 14,
+          "role": "성 확장 계획·정책·지휘"
+        },
+        {
+          "id": "opera",
+          "name": "오페라극장",
+          "unlock": 15,
+          "role": "문화·동료 사기"
+        },
+        {
+          "id": "aquarium",
+          "name": "대수족관",
+          "unlock": 16,
+          "role": "생태·특수 생물 연구"
+        }
+      ],
+      "epoch": 6,
+      "reference": "references/exterior-16.png",
+      "prompt": "Use case: precise-object-edit. EDIT TARGET: supplied image is CURRENT GAME EXTERIOR of one castle. Make a coherent inhabited CUTAWAY INTERIOR OF THIS EXACT BUILDING. Keep identical original OUTER silhouette, overall native width:height, roof outlines, upper-left light and dark right-side thickness, lower-right EMPTY cannon terrace and integrated chassis. No wheels,guns,extra wings,extra external floors,people,text,labels,UI,cardpanels. Front facade walls peel away to reveal actual ARCHITECTURAL SPACES behind current attached houses; retain roof edges, posts, thick floorboards, stone arch jambs, front floor lips and connecting stairs. Do not replace body with generic rectangular box. Exterior motif and rich detail density retained in structural arches, not huge opaque plaques blocking all rooms.\nPAINT STYLE LOCK: EXACT current matte handpainted game sprite tone, 3–4 broad values per material, crisp dark outlines, muted grey-purple stone and warm brown wood, clear large readable furniture. No realistic materials, tiny photographic texture, glossy 3D, ultra fine filigree, over-rendered interior or muddy dark voids. Match exterior level's MATERIAL TIMELINE: wood01–02, bronze03+, iron05+, silver aluminum07+, selective gold10+, crystals13+. No purple magic in early castles. Rooms develop dramatically in machinery/architecture as castle evolves, NOT every room a rustic farmhouse with identical shelves.\nSCALE: a normal late room combines TWO or THREE neighboring facade house-bays into one shared interior volume; interior modules modestly enlarged about1.3–1.6x implied exterior-house width, NEVER giant room with character-sized furniture dwarfing the whole exterior. Spaces meant for later game NPCs of26–30 native pixels high, consistent furniture scale throughout, clear walkable foreground floor strip. Big cultural halls can occupy two adjacent bays or double height, but do not grow building silhouette. No drawn characters or scale mannequins in this asset. A room is a functional space; windows/corridors/engine cylinders do NOT each count as another room. Rich warm inhabited depth without clutter.\nKeep early production-room identity as the same evolving grain/food processing facility; later advanced food equipment recognizable, not new random unrelated room. Persist every unlocked facility, no disappearing earlier functions. ONE connected engine room regardless of boiler cells. Transparent background, exactlyone whole cutaway castle.\nSTAGE 16. EXACTLY 14 functional rooms, one per listed facility. Cultural rooms are LARGE recognizable halls among compact service rooms, not rows of tiny identical workshops. Opera uses one broad bay/row and recognizably red stage curtains and seats. Aquarium if present uses ONE large glass pane and plumbing, not a small fishbowl. Keep THREE amber engine chambers integrated into ONE power room; never downgrade or hide all power machinery.\nFunctions to visibly fit:\n1. 식량 생산실 (food): enclosed climate-controlled growing chamber, automatic harvest mechanism and food conveyance;\n2. 병기 공방 (forge): rail/energy weapon component workshop;\n3. 생활·회복실 (quarters): advanced regeneration couches with warm timber lounge;\n4. 방어 공방 (armor): projected shield calibration frame;\n5. 물류 창고 (storage): automatic sorting storage;\n6. 동료 훈련소 (training): multi-target magical training equipment;\n7. 교역·전리품실 (trade): merchant council counter;\n8. 동력기관실 (power): THREE amber chambers with larger pumps and readable copper pipes;\n9. 도서관 (library): grand magical archive with rolling ladders and star maps;\n10. 고급 식당 (restaurant): luxurious restaurant with craft kitchen and stained glass;\n11. 마도기술 연구소 (research): advanced magical technology lab with calibrated rings and optical devices;\n12. 성주 집무실 (office): classical royal office with ornate wooden desk, large campaign map and chair;\n13. 오페라극장 (opera): classical red-curtain opera auditorium, small stage, balcony and seating;\n14. 대수족관 (aquarium): ONE large blue-green aquarium pane, visible fish silhouettes, filter pipes and viewing walkway\nEvery function is a room except early shared spaces explicitlylisted. Make the technologyandluxury appropriate to THIS stage. Retain overallaspect and original empty weapon floor. Late scientific/cultural rooms get characteristic furnishing, not food crates."
+    },
+    {
+      "stage": 17,
+      "rooms": 15,
+      "zones": 15,
+      "facilities": [
+        {
+          "id": "food",
+          "name": "식량 생산실",
+          "unlock": 1,
+          "role": "식량 가공·재화 생산 기반"
+        },
+        {
+          "id": "forge",
+          "name": "병기 공방",
+          "unlock": 1,
+          "role": "히어로 무기·공격력 강화"
+        },
+        {
+          "id": "quarters",
+          "name": "생활·회복실",
+          "unlock": 2,
+          "role": "휴식·훈련·히어로 체력 강화"
+        },
+        {
+          "id": "armor",
+          "name": "방어 공방",
+          "unlock": 3,
+          "role": "방어구 제작·히어로 방어력 강화"
+        },
+        {
+          "id": "storage",
+          "name": "물류 창고",
+          "unlock": 5,
+          "role": "생산물 저장·운반"
+        },
+        {
+          "id": "training",
+          "name": "동료 훈련소",
+          "unlock": 6,
+          "role": "동료 훈련·협공 준비"
+        },
+        {
+          "id": "trade",
+          "name": "교역·전리품실",
+          "unlock": 7,
+          "role": "전리품 정리·교역"
+        },
+        {
+          "id": "power",
+          "name": "동력기관실",
+          "unlock": 8,
+          "role": "주포와 성을 구동하는 동력 관리"
+        },
+        {
+          "id": "library",
+          "name": "도서관",
+          "unlock": 10,
+          "role": "설계도·기술 기록·연구 기반"
+        },
+        {
+          "id": "restaurant",
+          "name": "고급 식당",
+          "unlock": 12,
+          "role": "동료 식사·출정 준비"
+        },
+        {
+          "id": "research",
+          "name": "마도기술 연구소",
+          "unlock": 13,
+          "role": "크리스탈·동력·무장 연구"
+        },
+        {
+          "id": "office",
+          "name": "성주 집무실",
+          "unlock": 14,
+          "role": "성 확장 계획·정책·지휘"
+        },
+        {
+          "id": "opera",
+          "name": "오페라극장",
+          "unlock": 15,
+          "role": "문화·동료 사기"
+        },
+        {
+          "id": "aquarium",
+          "name": "대수족관",
+          "unlock": 16,
+          "role": "생태·특수 생물 연구"
+        },
+        {
+          "id": "gallery",
+          "name": "미술관",
+          "unlock": 17,
+          "role": "회화·조각·유물 전시"
+        }
+      ],
+      "epoch": 6,
+      "reference": "references/exterior-17.png",
+      "prompt": "Use case: precise-object-edit. EDIT TARGET: supplied image is CURRENT GAME EXTERIOR of one castle. Make a coherent inhabited CUTAWAY INTERIOR OF THIS EXACT BUILDING. Keep identical original OUTER silhouette, overall native width:height, roof outlines, upper-left light and dark right-side thickness, lower-right EMPTY cannon terrace and integrated chassis. No wheels,guns,extra wings,extra external floors,people,text,labels,UI,cardpanels. Front facade walls peel away to reveal actual ARCHITECTURAL SPACES behind current attached houses; retain roof edges, posts, thick floorboards, stone arch jambs, front floor lips and connecting stairs. Do not replace body with generic rectangular box. Exterior motif and rich detail density retained in structural arches, not huge opaque plaques blocking all rooms.\nPAINT STYLE LOCK: EXACT current matte handpainted game sprite tone, 3–4 broad values per material, crisp dark outlines, muted grey-purple stone and warm brown wood, clear large readable furniture. No realistic materials, tiny photographic texture, glossy 3D, ultra fine filigree, over-rendered interior or muddy dark voids. Match exterior level's MATERIAL TIMELINE: wood01–02, bronze03+, iron05+, silver aluminum07+, selective gold10+, crystals13+. No purple magic in early castles. Rooms develop dramatically in machinery/architecture as castle evolves, NOT every room a rustic farmhouse with identical shelves.\nSCALE: a normal late room combines TWO or THREE neighboring facade house-bays into one shared interior volume; interior modules modestly enlarged about1.3–1.6x implied exterior-house width, NEVER giant room with character-sized furniture dwarfing the whole exterior. Spaces meant for later game NPCs of26–30 native pixels high, consistent furniture scale throughout, clear walkable foreground floor strip. Big cultural halls can occupy two adjacent bays or double height, but do not grow building silhouette. No drawn characters or scale mannequins in this asset. A room is a functional space; windows/corridors/engine cylinders do NOT each count as another room. Rich warm inhabited depth without clutter.\nKeep early production-room identity as the same evolving grain/food processing facility; later advanced food equipment recognizable, not new random unrelated room. Persist every unlocked facility, no disappearing earlier functions. ONE connected engine room regardless of boiler cells. Transparent background, exactlyone whole cutaway castle.\nSTAGE 17. EXACTLY 15 functional rooms, one per listed facility. Cultural rooms are LARGE recognizable halls among compact service rooms, not rows of tiny identical workshops. Opera uses one broad bay/row and recognizably red stage curtains and seats. Aquarium if present uses ONE large glass pane and plumbing, not a small fishbowl. Keep THREE amber engine chambers integrated into ONE power room; never downgrade or hide all power machinery.\nFunctions to visibly fit:\n1. 식량 생산실 (food): enclosed climate-controlled growing chamber, automatic harvest mechanism and food conveyance;\n2. 병기 공방 (forge): rail/energy weapon component workshop;\n3. 생활·회복실 (quarters): advanced regeneration couches with warm timber lounge;\n4. 방어 공방 (armor): projected shield calibration frame;\n5. 물류 창고 (storage): automatic sorting storage;\n6. 동료 훈련소 (training): multi-target magical training equipment;\n7. 교역·전리품실 (trade): merchant council counter;\n8. 동력기관실 (power): THREE amber chambers with larger pumps and readable copper pipes;\n9. 도서관 (library): grand magical archive with rolling ladders and star maps;\n10. 고급 식당 (restaurant): luxurious restaurant with craft kitchen and stained glass;\n11. 마도기술 연구소 (research): advanced magical technology lab with calibrated rings and optical devices;\n12. 성주 집무실 (office): classical royal office with ornate wooden desk, large campaign map and chair;\n13. 오페라극장 (opera): classical red-curtain opera auditorium, small stage, balcony and seating;\n14. 대수족관 (aquarium): ONE large blue-green aquarium pane, visible fish silhouettes, filter pipes and viewing walkway;\n15. 미술관 (gallery): gallery with three large paintings, sculpture pedestal and good lighting\nEvery function is a room except early shared spaces explicitlylisted. Make the technologyandluxury appropriate to THIS stage. Retain overallaspect and original empty weapon floor. Late scientific/cultural rooms get characteristic furnishing, not food crates."
+    },
+    {
+      "stage": 18,
+      "rooms": 15,
+      "zones": 15,
+      "facilities": [
+        {
+          "id": "food",
+          "name": "식량 생산실",
+          "unlock": 1,
+          "role": "식량 가공·재화 생산 기반"
+        },
+        {
+          "id": "forge",
+          "name": "병기 공방",
+          "unlock": 1,
+          "role": "히어로 무기·공격력 강화"
+        },
+        {
+          "id": "quarters",
+          "name": "생활·회복실",
+          "unlock": 2,
+          "role": "휴식·훈련·히어로 체력 강화"
+        },
+        {
+          "id": "armor",
+          "name": "방어 공방",
+          "unlock": 3,
+          "role": "방어구 제작·히어로 방어력 강화"
+        },
+        {
+          "id": "storage",
+          "name": "물류 창고",
+          "unlock": 5,
+          "role": "생산물 저장·운반"
+        },
+        {
+          "id": "training",
+          "name": "동료 훈련소",
+          "unlock": 6,
+          "role": "동료 훈련·협공 준비"
+        },
+        {
+          "id": "trade",
+          "name": "교역·전리품실",
+          "unlock": 7,
+          "role": "전리품 정리·교역"
+        },
+        {
+          "id": "power",
+          "name": "동력기관실",
+          "unlock": 8,
+          "role": "주포와 성을 구동하는 동력 관리"
+        },
+        {
+          "id": "library",
+          "name": "도서관",
+          "unlock": 10,
+          "role": "설계도·기술 기록·연구 기반"
+        },
+        {
+          "id": "restaurant",
+          "name": "고급 식당",
+          "unlock": 12,
+          "role": "동료 식사·출정 준비"
+        },
+        {
+          "id": "research",
+          "name": "마도기술 연구소",
+          "unlock": 13,
+          "role": "크리스탈·동력·무장 연구"
+        },
+        {
+          "id": "office",
+          "name": "성주 집무실",
+          "unlock": 14,
+          "role": "성 확장 계획·정책·지휘"
+        },
+        {
+          "id": "opera",
+          "name": "오페라극장",
+          "unlock": 15,
+          "role": "문화·동료 사기"
+        },
+        {
+          "id": "aquarium",
+          "name": "대수족관",
+          "unlock": 16,
+          "role": "생태·특수 생물 연구"
+        },
+        {
+          "id": "gallery",
+          "name": "미술관",
+          "unlock": 17,
+          "role": "회화·조각·유물 전시"
+        }
+      ],
+      "epoch": 7,
+      "reference": "references/exterior-18.png",
+      "prompt": "Use case: precise-object-edit. EDIT TARGET: supplied image is CURRENT GAME EXTERIOR of one castle. Make a coherent inhabited CUTAWAY INTERIOR OF THIS EXACT BUILDING. Keep identical original OUTER silhouette, overall native width:height, roof outlines, upper-left light and dark right-side thickness, lower-right EMPTY cannon terrace and integrated chassis. No wheels,guns,extra wings,extra external floors,people,text,labels,UI,cardpanels. Front facade walls peel away to reveal actual ARCHITECTURAL SPACES behind current attached houses; retain roof edges, posts, thick floorboards, stone arch jambs, front floor lips and connecting stairs. Do not replace body with generic rectangular box. Exterior motif and rich detail density retained in structural arches, not huge opaque plaques blocking all rooms.\nPAINT STYLE LOCK: EXACT current matte handpainted game sprite tone, 3–4 broad values per material, crisp dark outlines, muted grey-purple stone and warm brown wood, clear large readable furniture. No realistic materials, tiny photographic texture, glossy 3D, ultra fine filigree, over-rendered interior or muddy dark voids. Match exterior level's MATERIAL TIMELINE: wood01–02, bronze03+, iron05+, silver aluminum07+, selective gold10+, crystals13+. No purple magic in early castles. Rooms develop dramatically in machinery/architecture as castle evolves, NOT every room a rustic farmhouse with identical shelves.\nSCALE: a normal late room combines TWO or THREE neighboring facade house-bays into one shared interior volume; interior modules modestly enlarged about1.3–1.6x implied exterior-house width, NEVER giant room with character-sized furniture dwarfing the whole exterior. Spaces meant for later game NPCs of26–30 native pixels high, consistent furniture scale throughout, clear walkable foreground floor strip. Big cultural halls can occupy two adjacent bays or double height, but do not grow building silhouette. No drawn characters or scale mannequins in this asset. A room is a functional space; windows/corridors/engine cylinders do NOT each count as another room. Rich warm inhabited depth without clutter.\nKeep early production-room identity as the same evolving grain/food processing facility; later advanced food equipment recognizable, not new random unrelated room. Persist every unlocked facility, no disappearing earlier functions. ONE connected engine room regardless of boiler cells. Transparent background, exactlyone whole cutaway castle.\nSTAGE 18. EXACTLY 15 functional rooms, one per listed facility. Cultural rooms are LARGE recognizable halls among compact service rooms, not rows of tiny identical workshops. Opera uses one broad bay/row and recognizably red stage curtains and seats. Aquarium if present uses ONE large glass pane and plumbing, not a small fishbowl. Keep THREE amber engine chambers integrated into ONE power room; never downgrade or hide all power machinery.\nFunctions to visibly fit:\n1. 식량 생산실 (food): world-tree nutrient agriculture with crystal climate control, grain-emblem control console and automatic food processing;\n2. 병기 공방 (forge): legendary precision forge with crystal heat chamber and heavy tool arms;\n3. 생활·회복실 (quarters): luxurious recovery suite and crystal-assisted rehabilitation;\n4. 방어 공방 (armor): advanced ward shield chamber and articulated armor stand;\n5. 물류 창고 (storage): sealed artifact/material logistics vault;\n6. 동료 훈련소 (training): elite tactical simulator with physical targets;\n7. 교역·전리품실 (trade): royal trade and loot appraisal office;\n8. 동력기관실 (power): THREE large amber reactor chambers retained as ONE integrated machinery room;\n9. 도서관 (library): royal research library, physical books and crystal catalog;\n10. 고급 식당 (restaurant): royal fine dining salon and advanced kitchen;\n11. 마도기술 연구소 (research): grand magitech lab, crystal containment apparatus and large research table;\n12. 성주 집무실 (office): majestic ruler's office, maps, polished wooden desk and restrained gold trim;\n13. 오페라극장 (opera): grand opera hall with stage, red curtains and crystal-acoustic fixtures;\n14. 대수족관 (aquarium): majestic aquarium gallery, large aquatic silhouettes and crystal filtration;\n15. 미술관 (gallery): royal art museum with readable paintings, artifact pedestals and refined lighting\nEvery function is a room except early shared spaces explicitlylisted. Make the technologyandluxury appropriate to THIS stage. Retain overallaspect and original empty weapon floor. Late scientific/cultural rooms get characteristic furnishing, not food crates."
+    },
+    {
+      "stage": 19,
+      "rooms": 16,
+      "zones": 16,
+      "facilities": [
+        {
+          "id": "food",
+          "name": "식량 생산실",
+          "unlock": 1,
+          "role": "식량 가공·재화 생산 기반"
+        },
+        {
+          "id": "forge",
+          "name": "병기 공방",
+          "unlock": 1,
+          "role": "히어로 무기·공격력 강화"
+        },
+        {
+          "id": "quarters",
+          "name": "생활·회복실",
+          "unlock": 2,
+          "role": "휴식·훈련·히어로 체력 강화"
+        },
+        {
+          "id": "armor",
+          "name": "방어 공방",
+          "unlock": 3,
+          "role": "방어구 제작·히어로 방어력 강화"
+        },
+        {
+          "id": "storage",
+          "name": "물류 창고",
+          "unlock": 5,
+          "role": "생산물 저장·운반"
+        },
+        {
+          "id": "training",
+          "name": "동료 훈련소",
+          "unlock": 6,
+          "role": "동료 훈련·협공 준비"
+        },
+        {
+          "id": "trade",
+          "name": "교역·전리품실",
+          "unlock": 7,
+          "role": "전리품 정리·교역"
+        },
+        {
+          "id": "power",
+          "name": "동력기관실",
+          "unlock": 8,
+          "role": "주포와 성을 구동하는 동력 관리"
+        },
+        {
+          "id": "library",
+          "name": "도서관",
+          "unlock": 10,
+          "role": "설계도·기술 기록·연구 기반"
+        },
+        {
+          "id": "restaurant",
+          "name": "고급 식당",
+          "unlock": 12,
+          "role": "동료 식사·출정 준비"
+        },
+        {
+          "id": "research",
+          "name": "마도기술 연구소",
+          "unlock": 13,
+          "role": "크리스탈·동력·무장 연구"
+        },
+        {
+          "id": "office",
+          "name": "성주 집무실",
+          "unlock": 14,
+          "role": "성 확장 계획·정책·지휘"
+        },
+        {
+          "id": "opera",
+          "name": "오페라극장",
+          "unlock": 15,
+          "role": "문화·동료 사기"
+        },
+        {
+          "id": "aquarium",
+          "name": "대수족관",
+          "unlock": 16,
+          "role": "생태·특수 생물 연구"
+        },
+        {
+          "id": "gallery",
+          "name": "미술관",
+          "unlock": 17,
+          "role": "회화·조각·유물 전시"
+        },
+        {
+          "id": "observatory",
+          "name": "우주관측소",
+          "unlock": 19,
+          "role": "천체 관측·원정 경로 연구"
+        }
+      ],
+      "epoch": 7,
+      "reference": "references/exterior-19.png",
+      "prompt": "Use case: precise-object-edit. EDIT TARGET: supplied image is CURRENT GAME EXTERIOR of one castle. Make a coherent inhabited CUTAWAY INTERIOR OF THIS EXACT BUILDING. Keep identical original OUTER silhouette, overall native width:height, roof outlines, upper-left light and dark right-side thickness, lower-right EMPTY cannon terrace and integrated chassis. No wheels,guns,extra wings,extra external floors,people,text,labels,UI,cardpanels. Front facade walls peel away to reveal actual ARCHITECTURAL SPACES behind current attached houses; retain roof edges, posts, thick floorboards, stone arch jambs, front floor lips and connecting stairs. Do not replace body with generic rectangular box. Exterior motif and rich detail density retained in structural arches, not huge opaque plaques blocking all rooms.\nPAINT STYLE LOCK: EXACT current matte handpainted game sprite tone, 3–4 broad values per material, crisp dark outlines, muted grey-purple stone and warm brown wood, clear large readable furniture. No realistic materials, tiny photographic texture, glossy 3D, ultra fine filigree, over-rendered interior or muddy dark voids. Match exterior level's MATERIAL TIMELINE: wood01–02, bronze03+, iron05+, silver aluminum07+, selective gold10+, crystals13+. No purple magic in early castles. Rooms develop dramatically in machinery/architecture as castle evolves, NOT every room a rustic farmhouse with identical shelves.\nSCALE: a normal late room combines TWO or THREE neighboring facade house-bays into one shared interior volume; interior modules modestly enlarged about1.3–1.6x implied exterior-house width, NEVER giant room with character-sized furniture dwarfing the whole exterior. Spaces meant for later game NPCs of26–30 native pixels high, consistent furniture scale throughout, clear walkable foreground floor strip. Big cultural halls can occupy two adjacent bays or double height, but do not grow building silhouette. No drawn characters or scale mannequins in this asset. A room is a functional space; windows/corridors/engine cylinders do NOT each count as another room. Rich warm inhabited depth without clutter.\nKeep early production-room identity as the same evolving grain/food processing facility; later advanced food equipment recognizable, not new random unrelated room. Persist every unlocked facility, no disappearing earlier functions. ONE connected engine room regardless of boiler cells. Transparent background, exactlyone whole cutaway castle.\nSTAGE 19. EXACTLY 16 functional rooms, one per listed facility. Cultural rooms are LARGE recognizable halls among compact service rooms, not rows of tiny identical workshops. Opera uses one broad bay/row and recognizably red stage curtains and seats. Aquarium if present uses ONE large glass pane and plumbing, not a small fishbowl. Keep THREE amber engine chambers integrated into ONE power room; never downgrade or hide all power machinery.\nFunctions to visibly fit:\n1. 식량 생산실 (food): world-tree nutrient agriculture with crystal climate control, grain-emblem control console and automatic food processing;\n2. 병기 공방 (forge): legendary precision forge with crystal heat chamber and heavy tool arms;\n3. 생활·회복실 (quarters): luxurious recovery suite and crystal-assisted rehabilitation;\n4. 방어 공방 (armor): advanced ward shield chamber and articulated armor stand;\n5. 물류 창고 (storage): sealed artifact/material logistics vault;\n6. 동료 훈련소 (training): elite tactical simulator with physical targets;\n7. 교역·전리품실 (trade): royal trade and loot appraisal office;\n8. 동력기관실 (power): THREE large amber reactor chambers retained as ONE integrated machinery room;\n9. 도서관 (library): royal research library, physical books and crystal catalog;\n10. 고급 식당 (restaurant): royal fine dining salon and advanced kitchen;\n11. 마도기술 연구소 (research): grand magitech lab, crystal containment apparatus and large research table;\n12. 성주 집무실 (office): majestic ruler's office, maps, polished wooden desk and restrained gold trim;\n13. 오페라극장 (opera): grand opera hall with stage, red curtains and crystal-acoustic fixtures;\n14. 대수족관 (aquarium): majestic aquarium gallery, large aquatic silhouettes and crystal filtration;\n15. 미술관 (gallery): royal art museum with readable paintings, artifact pedestals and refined lighting;\n16. 우주관측소 (observatory): large brass-and-crystal telescope within existing upper tower roof, orrery and astronomical charts\nEvery function is a room except early shared spaces explicitlylisted. Make the technologyandluxury appropriate to THIS stage. Retain overallaspect and original empty weapon floor. Late scientific/cultural rooms get characteristic furnishing, not food crates."
+    }
+  ],
+  "space_rules": {
+    "stage16": "EDIT this stage16 cutaway: FIRSTimage edit target, SECONDimage stage15 is minimumtheaterqualityreference, THIRDimage is exact CLOSED stage16 silhouette/aspectreference. Keep14functional facilities, currentpainttone/emptygunterrace/THREEamberreactors/advancedfoodgreenhouse/forge/armor/quarters/library/lab/office/trade/training/dining/aquarium. The OPERA room atMIDRIGHT currently shrinks comparedtostage15. Expand it across BOTH currentmidrowbays, taking over the warehouse bay onitsLEFT. Onefullwidthgrandopera auditoriumwithdeepseating, sidebalconies, wide redcurtainstage and restrainedgoldstructure, at least asbig/grand asstage15. Move WAREHOUSE (notdelete) into the existing CLOSED lowest cottage/frontdoorbay BELOW thefoodplant, openingthatfacadeto showautomaticcrateconveyor, goodshoistandsupplybins. PreserveemptyRIGHTgunterrace. Nootherroomremoved orduplicated. Keep native bodyaspect EXACT392:974; original cutawayisabout5%toosquat, physicallygainthisheightin enlarged opera auditorium andits structuralwalls/stairs (noaxisscaling), roofanddoor/windowproportionsremaincorrect. Whole bodytransparent, nopeople/text/wheels/guns.",
+    "stage17": "EDIT this stage17cutaway, FIRSTimage target,SECONDimage stage15 minimumtheatersizereference,THIRDimage current CLOSEDstage17outershape. Preserve all15functional facilities, painttone andnativebodyaspect398:1052,THREEamberreactors, machinery, aquarium,dining,office,library,research,crewtraining,armor,forge,recovery,trade,storageandfood. Expand OPERA upperLEFT across its whole cultural row into currentsmallgallerybay onRIGHT: full-width auditorium, broadstage, sidebalconiesandredcurtains, notsmallerthan15. Relocate ARTGALLERY into existing lowest CLOSEDcottage/frontdoorbay BELOWfoodplant andLEFT ofemptygunterrace: openthisfacadeto revealthreebigframedpaintings, sculpturepedestal, exhibitionlighting and clearfloor. Keepterrain/chassisandEMPTYgunterraceunchanged, noextrabuildingwidthorfloors. No duplicateculturalrooms; total15facilities. Matchoutercamera andsimplematte3tonepaint. Nopeople,text,wheels,guns.",
+    "stage19": "EDIT TARGET FIRST IMAGE is FINAL19 cutaway. Second image stage15 is reference for MINIMUM cultural/food technology retained from lowercastle. Make THREE precise architectural improvements to final19 while preserving outer silhouette, native proportions, color/paint tone, allotherfunctionalrooms, THREEamberreactors and EMPTYlower-rightgunterrace:\n1.OPERA atupperRIGHT must NOT be smaller than stage15 theater. Expand it across the full upper row, taking over current small upperLEFT artgallery bay. Onegrandfull-widthopera hall: deep auditorium, broad red-curtain stage, sidebalconies, gold structural columns, modestcrystalacoustics. Modify internal divider/stair only inside this row; do not add external width or floors.\n2.ARTMUSEUM is not deleted. Relocate it into the EXISTING LARGE CENTRAL WORLD-TREE ARCH between the seated lion sculptures. This is now a GRAND EXHIBITION ATRIUM. Keep goldenworldtree andlion sculptures as monumentalcentral museum exhibits; open frontwall behind/around sculpture to show galleries with3large framedpaintings and readable floor/walkway onbothsides. Keepallarchshape/outeredges. Do not coverwholeatrium with opaque flat plaque; it should feel like a usable deep hall. This replaces the old smallgallery withlargergranderone, not anextra facility.\n3.FOOD PLANT lowerRIGHT retains current TWO CONNECTEDLEVELS with vertical foodconveyor andinternalstair. Add a transparent arched cultivation canopy and one articulated harvestingarm overexistingcroptrays, retaining grain-emblemcontrolconsole and foodprocessingmachinery. Must be moreadvancedthanstage15's automaticgreenhouse, no returntosimpleopenfarm.\nKeep top observatory, aquarium, office, researchlab, library, restaurant, training, storage, armor, forge, recovery, tradeandpower recognizable unchanged. Functionalroomsremain16, foodmulti-levelcountsone, engine3cells countsone. Noextra bedrooms, nopeople/text/wheels/guns. Same matte simple3–4tone BUILD painting. Wholecastleontransparentbackground.",
+    "stage11": "EDIT this cutaway. The lowest LEFT room is now a WEAPON FORGE with powered press and metal furnace. KEEP THAT FORGE EXACTLY. There is currently NO FOOD PROCESSING ROOM; ADD IT in the EMPTY STONE WALL BAY IMMEDIATELY ABOVE this lowest-left forge and BELOW the armor/shield room. In normalized image coordinates, change ONLY x=0.04..0.48, y=0.61..0.76 (top-down coordinates). This is the blank masonry left of the TWOAMBERREACTORS, with one small amber window. Remove this wallsection and reveal an AUTOMATED FOOD PROCESSING ROOM: silver/bronze grain hopper bearing a wheat emblem, roller processor, short bread conveyor and mechanical gauge. No crystals (stage11). Thick stone arch, structural posts, clear foreground floorstrip, followexact3tonecurrentpainting. Do NOT change bottomforge, reactors, armor, storage, bedrooms, training, trade, library, outer silhouette or empty cannonterrace. Do NOT replace an existing room. Put food machinery ONLY in currentlyblankmidLEFTbay to achieve9functionalrooms. Nopeople,text,wheels,guns.",
+    "scale": {
+      "native_actor_height": [
+        26,
+        30
+      ],
+      "shared_starter_room": [
+        180,
+        80
+      ],
+      "typical_independent_room": [
+        160,
+        90
+      ],
+      "major_hall": [
+        300,
+        120
+      ],
+      "exterior_bays_per_room": [
+        2,
+        3
+      ],
+      "interior_space_expansion": [
+        1.3,
+        1.6
+      ],
+      "npc_counts": {
+        "starter": [
+          1,
+          2
+        ],
+        "ordinary": [
+          1,
+          2
+        ],
+        "hall": [
+          3,
+          5
+        ]
+      },
+      "inspection_zoom": 1.75,
+      "layer_order": [
+        "back wall",
+        "back machinery and furniture",
+        "NPC and walkable floor",
+        "front equipment",
+        "floor lip and wall edges"
+      ]
+    },
+    "design_notes": [
+      "시설 ID와 강화 내역은 다음 성에도 유지하는 설계; 방 위치와 크기는 증축에 따라 재배치 가능",
+      "기능 시설 수와 벽으로 나뉜 실 수는 다를 수 있음; 초기 공용실과 후반 복층 생산실 포함",
+      "7단계 생산실의 부속 보일러는 전용 동력기관실과 별개; 전용 동력 시설은8단계부터",
+      "각 단계별 방 소재와 설비는 외형 소재 해금 순서를 따름",
+      "게임 적용 전 앞벽 분리, 출입구 및 이동 마스크, 실제 동료 배치·클리핑을 검증해야 함",
+      "이번 작업은 시안; 현재 런타임의 성·레일·실내 시스템은 변경하지 않음"
+    ]
+  },
+  "export_status": "Review artwork only; native canvases match current exterior dimensions, artwork fitted uniformly; seams and per-room NPC masks are not runtime registered."
+}

@@ -1,0 +1,477 @@
+[
+  {
+    "stage": 1,
+    "target_canvas": [
+      256,
+      190
+    ],
+    "source_bounds": [
+      4,
+      6,
+      1454,
+      1073
+    ],
+    "visible_export": [
+      256,
+      188
+    ],
+    "uniform_scale": 0.17655172413793102,
+    "offset": [
+      0,
+      2
+    ],
+    "reference_coverage_width": 1.0,
+    "reference_coverage_height": 0.9895,
+    "source_sha256": "049f45c3c3c473f8c1fee359db30265962a4bdb78a31eb656ea4597020de59e7"
+  },
+  {
+    "stage": 2,
+    "target_canvas": [
+      262,
+      248
+    ],
+    "source_bounds": [
+      0,
+      0,
+      1288,
+      1203
+    ],
+    "visible_export": [
+      262,
+      245
+    ],
+    "uniform_scale": 0.20341614906832298,
+    "offset": [
+      0,
+      3
+    ],
+    "reference_coverage_width": 1.0,
+    "reference_coverage_height": 0.9879,
+    "source_sha256": "72b9c0ce07926f6ac04e0a723126e20e54e7c93cbd8a4b2911c6fc3e6753ab93"
+  },
+  {
+    "stage": 3,
+    "target_canvas": [
+      270,
+      355
+    ],
+    "source_bounds": [
+      0,
+      0,
+      1094,
+      1428
+    ],
+    "visible_export": [
+      270,
+      352
+    ],
+    "uniform_scale": 0.24680073126142596,
+    "offset": [
+      0,
+      3
+    ],
+    "reference_coverage_width": 1.0,
+    "reference_coverage_height": 0.9915,
+    "source_sha256": "d8861919d672593e503f1b9bdb3c8bbf8983f8f61b1750f3010bfad18d448dbc"
+  },
+  {
+    "stage": 4,
+    "target_canvas": [
+      278,
+      406
+    ],
+    "source_bounds": [
+      0,
+      0,
+      1038,
+      1515
+    ],
+    "visible_export": [
+      278,
+      406
+    ],
+    "uniform_scale": 0.2678227360308285,
+    "offset": [
+      0,
+      0
+    ],
+    "reference_coverage_width": 1.0,
+    "reference_coverage_height": 1.0,
+    "source_sha256": "1e24d5b9fd0630d238cfc5d25d9a1a9797bc1e6617379682e9dd5d1e5b269e9a"
+  },
+  {
+    "stage": 5,
+    "target_canvas": [
+      286,
+      431
+    ],
+    "source_bounds": [
+      0,
+      0,
+      1022,
+      1539
+    ],
+    "visible_export": [
+      286,
+      431
+    ],
+    "uniform_scale": 0.27984344422700586,
+    "offset": [
+      0,
+      0
+    ],
+    "reference_coverage_width": 1.0,
+    "reference_coverage_height": 1.0,
+    "source_sha256": "469c9ec2f67a9b68de6d902a26420d4820dcd217dd1998d511675eeebc7a7886"
+  },
+  {
+    "stage": 6,
+    "target_canvas": [
+      294,
+      510
+    ],
+    "source_bounds": [
+      4,
+      0,
+      951,
+      1651
+    ],
+    "visible_export": [
+      293,
+      510
+    ],
+    "uniform_scale": 0.30890369473046636,
+    "offset": [
+      0,
+      0
+    ],
+    "reference_coverage_width": 0.9966,
+    "reference_coverage_height": 1.0,
+    "source_sha256": "5cf029c78c19847a3cd3345e6cb9890afc05fe9d07784c612698fcce2df0b2a2"
+  },
+  {
+    "stage": 7,
+    "target_canvas": [
+      302,
+      555
+    ],
+    "source_bounds": [
+      0,
+      0,
+      925,
+      1701
+    ],
+    "visible_export": [
+      302,
+      555
+    ],
+    "uniform_scale": 0.3262786596119929,
+    "offset": [
+      0,
+      0
+    ],
+    "reference_coverage_width": 1.0,
+    "reference_coverage_height": 1.0,
+    "source_sha256": "8b427a7402a45e8bda2250a7474c5bab4a56a99bae2ee028c881ef77e648d836"
+  },
+  {
+    "stage": 8,
+    "target_canvas": [
+      310,
+      692
+    ],
+    "source_bounds": [
+      1,
+      0,
+      839,
+      1875
+    ],
+    "visible_export": [
+      309,
+      692
+    ],
+    "uniform_scale": 0.36906666666666665,
+    "offset": [
+      0,
+      0
+    ],
+    "reference_coverage_width": 0.9968,
+    "reference_coverage_height": 1.0,
+    "source_sha256": "e80f671fabc93ac8a71648618d9d7eeb4d4bc2c45536056cadef1a5bf4ab8f9f"
+  },
+  {
+    "stage": 9,
+    "target_canvas": [
+      318,
+      744
+    ],
+    "source_bounds": [
+      0,
+      0,
+      820,
+      1919
+    ],
+    "visible_export": [
+      318,
+      744
+    ],
+    "uniform_scale": 0.3877019280875456,
+    "offset": [
+      0,
+      0
+    ],
+    "reference_coverage_width": 1.0,
+    "reference_coverage_height": 1.0,
+    "source_sha256": "e2dad1ad3a5790b6f0b92fb92e02249cb3ac212eeaae3592cf232ed86a0350b3"
+  },
+  {
+    "stage": 10,
+    "target_canvas": [
+      326,
+      767
+    ],
+    "source_bounds": [
+      2,
+      0,
+      818,
+      1923
+    ],
+    "visible_export": [
+      325,
+      767
+    ],
+    "uniform_scale": 0.39885595423816955,
+    "offset": [
+      0,
+      0
+    ],
+    "reference_coverage_width": 0.9969,
+    "reference_coverage_height": 1.0,
+    "source_sha256": "cc9ea64b4728b19b575013272d4dc39484430c7d72b0d73d2a4f08e0833643ec"
+  },
+  {
+    "stage": 11,
+    "target_canvas": [
+      345,
+      777
+    ],
+    "source_bounds": [
+      3,
+      0,
+      834,
+      1883
+    ],
+    "visible_export": [
+      343,
+      777
+    ],
+    "uniform_scale": 0.41263940520446096,
+    "offset": [
+      1,
+      0
+    ],
+    "reference_coverage_width": 0.9942,
+    "reference_coverage_height": 1.0,
+    "source_sha256": "d56f51bd21a5a62460b0c6f73f10f516742c3742b28150aa69e6caff2530728f"
+  },
+  {
+    "stage": 12,
+    "target_canvas": [
+      351,
+      880
+    ],
+    "source_bounds": [
+      0,
+      0,
+      792,
+      1985
+    ],
+    "visible_export": [
+      351,
+      880
+    ],
+    "uniform_scale": 0.4431818181818182,
+    "offset": [
+      0,
+      0
+    ],
+    "reference_coverage_width": 1.0,
+    "reference_coverage_height": 1.0,
+    "source_sha256": "a8ecb5349e3d4a0aa471836ef1e337f15794574b5daf40d5316f4057478ac48b"
+  },
+  {
+    "stage": 13,
+    "target_canvas": [
+      364,
+      890
+    ],
+    "source_bounds": [
+      0,
+      0,
+      801,
+      1962
+    ],
+    "visible_export": [
+      363,
+      890
+    ],
+    "uniform_scale": 0.4536187563710499,
+    "offset": [
+      0,
+      0
+    ],
+    "reference_coverage_width": 0.9973,
+    "reference_coverage_height": 1.0,
+    "source_sha256": "67f41b79544f6519e8004da02a621fa999c2362dd1282e10e75f77068cf1f7f6"
+  },
+  {
+    "stage": 14,
+    "target_canvas": [
+      373,
+      900
+    ],
+    "source_bounds": [
+      1,
+      0,
+      807,
+      1948
+    ],
+    "visible_export": [
+      372,
+      900
+    ],
+    "uniform_scale": 0.4620123203285421,
+    "offset": [
+      0,
+      0
+    ],
+    "reference_coverage_width": 0.9973,
+    "reference_coverage_height": 1.0,
+    "source_sha256": "64481cfaa96c61e6c97339e4f2c9e1bbb426065c3ba4f25b3bb08f73fa0b31a5"
+  },
+  {
+    "stage": 15,
+    "target_canvas": [
+      379,
+      964
+    ],
+    "source_bounds": [
+      0,
+      0,
+      786,
+      2001
+    ],
+    "visible_export": [
+      379,
+      964
+    ],
+    "uniform_scale": 0.4817591204397801,
+    "offset": [
+      0,
+      0
+    ],
+    "reference_coverage_width": 1.0,
+    "reference_coverage_height": 1.0,
+    "source_sha256": "8580e98a09cec1f8bb2e9077b4909ec28fecba7aed68611c9004d4059e7b10ed"
+  },
+  {
+    "stage": 16,
+    "target_canvas": [
+      392,
+      974
+    ],
+    "source_bounds": [
+      2,
+      0,
+      794,
+      1943
+    ],
+    "visible_export": [
+      392,
+      962
+    ],
+    "uniform_scale": 0.494949494949495,
+    "offset": [
+      0,
+      12
+    ],
+    "reference_coverage_width": 1.0,
+    "reference_coverage_height": 0.9877,
+    "source_sha256": "a1ac0f1a5cc2047a098216a4af4c1cf4fffa5c9d743cf7f869a5b0da8ee02a2c"
+  },
+  {
+    "stage": 17,
+    "target_canvas": [
+      398,
+      1052
+    ],
+    "source_bounds": [
+      6,
+      0,
+      771,
+      2027
+    ],
+    "visible_export": [
+      397,
+      1052
+    ],
+    "uniform_scale": 0.5189935865811545,
+    "offset": [
+      0,
+      0
+    ],
+    "reference_coverage_width": 0.9975,
+    "reference_coverage_height": 1.0,
+    "source_sha256": "0b9e9857eda6e05a54eaa1880778d72e89bbf9c9926f822cf1e0cd5e54aed980"
+  },
+  {
+    "stage": 18,
+    "target_canvas": [
+      407,
+      1062
+    ],
+    "source_bounds": [
+      1,
+      0,
+      776,
+      1965
+    ],
+    "visible_export": [
+      407,
+      1032
+    ],
+    "uniform_scale": 0.5251612903225806,
+    "offset": [
+      0,
+      30
+    ],
+    "reference_coverage_width": 1.0,
+    "reference_coverage_height": 0.9718,
+    "source_sha256": "f5a5de1eea35201aec0fa9a601bcf5b4c397e6d7404ae26d52b1e3583558419d"
+  },
+  {
+    "stage": 19,
+    "target_canvas": [
+      431,
+      1072
+    ],
+    "source_bounds": [
+      1,
+      0,
+      794,
+      1938
+    ],
+    "visible_export": [
+      431,
+      1053
+    ],
+    "uniform_scale": 0.5435056746532156,
+    "offset": [
+      0,
+      19
+    ],
+    "reference_coverage_width": 1.0,
+    "reference_coverage_height": 0.9823,
+    "source_sha256": "a9f9488905bf1e7ab6d71b1fa5a48dd7cd6269e1f64e1ec8830d6786c154d106"
+  }
+]

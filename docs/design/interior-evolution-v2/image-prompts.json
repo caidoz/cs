@@ -1,0 +1,155 @@
+{
+  "tool": "built-in image_gen",
+  "exact_corrections": {
+    "stage19_deduplicate": "EDIT only the TWO LOWEST indoor levels of this final castle cutaway; preserve ALL upper rooms, silhouette, world-tree/lion arches, color style, EMPTYgunterrace, THREEamberenginecells, top observatory/opera/aquarium/museum/office/lab/library/dining hall EXACTLY. 1.The LOWEST LEFT indoor room currently has another bed and sofa duplicating the recovery suite onefloorabove. Replace ONLY this lowestleft bedroom with a refined TRADE AND LOOT APPRAISAL OFFICE: one soliddesk, weighing scales, openledger, appraisal magnifier, modeststrongbox, no bed/sofa. Keep same walls and floor.2.The LOWEST RIGHT kitchen/processing room and the crystal-lit crop-growing room DIRECTLY ABOVE it are ONE food-production facility across two levels. Connect them visibly by a short internalstair and vertical foodconveyor/service opening through their shared floor, removeone smallsectionofthedivider so they read as one linked production plant ratherthan two separatefacilities. Retain crops, grain-emblemconsole, foodprocessing machines. Do not addanyroomsorextra exterior space. Exactly16functionalspaces total. Only these two corrections. Matte simplecurrentgamepaint, no text/people/wheels/weapons.",
+    "stage10_retain_automation": "EDIT TARGET is FIRST image stage10 cutaway. Second reference stage7 is supporting lower-stage technology floor, NOT edit target. Preserve stage10silhouette,allroofwalls,all9roompositions,emptygunterrace,TWOamberboilers and library/training/bedroom/armor/storage/traderooms unchanged. Change ONLY FOOD room atbottom and WEAPONFORGE room justabovefood LEFT. They must be visibly MOREtechnologicallyadvanced than stage7, not returntosimplehandmills/anvils. FOOD: retain itsgrainemblem andlargecoppersteamsterilizer, REPLACEmanualstonegrinder onleftwith aluminum-clad automaticgrainprocessor, sealedtwohopperfeed, shortmovingfoodconveyor, readable mechanicalcontrolconsole blueglassgauge andgoldedging. No purplecrystals (notunlockeduntil13). FORGE: retainlargecopperfurnace andweaponrack, add poweredarticulated forgingclamp and precisionalloypress replacingplainanvil-only arrangement. Machinery should feel like a prestigiousclassicalindustrialplant withbrassgauges, same3tonemattepaint,noshinyrealism. Keepclearforegroundwalkablefloor. Nopeople/text,newrooms orsilhouettechanges.",
+    "stage11_restore_forge": "EDIT ONLY the empty stone-wall bay on LEFT in LOWER MIDDLE of this castle cutaway, between the shield/armor room above and foodproductionroom below, and left of TWOamberreactors. There is no weaponforge currently: add the missing ninth room HERE by opening this existingfrontfacade into a compact advanced WEAPON FORGE. Show copper induction-style furnace, powered metalwork clamp, one large precision alloy press and vertical swordrack, with walkablefrontfloor and thick stonearch framing. This is STAGE11, no crystalsor purple magic, use bronze/iron/aluminum withsmallgoldtrim. Preserve ALL other8rooms, theirfurniture, exactouter silhouetteandheight, emptylowerRIGHTgunterrace andcurrent3tone mattegamepaint. Do not replace armorroom orfoodroom; occupy theexistingemptywallareaonly. No extraexternalwidthorfloors, people, text, wheels, weaponsoutsidecastle. Exactly9functionalrooms aftercorrection.",
+    "stage11_restore_food": "EDIT this cutaway. The lowest LEFT room is now a WEAPON FORGE with powered press and metal furnace. KEEP THAT FORGE EXACTLY. There is currently NO FOOD PROCESSING ROOM; ADD IT in the EMPTY STONE WALL BAY IMMEDIATELY ABOVE this lowest-left forge and BELOW the armor/shield room. In normalized image coordinates, change ONLY x=0.04..0.48, y=0.61..0.76 (top-down coordinates). This is the blank masonry left of the TWOAMBERREACTORS, with one small amber window. Remove this wallsection and reveal an AUTOMATED FOOD PROCESSING ROOM: silver/bronze grain hopper bearing a wheat emblem, roller processor, short bread conveyor and mechanical gauge. No crystals (stage11). Thick stone arch, structural posts, clear foreground floorstrip, followexact3tonecurrentpainting. Do NOT change bottomforge, reactors, armor, storage, bedrooms, training, trade, library, outer silhouette or empty cannonterrace. Do NOT replace an existing room. Put food machinery ONLY in currentlyblankmidLEFTbay to achieve9functionalrooms. Nopeople,text,wheels,guns.",
+    "stage19_heritage_halls": "EDIT TARGET FIRST IMAGE is FINAL19 cutaway. Second image stage15 is reference for MINIMUM cultural/food technology retained from lowercastle. Make THREE precise architectural improvements to final19 while preserving outer silhouette, native proportions, color/paint tone, allotherfunctionalrooms, THREEamberreactors and EMPTYlower-rightgunterrace:\n1.OPERA atupperRIGHT must NOT be smaller than stage15 theater. Expand it across the full upper row, taking over current small upperLEFT artgallery bay. Onegrandfull-widthopera hall: deep auditorium, broad red-curtain stage, sidebalconies, gold structural columns, modestcrystalacoustics. Modify internal divider/stair only inside this row; do not add external width or floors.\n2.ARTMUSEUM is not deleted. Relocate it into the EXISTING LARGE CENTRAL WORLD-TREE ARCH between the seated lion sculptures. This is now a GRAND EXHIBITION ATRIUM. Keep goldenworldtree andlion sculptures as monumentalcentral museum exhibits; open frontwall behind/around sculpture to show galleries with3large framedpaintings and readable floor/walkway onbothsides. Keepallarchshape/outeredges. Do not coverwholeatrium with opaque flat plaque; it should feel like a usable deep hall. This replaces the old smallgallery withlargergranderone, not anextra facility.\n3.FOOD PLANT lowerRIGHT retains current TWO CONNECTEDLEVELS with vertical foodconveyor andinternalstair. Add a transparent arched cultivation canopy and one articulated harvestingarm overexistingcroptrays, retaining grain-emblemcontrolconsole and foodprocessingmachinery. Must be moreadvancedthanstage15's automaticgreenhouse, no returntosimpleopenfarm.\nKeep top observatory, aquarium, office, researchlab, library, restaurant, training, storage, armor, forge, recovery, tradeandpower recognizable unchanged. Functionalroomsremain16, foodmulti-levelcountsone, engine3cells countsone. Noextra bedrooms, nopeople/text/wheels/guns. Same matte simple3–4tone BUILD painting. Wholecastleontransparentbackground."
+  },
+  "additional_constraints": {
+    "6–9": "Maintain inherited service districts: FOOD LOW LEFT/LOWCENTER, weaponforge onefloor above, armor/recoverymidlevels, newtraining/trade roomsupperlevels. Boiler atRIGHT insidecurrentexterior copperfurnace whenunlocked. Keep actualhousewall andfloor proportions, notallroomsexpandedtocastlewidth.",
+    "11–14": "Foodandforgekeepautomated machinery gained by07, no returntohand-cranked mills. Allfunctionsremainrecognizable; foodlowerleft, forgejustabove, powerlowerright, culturalscienceupperdistricts. Noextraunlisted bedrooms or taverns.",
+    "15–18": "Late roomtechnologyinherits earlier automated machinery; keep food LOWERservicezone with grainemblem, mechanized processingPLUScontrolledcrops (notrusticfarm), forgewithpoweredclamps, armorwithwardcalibration, trainingwithprojectiontarget. No function omitted. Culturalhalls architecturallyconnectmultiplefacadebays. OnlyONE recoveryfacility, no duplicate bedrooms; onlyONE foodplant even ifgrowandprocessspan2connectedlevels."
+  },
+  "final_generated_paths": [
+    {
+      "stage": 1,
+      "path": "C:\\Users\\polyp\\.codex\\generated_images\\01a207f5-96b6-74a1-b712-379018a739b4\\exec-4de43841-b082-49da-b77c-9419afa1a109.png"
+    },
+    {
+      "stage": 2,
+      "path": "C:\\Users\\polyp\\.codex\\generated_images\\01a207f5-96b6-74a1-b712-379018a739b4\\exec-ad446b48-437c-4b96-8a06-85031f71c642.png"
+    },
+    {
+      "stage": 3,
+      "path": "C:\\Users\\polyp\\.codex\\generated_images\\01a207f5-96b6-74a1-b712-379018a739b4\\exec-242b8239-760a-49d6-91a4-4ab859673db1.png"
+    },
+    {
+      "stage": 4,
+      "path": "C:\\Users\\polyp\\.codex\\generated_images\\01a207f5-96b6-74a1-b712-379018a739b4\\exec-2a26cdd1-df3f-4114-b554-9b8f0ea8d3f4.png"
+    },
+    {
+      "stage": 5,
+      "path": "C:\\Users\\polyp\\.codex\\generated_images\\01a207f5-96b6-74a1-b712-379018a739b4\\exec-e642021d-bb5b-4a52-a717-223a073403de.png"
+    },
+    {
+      "stage": 6,
+      "path": "C:\\Users\\polyp\\.codex\\generated_images\\01a207f5-96b6-74a1-b712-379018a739b4\\exec-dc4c9944-74de-481d-aeef-ffb4731dd1b7.png"
+    },
+    {
+      "stage": 7,
+      "path": "C:\\Users\\polyp\\.codex\\generated_images\\01a207f5-96b6-74a1-b712-379018a739b4\\exec-732a5970-3ef5-4041-8fae-e0f5ff6e6437.png"
+    },
+    {
+      "stage": 8,
+      "path": "C:\\Users\\polyp\\.codex\\generated_images\\01a207f5-96b6-74a1-b712-379018a739b4\\exec-eaea645c-3954-4593-855e-bd36c7770f7e.png"
+    },
+    {
+      "stage": 9,
+      "path": "C:\\Users\\polyp\\.codex\\generated_images\\01a207f5-96b6-74a1-b712-379018a739b4\\exec-a1fdbcb4-819a-45cd-b3f5-b685edcf90dd.png"
+    },
+    {
+      "stage": 10,
+      "path": "C:\\Users\\polyp\\.codex\\generated_images\\01a207f5-96b6-74a1-b712-379018a739b4\\exec-6c18fb72-069d-4682-afaa-e73980387d6a.png"
+    },
+    {
+      "stage": 11,
+      "path": "C:\\Users\\polyp\\.codex\\generated_images\\01a207f5-96b6-74a1-b712-379018a739b4\\exec-c6ce26e0-5e77-45ad-8a8c-98ef352a6e6a.png"
+    },
+    {
+      "stage": 12,
+      "path": "C:\\Users\\polyp\\.codex\\generated_images\\01a207f5-96b6-74a1-b712-379018a739b4\\exec-a58fc550-bb55-4195-8dc7-4e4ed15590ef.png"
+    },
+    {
+      "stage": 13,
+      "path": "C:\\Users\\polyp\\.codex\\generated_images\\01a207f5-96b6-74a1-b712-379018a739b4\\exec-a7612925-9723-4a54-ae18-d0f13b3696cb.png"
+    },
+    {
+      "stage": 14,
+      "path": "C:\\Users\\polyp\\.codex\\generated_images\\01a207f5-96b6-74a1-b712-379018a739b4\\exec-81b5a800-72cd-44f0-b2a2-fcfca1a50934.png"
+    },
+    {
+      "stage": 15,
+      "path": "C:\\Users\\polyp\\.codex\\generated_images\\01a207f5-96b6-74a1-b712-379018a739b4\\exec-02c7e80a-01e6-499f-90ac-47ac911df0b4.png"
+    },
+    {
+      "stage": 16,
+      "path": "C:\\Users\\polyp\\.codex\\generated_images\\01a207f5-96b6-74a1-b712-379018a739b4\\exec-22afdefe-556f-4eaa-8ee8-114aeb8d757d.png"
+    },
+    {
+      "stage": 17,
+      "path": "C:\\Users\\polyp\\.codex\\generated_images\\01a207f5-96b6-74a1-b712-379018a739b4\\exec-0a6893ba-28a3-4351-b915-cfe4f2ec2811.png"
+    },
+    {
+      "stage": 18,
+      "path": "C:\\Users\\polyp\\.codex\\generated_images\\01a207f5-96b6-74a1-b712-379018a739b4\\exec-faeea2e0-e129-491e-9441-f5662520f4a1.png"
+    },
+    {
+      "stage": 19,
+      "path": "C:\\Users\\polyp\\.codex\\generated_images\\01a207f5-96b6-74a1-b712-379018a739b4\\exec-066f98c9-92c2-4ede-b236-345b518827fc.png"
+    }
+  ],
+  "final_corrections": {
+    "stage16": "EDIT this stage16 cutaway: FIRSTimage edit target, SECONDimage stage15 is minimumtheaterqualityreference, THIRDimage is exact CLOSED stage16 silhouette/aspectreference. Keep14functional facilities, currentpainttone/emptygunterrace/THREEamberreactors/advancedfoodgreenhouse/forge/armor/quarters/library/lab/office/trade/training/dining/aquarium. The OPERA room atMIDRIGHT currently shrinks comparedtostage15. Expand it across BOTH currentmidrowbays, taking over the warehouse bay onitsLEFT. Onefullwidthgrandopera auditoriumwithdeepseating, sidebalconies, wide redcurtainstage and restrainedgoldstructure, at least asbig/grand asstage15. Move WAREHOUSE (notdelete) into the existing CLOSED lowest cottage/frontdoorbay BELOW thefoodplant, openingthatfacadeto showautomaticcrateconveyor, goodshoistandsupplybins. PreserveemptyRIGHTgunterrace. Nootherroomremoved orduplicated. Keep native bodyaspect EXACT392:974; original cutawayisabout5%toosquat, physicallygainthisheightin enlarged opera auditorium andits structuralwalls/stairs (noaxisscaling), roofanddoor/windowproportionsremaincorrect. Whole bodytransparent, nopeople/text/wheels/guns.",
+    "stage17": "EDIT this stage17cutaway, FIRSTimage target,SECONDimage stage15 minimumtheatersizereference,THIRDimage current CLOSEDstage17outershape. Preserve all15functional facilities, painttone andnativebodyaspect398:1052,THREEamberreactors, machinery, aquarium,dining,office,library,research,crewtraining,armor,forge,recovery,trade,storageandfood. Expand OPERA upperLEFT across its whole cultural row into currentsmallgallerybay onRIGHT: full-width auditorium, broadstage, sidebalconiesandredcurtains, notsmallerthan15. Relocate ARTGALLERY into existing lowest CLOSEDcottage/frontdoorbay BELOWfoodplant andLEFT ofemptygunterrace: openthisfacadeto revealthreebigframedpaintings, sculpturepedestal, exhibitionlighting and clearfloor. Keepterrain/chassisandEMPTYgunterraceunchanged, noextrabuildingwidthorfloors. No duplicateculturalrooms; total15facilities. Matchoutercamera andsimplematte3tonepaint. Nopeople,text,wheels,guns.",
+    "stage19": "EDIT TARGET FIRST IMAGE is FINAL19 cutaway. Second image stage15 is reference for MINIMUM cultural/food technology retained from lowercastle. Make THREE precise architectural improvements to final19 while preserving outer silhouette, native proportions, color/paint tone, allotherfunctionalrooms, THREEamberreactors and EMPTYlower-rightgunterrace:\n1.OPERA atupperRIGHT must NOT be smaller than stage15 theater. Expand it across the full upper row, taking over current small upperLEFT artgallery bay. Onegrandfull-widthopera hall: deep auditorium, broad red-curtain stage, sidebalconies, gold structural columns, modestcrystalacoustics. Modify internal divider/stair only inside this row; do not add external width or floors.\n2.ARTMUSEUM is not deleted. Relocate it into the EXISTING LARGE CENTRAL WORLD-TREE ARCH between the seated lion sculptures. This is now a GRAND EXHIBITION ATRIUM. Keep goldenworldtree andlion sculptures as monumentalcentral museum exhibits; open frontwall behind/around sculpture to show galleries with3large framedpaintings and readable floor/walkway onbothsides. Keepallarchshape/outeredges. Do not coverwholeatrium with opaque flat plaque; it should feel like a usable deep hall. This replaces the old smallgallery withlargergranderone, not anextra facility.\n3.FOOD PLANT lowerRIGHT retains current TWO CONNECTEDLEVELS with vertical foodconveyor andinternalstair. Add a transparent arched cultivation canopy and one articulated harvestingarm overexistingcroptrays, retaining grain-emblemcontrolconsole and foodprocessingmachinery. Must be moreadvancedthanstage15's automaticgreenhouse, no returntosimpleopenfarm.\nKeep top observatory, aquarium, office, researchlab, library, restaurant, training, storage, armor, forge, recovery, tradeandpower recognizable unchanged. Functionalroomsremain16, foodmulti-levelcountsone, engine3cells countsone. Noextra bedrooms, nopeople/text/wheels/guns. Same matte simple3–4tone BUILD painting. Wholecastleontransparentbackground.",
+    "stage11": "EDIT this cutaway. The lowest LEFT room is now a WEAPON FORGE with powered press and metal furnace. KEEP THAT FORGE EXACTLY. There is currently NO FOOD PROCESSING ROOM; ADD IT in the EMPTY STONE WALL BAY IMMEDIATELY ABOVE this lowest-left forge and BELOW the armor/shield room. In normalized image coordinates, change ONLY x=0.04..0.48, y=0.61..0.76 (top-down coordinates). This is the blank masonry left of the TWOAMBERREACTORS, with one small amber window. Remove this wallsection and reveal an AUTOMATED FOOD PROCESSING ROOM: silver/bronze grain hopper bearing a wheat emblem, roller processor, short bread conveyor and mechanical gauge. No crystals (stage11). Thick stone arch, structural posts, clear foreground floorstrip, followexact3tonecurrentpainting. Do NOT change bottomforge, reactors, armor, storage, bedrooms, training, trade, library, outer silhouette or empty cannonterrace. Do NOT replace an existing room. Put food machinery ONLY in currentlyblankmidLEFTbay to achieve9functionalrooms. Nopeople,text,wheels,guns.",
+    "scale": {
+      "native_actor_height": [
+        26,
+        30
+      ],
+      "shared_starter_room": [
+        180,
+        80
+      ],
+      "typical_independent_room": [
+        160,
+        90
+      ],
+      "major_hall": [
+        300,
+        120
+      ],
+      "exterior_bays_per_room": [
+        2,
+        3
+      ],
+      "interior_space_expansion": [
+        1.3,
+        1.6
+      ],
+      "npc_counts": {
+        "starter": [
+          1,
+          2
+        ],
+        "ordinary": [
+          1,
+          2
+        ],
+        "hall": [
+          3,
+          5
+        ]
+      },
+      "inspection_zoom": 1.75,
+      "layer_order": [
+        "back wall",
+        "back machinery and furniture",
+        "NPC and walkable floor",
+        "front equipment",
+        "floor lip and wall edges"
+      ]
+    },
+    "design_notes": [
+      "시설 ID와 강화 내역은 다음 성에도 유지하는 설계; 방 위치와 크기는 증축에 따라 재배치 가능",
+      "기능 시설 수와 벽으로 나뉜 실 수는 다를 수 있음; 초기 공용실과 후반 복층 생산실 포함",
+      "7단계 생산실의 부속 보일러는 전용 동력기관실과 별개; 전용 동력 시설은8단계부터",
+      "각 단계별 방 소재와 설비는 외형 소재 해금 순서를 따름",
+      "게임 적용 전 앞벽 분리, 출입구 및 이동 마스크, 실제 동료 배치·클리핑을 검증해야 함",
+      "이번 작업은 시안; 현재 런타임의 성·레일·실내 시스템은 변경하지 않음"
+    ]
+  }
+}
