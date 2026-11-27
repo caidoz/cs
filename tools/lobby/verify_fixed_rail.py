@@ -31,4 +31,3 @@ for height in (850,1408):
      shutil.copy2(path/f'motif-{scene}-{stage:02}.png',dest/f'{scene}-{stage:02}-{height}.png')
 (root/'docs/design/fixed-rail-v1/validation.json').write_text(json.dumps(results,indent=2),encoding='utf8')
 print('PASS fixed rail position and scale for nineteen stages, both ratios and vertical scroll; 152 live captures')
-
