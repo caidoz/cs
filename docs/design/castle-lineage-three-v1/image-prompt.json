@@ -1,0 +1,9 @@
+{
+  "tool": "built-in image_gen",
+  "status": "Three milestone design proposal, not runtime replacement or registered native geometry",
+  "stages": [
+    1,
+    10,
+    19
+  ]
+}
