@@ -1,0 +1,11 @@
+{
+  "approved_anchor_hash_unchanged": true,
+  "stages_created": [
+    2,
+    3,
+    4
+  ],
+  "stage05_source": "docs/design/castle-05-iron-v3/stage-05.png",
+  "runtime_changed": false,
+  "review_scaling": "Uniform fit only; native game registration pending"
+}
