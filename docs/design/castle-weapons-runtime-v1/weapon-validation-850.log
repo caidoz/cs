@@ -1,0 +1,116 @@
+PASS capture C:/Users/polyp/Desktop/CP/cs/output/turret-attack-review/850/turret-01-prepare.png
+PASS capture C:/Users/polyp/Desktop/CP/cs/output/turret-attack-review/850/turret-01-launch.png
+PASS turret native type muzzle and burst
+PASS capture C:/Users/polyp/Desktop/CP/cs/output/turret-attack-review/850/turret-01-flight.png
+PASS turret damage commits exactly once after final projectile arrival
+PASS capture C:/Users/polyp/Desktop/CP/cs/output/turret-attack-review/850/turret-01-impact.png
+PASS capture C:/Users/polyp/Desktop/CP/cs/output/turret-attack-review/850/turret-02-prepare.png
+PASS capture C:/Users/polyp/Desktop/CP/cs/output/turret-attack-review/850/turret-02-launch.png
+PASS turret native type muzzle and burst
+PASS capture C:/Users/polyp/Desktop/CP/cs/output/turret-attack-review/850/turret-02-flight.png
+PASS turret damage commits exactly once after final projectile arrival
+PASS capture C:/Users/polyp/Desktop/CP/cs/output/turret-attack-review/850/turret-02-impact.png
+PASS capture C:/Users/polyp/Desktop/CP/cs/output/turret-attack-review/850/turret-03-prepare.png
+PASS capture C:/Users/polyp/Desktop/CP/cs/output/turret-attack-review/850/turret-03-launch.png
+PASS turret native type muzzle and burst
+PASS capture C:/Users/polyp/Desktop/CP/cs/output/turret-attack-review/850/turret-03-flight.png
+PASS turret damage commits exactly once after final projectile arrival
+PASS capture C:/Users/polyp/Desktop/CP/cs/output/turret-attack-review/850/turret-03-impact.png
+PASS capture C:/Users/polyp/Desktop/CP/cs/output/turret-attack-review/850/turret-04-prepare.png
+PASS capture C:/Users/polyp/Desktop/CP/cs/output/turret-attack-review/850/turret-04-launch.png
+PASS turret native type muzzle and burst
+PASS capture C:/Users/polyp/Desktop/CP/cs/output/turret-attack-review/850/turret-04-flight.png
+PASS turret damage commits exactly once after final projectile arrival
+PASS capture C:/Users/polyp/Desktop/CP/cs/output/turret-attack-review/850/turret-04-impact.png
+PASS capture C:/Users/polyp/Desktop/CP/cs/output/turret-attack-review/850/turret-05-prepare.png
+PASS capture C:/Users/polyp/Desktop/CP/cs/output/turret-attack-review/850/turret-05-launch.png
+PASS turret native type muzzle and burst
+PASS capture C:/Users/polyp/Desktop/CP/cs/output/turret-attack-review/850/turret-05-flight.png
+PASS turret damage commits exactly once after final projectile arrival
+PASS capture C:/Users/polyp/Desktop/CP/cs/output/turret-attack-review/850/turret-05-impact.png
+PASS capture C:/Users/polyp/Desktop/CP/cs/output/turret-attack-review/850/turret-06-prepare.png
+PASS capture C:/Users/polyp/Desktop/CP/cs/output/turret-attack-review/850/turret-06-launch.png
+PASS turret native type muzzle and burst
+PASS capture C:/Users/polyp/Desktop/CP/cs/output/turret-attack-review/850/turret-06-flight.png
+PASS turret damage commits exactly once after final projectile arrival
+PASS capture C:/Users/polyp/Desktop/CP/cs/output/turret-attack-review/850/turret-06-impact.png
+PASS capture C:/Users/polyp/Desktop/CP/cs/output/turret-attack-review/850/turret-07-prepare.png
+PASS capture C:/Users/polyp/Desktop/CP/cs/output/turret-attack-review/850/turret-07-launch.png
+PASS turret native type muzzle and burst
+PASS three missiles have separate registered barrel origins and mirrored ports
+PASS capture C:/Users/polyp/Desktop/CP/cs/output/turret-attack-review/850/turret-07-flight.png
+PASS turret damage commits exactly once after final projectile arrival
+PASS capture C:/Users/polyp/Desktop/CP/cs/output/turret-attack-review/850/turret-07-impact.png
+PASS capture C:/Users/polyp/Desktop/CP/cs/output/turret-attack-review/850/turret-08-prepare.png
+PASS capture C:/Users/polyp/Desktop/CP/cs/output/turret-attack-review/850/turret-08-launch.png
+PASS turret native type muzzle and burst
+PASS capture C:/Users/polyp/Desktop/CP/cs/output/turret-attack-review/850/turret-08-flight.png
+PASS turret damage commits exactly once after final projectile arrival
+PASS capture C:/Users/polyp/Desktop/CP/cs/output/turret-attack-review/850/turret-08-impact.png
+PASS capture C:/Users/polyp/Desktop/CP/cs/output/turret-attack-review/850/turret-09-prepare.png
+PASS capture C:/Users/polyp/Desktop/CP/cs/output/turret-attack-review/850/turret-09-launch.png
+PASS turret native type muzzle and burst
+PASS capture C:/Users/polyp/Desktop/CP/cs/output/turret-attack-review/850/turret-09-flight.png
+PASS turret damage commits exactly once after final projectile arrival
+PASS capture C:/Users/polyp/Desktop/CP/cs/output/turret-attack-review/850/turret-09-impact.png
+PASS capture C:/Users/polyp/Desktop/CP/cs/output/turret-attack-review/850/turret-10-prepare.png
+PASS capture C:/Users/polyp/Desktop/CP/cs/output/turret-attack-review/850/turret-10-launch.png
+PASS turret native type muzzle and burst
+PASS capture C:/Users/polyp/Desktop/CP/cs/output/turret-attack-review/850/turret-10-flight.png
+PASS turret damage commits exactly once after final projectile arrival
+PASS capture C:/Users/polyp/Desktop/CP/cs/output/turret-attack-review/850/turret-10-impact.png
+PASS capture C:/Users/polyp/Desktop/CP/cs/output/turret-attack-review/850/turret-11-prepare.png
+PASS capture C:/Users/polyp/Desktop/CP/cs/output/turret-attack-review/850/turret-11-launch.png
+PASS turret native type muzzle and burst
+PASS capture C:/Users/polyp/Desktop/CP/cs/output/turret-attack-review/850/turret-11-flight.png
+PASS turret damage commits exactly once after final projectile arrival
+PASS capture C:/Users/polyp/Desktop/CP/cs/output/turret-attack-review/850/turret-11-impact.png
+PASS capture C:/Users/polyp/Desktop/CP/cs/output/turret-attack-review/850/turret-12-prepare.png
+PASS capture C:/Users/polyp/Desktop/CP/cs/output/turret-attack-review/850/turret-12-launch.png
+PASS turret native type muzzle and burst
+PASS capture C:/Users/polyp/Desktop/CP/cs/output/turret-attack-review/850/turret-12-flight.png
+PASS turret damage commits exactly once after final projectile arrival
+PASS capture C:/Users/polyp/Desktop/CP/cs/output/turret-attack-review/850/turret-12-impact.png
+PASS capture C:/Users/polyp/Desktop/CP/cs/output/turret-attack-review/850/turret-13-prepare.png
+PASS capture C:/Users/polyp/Desktop/CP/cs/output/turret-attack-review/850/turret-13-launch.png
+PASS turret native type muzzle and burst
+PASS capture C:/Users/polyp/Desktop/CP/cs/output/turret-attack-review/850/turret-13-flight.png
+PASS turret damage commits exactly once after final projectile arrival
+PASS capture C:/Users/polyp/Desktop/CP/cs/output/turret-attack-review/850/turret-13-impact.png
+PASS capture C:/Users/polyp/Desktop/CP/cs/output/turret-attack-review/850/turret-14-prepare.png
+PASS capture C:/Users/polyp/Desktop/CP/cs/output/turret-attack-review/850/turret-14-launch.png
+PASS turret native type muzzle and burst
+PASS capture C:/Users/polyp/Desktop/CP/cs/output/turret-attack-review/850/turret-14-flight.png
+PASS turret damage commits exactly once after final projectile arrival
+PASS capture C:/Users/polyp/Desktop/CP/cs/output/turret-attack-review/850/turret-14-impact.png
+PASS capture C:/Users/polyp/Desktop/CP/cs/output/turret-attack-review/850/turret-15-prepare.png
+PASS capture C:/Users/polyp/Desktop/CP/cs/output/turret-attack-review/850/turret-15-launch.png
+PASS turret native type muzzle and burst
+PASS capture C:/Users/polyp/Desktop/CP/cs/output/turret-attack-review/850/turret-15-flight.png
+PASS turret damage commits exactly once after final projectile arrival
+PASS capture C:/Users/polyp/Desktop/CP/cs/output/turret-attack-review/850/turret-15-impact.png
+PASS capture C:/Users/polyp/Desktop/CP/cs/output/turret-attack-review/850/turret-16-prepare.png
+PASS capture C:/Users/polyp/Desktop/CP/cs/output/turret-attack-review/850/turret-16-launch.png
+PASS turret native type muzzle and burst
+PASS capture C:/Users/polyp/Desktop/CP/cs/output/turret-attack-review/850/turret-16-flight.png
+PASS turret damage commits exactly once after final projectile arrival
+PASS capture C:/Users/polyp/Desktop/CP/cs/output/turret-attack-review/850/turret-16-impact.png
+PASS capture C:/Users/polyp/Desktop/CP/cs/output/turret-attack-review/850/turret-17-prepare.png
+PASS capture C:/Users/polyp/Desktop/CP/cs/output/turret-attack-review/850/turret-17-launch.png
+PASS turret native type muzzle and burst
+PASS capture C:/Users/polyp/Desktop/CP/cs/output/turret-attack-review/850/turret-17-flight.png
+PASS turret damage commits exactly once after final projectile arrival
+PASS capture C:/Users/polyp/Desktop/CP/cs/output/turret-attack-review/850/turret-17-impact.png
+PASS capture C:/Users/polyp/Desktop/CP/cs/output/turret-attack-review/850/turret-18-prepare.png
+PASS capture C:/Users/polyp/Desktop/CP/cs/output/turret-attack-review/850/turret-18-launch.png
+PASS turret native type muzzle and burst
+PASS capture C:/Users/polyp/Desktop/CP/cs/output/turret-attack-review/850/turret-18-flight.png
+PASS turret damage commits exactly once after final projectile arrival
+PASS capture C:/Users/polyp/Desktop/CP/cs/output/turret-attack-review/850/turret-18-impact.png
+PASS capture C:/Users/polyp/Desktop/CP/cs/output/turret-attack-review/850/turret-19-prepare.png
+PASS capture C:/Users/polyp/Desktop/CP/cs/output/turret-attack-review/850/turret-19-launch.png
+PASS turret native type muzzle and burst
+PASS capture C:/Users/polyp/Desktop/CP/cs/output/turret-attack-review/850/turret-19-flight.png
+PASS turret damage commits exactly once after final projectile arrival
+PASS capture C:/Users/polyp/Desktop/CP/cs/output/turret-attack-review/850/turret-19-impact.png
+DONE turret attack review

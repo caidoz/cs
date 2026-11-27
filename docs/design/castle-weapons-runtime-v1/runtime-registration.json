@@ -1,0 +1,319 @@
+[
+  {
+    "stage": 1,
+    "name": "목재 투석기",
+    "w": 256,
+    "h": 190,
+    "wheel": 50,
+    "gunW": 112,
+    "gunH": 96,
+    "deck": 36,
+    "foot": 61
+  },
+  {
+    "stage": 2,
+    "name": "강화 목재 투석기",
+    "w": 262,
+    "h": 248,
+    "wheel": 53,
+    "gunW": 120,
+    "gunH": 68,
+    "deck": 32,
+    "foot": 67,
+    "source": "asset_library\\work\\castle-weapons-runtime-20261127\\parts\\portrait-castle-02.png",
+    "uniform_scale": 0.32955974842767294,
+    "source_size": [
+      795,
+      752
+    ]
+  },
+  {
+    "stage": 3,
+    "name": "청동 축 투석기",
+    "w": 270,
+    "h": 355,
+    "wheel": 55,
+    "gunW": 128,
+    "gunH": 95,
+    "deck": 38,
+    "foot": 72,
+    "source": "asset_library\\work\\castle-weapons-runtime-20261127\\parts\\portrait-castle-03.png",
+    "uniform_scale": 0.34928848641655885,
+    "source_size": [
+      773,
+      1015
+    ]
+  },
+  {
+    "stage": 4,
+    "name": "청동 노포",
+    "w": 278,
+    "h": 406,
+    "wheel": 60,
+    "gunW": 136,
+    "gunH": 101,
+    "deck": 43,
+    "foot": 76,
+    "source": "asset_library\\work\\castle-weapons-runtime-20261127\\parts\\portrait-castle-04.png",
+    "uniform_scale": 0.40762463343108507,
+    "source_size": [
+      682,
+      995
+    ]
+  },
+  {
+    "stage": 5,
+    "name": "철제 복합 노포",
+    "w": 286,
+    "h": 431,
+    "wheel": 64,
+    "gunW": 144,
+    "gunH": 102,
+    "deck": 46,
+    "foot": 81,
+    "source": "asset_library\\work\\castle-weapons-runtime-20261127\\sources\\hull-fixed-05.png",
+    "uniform_scale": 0.2868605817452357,
+    "source_size": [
+      997,
+      1501
+    ]
+  },
+  {
+    "stage": 6,
+    "name": "철제 박격포",
+    "w": 294,
+    "h": 510,
+    "wheel": 65,
+    "gunW": 152,
+    "gunH": 125,
+    "deck": 76,
+    "foot": 85,
+    "source": "asset_library\\work\\castle-weapons-runtime-20261127\\parts\\portrait-castle-06.png",
+    "uniform_scale": 0.4537037037037037,
+    "source_size": [
+      648,
+      1123
+    ]
+  },
+  {
+    "stage": 7,
+    "name": "다연장 로켓 포대",
+    "w": 302,
+    "h": 555,
+    "wheel": 66,
+    "gunW": 160,
+    "gunH": 125,
+    "deck": 43,
+    "foot": 90,
+    "source": "asset_library\\work\\castle-weapons-runtime-20261127\\sources\\hull-fixed-07.png",
+    "uniform_scale": 0.33555555555555555,
+    "source_size": [
+      900,
+      1653
+    ]
+  },
+  {
+    "stage": 8,
+    "name": "중공성포",
+    "w": 310,
+    "h": 692,
+    "wheel": 70,
+    "gunW": 185,
+    "gunH": 111,
+    "deck": 43,
+    "foot": 104,
+    "source": "asset_library\\work\\castle-weapons-runtime-20261127\\parts\\portrait-castle-08.png",
+    "uniform_scale": 0.5595667870036101,
+    "source_size": [
+      554,
+      1236
+    ]
+  },
+  {
+    "stage": 9,
+    "name": "유도 미사일 발사대",
+    "w": 318,
+    "h": 744,
+    "wheel": 76,
+    "gunW": 176,
+    "gunH": 147,
+    "deck": 72,
+    "foot": 99,
+    "source": "asset_library\\work\\castle-weapons-runtime-20261127\\sources\\hull-fixed-09.png",
+    "uniform_scale": 0.4,
+    "source_size": [
+      795,
+      1860
+    ]
+  },
+  {
+    "stage": 10,
+    "name": "금장 회전 기관포",
+    "w": 326,
+    "h": 767,
+    "wheel": 75,
+    "gunW": 211,
+    "gunH": 126,
+    "deck": 66,
+    "foot": 118,
+    "source": "asset_library\\work\\castle-weapons-runtime-20261127\\sources\\hull-fixed-10.png",
+    "uniform_scale": 0.410062893081761,
+    "source_size": [
+      795,
+      1871
+    ]
+  },
+  {
+    "stage": 11,
+    "name": "수직 미사일 포대",
+    "w": 345,
+    "h": 777,
+    "wheel": 79,
+    "gunW": 192,
+    "gunH": 217,
+    "deck": 49,
+    "foot": 108,
+    "source": "asset_library\\work\\castle-weapons-runtime-20261127\\parts\\portrait-castle-11.png",
+    "uniform_scale": 0.6132596685082873,
+    "source_size": [
+      563,
+      1267
+    ]
+  },
+  {
+    "stage": 12,
+    "name": "초중공성포",
+    "w": 351,
+    "h": 880,
+    "wheel": 84,
+    "gunW": 280,
+    "gunH": 153,
+    "deck": 75,
+    "foot": 157,
+    "source": "asset_library\\work\\castle-weapons-runtime-20261127\\sources\\hull-fixed-12.png",
+    "uniform_scale": 0.4630606860158311,
+    "source_size": [
+      758,
+      1900
+    ]
+  },
+  {
+    "stage": 13,
+    "name": "크리스탈 집속포",
+    "w": 364,
+    "h": 890,
+    "wheel": 84,
+    "gunW": 246,
+    "gunH": 179,
+    "deck": 52,
+    "foot": 138,
+    "source": "asset_library\\work\\castle-weapons-runtime-20261127\\parts\\portrait-castle-13.png",
+    "uniform_scale": 0.7361455748552522,
+    "source_size": [
+      495,
+      1209
+    ]
+  },
+  {
+    "stage": 14,
+    "name": "번개 코일포",
+    "w": 373,
+    "h": 900,
+    "wheel": 85,
+    "gunW": 256,
+    "gunH": 177,
+    "deck": 40,
+    "foot": 143,
+    "source": "asset_library\\work\\castle-weapons-runtime-20261127\\parts\\portrait-castle-14.png",
+    "uniform_scale": 0.7371007371007371,
+    "source_size": [
+      506,
+      1221
+    ]
+  },
+  {
+    "stage": 15,
+    "name": "플라스마 공성포",
+    "w": 379,
+    "h": 964,
+    "wheel": 91,
+    "gunW": 275,
+    "gunH": 169,
+    "deck": 81,
+    "foot": 154,
+    "source": "asset_library\\work\\castle-weapons-runtime-20261127\\sources\\hull-fixed-15.png",
+    "uniform_scale": 0.5039893617021277,
+    "source_size": [
+      752,
+      1912
+    ]
+  },
+  {
+    "stage": 16,
+    "name": "전자기 가속포",
+    "w": 392,
+    "h": 974,
+    "wheel": 94,
+    "gunW": 304,
+    "gunH": 157,
+    "deck": 65,
+    "foot": 170,
+    "source": "asset_library\\work\\castle-weapons-runtime-20261127\\parts\\portrait-castle-16.png",
+    "uniform_scale": 0.706821480406386,
+    "source_size": [
+      555,
+      1378
+    ]
+  },
+  {
+    "stage": 17,
+    "name": "다중 집속 광선포",
+    "w": 398,
+    "h": 1052,
+    "wheel": 107,
+    "gunW": 253,
+    "gunH": 193,
+    "deck": 80,
+    "foot": 142,
+    "source": "asset_library\\work\\castle-weapons-runtime-20261127\\sources\\hull-fixed-17.png",
+    "uniform_scale": 0.5637393767705382,
+    "source_size": [
+      706,
+      1866
+    ]
+  },
+  {
+    "stage": 18,
+    "name": "거신 공성 복합포",
+    "w": 407,
+    "h": 1062,
+    "wheel": 109,
+    "gunW": 263,
+    "gunH": 190,
+    "deck": 74,
+    "foot": 147,
+    "source": "asset_library\\work\\castle-weapons-runtime-20261127\\sources\\hull-fixed-18.png",
+    "uniform_scale": 0.5426673479816045,
+    "source_size": [
+      750,
+      1957
+    ]
+  },
+  {
+    "stage": 19,
+    "name": "세계수 거신 주포",
+    "w": 431,
+    "h": 1072,
+    "wheel": 112,
+    "gunW": 271,
+    "gunH": 189,
+    "deck": 75,
+    "foot": 152,
+    "source": "asset_library\\work\\castle-weapons-runtime-20261127\\sources\\hull-fixed-19.png",
+    "uniform_scale": 0.5639137296159916,
+    "source_size": [
+      764,
+      1901
+    ]
+  }
+]

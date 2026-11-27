@@ -81,7 +81,13 @@ float portraitCastleZoom(const Layout& l){
  }
  if(!portraitLobbyWorld()){
   const int c=std::max(0,std::min(18,siegeHullStage>=0?siegeHullStage:run.stage));
-  return .85f*l.scale;
+  const int img=PORTRAIT_TURRET_FIRST_IMG+c;if(!sprite[img])LoadImg(img);
+  const float gunH=c==0?StarterCastleRig::H:sprite[img]?sprite[img]->getTexture()->getContentSizeInPixels().height:96.f;
+  // The fixed inventory leaves less arena headroom late in the game. Keep the
+  // complete weapon visible with one uniform camera scale, never squash art.
+  const float room=std::max(32.f*l.scale,DY-78*l.scale-(l.ground-portraitCameraY));
+  const float socket=std::max(16*l.scale,std::min(32*l.scale,room*.40f));
+  return std::min(.85f*l.scale,std::max(.18f*l.scale,2.f*(room-socket-8*l.scale)/gunH));
  }
  const int c=std::max(0,std::min(18,run.stage));
  const float t=std::max(0.f,std::min(1.f,(DY/l.scale-850.f)/558.f));
@@ -164,10 +170,18 @@ TurretAttack::Point cannonMuzzle(const Layout& l,int c,bool mirror,int age=-1,in
   return {mirror?DX-x:x,b.y-p.y*z};
  }
  const float left=siegeActive?DX-b.x-b.w:b.x;
- float x=left+b.w*.94f,y=b.y-b.h*(c==18?.40f:.33f);
- if(c==2){
+ float x=left+b.w*.94f,y=b.y-b.h*.33f;
+ if(c==1){x=left+b.w*.91f;y=b.y-b.h*.12f;}
+ if(c==2){x=left+b.w*.12f;y=b.y-b.h*.12f;}
+ if(c==6){
   static const float portY[3]={.18f,.38f,.58f};
   x=left+b.w*.98f;y=b.y-b.h*portY[std::max(0,std::min(2,barrel))];
+ }
+ if(c==8){x=left+b.w*.95f;y=b.y-b.h*(barrel%2?.43f:.13f);}
+ if(c==10){x=left+b.w*(barrel%2?.78f:.48f);y=b.y-b.h*.07f;}
+ if(c>=17){
+  const bool auxiliary=barrel<TurretAttack::burstCount(c)-1;
+  x=left+b.w*(auxiliary?.46f:.96f);y=b.y-b.h*(auxiliary?(barrel%2?.75f:.58f):.35f);
  }
  if(TurretAttack::kind(c)==TurretAttack::Rapid){
   const float a=std::max(0,age)*.32f+barrel*1.04719755f;

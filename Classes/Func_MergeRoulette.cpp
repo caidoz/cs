@@ -1783,11 +1783,11 @@ void drawTurretAttack(const Layout& l,int targetX,int targetY){
  const TurretAttack::Point from={(float)action.emitterX,(float)action.emitterY},to={(float)targetX,(float)targetY};
  const int age=turretFire.age;
  const TurretAttack::UpgradeVisual upgrade(turretFire.grade);
- if(turretFire.type==TurretAttack::Laser||turretFire.type==TurretAttack::Magnetic){
+ if(turretFire.type==TurretAttack::Laser||turretFire.type==TurretAttack::Magnetic||turretFire.type==TurretAttack::Composite){
   const int charge=turretFire.release,alpha=m_lgrpAlpha;
   // The red, silver, violet and gold castles each color their own hot aura.
   static const int tones[4]={0xEF281D,0x69CDFF,0xB85AFF,0xFFD363};
-  const int tone=tones[std::max(0,std::min(3,turretFire.castle-6))];
+  const int tone=turretFire.castle==13?0xB85AFF:turretFire.castle==15?0xA5DCFF:turretFire.castle==14?0xE9A8FF:0xC995FF;
   auto glow=[&](float x,float y,float radius,int color,int opacity){
    SetAlpha(opacity);
    const int r=std::max(1,(int)radius);
@@ -1828,7 +1828,7 @@ void drawTurretAttack(const Layout& l,int targetX,int targetY){
     const float distance=(26+(1-phase)*32)*scale;
     glow(from.x+std::cos(a)*distance,from.y+std::sin(a)*distance,(1+phase*2)*scale,tone,alpha*(.4f+phase*.6f));
    }
-   if(turretFire.castle==8){
+   if(turretFire.castle==13){
     for(int arc=0;arc<5;++arc){
      const float a=arc*1.256637f+age*.17f;
      const float outer=(36-8*t)*scale,inner=(12+8*t)*scale;
@@ -1849,14 +1849,14 @@ void drawTurretAttack(const Layout& l,int targetX,int targetY){
   const float dx=to.x-from.x,dy=to.y-from.y,length=std::sqrt(dx*dx+dy*dy);
   const float angle=-std::atan2(dy,dx)*57.2957795f;
   const float fade=age<=turretFire.impact()?1.f:std::max(0.f,1-(age-turretFire.impact())/14.f);
-  const float thickness=((turretFire.castle==6?96:turretFire.castle==8?64:48)+4*std::sin(age*1.7f))*scale*upgrade.beamScale;
+  const float thickness=((turretFire.castle==16?96:turretFire.castle==13?64:48)+4*std::sin(age*1.7f))*scale*upgrade.beamScale;
   auto beam=[&](float height,int color,int opacity){
    SetAlpha(opacity);
    turretPart(img,0,(int)dim.height/4,(int)dim.width,(int)dim.height/2,
     {(int)((from.x+to.x-length)*.5f),(int)((from.y+to.y+height)*.5f),(int)std::ceil(length),(int)height},angle,.5f,.5f,false,color,true);
    SetAlpha(alpha);
   };
-  if(turretFire.castle==9){
+  if(turretFire.castle==15){
    beam(thickness*1.6f,tone,(int)(alpha*.22f*fade));
    electricLine(from.x,from.y,to.x,to.y,20*scale,0xFFD56A,(int)(alpha*fade));
    electricLine(from.x,from.y,to.x,to.y,9*scale,0xFFFFEE,(int)(alpha*fade));
@@ -1880,9 +1880,9 @@ void drawTurretAttack(const Layout& l,int targetX,int targetY){
   }else{
    beam(thickness*1.45f,tone,(int)(alpha*.24f*fade));
    beam(thickness,tone,(int)(alpha*fade));
-   beam(thickness*(turretFire.castle==6?.16f:.36f),turretFire.castle==6?0xFFBE86:0xFFF9E8,(int)(alpha*fade));
+   beam(thickness*(turretFire.castle==16?.16f:.36f),turretFire.castle==16?0xFFBE86:0xFFF9E8,(int)(alpha*fade));
   }
-  if(turretFire.castle==8){
+  if(turretFire.castle==13){
    // Two changing, jagged discharges wrap the beam; small branches flicker out.
    const float nx=-dy/std::max(1.f,length),ny=dx/std::max(1.f,length);
    for(int side=-1;side<=1;side+=2){
@@ -1902,7 +1902,7 @@ void drawTurretAttack(const Layout& l,int targetX,int targetY){
     }
    }
   }
-  glow(from.x,from.y,(turretFire.castle==8?34:27)*scale,tone,(int)(alpha*.7f*fade));
+  glow(from.x,from.y,(turretFire.castle==13?34:27)*scale,tone,(int)(alpha*.7f*fade));
   glow(from.x,from.y,12*scale,0xFFF9E8,(int)(alpha*fade));
   glow(to.x,to.y,(19+3*std::sin(age))*scale,tone,(int)(alpha*.7f*fade));
   glow(to.x,to.y,9*scale,0xFFF9E8,(int)(alpha*fade));
@@ -1913,20 +1913,20 @@ void drawTurretAttack(const Layout& l,int targetX,int targetY){
   return;
   }
  }
- const auto pathType=turretFire.castle==2?TurretAttack::Shell:turretFire.type;
  for(int i=0;i<turretFire.count;++i){
+  const auto shotType=turretFire.projectile(i);const auto pathType=shotType;
   const int elapsed=age-turretFire.launch(i);
   if(elapsed<0)continue;
   if(elapsed>=turretFire.flight){
    const int impactAge=elapsed-turretFire.flight;
-   if(impactAge<10&&(turretFire.type!=TurretAttack::Rapid||i%3==0))drawTurretUpgradeSparks(to,from,i,scale,true);
-   if(turretFire.castle==5||turretFire.type==TurretAttack::Magnetic){
+   if(impactAge<10&&(shotType!=TurretAttack::Rapid||i%3==0))drawTurretUpgradeSparks(to,from,i,scale,true);
+   if(turretFire.castle==14||shotType==TurretAttack::Magnetic){
     if(impactAge<14){
-     const int img=turretFire.type==TurretAttack::Magnetic?TURRET_MAGNETIC_ORB_IMG:TURRET_CRYSTAL_ORB_IMG;
+     const int img=shotType==TurretAttack::Magnetic?TURRET_MAGNETIC_ORB_IMG:TURRET_CRYSTAL_ORB_IMG;
      if(!sprite[img])LoadImg(img);
      if(sprite[img]){
       const auto dim=sprite[img]->getTexture()->getContentSizeInPixels();
-      const int alpha=m_lgrpAlpha,size=(int)((turretFire.type==TurretAttack::Magnetic?72+impactAge*6:38+impactAge*3)*scale);
+      const int alpha=m_lgrpAlpha,size=(int)((shotType==TurretAttack::Magnetic?72+impactAge*6:38+impactAge*3)*scale);
       SetAlpha(alpha*(14-impactAge)/14);
       turretPart(img,0,0,(int)dim.width,(int)dim.height,{targetX-size/2,targetY+size/2,size,size},impactAge*12.f);
       for(int spark=0;spark<6;++spark){
@@ -1934,7 +1934,7 @@ void drawTurretAttack(const Layout& l,int targetX,int targetY){
        const int x=targetX+(int)(std::cos(a)*(10+impactAge*3)*scale);
        const int y=targetY+(int)(std::sin(a)*(10+impactAge*3)*scale);
        const int n=std::max(1,(int)((4-impactAge*.2f)*scale));
-       mergeRect(x-n,y+n,n*2,n*2,turretFire.type==TurretAttack::Magnetic?(spark%2?0xDDF8FF:0x69CFFF):(spark%2?0xA7FFF0:0x39DCCB));
+       mergeRect(x-n,y+n,n*2,n*2,shotType==TurretAttack::Magnetic?(spark%2?0xDDF8FF:0x69CFFF):(spark%2?0xA7FFF0:0x39DCCB));
       }
       SetAlpha(alpha);
      }
@@ -1942,17 +1942,25 @@ void drawTurretAttack(const Layout& l,int targetX,int targetY){
     continue;
    }
    drawImpactSequence(HIT_DIANA_MEDIUM1,7,impactAge,14,targetX,targetY,RIGHT,
-    (turretFire.type==TurretAttack::Rapid?.22f:turretFire.type==TurretAttack::Missiles?.7f:1.25f)*scale);
+    (shotType==TurretAttack::Rapid?.22f:shotType==TurretAttack::Missiles?.7f:1.25f)*scale);
    continue;
   }
   const float t=elapsed/(float)turretFire.flight;
   auto start=from;
-  if(turretFire.castle==2||turretFire.type==TurretAttack::Rapid)start=cannonMuzzle(l,turretFire.castle,siegeActive&&Siege::swapped,turretFire.launch(i),i);
+  if(shotType==TurretAttack::Missiles||turretFire.type==TurretAttack::Composite||shotType==TurretAttack::Rapid)start=cannonMuzzle(l,turretFire.castle,siegeActive&&Siege::swapped,turretFire.launch(i),i);
   const auto point=TurretAttack::position(pathType,t,start,to,i,scale);
   const auto next=TurretAttack::position(pathType,std::min(1.f,t+.02f),start,to,i,scale);
   const float angle=-std::atan2(next.y-point.y,next.x-point.x)*57.2957795f;
-  if(turretFire.type!=TurretAttack::Rapid||i%3==0)drawTurretUpgradeSparks(point,TurretAttack::position(pathType,std::max(0.f,t-.04f),start,to,i,scale),i,scale);
-  if(turretFire.type==TurretAttack::Missiles){
+  if(shotType!=TurretAttack::Rapid||i%3==0)drawTurretUpgradeSparks(point,TurretAttack::position(pathType,std::max(0.f,t-.04f),start,to,i,scale),i,scale);
+  if(shotType==TurretAttack::Bolt){
+   const float dx=next.x-point.x,dy=next.y-point.y,length=std::max(.001f,std::sqrt(dx*dx+dy*dy)),ux=dx/length,uy=dy/length;
+   auto stroke=[&](float x1,float y1,float x2,float y2,int color){
+    const int steps=std::max(1,(int)std::ceil(std::max(std::abs(x2-x1),std::abs(y2-y1))));
+    for(int k=0;k<=steps;++k){const float t=k/(float)steps;const int thick=std::max(1,(int)(2*scale));mergeRect((int)(x1+(x2-x1)*t),(int)(y1+(y2-y1)*t)+thick,thick,thick,color);}
+   };
+   stroke(point.x-ux*42*scale,point.y-uy*42*scale,point.x,point.y,0xB99764);
+   for(int side=-1;side<=1;side+=2)stroke(point.x,point.y,point.x-ux*12*scale-uy*side*6*scale,point.y-uy*12*scale+ux*side*6*scale,0xE4D7B7);
+  }else if(shotType==TurretAttack::Missiles){
    for(int trail=3;trail>=1;--trail){
     const auto p=TurretAttack::position(pathType,std::max(0.f,t-trail*.025f),start,to,i,scale);
     const int size=std::max(1,(int)((5-trail)*scale));
@@ -1969,31 +1977,31 @@ void drawTurretAttack(const Layout& l,int targetX,int targetY){
       {(int)point.x-width/2,(int)point.y+height/2,width,height},angle);
     }
    }
-  }else if(turretFire.castle==0){
+  }else if(shotType==TurretAttack::Stone){
    const float z=portraitCastleZoom(l);const int w=std::max(1,(int)(StarterCastleRig::RockDrawW*z)),h=std::max(1,(int)(StarterCastleRig::RockDrawH*z));
    turretPart(PORTRAIT_TURRET_FIRST_IMG,StarterCastleRig::RockX,StarterCastleRig::RockY,StarterCastleRig::RockW,StarterCastleRig::RockH,
     {(int)point.x-w/2,(int)point.y+h/2,w,h},elapsed*10.f*(to.x>=from.x?1.f:-1.f));
   }else{
-   const int img=turretFire.type==TurretAttack::Magnetic?TURRET_MAGNETIC_ORB_IMG:turretFire.castle==5?TURRET_CRYSTAL_ORB_IMG:turretFire.castle==4?TURRET_HEAVY_SHELL_IMG:TURRET_IRONBALL_IMG;
+   const int img=shotType==TurretAttack::Magnetic?TURRET_MAGNETIC_ORB_IMG:turretFire.castle==14?TURRET_CRYSTAL_ORB_IMG:turretFire.castle==4?TURRET_HEAVY_SHELL_IMG:TURRET_IRONBALL_IMG;
    if(!sprite[img])LoadImg(img);
    if(sprite[img]){
     const auto dim=sprite[img]->getTexture()->getContentSizeInPixels();
     sprite[img]->getTexture()->setAntiAliasTexParameters();
-    const bool rapid=turretFire.type==TurretAttack::Rapid;
-    const int baseDiameter=std::max(1,(int)((turretFire.type==TurretAttack::Magnetic?72.f:rapid?13.f:turretFire.castle==4?46.f:38.f)*scale));
-    const int diameter=turretFire.type==TurretAttack::Shell?std::max(baseDiameter,(int)(castleCannonBox(l).w*.34f)):baseDiameter;
+    const bool rapid=shotType==TurretAttack::Rapid;
+    const int baseDiameter=std::max(1,(int)((shotType==TurretAttack::Magnetic?72.f:rapid?13.f:turretFire.castle==4?46.f:38.f)*scale));
+    const int diameter=shotType==TurretAttack::Shell?std::max(baseDiameter,(int)(castleCannonBox(l).w*.34f)):baseDiameter;
     const int bulletHeight=std::max(2,(int)(4*scale));
     const float spinDirection=to.x>=from.x?1.f:-1.f;
-    const float spin=elapsed*(turretFire.type==TurretAttack::Magnetic?7.f:18.f)*spinDirection;
+    const float spin=elapsed*(shotType==TurretAttack::Magnetic?7.f:18.f)*spinDirection;
     const int alpha=m_lgrpAlpha;
     for(int trail=rapid?0:3;trail>=1;--trail){
-     const auto p=TurretAttack::position(turretFire.type,std::max(0.f,t-trail*.035f),start,to,i,scale);
+     const auto p=TurretAttack::position(shotType,std::max(0.f,t-trail*.035f),start,to,i,scale);
      const int size=(int)(diameter*(.72f-trail*.09f));
      SetAlpha(alpha*(4-trail)/12);
      turretPart(img,0,0,(int)dim.width,(int)dim.height,{(int)p.x-size/2,(int)p.y+size/2,size,size},spin-trail*18.f*spinDirection);
     }
     SetAlpha(alpha);
-    if(turretFire.castle==5||turretFire.type==TurretAttack::Magnetic){
+    if(turretFire.castle==14||shotType==TurretAttack::Magnetic){
      const int glow=(int)(diameter*(1.20f+.10f*std::sin(elapsed*.6f)));
      SetAlpha(alpha/3);
      turretPart(img,0,0,(int)dim.width,(int)dim.height,{(int)point.x-glow/2,(int)point.y+glow/2,glow,glow},-spin*.5f);
@@ -2002,8 +2010,8 @@ void drawTurretAttack(const Layout& l,int targetX,int targetY){
     turretPart(img,0,0,(int)dim.width,(int)dim.height,{(int)point.x-diameter/2,(int)point.y+(rapid?bulletHeight:diameter)/2,diameter,rapid?bulletHeight:diameter},rapid?angle:spin);
    }
   }
-  if(elapsed<(turretFire.type==TurretAttack::Rapid?2:8)&&turretFire.type!=TurretAttack::Stone&&turretFire.castle!=5&&turretFire.type!=TurretAttack::Magnetic){
-   drawImpactSequence(HIT_DIANA_SMALL1,7,elapsed,10,(int)start.x,(int)(start.y-(turretFire.type==TurretAttack::Rapid?5:18)*scale),RIGHT,(turretFire.type==TurretAttack::Rapid?.22f:.65f)*scale);
+  if(elapsed<(shotType==TurretAttack::Rapid?2:8)&&shotType!=TurretAttack::Stone&&turretFire.castle!=14&&shotType!=TurretAttack::Magnetic){
+   drawImpactSequence(HIT_DIANA_SMALL1,7,elapsed,10,(int)start.x,(int)(start.y-(shotType==TurretAttack::Rapid?5:18)*scale),RIGHT,(shotType==TurretAttack::Rapid?.22f:.65f)*scale);
   }
  }
 }
@@ -3406,12 +3414,12 @@ void reviewStep(const Layout& l) {
         if(phase==1&&age>=turretFire.release-3){
             std::snprintf(name,sizeof(name),"turret-%02d-prepare",castle+1);reviewCapture(name);phase=2;
         }else if(phase==2&&age>=turretFire.release+(turretFire.type==TurretAttack::Laser?5:turretFire.flight/2)){
-            const bool resources=castle==0?sprite[PORTRAIT_TURRET_FIRST_IMG]!=nullptr:turretFire.type==TurretAttack::Missiles?sprite[TURRET_TRIPLE_MISSILE_IMG]!=nullptr:turretFire.type==TurretAttack::Laser?sprite[TURRET_FLAME_LASER_IMG]!=nullptr:sprite[turretFire.type==TurretAttack::Magnetic?TURRET_MAGNETIC_ORB_IMG:castle==5?TURRET_CRYSTAL_ORB_IMG:castle==4?TURRET_HEAVY_SHELL_IMG:TURRET_IRONBALL_IMG]!=nullptr;
-            const bool valid=resources&&action.bulletIcon<0&&action.emitterReady&&turretFire.count==(castle==2?3:turretFire.type==TurretAttack::Rapid?12:1);
+            const bool resources=turretFire.type==TurretAttack::Stone?sprite[PORTRAIT_TURRET_FIRST_IMG]!=nullptr:turretFire.type==TurretAttack::Bolt?true:turretFire.type==TurretAttack::Missiles?sprite[TURRET_TRIPLE_MISSILE_IMG]!=nullptr:turretFire.type==TurretAttack::Laser?sprite[TURRET_FLAME_LASER_IMG]!=nullptr:sprite[turretFire.type==TurretAttack::Magnetic?TURRET_MAGNETIC_ORB_IMG:castle==14?TURRET_CRYSTAL_ORB_IMG:castle==4?TURRET_HEAVY_SHELL_IMG:TURRET_IRONBALL_IMG]!=nullptr;
+            const bool valid=resources&&action.bulletIcon<0&&action.emitterReady&&turretFire.count==TurretAttack::burstCount(castle);
             reviewTrace(valid?"PASS turret native type muzzle and burst":"FAIL turret type or burst");
-            if(castle==2){
-                const auto top=cannonMuzzle(l,2,false,-1,0),middle=cannonMuzzle(l,2,false,-1,1),bottom=cannonMuzzle(l,2,false,-1,2);
-                const auto mirror=cannonMuzzle(l,2,true,-1,0);
+            if(castle==6){
+                const auto top=cannonMuzzle(l,6,false,-1,0),middle=cannonMuzzle(l,6,false,-1,1),bottom=cannonMuzzle(l,6,false,-1,2);
+                const auto mirror=cannonMuzzle(l,6,true,-1,0);
                 reviewTrace(top.y>middle.y&&middle.y>bottom.y&&top.x==middle.x&&middle.x==bottom.x&&
                     std::abs(mirror.x+top.x-DX)<.01f?"PASS three missiles have separate registered barrel origins and mirrored ports":"FAIL triple barrel origins");
             }

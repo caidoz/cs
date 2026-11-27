@@ -6,7 +6,7 @@
 
 int main() {
     using namespace TurretAttack;
-    assert(kind(0)==Stone && kind(2)==Missiles && kind(3)==Rapid && kind(4)==Shell && kind(7)==Magnetic);
+    assert(kind(0)==Stone && kind(2)==Stone && kind(3)==Bolt && kind(5)==Mortar && kind(6)==Missiles && kind(9)==Rapid && kind(18)==Composite);
     assert(UpgradeVisual(-1).motes==0&&UpgradeVisual(99).level==5);
     for(int lv=0;lv<=5;++lv){
         UpgradeVisual look(lv);
@@ -25,22 +25,26 @@ int main() {
             assert(time.applied==(time.elapsed>=shot.impact()));
         }
         assert(hits==1 && time.end==shot.end());
-        assert(shot.count==(castle==2?3:kind(castle)==Rapid?12:1));
+        assert(shot.count==burstCount(castle));
         for(int i=0;i<shot.count;++i)assert(shot.launch(i)+shot.flight<=time.impact);
     }
-    Sequence rapid;rapid.begin(3,0);
+    assert(burstCount(6)==3&&burstCount(8)==2&&burstCount(10)==4);
+    Sequence final;final.begin(18,0);
+    assert(final.count==4&&final.projectile(0)==Missiles&&final.projectile(2)==Missiles&&final.projectile(3)==Magnetic);
+    assert(final.launch(3)>final.launch(2));
+    Sequence rapid;rapid.begin(9,0);
     assert(rapid.launch(10)-rapid.launch(0)==25); // Ten intervals instead of the old five.
     for(int i=1;i<rapid.count;++i) {
         const int gap=rapid.launch(i)-rapid.launch(i-1);
         assert(gap==2||gap==3);
     }
     Point from{50,100},to{500,110};
-    for(Kind type:{Stone,Shell,Missiles,Rapid,Magnetic}) {
+    for(Kind type:{Stone,Shell,Missiles,Rapid,Magnetic,Bolt,Mortar}) {
         Point start=position(type,0,from,to,0,1),end=position(type,1,from,to,0,1);
         assert(start.x==from.x&&start.y==from.y&&end.x==to.x&&end.y==to.y);
         auto midpoint=position(type,.5f,from,to,0,1);
         assert(std::isfinite(midpoint.x)&&std::isfinite(midpoint.y));
-        if(type==Stone||type==Missiles)assert(midpoint.y>to.y);
+        if(type==Stone||type==Missiles||type==Mortar)assert(midpoint.y>to.y);
         auto mirrored=position(type,.5f,{590,100},{140,110},0,1);
         assert(std::abs(midpoint.x+mirrored.x-640)<.001f);
         assert(std::abs(midpoint.y-mirrored.y)<.001f);
