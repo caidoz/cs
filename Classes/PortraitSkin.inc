@@ -110,7 +110,7 @@ void portraitArchBridge(int top,int bottom){
 
 void portraitNight(int ground,float worldZoom=0,int bridgeBottom=0){
  portraitBridgeTop=portraitBridgeBottom=0;
- portraitRailGround=ground-(int)portraitCameraY;
+ portraitRailGround=ground;
  portraitRailTop=portraitRailBottom=portraitRailGround;
  const float s=DX/640.f;MemRect(0,DY,DX,DY,0x030A13);
  const int img=PORTRAIT_NIGHT_IMG;const Box bg=portraitBackdropBox(ground);
@@ -123,7 +123,7 @@ void portraitNight(int ground,float worldZoom=0,int bridgeBottom=0){
    const char* rail=sample?std::getenv("CS_PORTRAIT_SAMPLE_RAIL_Y"):nullptr;
    const int top=portraitRailGround+(int)((rail?std::atof(rail):sample?q.height*.70f:26.f)*rz);
    portraitRailTop=top;portraitRailBottom=top-(int)(q.height*rz);
-   if(!sample)portraitArchBridge(top-(int)(q.height*rz)+1,bridgeBottom);
+   if(!sample)portraitArchBridge(top-(int)(q.height*rz)+1,bridgeBottom+(!active?(int)portraitCameraY:0));
    const int period=std::max(1,(int)(q.width*rz));
    const int offset=(int)std::fmod(castleScrollSeconds*110.f*s,(float)period);
    for(int x=-offset;x<DX;x+=period)

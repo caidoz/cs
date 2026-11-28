@@ -982,6 +982,7 @@ float LobbyNavPop(int i){
 void AfterSpriting(cocos2d::Sprite* src) {
  const auto scenePosition=src->getPosition();if(uiSceneMotionY!=0||uiSceneMotionX!=0)src->setPosition(scenePosition+cocos2d::Vec2(uiSceneMotionX,uiSceneMotionY));
  ApplyLobbyCampLight(src);
+ ApplyCastleRevealMask(src);
 	AuditDrawnTexture(src->getTexture());
 
 	if (gRenderTarget)
@@ -1061,7 +1062,9 @@ std::string  GetResourceName(int type, int idx)
 		if(idx>=PORTRAIT_WHEEL_FIRST_IMG&&idx<=PORTRAIT_WHEEL_LAST_IMG){char n[64];snprintf(n,sizeof(n),"res/portrait-wheel-%02d.png",idx-PORTRAIT_WHEEL_FIRST_IMG+1);return n;}
 		if(idx>=PORTRAIT_TURRET_FIRST_IMG&&idx<=PORTRAIT_TURRET_LAST_IMG){char n[64];snprintf(n,sizeof(n),"res/portrait-turret-%02d.png",idx-PORTRAIT_TURRET_FIRST_IMG+1);return n;}
 		if(idx==PORTRAIT_CAMPFIRE_IMG)return "res/portrait-campfire.png";
-		if(idx==PORTRAIT_STARTER_INTERIOR_IMG)return "res/portrait-starter-interior.png";
+		if(idx==PORTRAIT_DEMON_HEART_IMG)return "res/portrait-demon-heart.png";
+		if(idx==PORTRAIT_INTERIOR_FIRST_IMG)return "res/portrait-starter-interior.png";
+		if(idx>PORTRAIT_INTERIOR_FIRST_IMG&&idx<=PORTRAIT_INTERIOR_LAST_IMG){char n[64];snprintf(n,sizeof(n),"res/portrait-castle-interior-%02d.png",idx-PORTRAIT_INTERIOR_FIRST_IMG+1);return n;}
 		if(idx==PORTRAIT_NIGHT_IMG)return "res/portrait-night.png";
 		if(idx==PORTRAIT_RAIL_IMG)return "res/portrait-rail-stone.png";
 		if(idx==PORTRAIT_ICONS_IMG)return "res/portrait-icons.png";

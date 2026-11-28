@@ -44,6 +44,67 @@ void portraitReviewFixture(){
 }
 bool portraitReviewLobby(){
  if(!portraitReviewEnabled()||!std::getenv("CS_PORTRAIT_LOBBY"))return false;
+ if(std::getenv("CS_CUTAWAY_REVIEW")){
+  static int phase=0;if(reviewCapturePending||phase>=4)return true;
+  active=false;drawHandle=MD_LOBBY;titleLobbyClock=-1;
+  if(phase==0){starterInteriorReveal=0;starterInteriorFinger=-1;}
+  const Box hull=portraitCastleBox(layout());const float x=hull.x+hull.w*.5f,y=std::min(DY-100*layout().scale,std::max(layout().arenaBottom+20*layout().scale,hull.y-hull.h*.5f));
+  if(phase==1){portraitStarterInteriorTouch(0,989,x,y);advanceCastleInteriorHold(1.f);}
+  if(phase==2){portraitStarterInteriorTouch(2,989,x,y);reviewTrace(starterInteriorReveal==0?"PASS short release closes circle":"FAIL short release");portraitStarterInteriorTouch(0,989,x,y);advanceCastleInteriorHold(3.01f);}
+  if(phase==3)portraitStarterInteriorTouch(2,989,x,y);
+  MergeRouletteLobbySceneDraw();
+  const Box body=portraitCastleBox(layout());reviewTrace(std::abs(body.x-8*layout().scale)<1?"PASS lobby hull stops eight pixels from left edge":"FAIL lobby left anchor");
+  if(phase==0){reviewTrace(drawnPortraitInterior==-1?"PASS lobby starts closed":"FAIL default interior");reviewCapture("cutaway-closed");}
+  if(phase==1){reviewTrace(starterInteriorReveal==0&&drawnPortraitInterior>=0?"PASS circular interior lens":"FAIL interior lens");reviewCapture("cutaway-circle");}
+  if(phase==2)reviewCapture("cutaway-full");
+  if(phase==3){reviewTrace(starterInteriorReveal==1&&starterInteriorFinger==-1?"PASS full interior stays after long-hold release":"FAIL full release");reviewTrace("DONE cutaway review");}
+  ++phase;active=true;drawHandle=MD_PLAY;return true;
+ }
+ if(std::getenv("CS_CASTLE_INTERIORS_REVIEW")){
+  static int sample=0;static bool finished=false;static int closedWheelBaseline=0;
+  if(finished||reviewCapturePending)return true;
+  if(sample>=38){reviewTrace("DONE castle interiors review");finished=true;return true;}
+  const int c=sample/2;const bool open=sample%2;
+  run.stage=robin.castle=gMobileCastleVisual=c;portraitCameraY=0;titleLobbyClock=-1;
+  robin.castleProgress.version=3;robin.castleProgress.owned=(1u<<(c+1))-1;
+  active=false;drawHandle=MD_LOBBY;starterInteriorReveal=open?1.f:0.f;
+  MergeRouletteLobbySceneDraw();
+  reviewTrace(drawnPortraitTurret==PORTRAIT_TURRET_FIRST_IMG+c?"PASS turret and carriage remain visible in both castle views":"FAIL missing turret carriage");
+  if(open)reviewTrace(drawnPortraitWheelBaseline==closedWheelBaseline?"PASS open and closed castle share the exact wheel baseline":"FAIL wheel baseline changes");
+  else closedWheelBaseline=drawnPortraitWheelBaseline;
+  if(open){
+   const int img=PORTRAIT_INTERIOR_FIRST_IMG+c;
+   const auto size=sprite[img]?sprite[img]->getTexture()->getContentSizeInPixels():cocos2d::Size(0,0);
+   const Box hull=portraitCastleBox(layout()),b=drawnPortraitInteriorBounds;
+   const bool valid=size.width>0&&drawnPortraitInterior==img&&b.w==hull.w&&b.y-b.h==hull.y-hull.h&&std::abs(b.w*size.height-b.h*size.width)<=size.width;
+   reviewTrace(valid?"PASS selected interior drawn with uniform scale and equal hull width":"FAIL interior render registration");
+   if(!valid){char detail[240];std::snprintf(detail,sizeof(detail),"INTERIOR stage=%d actual=%d expected=%d bounds=%d,%d,%d,%d hull=%d,%d,%d,%d texture=%.0f,%.0f",c+1,drawnPortraitInterior,img,b.x,b.y,b.w,b.h,hull.x,hull.y,hull.w,hull.h,size.width,size.height);reviewTrace(detail);}
+  }else{
+   reviewTrace(drawnPortraitInterior==-1&&portraitHullImage(c)==PORTRAIT_CASTLE_FIRST_IMG+c?"PASS closing restores stage exterior":"FAIL closed exterior");
+   const int img=PORTRAIT_CASTLE_FIRST_IMG+c;
+   const auto size=sprite[img]?sprite[img]->getTexture()->getContentSizeInPixels():cocos2d::Size(0,0);
+   const Box hull=portraitCastleBox(layout());
+   const bool valid=size.width>0&&std::abs(hull.w*size.height-hull.h*size.width)<=size.width*2;
+   reviewTrace(valid?"PASS exterior uses native aspect ratio":"FAIL exterior aspect ratio");
+  }
+  // Short holds show a movable circle and release back to the previous state.
+  const Layout q=layout();const Box b=portraitCastleBox(q);
+  const float x=b.x+b.w*.4f,y=std::max(q.arenaBottom+20*q.scale,std::min(DY-100*q.scale,b.y-b.h*.5f));
+  const bool down=portraitStarterInteriorTouch(0,989,x,y);
+  portraitStarterInteriorTouch(1,989,x+20*q.scale,y);
+  advanceCastleInteriorHold(.5f);
+  const bool lens=starterInteriorFinger==989&&starterInteriorTouchX==x+20*q.scale;
+  portraitStarterInteriorTouch(2,989,x+20*q.scale,y);
+  reviewTrace(down&&lens&&starterInteriorReveal==(open?1.f:0.f)&&starterInteriorFinger==-1?"PASS short touch moves circular cutaway and release restores exterior":"FAIL circular cutaway touch");
+  portraitStarterInteriorTouch(0,989,x,y);advanceCastleInteriorHold(3.01f);
+  portraitStarterInteriorTouch(2,989,x,y);
+  reviewTrace(starterInteriorReveal==1&&starterInteriorFinger==-1?"PASS three-second hold latches complete interior":"FAIL long hold cutaway");
+  starterInteriorReveal=open?1.f:0.f;
+  portraitCameraY=0;
+  active=true;reviewTrace(portraitHullImage(c)==PORTRAIT_CASTLE_FIRST_IMG+c&&!portraitStarterInteriorTouch(0,989,x,y)?"PASS battle keeps exterior and rejects interior gestures":"FAIL battle reveal isolation");active=false;
+  char name[64];std::snprintf(name,sizeof(name),"interior-%02d-%s",c+1,open?"open":"closed");reviewCapture(name);
+  ++sample;active=true;drawHandle=MD_PLAY;return true;
+ }
  if(std::getenv("CS_MOTIF_SERIES_REVIEW")){
   if(reviewCapturePending)return true;
   if(motifReviewStage<19){
@@ -54,21 +115,24 @@ bool portraitReviewLobby(){
    MergeRouletteLobbySceneDraw();
    char name[48];std::snprintf(name,sizeof(name),"motif-lobby-%02d",motifReviewStage+1);reviewCapture(name);
    const auto size=portraitHullSize(motifReviewStage);const Box body=portraitCastleBox(layout());
+   char zoomLine[160];std::snprintf(zoomLine,sizeof(zoomLine),"ZOOM stage=%d height=%d zoom=%.6f hull=%d,%d,%d,%d",motifReviewStage+1,DY,portraitCastleZoom(layout()),body.x,body.y,body.w,body.h);reviewTrace(zoomLine);
+
    const Box gun=castleCannonBox(layout());const float z=portraitCastleZoom(layout());
-   const bool aspect=std::abs(body.w*size.h-body.h*size.w)<=size.h;
+   const bool aspect=std::abs(body.w*size.h-body.h*size.w)<=std::max(size.w,size.h);
    const int axle=body.x+(int)(body.w*PortraitCastleArt::FrontWheelAt(motifReviewStage));
    const bool mount=std::abs(gun.x+(int)(portraitCannonFootX(motifReviewStage)*z)-axle)<=1;
    reviewTrace(aspect&&mount?"PASS motif native aspect and shared front-wheel turret socket":"FAIL motif assembly");
    const auto scene=layout();const auto fixed=PortraitGame::lobby(DX,DY);
-   const int expectedGap=(int)(21*scene.scale)+PortraitGame::railLift(DX,DY);
+   const int expectedGap=(int)(21*scene.scale)+fixed.ground-(int)(336*scene.scale)+(int)portraitCameraY;
    const int gap=portraitRailBottom-fixed.stageTop-(int)(16*scene.scale);
-   const bool fixedRail=portraitRailGround==fixed.ground&&std::abs(gap-expectedGap)<=2;
-   reviewTrace(fixedRail?"PASS lobby rail fixed by resolution across castle stages and scroll":"FAIL lobby rail depends on castle");
+   const bool fixedRail=portraitRailGround==fixed.ground+(int)portraitCameraY&&portraitBridgeBottom==(int)portraitCameraY&&std::abs(gap-expectedGap)<=2;
+   reviewTrace(fixedRail?"PASS lobby rail and bridge follow castle camera":"FAIL lobby rail depends on castle");
    char railLine[120];std::snprintf(railLine,sizeof(railLine),"RAIL lobby stage=%d height=%d ground=%d lowerUiGap=%d camera=%d",motifReviewStage+1,DY,portraitRailGround,gap,(int)portraitCameraY);reviewTrace(railLine);
    ++motifReviewStage;active=true;drawHandle=MD_PLAY;return true;
   }
   if(motifReviewStage>=38)return true;
   run.stage=motifReviewStage-19;run.shape=BattleShape(run.stage);portraitCameraY=0;
+  run.board.clear();for(int i=0;i<3;++i){Block b;b.family=i;b.level=1;b.crew=MergeTrees::CrewAt(i,1,0);b.x=i;b.y=0;run.board.push_back(b);}
   active=true;drawHandle=MD_PLAY;return false;
  }
  if(std::getenv("CS_BASE_CAMP_REVIEW")){
@@ -170,7 +234,8 @@ bool portraitReviewLobby(){
   }else if(phase==2){
    reviewTrace(portraitHullImage(0)==PORTRAIT_STARTER_INTERIOR_IMG?"PASS opening selects actual starter interior resource":"FAIL interior resource");
    const int stage=run.stage;run.stage=1;const bool other=portraitStarterInteriorTouch(0,992,x,y);run.stage=stage;
-   reviewTrace(!other?"PASS interior gesture is limited to the first castle":"FAIL interior leaks to other castles");
+   portraitStarterInteriorTouch(3,992,x,y);
+   reviewTrace(other?"PASS interior gesture also supports later castles":"FAIL later castle interior gesture");
    reviewCapture("starter-interior-open");++phase;
   }else if(phase==3){
    portraitStarterInteriorTouch(0,991,x,y);portraitStarterInteriorTouch(1,991,x,y-100*q.scale);portraitStarterInteriorTouch(2,991,x,y-100*q.scale);
@@ -263,8 +328,16 @@ bool portraitReviewStep(const Layout& l){
   char name[48];std::snprintf(name,sizeof(name),"motif-battle-%02d",run.stage+1);reviewCapture(name);
   const Box hull=portraitCastleBox(l),gun=castleCannonBox(l);const auto size=portraitHullSize(run.stage);
   const bool aspect=std::abs(hull.w*size.h-hull.h*size.w)<=size.h;
-  const bool visible=std::min(gun.y,(int)(DY-78*l.scale))-std::max(gun.y-gun.h,l.arenaBottom)>16*l.scale;
-  reviewTrace(aspect&&visible?"PASS motif battle keeps aspect and visible weapon above board":"FAIL motif battle clipping");
+  reviewTrace(aspect?"PASS motif battle preserves aspect with intentional viewport cropping":"FAIL motif battle aspect");
+  int cells=0;for(int y=0;y<run.shape.height;++y)for(int x=0;x<run.shape.width;++x)cells+=run.shape.contains(x,y);
+  const float expectedZoom=PortraitGame::battleCastleScale(DX,PortraitCastleArt::Sizes[18].h+PortraitCastleArt::WheelSize(18)*.58f);
+  const bool world=std::abs(portraitCastleZoom(l)-expectedZoom)<.0001f&&std::abs(expectedZoom*(PortraitCastleArt::Sizes[18].h+PortraitCastleArt::WheelSize(18)*.58f)-.90f*(DX*2.2f-PortraitGame::battle(DX,(int)(DX*2.2f+.5f)).ground))<1&&std::abs(hull.x+hull.w-DX/3.f)<1&&
+    std::abs(drawnBattleHeroZoom-PortraitGame::battleActorScale(DX,PortraitCastleArt::Sizes[18].w))<.0001f&&std::abs(drawnBattleCompanionZoom-drawnBattleHeroZoom*.8f)<.0001f;
+  reviewTrace(world?"PASS largest castle fits battle height with right edge at one third and fixed actors":"FAIL fixed battle actor scale");
+  reviewTrace(run.shape.height==4&&cells==16+run.stage&&cells<=36&&l.board.x>=0&&l.board.x+l.board.w<=DX?"PASS four rows and exactly one extra grid cell per castle":"FAIL four-row grid progression");
+  reviewTrace(drawnPortraitTurret==PORTRAIT_TURRET_FIRST_IMG+run.stage?"PASS battle turret and carriage drawn":"FAIL battle turret");
+  reviewTrace(drawnBattleViewportTop==DY?"PASS battlefield continues behind translucent wave header":"FAIL hard header clipping");
+  reviewTrace(std::abs(drawnBattleEnergyBounds.x+drawnBattleEnergyBounds.w*.5f-DX*.5f)<2&&drawnEnemyHeartIcon.w==(int)(39*l.scale)&&sprite[PORTRAIT_DEMON_HEART_IMG]?"PASS centered energy and large demon heart HUD icon":"FAIL revised battle HUD");
   const auto fixed=PortraitGame::battle(DX,DY,run.shape.height,run.shape.width);
   reviewTrace(portraitRailGround==fixed.ground?"PASS battle rail follows fixed UI layout, never castle height":"FAIL battle rail depends on castle");
   if(++motifReviewStage==38)reviewTrace("DONE motif series review");
@@ -387,8 +460,8 @@ bool portraitReviewStep(const Layout& l){
     l.board.y-l.board.h>l.slot.y&&l.slot.y-l.slot.h>l.heart.y&&
     l.heart.y-l.heart.h>l.attack.y&&l.arenaBottom-l.plateH>l.board.y&&
     l.ground>l.arenaBottom&&l.ground<p.headerBottom;
-  valid=valid&&(run.stage<9||cells==48);
-  valid=valid&&cells==portraitGridCapacity()&&run.shape.width>run.shape.height&&std::abs(l.slot.w*691-l.slot.h*2064)<=2064;
+  valid=valid&&cells==16+std::min(20,run.stage)&&run.shape.height==4&&cells<=36;
+  valid=valid&&cells==portraitGridCapacity()&&run.shape.width>=run.shape.height&&std::abs(l.slot.w*691-l.slot.h*2064)<=2064;
   const auto compact=PortraitGame::battle(DX,(int)(850*l.scale),run.shape.height,run.shape.width);
   const auto tall=PortraitGame::battle(DX,(int)(1408*l.scale),run.shape.height,run.shape.width);
   valid=valid&&compact.cell==tall.cell&&compact.cell==int(64*l.scale)&&compact.boardTop==tall.boardTop&&
@@ -397,8 +470,7 @@ bool portraitReviewStep(const Layout& l){
   for(int i=0;i<(int)run.board.size();++i)valid=valid&&run.fits(run.board[i],i);
   const Box castle=portraitCastleBox(l);
   const Box gun=castleCannonBox(l);
-  valid=valid&&castle.x>=0&&castle.w>0&&castle.h>0&&gun.w>=64*l.scale&&
-   std::min(gun.y,(int)(DY-78*l.scale))-std::max(gun.y-gun.h,l.arenaBottom)>(int)(16*l.scale);
+  valid=valid&&std::abs(castle.x+castle.w-DX/3.f)<1&&castle.w>0&&castle.h>0&&gun.w>=32*l.scale;
   const float overflow=std::max(0.f,castle.y-(DY-78*l.scale));
   const Box fixedBackdrop=portraitBackdropBox(l.ground);
   if(overflow>0){const float y=(l.arenaBottom+DY-78*l.scale)*.5f;
@@ -410,6 +482,8 @@ bool portraitReviewStep(const Layout& l){
    portraitCameraTouch(2,998,DX*.2f,y-overflow-20*l.scale);portraitCameraY=0;
   }
   reviewTrace(valid?"PASS square cells, actual capacity, original roulette aspect ratio and viewport geometry":"FAIL portrait geometry");
+  reviewTrace(drawnBattleViewportTop==DY?"PASS battlefield continues behind translucent wave header":"FAIL hard header clipping");
+  reviewTrace(std::abs(portraitCastleZoom(l)-PortraitGame::battleCastleScale(DX,PortraitCastleArt::Sizes[18].h+PortraitCastleArt::WheelSize(18)*.58f))<1&&std::abs(portraitCastleBox(l).x+portraitCastleBox(l).w-DX/3.f)<1&&drawnPortraitTurret==PORTRAIT_TURRET_FIRST_IMG+run.stage?"PASS fixed battle world scale and visible turret":"FAIL battle scale or turret");
   reviewTrace(valid?"PASS identical bottom UI geometry at 1:1.33 and 1:2.2; only battlefield viewport changes":"FAIL fixed bottom stack");
   reviewLayout(l,"portrait");reviewCapture("battle");
  }

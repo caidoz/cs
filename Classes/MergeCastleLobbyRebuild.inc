@@ -27,8 +27,8 @@ void drawPortraitFarWheels(int c,const Box& hull,float z,float travel,bool mirro
  const float angle=(mirror||rollLeft?-1.f:1.f)*std::fmod(std::max(0.f,travel)/std::max(1.f,size.height*z*.5f)*57.2957795f,360.f);
  const int previous=baseColor;SetColor(0xABB3C0);
  const float depth=PortraitCastleArt::Sizes[c].w/256.f;
- const int count=c<5?2:3;
- for(int i=0;i<count;++i){const float at=count==2?(i?PortraitCastleArt::FrontWheelAt(c):.17f):(.15f+.345f*i);
+ const int count=PortraitCastleArt::WheelCount(c);
+ for(int i=0;i<count;++i){const float at=PortraitCastleArt::WheelAt(c,i);
   const int x=hull.x+(int)(hull.w*(mirror?1.f-at:at))+(int)((mirror?-1.f:1.f)*StarterCastleRig::FarWheelDx*depth*z);
   const int y=hull.y-hull.h-(int)(size.height*z*.08f)+(int)(StarterCastleRig::FarWheelDy*depth*z);
   RotateImage((int)size.width,(int)size.height,0,0,x,y,false,angle,0,0,z,cocos2d::Vec2(.5f,.5f),sprite[img],img);
@@ -53,9 +53,8 @@ float portraitCannonFootX(int c){
  return PortraitCastleArt::CannonFootX[c];
 }
 int portraitHullImage(int c){
- // Keep the approved exterior; the starter cutaway is a separate debug view.
- const bool interior=c==0&&((LobbyCastleDebugActive()&&LobbyCastleDebugInterior())||(review&&std::getenv("CS_PORTRAIT_INTERIOR")));
- return (interior||(c==0&&portraitLobbyWorld()&&popUpCnt==0&&!titleCampOnly&&starterInteriorReveal>=.999f))?PORTRAIT_STARTER_INTERIOR_IMG:PORTRAIT_CASTLE_FIRST_IMG+c;
+ const bool forced=(LobbyCastleDebugActive()&&LobbyCastleDebugInterior())||(review&&std::getenv("CS_PORTRAIT_INTERIOR"));
+ return portraitLobbyWorld()&&!titleCampOnly&&popUpCnt==0&&(forced||starterInteriorReveal>=.999f)?PORTRAIT_INTERIOR_FIRST_IMG+c:PORTRAIT_CASTLE_FIRST_IMG+c;
 }
 PortraitCastleArt::Size portraitHullSize(int c){
  if(review&&c==0&&std::getenv("CS_PORTRAIT_SAMPLE_ASSETS")){
@@ -65,47 +64,24 @@ PortraitCastleArt::Size portraitHullSize(int c){
  return PortraitCastleArt::Sizes[c];
 }
 float portraitCastleZoom(const Layout& l){
- if(portraitAssembledSample()){
-  if(!portraitLobbyWorld())return .85f*l.scale;
-  const auto size=portraitHullSize(0);const float t=std::max(0.f,std::min(1.f,(DY/l.scale-850.f)/558.f));
-  return std::min((243.2f+230.4f*t)*l.scale/256.f,std::min((DX-48*l.scale)/size.w,(DY-78*l.scale-PortraitGame::lobby(DX,DY).ground)/size.h));
- }
- if(!portraitLobbyWorld()){
-  const int c=std::max(0,std::min(18,siegeHullStage>=0?siegeHullStage:run.stage));
-  const int img=PORTRAIT_TURRET_FIRST_IMG+c;if(!sprite[img])LoadImg(img);
-  const float gunH=c==0?StarterCastleRig::H:sprite[img]?sprite[img]->getTexture()->getContentSizeInPixels().height:96.f;
-  // The fixed inventory leaves less arena headroom late in the game. Keep the
-  // complete weapon visible with one uniform camera scale, never squash art.
-  const float room=std::max(32.f*l.scale,DY-78*l.scale-(l.ground-portraitCameraY));
-  const float socket=std::max(16*l.scale,std::min(32*l.scale,room*.40f));
-  return std::min(.85f*l.scale,std::max(.18f*l.scale,2.f*(room-socket-8*l.scale)/gunH));
- }
- const int c=std::max(0,std::min(18,run.stage));
- const float t=std::max(0.f,std::min(1.f,(DY/l.scale-850.f)/558.f));
- const auto firstSize=portraitHullSize(0);
- const float starterFit=std::max(1.f,DY-78*l.scale-PortraitGame::lobby(DX,DY).ground)*256.f/(firstSize.h+PortraitCastleArt::WheelSize(0)*.58f);
- // One uniform camera scale for every native hull: later widths grow with the art.
- const float assemblyFit=(DX-32*l.scale)/(PortraitCastleArt::MaxAssemblyRatio*PortraitCastleArt::Sizes[18].w/256.f);
- const float base=std::min(std::min((243.2f+230.4f*t)*l.scale,starterFit),assemblyFit)/256.f;
- const float moving=BaseCamp::travel(lobbyDepartureAge);return base*(1-moving)+.85f*l.scale*moving;
+ const float battleZoom=PortraitGame::battleCastleScale(DX,PortraitCastleArt::Sizes[18].h+PortraitCastleArt::WheelSize(18)*.58f);
+ if(!portraitLobbyWorld())return battleZoom;
+ // Width fixes world scale. Aspect ratio changes the viewport, never hull size.
+ const float base=(1.21f*.95f*.97f)*(DX-32*l.scale)/(PortraitCastleArt::MaxAssemblyRatio*PortraitCastleArt::Sizes[18].w);
+ const float moving=BaseCamp::travel(lobbyDepartureAge);return base*(1-moving)+battleZoom*moving;
 }
 Box portraitCastleBox(const Layout& l){
  const int c=std::max(0,std::min(18,siegeHullStage>=0?siegeHullStage:run.stage));
  const auto size=portraitHullSize(c);const float z=portraitCastleZoom(l);
- if(portraitAssembledSample())return {portraitLobbyWorld()?(DX-(int)(size.w*z))/2:(int)(16*l.scale),l.ground+(int)(size.h*z),(int)(size.w*z),(int)(size.h*z)};
+ if(portraitAssembledSample())return {portraitLobbyWorld()?(int)(8*l.scale):DX/3-(int)(size.w*z),l.ground+(int)(size.h*z),(int)(size.w*z),(int)(size.h*z)};
  const float wheel=PortraitCastleArt::WheelSize(c)*z;
  const int gun=PORTRAIT_TURRET_FIRST_IMG+c;if(!sprite[gun])LoadImg(gun);
- const float gunHeight=c==0?StarterCastleRig::H:sprite[gun]?sprite[gun]->getTexture()->getContentSizeInPixels().height:75.f;
- const float fixedGround=l.ground-portraitCameraY;
- const float socket=std::max(16*l.scale,std::min(32*l.scale,(DY-78*l.scale-fixedGround)*.40f));
- const bool fitsWeapon=wheel*.58f+(PortraitCastleArt::CannonBaseFromFloor(c)+gunHeight)*z<=DY-78*l.scale-fixedGround;
- const float lift=portraitLobbyWorld()||c==0||fitsWeapon?0.f:std::min(0.f,socket-wheel*.58f-(PortraitCastleArt::CannonBaseFromFloor(c)+gunHeight*.5f)*z);
- Box b={(int)(16*l.scale),l.ground+(int)(wheel*.58f+size.h*z+lift),(int)(size.w*z),(int)(size.h*z)};
+ Box b={DX/3-(int)(size.w*z),l.ground+(int)(wheel*.58f+size.h*z),(int)(size.w*z),(int)(size.h*z)};
  if(portraitLobbyWorld()){
   const float gunWidth=c==0?StarterCastleRig::W*z:sprite[gun]?sprite[gun]->getTexture()->getContentSizeInPixels().width*z:100*z;
   const float left=std::min(0.f,b.w*.15f-wheel*.5f);
   const float right=std::max((float)b.w,b.w*PortraitCastleArt::FrontWheelAt(c)+gunWidth-portraitCannonFootX(c)*z);
-  b.x=(int)((28*l.scale-left)*(1-BaseCamp::travel(lobbyDepartureAge))+16*l.scale*BaseCamp::travel(lobbyDepartureAge));
+  b.x=(int)((8*l.scale)*(1-BaseCamp::travel(lobbyDepartureAge))+(DX/3-b.w)*BaseCamp::travel(lobbyDepartureAge));
  }
  if(siegeActive)b.x=DX-b.x-b.w;return b;
 }
@@ -181,9 +157,11 @@ TurretAttack::Point cannonMuzzle(const Layout& l,int c,bool mirror,int age=-1,in
  }
  return {mirror?DX-x:x,y};
 }
+int drawnPortraitTurret=-1;
 void drawCastleCannon(const Layout& l,int c,bool mirror){
  (void)c;const int stage=std::max(0,std::min(18,siegeHullStage>=0?siegeHullStage:run.stage));
  const int img=PORTRAIT_TURRET_FIRST_IMG+stage;if(!sprite[img])LoadImg(img);if(!sprite[img])return;
+ drawnPortraitTurret=img;
  const auto dim=sprite[img]->getTexture()->getContentSizeInPixels();const Box b=castleCannonBox(l);
  if(stage==0){
   using namespace StarterCastleRig;
@@ -257,65 +235,58 @@ bool lobbyDebugTouch(const Layout& l,float x,float y){
  return true;
 }
 int drawnFrontRimParts=0;
+int drawnPortraitInterior=-1;
+int drawnPortraitWheelBaseline=0;
+Box drawnPortraitInteriorBounds={0,0,0,0};
+Box portraitInteriorBox(int castle,const Box& hull){
+ const int img=PORTRAIT_INTERIOR_FIRST_IMG+castle;if(!sprite[img])LoadImg(img);
+ if(!sprite[img])return hull;
+ const auto size=sprite[img]->getTexture()->getContentSizeInPixels();
+ const int h=(int)std::round(hull.w*size.height/size.width);
+ return {hull.x,hull.y-hull.h+h,hull.w,h};
+}
 Box portraitHabitatBounds(int castle,const Box& hull){
- if(castle==0)return {hull.x+(int)(15*hull.w/256.f),hull.y-(int)(85*hull.h/190.f),(int)(135*hull.w/256.f),(int)(72*hull.h/190.f)};
+ if(castle==0){const Box b=portraitInteriorBox(castle,hull);return {b.x+(int)(b.w*.14f),b.y-(int)(b.h*.46f),(int)(b.w*.70f),(int)(b.h*.28f)};}
  return {hull.x+(int)(hull.w*.16f),hull.y-(int)(hull.h*.25f),(int)(hull.w*.62f),(int)(hull.h*.57f)};
 }
 int portraitHabitatFloors(int castle){return castle==0?1:std::max(2,std::min(5,PortraitCastleArt::Sizes[castle].h/180));}
 void drawPortraitHabitatShell(int castle,const Box& hull){
- portraitImage(portraitHullImage(castle),hull);
- // Only the starter has a registered cutaway for the current exterior series.
- // Legacy rectangular rooms belong to the previous hulls, not these facades.
- if(castle!=0)return;
- if(starterInteriorReveal<=0)return;
- const Box b=portraitHabitatBounds(castle,hull);const int floors=portraitHabitatFloors(castle);
- const int cx=clipX,cy=clipY,cx2=clipX2,cy2=clipY2;
- clipX=std::max(cx,b.x);clipX2=std::min(cx2,b.x+b.w);clipY=std::min(cy,b.y-b.h+(int)(b.h*starterInteriorReveal));clipY2=std::max(cy2,b.y-b.h);
- if(clipX2>clipX&&clipY>clipY2){
-  MemRect(b.x,b.y,b.w,b.h,0x191720);
-  const int img=MERGE_REBUILD_ROOMS_IMG+std::min(9,castle/2);if(!sprite[img])LoadImg(img);
-  if(sprite[img]){const auto sz=sprite[img]->getTexture()->getContentSizeInPixels();
-   for(int floor=0;floor<floors;++floor){
-    const auto f=MergeCastleTransition::RoomFrame(floor%4,castleRoomLevel(std::min(9,castle),floor%4),(int)sz.width,(int)sz.height);
-    const int top=b.y-floor*b.h/floors,h=b.h/floors;const float z=std::min(b.w/(float)f.w,h/(float)f.h);
-    MemRect(b.x,top,b.w,h,0x37333B);
-    for(int beam=0;beam<5;++beam)MemRect(b.x+beam*b.w/4,top,2,h,0x49434A);
-    MemRect(b.x,top,b.w,4,0x77583C);
-    artCut(img,{f.x,f.y,f.w,f.h},{b.x+(int)((b.w-f.w*z)*.5f),top-(int)(h-f.h*z),(int)(f.w*z),(int)(f.h*z)});
-    MemRect(b.x,top-h+2,b.w,2,0x77583C);
-   }
-  }
- }
- clipX=cx;clipY=cy;clipX2=cx2;clipY2=cy2;
-}
-void drawPortraitStarterHull(const Box& hull,bool mirror){
- const bool forced=lobbyDepartureAge<0&&portraitHullImage(0)==PORTRAIT_STARTER_INTERIOR_IMG;
+ const bool forced=lobbyDepartureAge<0&&portraitHullImage(castle)==PORTRAIT_INTERIOR_FIRST_IMG+castle;
  const float reveal=forced?1.f:std::max(0.f,std::min(1.f,starterInteriorReveal));
- if(reveal<=0||reveal>=1){portraitImage(reveal>=1?PORTRAIT_STARTER_INTERIOR_IMG:PORTRAIT_CASTLE_FIRST_IMG,hull,mirror);return;}
- const float z=hull.w/256.f;const int shown=(int)(72*reveal);
- auto piece=[&](int img,int x,int y,int w,int h){if(w<=0||h<=0)return;
-  turretPart(img,x,y,w,h,{hull.x+(int)((mirror?256-x-w:x)*z),hull.y-(int)(y*z),(int)(w*z),(int)(h*z)},0,.5f,.5f,mirror);
- };
- piece(PORTRAIT_CASTLE_FIRST_IMG,0,0,256,85);piece(PORTRAIT_CASTLE_FIRST_IMG,0,157,256,33);
- piece(PORTRAIT_CASTLE_FIRST_IMG,0,85,15,72);piece(PORTRAIT_CASTLE_FIRST_IMG,150,85,106,72);
- piece(PORTRAIT_CASTLE_FIRST_IMG,15,85,135,72-shown);
- piece(PORTRAIT_STARTER_INTERIOR_IMG,15,157-shown,135,shown);
+ const int alpha=m_lgrpAlpha;
+ const bool lens=starterInteriorFinger>=0&&starterInteriorAxis!=2&&starterInteriorReveal<.999f&&lobbyDepartureAge<0&&!forced;
+ const float radius=(72.f+48.f*std::min(1.f,starterInteriorHeld/3.f))*DX/640.f;
+ if(reveal<1){
+  SetAlpha(lens?alpha:(int)(alpha*(1-reveal)));
+  SetCastleRevealMask(lens,starterInteriorTouchX,starterInteriorTouchY,radius,true);
+  portraitImage(PORTRAIT_CASTLE_FIRST_IMG+castle,hull);SetCastleRevealMask(false);
+ }
+ if(reveal>0||lens){
+  const Box b=portraitInteriorBox(castle,hull);SetAlpha(lens?alpha:(int)(alpha*reveal));
+  SetCastleRevealMask(lens,starterInteriorTouchX,starterInteriorTouchY,radius,false);
+  portraitImage(PORTRAIT_INTERIOR_FIRST_IMG+castle,b);SetCastleRevealMask(false);
+  drawnPortraitInterior=PORTRAIT_INTERIOR_FIRST_IMG+castle;drawnPortraitInteriorBounds=b;
+ }
+ SetAlpha(alpha);
+ return;
 }
 void drawCastleHull(const Layout& l,bool combat){
  (void)combat;const int c=std::max(0,std::min(18,siegeHullStage>=0?siegeHullStage:run.stage));
  castleWheelTravel=castleScrollSeconds*110.f*l.scale;
  const Box hull=portraitCastleBox(l);
+ drawnPortraitWheelBaseline=hull.y-hull.h;drawnPortraitTurret=-1;
  if(!nativeTitleBodyOnly&&!portraitAssembledSample())drawPortraitFarWheels(c,hull,portraitCastleZoom(l),castleWheelTravel,siegeActive);
- if(c==0&&portraitLobbyWorld()&&!titleCampOnly)drawPortraitStarterHull(hull,siegeActive);
- else if(portraitLobbyWorld()&&!titleCampOnly)drawPortraitHabitatShell(c,hull);
+ drawnPortraitInterior=-1;
+ if(portraitLobbyWorld()&&!titleCampOnly)drawPortraitHabitatShell(c,hull);
  else portraitImage(portraitHullImage(c),hull,siegeActive);
  if(portraitAssembledSample())return;
  if(!nativeTitleBodyOnly){
   const int img=PORTRAIT_WHEEL_FIRST_IMG+c;if(!sprite[img])LoadImg(img);
   if(sprite[img]){const auto sz=sprite[img]->getTexture()->getContentSizeInPixels();const float z=portraitCastleZoom(l);
-   const int count=c<5?2:3;for(int i=0;i<count;++i){const float at=count==2?(i?PortraitCastleArt::FrontWheelAt(c):.17f):(.15f+.345f*i);
+   const int count=PortraitCastleArt::WheelCount(c);for(int i=0;i<count;++i){const float at=PortraitCastleArt::WheelAt(c,i);
     RotateImage((int)sz.width,(int)sz.height,0,0,hull.x+(int)(hull.w*(siegeActive?1.f-at:at)),hull.y-hull.h-(int)(sz.height*z*.08f),false,(siegeActive?-1.f:1.f)*castleWheelAngle(sz.height*z*.5f),0,0,z,cocos2d::Vec2(.5f,.5f),sprite[img],img);}}
  }
+ // The turret and its carriage remain an independent foreground layer in both views.
  drawCastleCannon(l,c,siegeActive);
 }
 

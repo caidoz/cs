@@ -90,3 +90,36 @@ void main(){
 })");if(program)program->retain();}
  auto* state=CampEffectState(target,program);if(state){state->setUniformFloat("uTime",time);state->setUniformFloat("uFront",foreground?1.f:0.f);}
 }
+
+// Scoped circular cutaway uses native sprite bounds, independent of display density.
+static bool castleRevealMaskActive=false,castleRevealMaskExterior=false;
+static cocos2d::Vec2 castleRevealMaskCenter;
+static float castleRevealMaskRadius=0;
+void SetCastleRevealMask(bool enabled,float x,float y,float radius,bool exterior){
+ castleRevealMaskActive=enabled;castleRevealMaskCenter={x,y};castleRevealMaskRadius=radius;castleRevealMaskExterior=exterior;
+}
+static void ApplyCastleRevealMask(cocos2d::Sprite* target){
+ if(!castleRevealMaskActive)return;
+ static cocos2d::GLProgram* program=nullptr;
+ if(!program){program=cocos2d::GLProgram::createWithByteArrays(cocos2d::ccPositionTextureColor_noMVP_vert,R"(
+#ifdef GL_ES
+precision mediump float;
+#endif
+varying vec4 v_fragmentColor;
+varying vec2 v_texCoord;
+uniform vec4 uUv;
+uniform vec4 uBounds;
+uniform vec4 uCircle;
+void main(){
+ vec2 uv=(v_texCoord-uUv.xy)/uUv.zw;
+ vec2 world=uBounds.xy+vec2(uv.x,1.0-uv.y)*uBounds.zw;
+ float mask=1.0-smoothstep(uCircle.z-1.0,uCircle.z+1.0,distance(world,uCircle.xy));
+ if(uCircle.w>.5)mask=1.0-mask;
+ gl_FragColor=texture2D(CC_Texture0,v_texCoord)*v_fragmentColor*mask;
+})");if(program)program->retain();}
+ auto* state=CampEffectState(target,program);if(!state)return;
+ const auto r=target->getTextureRect();auto* t=target->getTexture();const auto b=target->getBoundingBox();
+ state->setUniformVec4("uUv",{r.origin.x/t->getPixelsWide(),r.origin.y/t->getPixelsHigh(),r.size.width/t->getPixelsWide(),r.size.height/t->getPixelsHigh()});
+ state->setUniformVec4("uBounds",{b.origin.x,b.origin.y,b.size.width,b.size.height});
+ state->setUniformVec4("uCircle",{castleRevealMaskCenter.x,castleRevealMaskCenter.y,castleRevealMaskRadius,castleRevealMaskExterior?1.f:0.f});
+}

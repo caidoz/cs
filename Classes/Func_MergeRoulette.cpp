@@ -53,6 +53,7 @@ void MergeTutorialBeginBattle();void MergeTutorialRememberAllyPlate(int x,int y,
 #include <ctime>
 
 void SetLobbyCampLight(bool enabled,float x,float y,float radius,float time);
+void SetCastleRevealMask(bool enabled,float x=0,float y=0,float radius=0,bool exterior=false);
 void ApplyLobbyFireEffect(cocos2d::Sprite* target,float time,bool foreground);
 namespace {
 using namespace MergeRoulette;
@@ -344,7 +345,9 @@ int mergeFlash=0,mergeFlashDuration=1;
 Box mergeBox={0,0,0,0};
 int mergeShownLevel=0;
 float portraitCameraY=0.f;
-float starterInteriorReveal=1.f;
+float starterInteriorReveal=0.f;
+float starterInteriorHeld=0.f,starterInteriorTouchX=0.f,starterInteriorTouchY=0.f;
+void advanceCastleInteriorHold(float dt){starterInteriorHeld+=std::max(0.f,dt);if(starterInteriorHeld>=3.f)starterInteriorReveal=1.f;}
 float lobbyDepartureAge=-1.f;bool lobbyDepartureCommit=false,lobbySkipDeparture=false,lobbyDepartureCharge=false;
 float lobbyRecallX[4]={},lobbyRecallY[4]={};
 int baseCampReviewStage=0;
@@ -369,6 +372,9 @@ Box originalSlotCogBox(const Box& b,int side){
  return {x-d/2,y+d/2,d,d};
 }
 float portraitCastleZoom(const Layout& l);
+float drawnBattleHeroZoom=0,drawnBattleCompanionZoom=0;
+Box drawnEnemyHeartIcon={0,0,0,0},drawnBattleEnergyBounds={0,0,0,0};
+int drawnBattleViewportTop=0;
 Layout layout() {
     Layout l={};l.scale=DX/640.f;const float s=l.scale;
     const auto p=PortraitGame::battle(DX,DY,run.shape.height,run.shape.width);
@@ -377,7 +383,7 @@ Layout layout() {
     l.attack={margin+bw+gap,p.actionTop,bw,bh};
     l.spin={margin+2*(bw+gap),p.actionTop,bw,bh};
     if(siegeActive&&!Siege::swapped){l.cannon={0,0,0,0};l.attack.x=DX/2-bw-gap/2;l.spin.x=DX/2+gap/2;}
-    l.heart={(int)(110*s),p.energyTop,(int)(360*s),(int)(22*s)};
+    l.heart={(DX-(int)(292*s))/2,p.energyTop,(int)(360*s),(int)(22*s)};
     l.slot={(DX-p.slotWidth)/2,p.slotTop,p.slotWidth,p.slotHeight};
     l.lever=originalSlotCogBox(l.slot,1);
     l.cell=p.cell;l.cellH=p.cell;
@@ -1232,6 +1238,7 @@ bool beginSpinLanding(){
     spinLandingPlan=run;spinDrops.clear();
     const auto source=run.tray;
     for(const auto& item:source){
+        if(spinDrops.size()>=3)break; // Legacy overflow advances through the three visible result slots.
         const auto before=spinLandingPlan.board;
         if(!spinLandingPlan.scatterPlace(0)){
             if(!spinDrops.empty())break;
@@ -1534,6 +1541,12 @@ long long waveAttack(int stage,int wave) {
 void drawPortraitStats(const Box&,long long,long long,long long,long long);
 void drawPortraitEnemyHealth(const Layout&);
 void drawPortraitEnergy(const Layout&);
+void drawBattleHeaderBackdrop(const Layout& l) {
+    const int alpha=m_lgrpAlpha,body=(int)(60*l.scale),fade=std::max(1,(int)(16*l.scale));
+    SetAlpha(alpha/2);mergeRect(0,DY,DX,body,0x030A13);
+    for(int i=0;i<fade;++i){SetAlpha(alpha*(fade-i)/(2*fade));mergeRect(0,DY-body-i,DX,1,0x030A13);}
+    SetAlpha(alpha);
+}
 void drawWaveHeader(const Layout& l) {
     const float s=l.scale;const Box header={(int)(60*s),DY-(int)(8*s),(int)(410*s),(int)(58*s)};
     MergeTutorialRememberHeader(header.x,header.y,header.w,header.h);
@@ -2043,7 +2056,8 @@ void drawWorld(const Layout& l,bool combat) {
     // Lobby and title are a parked campsite; only battle travel moves wheels and rails.
     if(!nativeTitleIsolate){const int c=std::max(0,std::min(18,siegeHullStage>=0?siegeHullStage:run.stage));
      portraitNight(l.ground,portraitCastleZoom(l),combat?l.arenaBottom+(int)(8*s):0);}
-    const int viewportTop=DY-(int)(72*s),viewportBottom=l.arenaBottom+(int)(8*s);
+    const int viewportTop=combat?DY:DY-(int)(72*s),viewportBottom=l.arenaBottom+(int)(8*s);
+    if(combat)drawnBattleViewportTop=viewportTop;
     SetSectionClip(0,viewportTop,DX,std::max(1,viewportTop-viewportBottom),false);
     const float savedMotionX=uiSceneMotionX;
     if(titleCampOnly){const Box approach=portraitCastleBox(l);uiSceneMotionX=-(approach.x+approach.w+20*l.scale)*(1.f-TitleEntranceEase(0.f,2.4f));}
@@ -2058,7 +2072,10 @@ void drawWorld(const Layout& l,bool combat) {
     //이제 대포 앞(오른쪽)부터가 사람 자리다. 히어로가 맨 앞에 서고 동료가
     //그 뒤로 붙되, 마지막 사람이 포신을 넘지 않도록 간격만 좁힌다.
     const Box gun=castleCannonBox(l);
-    const int deckBack=std::max((int)(DX*.36f),gun.x+gun.w+(int)(20*s));
+    // The barrel overhangs above the formation. Reserve the chassis edge at
+    // foot level so enlarging the castle does not pile all companions together.
+    const Box hull=portraitCastleBox(l);
+    const int deckBack=std::max((int)(DX*.36f),hull.x+hull.w+(int)(18*s));
     //공성전: 성이 거울로 서고 성주가 오른쪽에 있으므로 내 히어로는 왼쪽에서 올라탄다.
     //둘은 데크 가운데서 마주 선다(내 쪽 24%, 상대 42%). 상대 턴에 런을 맞바꾸면
     //hero 가 성주이므로 자리와 방향도 같이 바뀐다.
@@ -2074,7 +2091,7 @@ void drawWorld(const Layout& l,bool combat) {
     const int ey=railBossScene()?combatRailY():hy;
     const float deckY=(float)hy;
     allyBodyX=hx;allyBodyY=hy+(int)(40*s);allyBodyKnown=true;   //히어로 그림은 x 가 몸통 가운데다
-    SetSectionClip(0,DY-(int)(72*s),DX,DY-(int)(72*s)-l.arenaBottom-(int)(8*s),false);
+    SetSectionClip(0,viewportTop,DX,viewportTop-l.arenaBottom-(int)(8*s),false);
     // Submit all monsters before allies, so weapons and allied effects stay in front.
     if(combat&&siegeActive&&!nativeTitleIsolate){Siege::drawFoe(l,ex,ey);}   //공성전: 몬스터 자리에 상대 성주(DrawPlayer, 가운데 앵커)
     else if(combat&&!nativeTitleIsolate) {
@@ -2179,10 +2196,11 @@ void drawWorld(const Layout& l,bool combat) {
         if(enemyBodyX<enemyX-(railBossScene()?600:220)*s||enemyBodyX>enemyX+60*s||enemyBodyY<ey||enemyBodyY>ey+(railBossScene()?700:260)*s){enemyBodyX=enemyX-(int)(30*s);enemyBodyY=ey+(int)(40*s);}
     }else{enemyBodyX=enemyX;enemyBodyY=ey+(int)(40*s);}
     enemyBodyKnown=showMonster;
-    SetSectionClip(0,DY-(int)(72*s),DX,DY-(int)(72*s)-l.arenaBottom-(int)(8*s),false);
+    SetSectionClip(0,viewportTop,DX,viewportTop-l.arenaBottom-(int)(8*s),false);
     }
     //히어로는 판의 주인이다. 데크에서 한눈에 찾아야 하므로 동료보다 크다(1.5배).
-    float heroZoom=std::max(.3f*s,std::min(.90f*s,(DY-hy-90*s)/125.f));
+    float heroZoom=PortraitGame::battleActorScale(DX,PortraitCastleArt::Sizes[18].w);
+    drawnBattleHeroZoom=heroZoom;
 
     //---- 지금 치는 블록 ----
     //
@@ -2285,7 +2303,7 @@ void drawWorld(const Layout& l,bool combat) {
             if(cmfLoaded[cmf]!=cmf)CmfRead(cmf,cmf);
 
             // All companions share the same shadow baseline; only horizontal spacing changes.
-            const float z=MergeCombat::companionZoom(heroZoom);
+            const float z=MergeCombat::companionZoom(heroZoom);drawnBattleCompanionZoom=z;
             const int pose=mine?crewAttackMotion(npc,cmf,fireT):-1;
             const int idle=crewIdleMotion(seen[k],ticks/6+k*3);
             const int motion=pose>=0?pose:idle>=0?idle:crewPos[npc*5];
@@ -2323,7 +2341,7 @@ void drawWorld(const Layout& l,bool combat) {
             }
         }
         if(combat&&deckMerge.time.running()) {
-            const float z=MergeCombat::companionZoom(heroZoom);
+            const float z=MergeCombat::companionZoom(heroZoom);drawnBattleCompanionZoom=z;
             if(deckMerge.time.converging())for(int i=0;i<2;++i){
                 const int crew=deckMerge.inputs[i].crew;
                 if(crew<0||crew>=64)continue;
@@ -2370,7 +2388,7 @@ void drawWorld(const Layout& l,bool combat) {
 
 }
 void leaveBattle(bool abandon){
-    starterInteriorReveal=1;lobbyDepartureAge=-1;lobbyDepartureCharge=false;
+    starterInteriorReveal=0;starterInteriorFinger=-1;starterInteriorHeld=0;lobbyDepartureAge=-1;lobbyDepartureCharge=false;
     if(abandon){robin.mergeRouletteRun[0]=0;SaveGame();RewardPopup::closeNow();}
     else save();
     quitPromptOpen=false;quitPromptFinger=quitPromptChoice=exitPromptFinger=-1;
@@ -2446,7 +2464,7 @@ void finishCombatTurn() {
     action=CombatAction();animation=0;turretFire.age=-1;
     if(attackWeaponLevel)showAttackWeapon(0);
     if(run.lives>previousLives)combatNumbers.push_back({"+"+std::to_string(run.lives-previousLives),DX*.66f,(float)(layout().ground+68*DX/640.f),0x8DFFA2});
-    run.setShape(castleShape(run.stage));
+    run.setBattleShape(run.stage);
     // Equipment restores the local supply; a kill always fills all five slots.
     run.battleEnergy=std::min((int)Run::BattleEnergyMax,run.battleEnergy+hearts);
     if(killed){refillFrom=heartDisplay;refillElapsed=-1.f;refillPending=true;run.refillBattleEnergy();heartBlink=0;spentHeart=-1;}
@@ -2987,7 +3005,7 @@ void reviewStep(const Layout& l) {
         if(phase==0){
             const char* value=std::getenv("CS_COVER_STYLE_STAGE");
             run=Run();run.roster=&roster;run.choosing=false;run.stage=value?std::max(0,std::min(9,std::atoi(value)-1)):1;
-            run.setShape(castleShape(run.stage));run.enemyHp=run.enemyMax=waveHp(run.stage,0);
+            run.setBattleShape(run.stage);run.enemyHp=run.enemyMax=waveHp(run.stage,0);
             automaticMerge=AutomaticMerge();pendingPass=false;picked=finger=-1;
             entryElapsed=MergeCastleTransition::Duration;introElapsed=-1;animation=0;spinFlightFrame=-1;
             waveTransition=MergeCombat::WaveTransition();action=CombatAction();
@@ -3300,7 +3318,7 @@ void reviewStep(const Layout& l) {
             debugFirstBoss=false;reviewEnemyNpc=-1;entryElapsed=introElapsed=-1;startEventElapsed=-1;
             waveTransition=MergeCombat::WaveTransition();enemyTurn=EnemyTurn();action=CombatAction();animation=0;
             pendingPass=false;run.tray.clear();run.board.clear();run.attacking=run.choosing=run.lost=false;
-            run.stage=sample<2?1:sample-2;run.wave=sample<2?1:14;run.setShape(castleShape(run.stage));
+            run.stage=sample<2?1:sample-2;run.wave=sample<2?1:14;run.setBattleShape(run.stage);
             run.battleEnergy=sample==0?0:5;run.lives=sample==1?0:run.maxLives;
             if(sample==1)run.lost=true;
             run.enemyHp=run.enemyMax=waveHp(run.stage,run.wave);MonsterBoard::build(run.stage,run.wave,combatEnemyNpc());
@@ -4022,7 +4040,7 @@ void reviewStep(const Layout& l) {
             Shape shape=castleShape(c);int count=0;
             for(int y=0;y<shape.height;++y)for(int x=0;x<shape.width;++x)count+=shape.contains(x,y);
             Run check=run;
-            growth=growth&&shape.valid()&&count==16+2*c&&count>=previous&&check.setShape(shape)&&check.board.size()==3;
+            growth=growth&&shape.valid()&&count==16+c&&count>=previous&&check.setShape(shape)&&check.board.size()==3;
             previous=count;
         }
         reviewTrace(growth&&previous==34?"PASS castle grids grow from 16 to 34 playable cells":"FAIL castle grid growth");
@@ -4120,10 +4138,10 @@ void reviewStep(const Layout& l) {
         }
         reviewTrace(!run.attacking&&retained&&run.spins>=10?"PASS sequential actions preserve every board element":"FAIL retained inventory");
     }
-    if(a==5) {run.stage=4;run.setShape(castleShape(run.stage));run.enemyHp=run.enemyMax=hpFor(run.stage,0);}
+    if(a==5) {run.stage=4;run.setBattleShape(run.stage);run.enemyHp=run.enemyMax=hpFor(run.stage,0);}
     if(a==6){reviewLayout(l,"10-castle5-nine-columns");reviewCapture("10-castle5-nine-columns");
         reviewTrace(l.cell==(int)(64*l.scale)&&l.cellH==l.cell&&l.board.w==6*l.cell?"PASS expanded castle grid retains fixed 64px cells":"FAIL expanded grid size");}
-    if(a==10) {run.stage=9;run.setShape(castleShape(run.stage));run.enemyHp=run.enemyMax=hpFor(run.stage,0);}
+    if(a==10) {run.stage=9;run.setBattleShape(run.stage);run.enemyHp=run.enemyMax=hpFor(run.stage,0);}
     if(a>=12&&!reviewCapturePending&&!reviewFinalCapture) {
         reviewFinalCapture=true;reviewLayout(l,"05-castle10");reviewCapture("05-castle10");
     } else if(a>=13&&reviewFinalCapture&&!reviewCapturePending&&reviewCaptureQueue.empty()) {
@@ -4303,7 +4321,7 @@ void MergeRouletteBegin(bool resume) {
     run.setVitals(stats.heroHealth,stats.heroArmor);
     run.enemyAttack=waveAttack(run.stage,run.wave);
     if(migrateVitals&&run.attacking){const Effects f=run.forecast(stats);run.effects.protect=f.protect;run.effects.charge=f.charge;run.settleGuard();}
-    run.setShape(castleShape(run.stage));
+    run.setBattleShape(run.stage);
     bool starting=run.choosing&&run.start(pool,treeWeights,review&&std::getenv("CS_MERGE_ARRIVAL_REVIEW"));
     // Keep the three free starters committed while the opening reels present them.
     automaticMerge=AutomaticMerge();pendingPass=false;
@@ -4361,12 +4379,15 @@ bool MergeRouletteLobbySceneDraw(bool backdropOnly) {
     const int previewCastle=LobbyCastleDebugCastle();
     run.stage=std::max(0,std::min(18,previewCastle>=0?previewCastle:(int)robin.castle));
     if(review&&!std::getenv("CS_PORTRAIT_DEBUG19")&&std::getenv("CS_PORTRAIT_LOBBY")&&std::getenv("CS_PORTRAIT_STAGE"))run.stage=std::max(0,std::min(18,std::atoi(std::getenv("CS_PORTRAIT_STAGE"))));
-    run.setShape(castleShape(run.stage));
+    run.setBattleShape(run.stage);
     static float idleRemainder=0;
     if(!(review&&reviewCapturePending)){
         idleRemainder+=std::min(.1f,std::max(0.f,cocos2d::Director::getInstance()->getDeltaTime()));
         const int elapsed=(int)((idleRemainder+.000001f)*60.f);
         ticks+=elapsed;idleRemainder-=elapsed/60.f;
+    }
+    if(!titleCampOnly&&starterInteriorFinger>=0&&starterInteriorAxis!=2&&lobbyDepartureAge<0&&!(review&&reviewCapturePending)){
+        advanceCastleInteriorHold(std::min(.1f,std::max(0.f,cocos2d::Director::getInstance()->getDeltaTime())));
     }
     if(lobbyDepartureAge>=0){
         const float dt=review&&reviewCapturePending?0.f:std::min(.05f,std::max(0.f,cocos2d::Director::getInstance()->getDeltaTime()));
@@ -4744,7 +4765,7 @@ void MergeRouletteDraw() {
         if(mistReviewSample>=35)return;
         cocos2d::Director::getInstance()->setDisplayStats(false);
         castleScrollSeconds=mistReviewSample*23.5f; // Inspect different repeat boundaries in live captures.
-        run.stage=mistReviewSample<20?mistReviewSample/2:(mistReviewSample-20)%10;run.setShape(castleShape(run.stage));
+        run.stage=mistReviewSample<20?mistReviewSample/2:(mistReviewSample-20)%10;run.setBattleShape(run.stage);
         run.attacking=false;run.choosing=false;introElapsed=-1;entryElapsed=-1;animation=0;
         const Layout fixedGrid=layout();
         if(fixedGrid.cell!=(int)(64*fixedGrid.scale)||fixedGrid.cellH!=fixedGrid.cell||run.shape.width>8||
@@ -4852,6 +4873,7 @@ void MergeRouletteDraw() {
     }
     const int hx=(int)(DX*.57f),ex=(int)(DX*.85f),ey=l.ground;
     UnSectionClip(false);MemRect(0,l.arenaBottom+(int)(6*s),DX,l.arenaBottom+(int)(6*s),0x030A13);
+    drawBattleHeaderBackdrop(l);
     if(siegeActive)Siege::drawHeader(l);else drawWaveHeader(l);
     if(run.attacking&&!siegeActive) {
         const char* phase=action.index>=0&&run.shots[action.index].block.family<0?(turretFire.type==TurretAttack::Magnetic?(action.time.elapsed<action.time.release?u8"\uc911\uc790\uae30\ud30c \u00b7 \ucda9\uc804":u8"\uc911\uc790\uae30\ud30c \u00b7 \ubc1c\uc0ac"):turretFire.type==TurretAttack::Laser?(action.time.elapsed<action.time.release?u8"\ub808\uc774\uc800 \u00b7 \ucda9\uc804":u8"\ub808\uc774\uc800 \u00b7 \ubc1c\uc0ac"):turretFire.type==TurretAttack::Missiles?u8"\uc720\ub3c4\ubbf8\uc0ac\uc77c \u00b7 \ubc1c\uc0ac":turretFire.type==TurretAttack::Stone?u8"\ud22c\uc11d \u00b7 \ubc1c\uc0ac":u8"\ud3ec\uaca9"):enemyTurn.endShown?"턴 종료":enemyTurn.started?"적 반격":run.passing?"턴 넘김 · 적의 차례":

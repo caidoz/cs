@@ -17,7 +17,7 @@
 
 namespace MergeRoulette {
 enum { Width=12, Height=6, Cells=Width*Height, MaxLevel=BLOCK_LV_MAX, SpinLimit=BOARD_SPINS,
-       Roles=4, Sword=4, Armor=5, Boots=6, Helm=7, Gloves=8, Pants=9, FamilyCount=10, GearCount=6, WavesPerStage=15, RosterCell=8, SaveVersion=15 };
+       Roles=4, Sword=4, Armor=5, Boots=6, Helm=7, Gloves=8, Pants=9, FamilyCount=10, GearCount=6, WavesPerStage=15, RosterCell=8, SaveVersion=16 };
 inline int BossTier(int wave) {return wave==4?1:wave==9?2:wave==14?3:0;}
 inline bool DefensiveGear(int family) {return family==Armor||family==Helm||family==Pants;}
 struct Shape {
@@ -32,22 +32,13 @@ struct Shape {
     bool contains(int x,int y) const {return x>=0&&y>=0&&x<width&&y<height&&(rows[y]&(1u<<x));}
 };
 enum Trait { Expose, Inspire, Strike, Volley, Chill, Burn };
-// Inventory grows monotonically to the full 8 x 6 equipment board.
+// Four fixed rows: start at4x4 and add one cell per castle upgrade, capped at9x4.
 inline Shape BattleShape(int stage) {
     Shape out;for(auto& row:out.rows)row=0;
-    const int st=std::max(0,std::min(9,stage));
-    static const int widths[10]={5,5,6,7,8,8,8,8,8,8};
-    static const int heights[10]={4,4,4,4,4,5,5,6,6,6};
-    // The centered four-row core grows sideways first, then upward. Never
-    // shrink a row when a castle changes; saved multi-cell items must fit.
-    static const unsigned masks[10][6]={
-      {31,31,14,14,0,0},{31,31,31,31,0,0},
-      {63,63,63,63,0,0},{127,127,127,127,0,0},
-      {255,255,255,255,0,0},{60,255,255,255,255,0},
-      {255,255,255,255,255,0},{60,255,255,255,255,255},
-      {126,255,255,255,255,255},{255,255,255,255,255,255}};
-    out.width=widths[st];out.height=heights[st];
-    for(int y=0;y<6;++y)out.rows[y]=masks[st][y];
+    const int extra=std::max(0,std::min(20,stage));
+    out.width=4+(extra+3)/4;out.height=4;
+    for(int y=0;y<4;++y)out.rows[y]=15;
+    for(int i=0;i<extra;++i)out.rows[3-i%4]|=1u<<(4+i/4);
     return out;
 }
 struct Block {
@@ -295,6 +286,29 @@ struct Run {
         *this=next;return true;
     }
     //그 칸의 블록. 겹쳐 있으면 맨 위(뒤 번호)를 준다 - 보이는 것이 집히고, 보이는 것 위에 합쳐진다.
+    // Shrinking old six-row saves keeps every excess item in the existing result
+    // queue. The three visible slots advance as items are placed or discarded.
+    bool setBattleShape(int castleStage) {
+        const Shape wanted=BattleShape(castleStage);
+        if(setShape(wanted))return true;
+        if(attacking)return false;
+        Run next=*this;next.shape=wanted;next.board.clear();
+        auto items=board;
+        std::stable_sort(items.begin(),items.end(),[](const Block& a,const Block& b){return Wide(a)*Tall(a)>Wide(b)*Tall(b);});
+        for(Block b:items){
+            bool placed=false;
+            if(next.fits(b)){next.board.push_back(b);continue;}
+            for(int turn=0;turn<2&&!placed;++turn){
+                for(int y=0;y<wanted.height&&!placed;++y)for(int x=0;x<wanted.width&&!placed;++x){
+                    b.x=x;b.y=y;if(next.fits(b)){next.board.push_back(b);placed=true;}
+                }
+                if(!placed)b.rot=!b.rot;
+            }
+            if(!placed){b.x=b.y=-1;next.tray.push_back(b);}
+        }
+        if(next.tray.size()>Cells+3)return false;
+        *this=next;return true;
+    }
     int at(int x,int y) const {
         for(int i=(int)board.size()-1;i>=0;--i) {
             const Block& b=board[i];
@@ -405,7 +419,7 @@ struct Run {
         if(choosing||attacking||lost)return false;
         for(int trayPass=0;trayPass<2;++trayPass){
             const auto& items=trayPass?tray:board;
-            for(int i=0;i<(int)items.size();++i)for(int j=0;j<(int)board.size();++j){
+            for(int i=0;i<(int)items.size()&&(!trayPass||i<3);++i)for(int j=0;j<(int)board.size();++j){
                 if(!trayPass&&i<=j)continue;
                 if(!mergeable(items[i],board[j]))continue;
                 Run trial=*this;
@@ -877,7 +891,7 @@ struct Run {
     bool decode(const std::string& text) {
         Run r; r.roster=roster; std::istringstream in(text); std::string magic;int version;
         // v7's accessory family (6) becomes boots, preserving the run and utility effects.
-        if(!(in>>magic>>version)||magic!="MR3"||(version!=SaveVersion&&version!=14&&version!=13&&version!=12&&version!=11&&version!=10&&version!=9&&version!=8&&version!=7)) return false;
+        if(!(in>>magic>>version)||magic!="MR3"||(version!=SaveVersion&&version!=15&&version!=14&&version!=13&&version!=12&&version!=11&&version!=10&&version!=9&&version!=8&&version!=7)) return false;
         if(!(in>>r.rng>>r.selected>>r.spins>>r.lives>>r.maxLives>>r.wave>>r.stage>>r.enemyHp>>r.enemyMax
              >>r.dot>>r.dotTurns>>r.skipTurns>>r.choosing>>r.lost>>r.drafted)) return false;
         if(!r.rng || r.selected<0 || r.selected>=FamilyCount || r.spins<0 || r.spins>100
@@ -890,7 +904,7 @@ struct Run {
         for(unsigned& row:r.shape.rows)if(!(in>>row))return false;
         if(!r.shape.valid())return false;
         for(int list=0;list<2;++list) {
-            int count;if(!(in>>count)||count<0||count>(list?3:Cells)) return false;
+            int count;if(!(in>>count)||count<0||count>(list?(version>=16?Cells+3:3):Cells)) return false;
             for(int i=0;i<count;++i) {
                 Block b;int rot=0;if(!(in>>b.family>>b.level>>b.crew>>b.x>>b.y>>rot)||b.family<0||b.family>=FamilyCount||b.level<1||b.level>MaxLevel||!crewOk(b)) return false;b.rot=rot!=0;
                 if(version>=14){

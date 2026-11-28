@@ -23,6 +23,7 @@ int main(int argc,char**) {
         r.lost=false;r.attacking=true;assert(!r.finishSupplies()&&!r.lost);
         r.attacking=false;
         r.refillBattleEnergy();assert(r.battleEnergy==5);
+        std::string v15=r.encode();v15.replace(4,2,"15");Run prior;assert(prior.decode(v15)&&prior.battleEnergy==5);
         assert(!r.finishSupplies()&&!r.lost);
         std::string old=r.encode();old.erase(old.find_last_of(' '));old.replace(4,2,"14");
         Run migrated;assert(migrated.decode(old)&&migrated.battleEnergy==5);
@@ -46,23 +47,20 @@ int main(int argc,char**) {
         std::cout<<"PASS owned gear exact grade rates, source identity, footprint, merge and attack save roundtrip\n";
     }
     Shape previous=BattleShape(0);
-    for(int stage=0;stage<10;++stage){
+    for(int stage=0;stage<25;++stage){
         const Shape shape=BattleShape(stage);assert(shape.valid());int cells=0;
-        // Boards grow outward from the center, so compare cells in centered coordinates.
-        const int prevOff=(10-previous.width)/2,off=(10-shape.width)/2;
         for(int y=0;y<Height;++y)for(int x=0;x<Width;++x){
             cells+=shape.contains(x,y);
-            if(stage&&previous.contains(x,y))assert(shape.contains(x+prevOff-off,y+shape.height-previous.height));
+            if(stage&&previous.contains(x,y))assert(shape.contains(x,y));
         }
-        const int expected[10]={16,20,24,28,32,36,40,44,46,48};
-        assert(cells==expected[stage]&&shape.width<=8&&shape.height<=6&&shape.width>shape.height);
+        assert(cells==16+std::min(20,stage)&&shape.width<=9&&shape.height==4);
         previous=shape;
     }
     {
-        const Shape last=BattleShape(9);
-        assert(last.width==8&&last.height==6&&last.rows[0]==0xFF);
-        Run moved;moved.shape=BattleShape(8);
-        moved.board={block(Sword,1,0,0),block(Sword,1,7,3)};
+        const Shape last=BattleShape(20);
+        assert(last.width==9&&last.height==4&&last.rows[0]==0x1FF);
+        Run moved;moved.shape=BattleShape(19);
+        moved.board={block(Sword,1,0,0),block(Sword,1,8,3)};
         assert(moved.setShape(last));
         assert(moved.board[0].x==0&&moved.board[0].y==0&&moved.board[1].y==3);
         // Legacy 10-wide saves migrate without dropping any of their 34 blocks.
@@ -73,18 +71,38 @@ int main(int argc,char**) {
         for(int y=0;y<4;++y)for(int x=0;x<10;++x)if(legacy.shape.contains(x,y))legacy.board.push_back(block(Sword,1,x,y));
         assert(legacy.board.size()==34&&legacy.setShape(last)&&legacy.board.size()==34);
         for(int i=0;i<34;++i)assert(legacy.fits(legacy.board[i],i));
-        Run restored;assert(restored.decode(legacy.encode()));assert(restored.shape.rows[0]==0xFF&&restored.board.size()==34);
+        Run restored;assert(restored.decode(legacy.encode()));assert(restored.shape.rows[0]==0x1FF&&restored.board.size()==34);
     }
     {
         Run legacy;legacy.choosing=false;legacy.shape.width=4;legacy.shape.height=5;
         for(int y=0;y<Height;++y)legacy.shape.rows[y]=y<5?15:0;
         for(int x=0;x<4;++x){Block item=block(Sword,3,x,0);item.ownedId=700+x;item.ownedPower=900+x;item.ownedDetail=12;item.ownedGrade=3;item.ownedW=1;item.ownedH=5;legacy.board.push_back(item);}
-        assert(legacy.setShape(BattleShape(1))&&legacy.shape.width==5&&legacy.shape.height==4&&legacy.board.size()==4);
+        assert(legacy.setShape(BattleShape(4))&&legacy.shape.width==5&&legacy.shape.height==4&&legacy.board.size()==4);
         for(int i=0;i<4;++i)assert(legacy.fits(legacy.board[i],i)&&legacy.board[i].ownedId==700+i&&legacy.board[i].ownedPower==900+i&&legacy.board[i].rot);
         Run saved;assert(saved.decode(legacy.encode())&&saved.encode()==legacy.encode());
         legacy.board.push_back(legacy.board[0]);const auto before=legacy.encode();
         assert(!legacy.boardResolved()&&legacy.setShape(legacy.shape)&&legacy.encode()==before&&!legacy.boardResolved());
         std::cout<<"PASS legacy 4x5 to 5x4 keeps every owned item; no-op shape refresh preserves overlaps\n";
+    }
+    {
+        Run legacy;legacy.shape.width=8;legacy.shape.height=6;
+        for(auto& row:legacy.shape.rows)row=255;
+        for(int y=0;y<6;++y)for(int x=0;x<8;++x){
+            Block b=block(Armor,1,x,y);b.ownedId=1000+y*8+x;b.ownedW=b.ownedH=1;b.ownedDetail=0;b.ownedGrade=0;b.ownedPower=100;
+            legacy.board.push_back(b);
+        }
+        assert(legacy.setBattleShape(18)&&legacy.shape.height==4&&legacy.board.size()==34&&legacy.tray.size()==14);
+        bool seen[48]={};for(const auto* list:{&legacy.board,&legacy.tray})for(const Block& b:*list){
+            assert(b.ownedId>=1000&&b.ownedId<1048&&!seen[b.ownedId-1000]);seen[b.ownedId-1000]=true;
+        }
+        Run restored;assert(restored.decode(legacy.encode())&&restored.encode()==legacy.encode());
+        assert(restored.tray.size()==14&&!restored.canSpin());
+        Run queued;queued.choosing=false;queued.shape=BattleShape(0);queued.board={block(Armor,2,0,0)};
+        queued.tray={block(Sword,1),block(Sword,1),block(Sword,1),block(Armor,2)};
+        Run merged;bool fromTray=false;int source=-1,target=-1;
+        assert(!queued.automaticMergePlan(merged,fromTray,source,target));
+        assert(queued.discard(true,0)&&queued.automaticMergePlan(merged,fromTray,source,target)&&fromTray&&source==2);
+        std::cout<<"PASS four rows, one cell per upgrade,36-cell cap and lossless48-item legacy migration\n";
     }
     //---- 장비 칸 모양은 게임이 그림에서 재서 넣는다. 여기는 그림이 없으니 옛
     //표(★1 1×1 · ★2 2×1 · ★3 3×1 · ★4 2×2 · ★5 5×1 · ★6 3×2)를 손으로 넣어

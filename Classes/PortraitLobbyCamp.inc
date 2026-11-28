@@ -31,11 +31,13 @@ void DrawLobbyCampFire(float x,float y,float scale,float time,bool foreground){
 int campInteriorCount=0,campOutsideCount=0;bool campFireDrawn=false,campHeroInside=false;
 float campHeroX=0,campPatrolX[3]={},campPatrolY[3]={};
 float lobbyRecallGround=0,lobbyRecallCamera=0,lobbyRecallReveal=1;
-float campPatrolAmplitude(const Layout& l){const Box hull=portraitCastleBox(l);const float left=std::min(hull.x+hull.w+18*l.scale,DX-100*l.scale);return std::min(24*l.scale,std::max(20*l.scale,DX-36*l.scale-left)*.12f);}
+// Walk across the foreground of the hull instead of squeezing beside it.
+float campPatrolLeft(const Layout& l){const Box hull=portraitCastleBox(l);return std::max(48*l.scale,hull.x+hull.w*.18f);}
+float campPatrolRight(const Layout& l){const Box hull=portraitCastleBox(l);return std::min(DX-48*l.scale,std::max(campPatrolLeft(l)+120*l.scale,hull.x+hull.w*.90f));}
+float campPatrolAmplitude(const Layout& l){return std::min(32*l.scale,(campPatrolRight(l)-campPatrolLeft(l))*.10f);}
 float campOutsidePosition(const Layout& l,int actor){
- const Box hull=portraitCastleBox(l);const float scale=l.scale;
- const float left=std::min(hull.x+hull.w+18*scale,DX-100*scale),right=DX-36*scale;
- const float fraction=actor==0?.10f:actor==1?.31f:actor==2?.53f:.84f;
+ const float left=campPatrolLeft(l),right=campPatrolRight(l);
+ const float fraction=actor==0?.10f:actor==1?.36f:actor==2?.63f:.88f;
  return std::max(left,std::min(right,left+(right-left)*fraction+campPatrolAmplitude(l)*BaseCamp::wander(ticks/60.f,actor)));
 }
 void captureLobbyDeparture(){
@@ -46,13 +48,13 @@ void captureLobbyDeparture(){
  starterInteriorReveal=1;
 }
 bool campRoomClip(const Layout& l,Box& room,int slot){
- if(run.stage!=0)return false;
+ if(run.stage!=0||starterInteriorReveal<=0)return false;
  const int c=std::max(0,std::min(18,run.stage));const Box window=portraitHabitatBounds(c,portraitCastleBox(l));const int floors=portraitHabitatFloors(c);
  const int floor=slot%floors,rank=slot/floors;
  room={window.x+(int)(window.w*(rank%2?.62f:.30f)),window.y-(floor+1)*window.h/floors+(int)(5*l.scale),window.w,window.h/floors};
  if(c==0)room.x=window.x+(int)(window.w*(.30f+.20f*(slot%4)));
  clipX=std::max(clipX,window.x);clipX2=std::min(clipX2,window.x+window.w);
- clipY=std::min(clipY,window.y-window.h+(int)(window.h*starterInteriorReveal));clipY2=std::max(clipY2,window.y-window.h);
+ clipY=std::min(clipY,window.y);clipY2=std::max(clipY2,window.y-window.h);
  return clipX2>clipX&&clipY>clipY2&&starterInteriorReveal>0;
 }
 void campCrewSprite(int id,int motion,float x,float foot,float height,int dir){
@@ -108,7 +110,7 @@ void drawPortraitLobbyCamp(const Layout& l){
    const int walk=crewWalkMotion(id,departing?ticks/2+i*3:ticks/6+i*3);
    const bool walking=walk>=0;
    // Characters without native walking frames rest in place, then hop back on recall.
-   if(!walking&&!departing)x=std::max(hull.x+hull.w+28*s,std::min(DX-36*s,from-campPatrolAmplitude(l)*BaseCamp::wander(ticks/60.f,actor)));
+   if(!walking&&!departing)x=std::max(campPatrolLeft(l),std::min(campPatrolRight(l),from-campPatrolAmplitude(l)*BaseCamp::wander(ticks/60.f,actor)));
    const int dir=departing?(from>doorX?LEFT:RIGHT):(std::cos(ticks/60.f*.62f+actor*2.1f)<0?LEFT:RIGHT);
    SetAlpha(departing?(int)(32*(1-BaseCamp::ease(q,.84f,1.f))):32);
    campCrewSprite(id,walking?walk:crewIdleMotion(id,ticks/8+i*3),x,y+(departing&&!walking?std::abs(std::sin(ticks*.6f))*3*s:0),63*s*(1-.5f*q),dir);SetAlpha(32);

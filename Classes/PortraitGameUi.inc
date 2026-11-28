@@ -20,16 +20,17 @@ void portraitStat(const Box& b,int kind,long long value,long long maximum,bool e
  if(count<3){(enemy?hostileStatBounds:friendlyStatBounds)[count]=b;(enemy?hostileStatKind:friendlyStatKind)[count]=kind;(enemy?hostileStatValue:friendlyStatValue)[count]=value;}++count;
  const float s=DX/640.f;const bool compact=b.w<150*s;
  portraitSkin(enemy?3:4,b);
- const int size=(int)((compact?16:26)*s),x=b.x+(int)(5*s),y=b.y-(int)(6*s);
- portraitGlyph(kind==0?1:kind==1?4:5,{x,y,size,size});
+ const int size=(int)((compact?24:39)*s),y=b.y-(int)(6*s);
+ const Box icon={b.x-(int)(6*s),b.y+(int)(4*s),size,size};
+ const int inset=size-(int)(6*s);
  char a[32],z[32],number[80];
  //적 체력은 K/M 으로 줄이지 않고 콤마 숫자 그대로 보인다.
  void(*amount)(char*,size_t,long long)=enemy&&kind==2?portraitCommaAmount:portraitShortAmount;
  amount(a,sizeof(a),value);amount(z,sizeof(z),maximum);
  if(kind==2)std::snprintf(number,sizeof(number),"%s/%s",a,z);else std::snprintf(number,sizeof(number),"%s",a);
- if(compact&&StringWidth(number,UiMinimumTextZoom())>b.w-size-14*s)std::snprintf(number,sizeof(number),"%s",a);
- const float zoom=std::max(.28f,std::min(compact?.48f:.66f,(b.w-size-16*s)/std::max(1.f,StringWidth(number,s))));
- label(number,b.x+size+(b.w-size)/2,y,zoom,enemy?0xFFE4D4:0xF1EFE3);
+ if(compact&&StringWidth(number,UiMinimumTextZoom())>b.w-inset-14*s)std::snprintf(number,sizeof(number),"%s",a);
+ const float zoom=std::max(.28f,std::min(compact?.48f:.66f,(b.w-inset-16*s)/std::max(1.f,StringWidth(number,s))));
+ label(number,b.x+inset+(b.w-inset)/2,y,zoom,enemy?0xFFE4D4:0xF1EFE3);
  const int gap=std::max(1,(int)(2*s)),width=b.w-(int)(16*s),height=std::max(3,(int)(6*s));
  const int n=std::max(1,(width+gap)/(height+gap));
  const int left=b.x+(b.w-(n*height+(n-1)*gap))/2;
@@ -37,6 +38,9 @@ void portraitStat(const Box& b,int kind,long long value,long long maximum,bool e
  const int ally[3]={0xCFA75A,0x77B8D8,0x58CC98},hostile[3]={0xF293A8,0xECAE72,0xED6D81};
  for(int i=0;i<n;++i){const int x0=left+i*(height+gap);
   bevel({x0,b.y-b.h+(int)(12*s),height,height},(i+.5f)/n<=fill?(enemy?hostile[kind]:ally[kind]):0x2B303E,std::max(1,(int)s));}
+ // Status symbols overlap the frame in front, rather than shrinking inside it.
+ if(enemy&&kind==2){portraitImage(PORTRAIT_DEMON_HEART_IMG,icon);drawnEnemyHeartIcon=icon;}
+ else portraitGlyph(kind==0?1:kind==1?4:5,icon);
 }
 void portraitStatTrio(const Box& b,long long attack,long long defense,long long hp,long long maximum,bool enemy){
  const int gap=std::max(2,(int)(4*DX/640.f)),usable=b.w-2*gap;
@@ -57,14 +61,13 @@ void drawPortraitEnemyHealth(const Layout& l){
 }
 void drawPortraitEnergy(const Layout& l){
  const float s=l.scale;const Box b=l.heart;
+ drawnBattleEnergyBounds={b.x,b.y,b.w-(int)(68*s),b.h};
  portraitGlyph(3,{b.x-(int)(32*s),b.y,(int)(26*s),(int)(26*s)});
  const int w=b.w-(int)(68*s);portraitSkin(0,{b.x,b.y,w,b.h});
  for(int i=0;i<Run::BattleEnergyMax;++i){const int x=b.x+(int)(8*s)+i*(w-(int)(16*s))/5;
   bool filled=i<heartDisplay;if(i==spentHeart&&heartBlink>0)filled=((int)(heartBlink/.09f)%2)==0;
   bevel({x,b.y-(int)(6*s),(w-(int)(24*s))/5,(int)(14*s)},filled?0x5DD69C:0x2D3B46,(int)(2*s));}
  char n[20];std::snprintf(n,sizeof(n),"%d / %d",heartDisplay,Run::BattleEnergyMax);label(n,b.x+b.w-(int)(24*s),b.y-(int)(3*s),.66f);
- char capacity[32];std::snprintf(capacity,sizeof(capacity),u8"판 %d칸",portraitGridCapacity());
- label(capacity,(int)(560*s),b.y-(int)(3*s),.48f,0xA2CFD0);
 }
 void drawPortraitLobby(const Layout& l){
  UnSectionClip(false);
@@ -127,8 +130,9 @@ void drawPortraitCastlePreview(int castle,const Box& b,float wheelTravel,bool ro
   x=b.x+(int)((b.w-right)/2);
  }
  drawPortraitFarWheels(c,{x,bottom+h,w,h},z,wheelTravel,false,rollLeft);
- portraitImage(fixedScale>0?PORTRAIT_CASTLE_FIRST_IMG+c:portraitHullImage(c),{x,bottom+h,w,h});
- const int diameter=(int)(wheel*z);for(int i=0;i<(c<5?2:3);++i){const float at=c<5?(i?PortraitCastleArt::FrontWheelAt(c):.17f):(.15f+.345f*i);
+ // Management thumbnails keep the complete exterior, independent of lobby reveal.
+ portraitImage(PORTRAIT_CASTLE_FIRST_IMG+c,{x,bottom+h,w,h});
+ const int diameter=(int)(wheel*z);for(int i=0;i<PortraitCastleArt::WheelCount(c);++i){const float at=PortraitCastleArt::WheelAt(c,i);
   const Box wb={x+(int)(w*at)-diameter/2,bottom+(int)(diameter*.42f),diameter,diameter};
   const int img=PORTRAIT_WHEEL_FIRST_IMG+c;if(wheelTravel<0){portraitImage(img,wb);continue;}
   if(!sprite[img])LoadImg(img);if(!sprite[img])continue;
@@ -157,7 +161,8 @@ bool portraitCameraTouch(int phase,int id,float x,float y){
  if(active&&(run.attacking||introActive()||entering()||startEventActive()))return false;
  const Layout l=layout();const float s=l.scale;
  const int fixedGround=l.ground-(int)portraitCameraY;
- const Box body=portraitCastleBox(l);const float ceiling=DY-78*s;
+ const Box hull=portraitCastleBox(l);
+ const Box body=!active&&starterInteriorReveal>=.999f?portraitInteriorBox(std::max(0,std::min(18,run.stage)),hull):hull;const float ceiling=DY-78*s;
  const float maximum=std::max(0.f,body.y-portraitCameraY-ceiling);
  const int floor=active?l.arenaBottom:PortraitGame::lobby(DX,DY).statsTop;
  //성 디버그가 켜진 로비에서는 누르기(phase 0)를 디버그 터치(방·포탑·몸체 순환)에 넘기고, 끌기만 카메라가 받는다.
@@ -169,25 +174,31 @@ bool portraitCameraTouch(int phase,int id,float x,float y){
  (void)fixedGround;(void)x;return true;
 }
 
-// Dragging the first castle opens only its registered front facade; other castles retain camera gestures.
+// A held touch reveals a circular window; three seconds latches the full interior.
 bool portraitStarterInteriorTouch(int phase,int id,float x,float y){
- if(active||drawHandle!=MD_LOBBY||run.stage!=0||siegeActive||RewardPopup::open()||entryChoiceOpen||resumePromptOpen||quitPromptOpen||popUpCnt>0||LoadoutOpen()||DebugControlsOpen()||LobbyCastleDebugActive()){
-  if(id==starterInteriorFinger)starterInteriorFinger=-1;return false;
+ if(active||drawHandle!=MD_LOBBY||siegeActive||RewardPopup::open()||entryChoiceOpen||resumePromptOpen||quitPromptOpen||popUpCnt>0||LoadoutOpen()||DebugControlsOpen()||LobbyCastleDebugActive()){
+  if(id==starterInteriorFinger){starterInteriorFinger=-1;starterInteriorHeld=0;}return false;
  }
- const Layout l=layout();const float s=l.scale;
+ const Layout l=layout();
  if(phase==0){
-  if(!portraitCastleBox(l).has(x,y)||y<l.arenaBottom+12*s||y>DY-78*s)return false;
-  starterInteriorFinger=id;starterInteriorDownX=x;starterInteriorDownY=y;starterInteriorStart=starterInteriorReveal;starterInteriorDragging=false;starterInteriorAxis=0;return true;
+  const Box hull=portraitCastleBox(l),inside=portraitInteriorBox(std::max(0,std::min(18,run.stage)),hull);
+  if(!(hull.has(x,y)||inside.has(x,y))||y<l.arenaBottom+12*l.scale||y>DY-78*l.scale)return false;
+  starterInteriorFinger=id;starterInteriorHeld=0;starterInteriorStart=starterInteriorReveal;starterInteriorAxis=0;starterInteriorDownX=x;starterInteriorDownY=y;
+  starterInteriorTouchX=x;starterInteriorTouchY=y;return true;
  }
  if(id!=starterInteriorFinger)return false;
  if(phase==1){
   const float dx=x-starterInteriorDownX,dy=y-starterInteriorDownY;
-  if(!starterInteriorAxis&&std::max(std::abs(dx),std::abs(dy))>=8*s)starterInteriorAxis=std::abs(dx)>std::abs(dy)?1:2;
-  if(starterInteriorAxis){starterInteriorDragging=true;const float distance=starterInteriorAxis==1?-dx:dy;starterInteriorReveal=std::max(0.f,std::min(1.f,starterInteriorStart+distance/(80*s)));}
+  if(!starterInteriorAxis&&std::abs(dy)>12*l.scale&&std::abs(dy)>std::abs(dx)*1.2f){
+   if(portraitCameraTouch(0,id,starterInteriorDownX,starterInteriorDownY)){starterInteriorAxis=2;starterInteriorHeld=0;}
+  }
+  if(starterInteriorAxis==2){portraitCameraTouch(1,id,x,y);return true;}
+  starterInteriorTouchX=x;starterInteriorTouchY=y;
  }
  if(phase==2||phase==3){
-  starterInteriorReveal=phase==3?starterInteriorStart:starterInteriorDragging?(starterInteriorReveal>=.45f?1.f:0.f):starterInteriorStart;
-  starterInteriorFinger=-1;starterInteriorAxis=0;
+  if(starterInteriorAxis==2)portraitCameraTouch(phase,id,x,y);
+  if(phase==3)starterInteriorReveal=starterInteriorStart;
+  starterInteriorFinger=-1;starterInteriorHeld=0;starterInteriorAxis=0;
  }
  return true;
 }
