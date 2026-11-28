@@ -1,5 +1,6 @@
 // Preview upgrades stay temporary. Explicitly closing keeps a valid departure selection.
 #include "Data/CastleFacilities.h"
+void MergeRouletteCloseCastleInterior();
 namespace LobbyCastleDebug {
 static bool open=false;
 static bool compact=false;
@@ -43,7 +44,7 @@ int LobbyCastleDebugLevel(int castle,int part){
 }
 int LobbyCastleDebugCastle(){return LobbyCastleDebugActive()?Max(0,Min(PortraitCastleArt::Count-1,gMobileCastleVisual)):LobbyCastleDebug::keptPreview;}
 bool LobbyCastleDebugInterior(){
- const int c=LobbyCastleDebugCastle();return c<0 || c>=10 || CastleParts::roomInteriorOpen[c];
+ const int c=LobbyCastleDebugCastle();return c>=0 && c<10 && CastleParts::roomInteriorOpen[c];
 }
 int LobbyCastleDebugFacilityLevel(int castle,int room){
 #ifdef GAMEDEBUG
@@ -80,15 +81,19 @@ bool LobbyCastleDebugCommand(int command){
   CastleProgressEnsure();previousCastle=robin.castle;gMobileCastleVisual=keptPreview>=0?keptPreview:robin.castle;
   for(int c=0;c<10;++c){
    interiors[c]=CastleParts::roomInteriorOpen[c];
+   CastleParts::roomInteriorOpen[c]=false;
    for(int p=0;p<5;++p){levels[c][p]=robin.castleProgress.parts[c][p];rooms[c][p]=robin.castleProgress.rooms[c][p];}
   }
-  open=true;compact=false;return true;
+  MergeRouletteCloseCastleInterior();open=true;compact=false;return true;
  }
  if(!open)return true;
  if(command==TOUCH_FUNC_LOBBY_CASTLE_HIDE){compact=true;return true;}
  int c=Max(0,Min(PortraitCastleArt::Count-1,gMobileCastleVisual));
- if(command==TOUCH_FUNC_LOBBY_CASTLE_PREV){gMobileCastleVisual=(c+PortraitCastleArt::Count-1)%PortraitCastleArt::Count;return true;}
- if(command==TOUCH_FUNC_LOBBY_CASTLE_NEXT){gMobileCastleVisual=(c+1)%PortraitCastleArt::Count;return true;}
+ if(command==TOUCH_FUNC_LOBBY_CASTLE_PREV||command==TOUCH_FUNC_LOBBY_CASTLE_NEXT){
+  gMobileCastleVisual=(c+(command==TOUCH_FUNC_LOBBY_CASTLE_PREV?PortraitCastleArt::Count-1:1))%PortraitCastleArt::Count;
+  if(gMobileCastleVisual<10)CastleParts::roomInteriorOpen[gMobileCastleVisual]=false;
+  MergeRouletteCloseCastleInterior();return true;
+ }
  if(c>=10){
   if(command>=TOUCH_FUNC_LOBBY_CASTLE_PART&&command<=TOUCH_FUNC_LOBBY_CASTLE_PART_END){const int p=command-TOUCH_FUNC_LOBBY_CASTLE_PART;levels[c][p]=(levels[c][p]+1)%6;}
   else if(command==TOUCH_FUNC_LOBBY_CASTLE_ALL){int lv=0;for(int p=0;p<5;++p)lv=Max(lv,levels[c][p]);for(int p=0;p<5;++p)levels[c][p]=(lv+1)%6;}

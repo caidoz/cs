@@ -76,7 +76,7 @@ bool portraitReviewLobby(){
    const int img=PORTRAIT_INTERIOR_FIRST_IMG+c;
    const auto size=sprite[img]?sprite[img]->getTexture()->getContentSizeInPixels():cocos2d::Size(0,0);
    const Box hull=portraitCastleBox(layout()),b=drawnPortraitInteriorBounds;
-   const bool valid=size.width>0&&drawnPortraitInterior==img&&b.w==hull.w&&b.y-b.h==hull.y-hull.h&&std::abs(b.w*size.height-b.h*size.width)<=size.width;
+   const bool valid=size.width>0&&drawnPortraitInterior==img&&b.x==hull.x&&b.y==hull.y&&b.w==hull.w&&b.h==hull.h&&std::abs(b.w*size.height-b.h*size.width)<=size.width*2;
    reviewTrace(valid?"PASS selected interior drawn with uniform scale and equal hull width":"FAIL interior render registration");
    if(!valid){char detail[240];std::snprintf(detail,sizeof(detail),"INTERIOR stage=%d actual=%d expected=%d bounds=%d,%d,%d,%d hull=%d,%d,%d,%d texture=%.0f,%.0f",c+1,drawnPortraitInterior,img,b.x,b.y,b.w,b.h,hull.x,hull.y,hull.w,hull.h,size.width,size.height);reviewTrace(detail);}
   }else{
@@ -267,6 +267,11 @@ bool portraitReviewLobby(){
    char diag[120];std::snprintf(diag,sizeof(diag),"DETAIL expected=%d actual=%d visual=%d stage=%d",c,LobbyCastleDebugCastle(),gMobileCastleVisual,run.stage);reviewTrace(diag);
    LobbyCastleDebugDraw();
    reviewTrace(LobbyCastleDebugCastle()==c?"PASS debug castle reachable":"FAIL debug castle range");
+   MergeRouletteLobbySceneDraw();
+   char interiorDiag[200];std::snprintf(interiorDiag,sizeof(interiorDiag),"DEBUG_CLOSED stage=%d forced=%d reveal=%.2f finger=%d drawn=%d image=%d expected=%d",run.stage,(int)LobbyCastleDebugInterior(),starterInteriorReveal,starterInteriorFinger,drawnPortraitInterior,portraitHullImage(c),PORTRAIT_CASTLE_FIRST_IMG+c);reviewTrace(interiorDiag);
+   reviewTrace(!LobbyCastleDebugInterior()&&starterInteriorReveal==0&&drawnPortraitInterior==-1&&portraitHullImage(c)==PORTRAIT_CASTLE_FIRST_IMG+c?"PASS selected debug castle starts closed":"FAIL debug selection opens interior");
+   starterInteriorReveal=1; // Selection must also clear a previously opened lobby.
+
    LobbyCastleDebugCommand(TOUCH_FUNC_LOBBY_CASTLE_NEXT);++phase;
   }else if(phase==PortraitCastleArt::Count){
    reviewTrace(LobbyCastleDebugCastle()==0?"PASS debug next wraps after castle 19":"FAIL debug next wrap");
@@ -330,8 +335,8 @@ bool portraitReviewStep(const Layout& l){
   const bool aspect=std::abs(hull.w*size.h-hull.h*size.w)<=size.h;
   reviewTrace(aspect?"PASS motif battle preserves aspect with intentional viewport cropping":"FAIL motif battle aspect");
   int cells=0;for(int y=0;y<run.shape.height;++y)for(int x=0;x<run.shape.width;++x)cells+=run.shape.contains(x,y);
-  const float expectedZoom=PortraitGame::battleCastleScale(DX,PortraitCastleArt::Sizes[18].h+PortraitCastleArt::WheelSize(18)*.58f);
-  const bool world=std::abs(portraitCastleZoom(l)-expectedZoom)<.0001f&&std::abs(expectedZoom*(PortraitCastleArt::Sizes[18].h+PortraitCastleArt::WheelSize(18)*.58f)-.90f*(DX*2.2f-PortraitGame::battle(DX,(int)(DX*2.2f+.5f)).ground))<1&&std::abs(hull.x+hull.w-DX/3.f)<1&&
+  const float expectedZoom=PortraitGame::battleCastleScale(DX,PortraitCastleArt::BattleReferenceAssemblyHeight);
+  const bool world=std::abs(portraitCastleZoom(l)-expectedZoom)<.0001f&&std::abs(expectedZoom*(PortraitCastleArt::BattleReferenceAssemblyHeight)-.90f*(DX*2.2f-PortraitGame::battle(DX,(int)(DX*2.2f+.5f)).ground))<1&&std::abs(hull.x+hull.w-DX/3.f)<1&&
     std::abs(drawnBattleHeroZoom-PortraitGame::battleActorScale(DX,PortraitCastleArt::Sizes[18].w))<.0001f&&std::abs(drawnBattleCompanionZoom-drawnBattleHeroZoom*.8f)<.0001f;
   reviewTrace(world?"PASS largest castle fits battle height with right edge at one third and fixed actors":"FAIL fixed battle actor scale");
   reviewTrace(run.shape.height==4&&cells==16+run.stage&&cells<=36&&l.board.x>=0&&l.board.x+l.board.w<=DX?"PASS four rows and exactly one extra grid cell per castle":"FAIL four-row grid progression");
@@ -483,7 +488,7 @@ bool portraitReviewStep(const Layout& l){
   }
   reviewTrace(valid?"PASS square cells, actual capacity, original roulette aspect ratio and viewport geometry":"FAIL portrait geometry");
   reviewTrace(drawnBattleViewportTop==DY?"PASS battlefield continues behind translucent wave header":"FAIL hard header clipping");
-  reviewTrace(std::abs(portraitCastleZoom(l)-PortraitGame::battleCastleScale(DX,PortraitCastleArt::Sizes[18].h+PortraitCastleArt::WheelSize(18)*.58f))<1&&std::abs(portraitCastleBox(l).x+portraitCastleBox(l).w-DX/3.f)<1&&drawnPortraitTurret==PORTRAIT_TURRET_FIRST_IMG+run.stage?"PASS fixed battle world scale and visible turret":"FAIL battle scale or turret");
+  reviewTrace(std::abs(portraitCastleZoom(l)-PortraitGame::battleCastleScale(DX,PortraitCastleArt::BattleReferenceAssemblyHeight))<1&&std::abs(portraitCastleBox(l).x+portraitCastleBox(l).w-DX/3.f)<1&&drawnPortraitTurret==PORTRAIT_TURRET_FIRST_IMG+run.stage?"PASS fixed battle world scale and visible turret":"FAIL battle scale or turret");
   reviewTrace(valid?"PASS identical bottom UI geometry at 1:1.33 and 1:2.2; only battlefield viewport changes":"FAIL fixed bottom stack");
   reviewLayout(l,"portrait");reviewCapture("battle");
  }

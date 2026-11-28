@@ -64,7 +64,7 @@ PortraitCastleArt::Size portraitHullSize(int c){
  return PortraitCastleArt::Sizes[c];
 }
 float portraitCastleZoom(const Layout& l){
- const float battleZoom=PortraitGame::battleCastleScale(DX,PortraitCastleArt::Sizes[18].h+PortraitCastleArt::WheelSize(18)*.58f);
+ const float battleZoom=PortraitGame::battleCastleScale(DX,PortraitCastleArt::BattleReferenceAssemblyHeight);
  if(!portraitLobbyWorld())return battleZoom;
  // Width fixes world scale. Aspect ratio changes the viewport, never hull size.
  const float base=(1.21f*.95f*.97f)*(DX-32*l.scale)/(PortraitCastleArt::MaxAssemblyRatio*PortraitCastleArt::Sizes[18].w);
@@ -239,11 +239,9 @@ int drawnPortraitInterior=-1;
 int drawnPortraitWheelBaseline=0;
 Box drawnPortraitInteriorBounds={0,0,0,0};
 Box portraitInteriorBox(int castle,const Box& hull){
- const int img=PORTRAIT_INTERIOR_FIRST_IMG+castle;if(!sprite[img])LoadImg(img);
- if(!sprite[img])return hull;
- const auto size=sprite[img]->getTexture()->getContentSizeInPixels();
- const int h=(int)std::round(hull.w*size.height/size.width);
- return {hull.x,hull.y-hull.h+h,hull.w,h};
+ // The paired textures have identical canvases and alpha silhouettes.
+ // One destination rect prevents a one-pixel jump from independent rounding.
+ (void)castle;return hull;
 }
 Box portraitHabitatBounds(int castle,const Box& hull){
  if(castle==0){const Box b=portraitInteriorBox(castle,hull);return {b.x+(int)(b.w*.14f),b.y-(int)(b.h*.46f),(int)(b.w*.70f),(int)(b.h*.28f)};}

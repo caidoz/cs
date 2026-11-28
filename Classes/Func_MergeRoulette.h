@@ -1,5 +1,6 @@
 ﻿#pragma once
 bool MergeRouletteActive();
+void MergeRouletteCloseCastleInterior();
 void MergeRouletteUiFrame(int x,int top,int width,int height,int style=4);
 void MergeRouletteUiGlyph(int icon,int x,int top,int width,int height);
 bool MergeTutorialReviewDrive(void (*trace)(const char*),void (*capture)(const char*));   //CS_TUTORIAL_REVIEW 운전(MergeTutorialRuntime.inc)

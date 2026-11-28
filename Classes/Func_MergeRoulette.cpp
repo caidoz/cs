@@ -4232,6 +4232,9 @@ bool SharedRewardOpen(){return RewardPopup::open();}
 void SharedRewardDraw(){ResetRectPoint();RewardPopup::draw();}
 void SharedRewardClose(){RewardPopup::closeNow();}
 bool MergeRouletteActive() {return active;}
+void MergeRouletteCloseCastleInterior(){
+ starterInteriorReveal=0;starterInteriorHeld=0;starterInteriorFinger=-1;starterInteriorAxis=0;portraitCameraFinger=-1;
+}
 long long MergeRouletteHeroShield(const OBJECT* h) {return h?Run::shieldFor(std::max(1LL,(long long)h->ps[PS_HP])):0;}
 long long MergeRouletteHeroShieldRecovery(const OBJECT* h) {
     if(!h)return 0;

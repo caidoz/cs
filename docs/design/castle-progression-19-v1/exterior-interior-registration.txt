@@ -1,0 +1,26 @@
+2026-11-28 CORRECTION ? approved original exterior design is authoritative
+
+The generated floor-by-floor closed-wall series was rejected by the user.
+Do not use those images or prompts for current production.
+
+Preserve each ORIGINAL closed exterior: overlapping building volumes, visible
+roof top planes, gabled roofs, projecting towers, depth, chimneys, foreground
+houses, trees and layered fortifications. Do not turn it into a flat wall made
+of stacked room fronts or repeated rows of windows.
+
+Primary edit target for any future image_gen edit: the ORIGINAL closed exterior.
+Supporting reference: the corresponding interior, for canvas dimensions and
+overall height only. Never use its exposed floor/column grid as exterior design.
+Retain the approved material palette and mild three-quarter side camera.
+
+Current user-authorized fallback: keep exterior pixel width unchanged; stretch
+or compress ONLY vertically to the corresponding interior canvas height.
+The largest (stage19) changes from862x1066 to862x1152 (+8.0675% in Y).
+Do not add new roofs, floors, rooms, ornament, weapons, wheels or scenery.
+Do not replace alpha with the interior mask or composite its structural rim.
+
+Selected finals and per-stage measurements:
+asset_library/work/castle-exterior-original-height-fit-20261128/
+Production: asset_library/production/portrait-castle-01.png through-19.png.
+Both states use exactly the same destination rectangle and native camera scale.
+The canvas sizes match; original architectural silhouettes are preserved.
